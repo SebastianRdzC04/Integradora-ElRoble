@@ -13,14 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('consumables', function (Blueprint $table) {
             $table->id();
-            $table->string('userName');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->foreignId('person_id')->constrained('people')->onDelete('cascade');
-            $table->rememberToken();
+            $table->string('name', 50);
+            $table->integer('stock');
+            $table->integer('minimum_stock');
+            $table->foreignId('category_id')->constrained('consumable_categories');
+            $table->string('description', 100);
             $table->timestamps();
         });
     }
@@ -32,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('consumables');
     }
 };
