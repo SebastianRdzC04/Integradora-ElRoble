@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('inventory', function (Blueprint $table) {
             $table->id();
-            $table->string('serial_number', 50);
+            $table->string('serial_number', 50)->unique();
             $table->string('name', 50);
             $table->string('description', 100);
             $table->foreignId('category_id')->nullable()->constrained('inventory_categories')->onDelete('set null');

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 50);
             $table->string('description', 255);
-            $table->unsignedBigInteger('service_category_id');
+            $table->foreignId('service_category_id')->constrained('service_categories');
             $table->decimal('price', 10, 2);
             $table->timestamps();
         });
