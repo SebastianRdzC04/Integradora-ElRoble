@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CotizacionesClientesController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,4 +29,5 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/cotizaciones', [CotizacionesClientesController::class, 'create'])->name('cotizaciones');
 require __DIR__.'/auth.php';
