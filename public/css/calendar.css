@@ -1,0 +1,57 @@
+#calendar-month{
+    font-size: 1rem;
+}
+#calendar-container{
+    display: flex;
+    flex-direction: column;
+    position: static;
+    height: 400px;
+}
+
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0px;
+    width: 100%;
+}
+#days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0px;
+}
+.day {
+    text-align: center;
+    padding: 3px;
+    font-weight: 600;
+}
+.date {
+    display: inline-flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 5px;
+    margin: auto;
+    cursor: pointer;
+    font-weight: 600;
+    border-radius: 50%;
+}
+.date.active {
+    background-color: #007bff;
+    color: white;
+}
+.date.inactive {
+    background-color: #06ca37;
+    color: #6c757d;
+}
+.date.aparted {
+    background-color: #dc3545;
+    color: white;
+}
+@media (min-width: 960px){
+    #calendar-month{
+        font-size: 1rem;
+    }
+}
+
