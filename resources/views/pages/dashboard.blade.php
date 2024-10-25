@@ -37,7 +37,43 @@
                     Eventos
                 </div>
                 <div class="col-4 border">
-                    Cotizaciones pendientes
+                    <div class="row">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="h4">Cotizaciones Pendientes</h2>
+                            </div>
+                            <div class="card-body">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-6 card">
+                                            <div class="card-header">
+                                                <h6>fiesta de juan</h6>
+                                            </div>
+                                            <div class="card-body"></div>
+                                        </div>
+                                        <div class="col-6 card">
+                                            <div class="card-header">
+                                                <h6>fiesta de juan</h6>
+                                            </div>
+                                            <div class="card-body"></div>
+                                        </div>
+                                        <div class="col-6 card">
+                                            <div class="card-header">
+                                                <h6>fiesta de juan</h6>
+                                            </div>
+                                            <div class="card-body"></div>
+                                        </div>
+                                        <div class="col-6 card">
+                                            <div class="card-header">
+                                                <h6>fiesta de juan</h6>
+                                            </div>
+                                            <div class="card-body"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="col-8 border d-inline-flex col-xl-3">
                     <div class="container-fluid align-items-center d-inline-flex border" id="calendar-container">
@@ -61,6 +97,7 @@
                             <div class="day">Vie</div>
                             <div class="day">Sab</div>
                             <div class="day">Dom</div>
+
                         </div>
                         <div class="border" id="calendar"></div>
                     </div>
