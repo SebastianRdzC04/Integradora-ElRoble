@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('package_id')->nullable()->constrained('packages')->onDelete('set null');
             $table->foreignId('date_id')->nullable()->constrained('dates')->onDelete('set null');
             $table->foreignId('place_id')->nullable()->constrained('places')->onDelete('set null');
-            $table->enum('status', ['pendiente', 'pagada', 'cancelada']);
+            $table->enum('status', ['pendiente', 'pagada', 'cancelada', 'pendiente cotizacion']);
             $table->decimal('estimated_price',10, 2);
             $table->decimal('espected_advance',10,2);
             $table->time('start_time');
