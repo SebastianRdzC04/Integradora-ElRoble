@@ -22,13 +22,13 @@ class Service extends Model
     public function quotes()
     {
         return $this->belongsToMany(Quote::class, 'quote_services')
-                    ->withPivot('quantity', 'price', 'desctiption', 'details_dj')
+                    ->withPivot('quantity', 'price', 'description', 'details_dj')
                     ->withTimestamps();
     }
     public function packages()
     {
         return $this->belongsToMany(Package::class, 'package_services')
-                    ->withPivot('quantity', 'price', 'desctiption', 'details_dj')
+                    ->withPivot('quantity', 'price', 'description', 'details_dj')
                     ->withTimestamps();
     }
     public function events()
