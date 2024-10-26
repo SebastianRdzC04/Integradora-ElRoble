@@ -16,7 +16,7 @@ class Service extends Model
         return $this->belongsTo(ServiceCategory::class);
     }
 
-
+    // Comentario Bárbaro en AxelV2.0
 
     // relaciones muchos a muchos
     public function quotes()
