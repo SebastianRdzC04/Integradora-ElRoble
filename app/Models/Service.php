@@ -11,6 +11,12 @@ class Service extends Model
 
     protected $table = 'services';
 
+    protected $fillable = [
+        'name',
+        'description',
+        'price'
+    ];
+
     public function serviceCategory()
     {
         return $this->belongsTo(ServiceCategory::class);
@@ -22,19 +28,19 @@ class Service extends Model
     public function quotes()
     {
         return $this->belongsToMany(Quote::class, 'quote_services')
-                    ->withPivot('quantity', 'price', 'desctiption', 'details_dj')
+                    ->withPivot('quantity', 'price', 'description', 'details_dj')
                     ->withTimestamps();
     }
     public function packages()
     {
         return $this->belongsToMany(Package::class, 'package_services')
-                    ->withPivot('quantity', 'price', 'desctiption', 'details_dj')
+                    ->withPivot('quantity', 'price', 'description', 'details_dj')
                     ->withTimestamps();
     }
     public function events()
     {
         return $this->belongsToMany(Event::class, 'event_services')
-                    ->withPivot('quantity', 'price', 'desctiption', 'details_dj')
+                    ->withPivot('quantity', 'price', 'description', 'details_dj')
                     ->withTimestamps();
     }
 }

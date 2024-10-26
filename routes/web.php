@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\CotizacionesClientesController;
+use App\Http\Controllers\PaquetesAdminController;
+use App\Http\Controllers\ServiciosAdminController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,4 +32,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/cotizaciones', [CotizacionesClientesController::class, 'create'])->name('cotizaciones');
+Route::get('/crearpaquetes', [PaquetesAdminController::class, 'create'])->name('crearpaquetes');
+Route::get('/crearservicios', [ServiciosAdminController::class, 'create'])->name('crearservicios');
 require __DIR__.'/auth.php';
