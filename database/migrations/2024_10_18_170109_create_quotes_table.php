@@ -25,8 +25,8 @@ return new class extends Migration
             $table->time('start_time');
             $table->time('end_time');
             $table->string('type_event', 50);
-            $table->string('owner_name', 50);
-            $table->string('owner_phone', 50);
+            $table->string('owner_name', 50)->nullable();
+            $table->string('owner_phone', 50)->nullable();
             $table->timestamps();
         });
     }

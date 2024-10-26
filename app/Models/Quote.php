@@ -36,7 +36,7 @@ class Quote extends Model
     //relaciones muchos a muchos
     public function services()
     {
-        return $this->belongsToMany(Service::class, 'quote_services')
+        return $this->belongsToMany(Service::class, 'quotes_services')
                     ->withPivot('quantity', 'price', 'description', 'details_dj')
                     ->withTimestamps();
     }
