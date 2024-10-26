@@ -4,6 +4,11 @@ use App\Http\Controllers\ProfileController;
 use App\Models\Date;
 use Illuminate\Support\Facades\Route;
 
+// Controladores de AxelV2.0
+use App\Http\Controllers\ServiciosAdminController;
+use App\Http\Controllers\CotizacionesClientesController;
+use App\Http\Controllers\PaquetesAdminController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -28,6 +33,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// Rutas de Axelv2.0
+Route::get('/crearpaquetes', [PaquetesAdminController::class, 'create'])->name('crearpaquetes');
+Route::get('/crearservicios', [ServiciosAdminController::class, 'create'])->name('crearservicios');
+Route::get('/cotizaciones', [CotizacionesClientesController::class, 'create'])->name('cotizaciones');
 /*
 require __DIR__.'/auth.php';
 
