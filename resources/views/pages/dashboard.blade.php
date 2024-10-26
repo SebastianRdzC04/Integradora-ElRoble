@@ -9,6 +9,7 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
     <link rel="stylesheet" href="{{ asset('css/calendar.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/dashboard.css') }}">
     <title>Document</title>
 </head>
 
@@ -33,10 +34,22 @@
                 <div class="col border">12</div>
             </div>
             <div class="row">
-                <div class="col-5 border">
+                <div class="col-3 mb-3 border px-2">
+                    <div class="card">
+                        <div class="card-body">
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3 mb-3 border px-2">Pru</div>
+                <div class="col-3 mb-3 border px-2">Pru</div>
+                <div class="col-3 mb-3 border px-2">Pru</div>
+            </div>
+            <div class="row">
+                <div class="col-12 border col-md-6 col-xl-4">
                     Eventos
                 </div>
-                <div class="col-4 border">
+                <div class="col-12 border col-md-6 col-xl-5">
                     <div class="row">
                         <div class="card">
                             <div class="card-header">
@@ -46,10 +59,18 @@
                                 <div class="container-fluid">
                                     <div class="row">
                                         <div class="col-6 card">
-                                            <div class="card-header">
-                                                <h6>fiesta de juan</h6>
+                                            <div class="card-header mb-2">
+                                                <h6>{{$quote->type_event . ' de ' . $quote->user->person->firstName}}</h6>
                                             </div>
-                                            <div class="card-body"></div>
+                                            <div class="quotes">
+                                                <p>Fiesta en {{$quote->place->name}}</p>
+                                                <p>Fecha: {{$quote->date->date}}</p>
+                                                @foreach ($quote->services as $service)
+                                                    <p>servicios: {{$service->name}}</p>   
+                                                    <p> {{$service->pivot->quantity}} </p>
+                                                @endforeach
+                                                <p>{{$quote->status}}</p>
+                                            </div>
                                         </div>
                                         <div class="col-6 card">
                                             <div class="card-header">
@@ -75,7 +96,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-8 border d-inline-flex col-xl-3">
+                <div class="col-8 border d-inline-flex col-xl-3 col-md-4">
                     <div class="container-fluid align-items-center d-inline-flex border" id="calendar-container">
                         <div class="row justify-content-center align-items-center">
                             <div class="col">
@@ -112,7 +133,7 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
     <script>
-        const fechas = []
+        const fechas = [@json($quote->date->date)];
     </script>
     <script src="{{ asset('js/calendar.js') }}"></script>
 </body>

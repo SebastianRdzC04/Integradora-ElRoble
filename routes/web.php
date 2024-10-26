@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Models\Date;
+use App\Models\Quote;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,7 +17,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('pages.dashboard');
+
+    $quote = Quote::find(1);
+    return view('pages.dashboard', compact('quote'));
 });
 
 Route::get('/dashboard', function () {
