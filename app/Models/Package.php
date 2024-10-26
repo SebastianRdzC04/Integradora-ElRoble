@@ -24,7 +24,7 @@ class Package extends Model
     //realciones muchos a muchos
     public function services()
     {
-        return $this->belongsToMany(Service::class, 'package_services')
+        return $this->belongsToMany(Service::class, 'packages_services')
                     ->withPivot('quantity', 'price', 'description', 'details_dj')
                     ->withTimestamps();
     }

@@ -21,19 +21,19 @@ class Service extends Model
     // relaciones muchos a muchos
     public function quotes()
     {
-        return $this->belongsToMany(Quote::class, 'quote_services')
+        return $this->belongsToMany(Quote::class, 'quotes_services')
                     ->withPivot('quantity', 'price', 'description', 'details_dj')
                     ->withTimestamps();
     }
     public function packages()
     {
-        return $this->belongsToMany(Package::class, 'package_services')
+        return $this->belongsToMany(Package::class, 'packages_services')
                     ->withPivot('quantity', 'price', 'description', 'details_dj')
                     ->withTimestamps();
     }
     public function events()
     {
-        return $this->belongsToMany(Event::class, 'event_services')
+        return $this->belongsToMany(Event::class, 'events_services')
                     ->withPivot('quantity', 'price', 'description', 'details_dj')
                     ->withTimestamps();
     }
