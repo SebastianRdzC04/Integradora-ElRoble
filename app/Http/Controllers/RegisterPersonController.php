@@ -25,18 +25,13 @@ class RegisterPersonController extends Controller
 
         session()->put('person_data', $request->except('_token'));
         
+        $personData = session()->get('person_data');
+
+        if (!$personData) 
+        {
+            return redirect()->route('register-person.create')->withErrors('Por favor complete sus datos personales.');
+        }
 
         return redirect()->route('registeruser.create');
-        /*$person = new Person();
-        $person->firstName = $request->input('firstName');
-        $person->lastName = $request->input('lastName');
-        $person->birthdate = $request->input('birthdate');
-        $person->gender = $request->input('gender');
-        $person->phone = $request->input('phone');
-        $person->age = $request->input('age');
-        
-
-        return redirect()->route('login')->with('success', 'Te registraste con exito');
-        */
     }
 }
