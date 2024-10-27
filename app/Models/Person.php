@@ -11,6 +11,15 @@ class Person extends Model
 
     protected $table = 'people';
 
+    protected $fillable = [
+        'firstName',
+        'lastName',
+        'birthdate',
+        'gender',
+        'phone',
+        'age',
+    ];
+
     public function user()
     {
         return $this->hasOne(User::class);
