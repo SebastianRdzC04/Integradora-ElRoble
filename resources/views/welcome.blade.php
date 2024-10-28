@@ -25,6 +25,13 @@
             @if (Route::has('login'))
                 <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
                     @auth
+                    <a href="#" onclick="document.getElementById('post-form').submit();">Enviar POST</a>
+
+<form id="post-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+    @csrf
+    <!-- Si necesitas pasar otros datos, agrégalo aquí -->
+    <input type="hidden" name="parametro" value="valor">
+</form>
                         <a href="{{ url('/dashboard') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Dashboard</a>
                     @else
                         <a href="{{ route('login') }}" class="text-sm text-gray-700 dark:text-gray-500 underline">Log in</a>

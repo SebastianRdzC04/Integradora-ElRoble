@@ -23,6 +23,9 @@
 
         <form method="POST" action="{{route('registeruser.store')}}">
             @csrf
+            <!-- Agrega más opciones según sea necesario -->
+            </select>
+
             <div class="form-group">
                 <label for="name">Usuario:</label>
                 <input type="text" name="userName" id="name" class="form-control" value="{{ old('name') }}" required>

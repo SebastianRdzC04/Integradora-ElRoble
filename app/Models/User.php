@@ -49,7 +49,7 @@ class User extends Authenticatable
     }
     public function roles()
     {
-        return $this->belongsToMany(Rol::class, 'role_user');
+        return $this->belongsToMany(Rol::class, 'role_user', 'user_id', 'rol_id');
     }
 
     public function quotes()

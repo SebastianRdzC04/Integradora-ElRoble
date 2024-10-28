@@ -17,6 +17,13 @@ Route::middleware('guest')->group(function(){
     Route::post('/personregister', [RegisterPersonController::class, 'store'])->name('registerperson.store');
 });
 
+Route::middleware('auth')->group(function(){
+    Route::get('/personregisteradmi', [RegisterPersonController::class, 'create'])->name('registerpersonadmin.create');
+    Route::post('/personregisteradmin', [RegisterPersonController::class, 'storeWithoutUser'])->name('registerpersonadmin.store');
+    Route::post('logout', [LoginController::class, 'destroy'])
+                ->name('logout');
+});
+
 Route::get('/prueba', function () {
     return view('welcome');
 })->middleware('auth','verified');

@@ -7,7 +7,23 @@
 </head>
 <body>
     <h2>Formulario de Registro</h2>
-    <form action="{{route('registerperson.store')}}" method="POST">
+    @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+    @endif
+
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+    <form action="{{ $admin ? route('registerpersonadmin.store') : route('registerperson.store') }}" method="POST">
         @csrf
 
         <label for="firstName">Nombre:</label>
@@ -40,5 +56,6 @@
 
         <button type="submit">Enviar</button>
     </form>
+    
 </body>
 </html>
