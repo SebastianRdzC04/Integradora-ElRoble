@@ -18,8 +18,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
 
-    $quote = Quote::find(1);
-    return view('pages.dashboard', compact('quote'));
+    $quotes = Quote::all();
+    return view('pages.dashboard', compact('quotes'));
 });
 
 Route::get('/dashboard', function () {
