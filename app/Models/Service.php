@@ -10,6 +10,8 @@ class Service extends Model
     use HasFactory;
 
     protected $table = 'services';
+    
+    protected $fillable = ['name', 'description', 'price', 'service_category_id', 'image_path'];
 
     public function serviceCategory()
     {

@@ -10,6 +10,9 @@ class Package extends Model
     use HasFactory;
 
     protected $table = 'packages';
+    protected $fillable = [
+        'place_id', 'name', 'description', 'max_people', 'price'
+    ];
 
     public function place()
     {

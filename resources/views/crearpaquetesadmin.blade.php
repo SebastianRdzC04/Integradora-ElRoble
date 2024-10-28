@@ -7,16 +7,22 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/stylescotizacionesclientes.css') }}">
     <style>
-        .container {
-            max-width: 80%;
+        .container { max-width: 80%; }
+        .category-card { 
+            cursor: pointer; 
+            transition: transform 0.2s; 
+            background-color: #D2B48C; 
+            color: white; 
         }
+        .category-card:hover { transform: scale(1.05); }
         #crearPaquete {
             background-color: rgba(34, 52, 34, 0.8);
             padding: 20px;
             border-radius: 8px;
             color: white;
+            margin-top: 20px;
         }
-        #previstaPaquete {
+        #previstaServicio {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -24,10 +30,16 @@
             padding: 20px;
             border-radius: 8px;
             color: #FFD700;
+            position: fixed; 
+            right: 20px; 
+            top: 50%; 
+            transform: translateY(-50%); 
+            z-index: 1000; 
+            transition: top 0.5s ease; 
         }
         .prevista-imagen-container {
             position: relative;
-            width: 80%; /* Reduce el ancho de la imagen a un 80% */
+            width: 80%;
             max-width: 320px;
             display: flex;
             justify-content: center;
@@ -53,85 +65,152 @@
             color: white;
             text-align: center;
         }
-        #crearBoton {
-            margin-top: 10px;
+        .service-details {
+            border: 2px solid yellow; 
+            border-radius: 8px;
+            padding: 10px;
+            margin-top: 10px; 
+        }
+        .service-item {
+            margin-bottom: 15px; 
+        }
+        .text-danger {
+            font-size: 0.875em; 
         }
     </style>
 </head>
 <body>
-
     <div class="container mt-4">
         <div class="row">
-            <!-- Formulario de Creación de Paquete -->
             <div class="col-md-6" id="crearPaquete">
                 <h3>Crear Nuevo Paquete</h3>
-                <form>
+                <form action="{{ route('paquetes.store') }}" method="POST" id="paqueteForm">
+                    @csrf
                     <div class="mb-3">
-                        <label for="tituloPaquete" class="form-label">Título del Paquete:</label>
-                        <input type="text" class="form-control" id="tituloPaquete" placeholder="Ej. Paquete Conmemorativo" oninput="actualizarPrevista()">
-                    </div>
-                    <div class="mb-3">
-                        <label for="lugarPaquete" class="form-label">Lugar:</label>
-                        <select class="form-select" id="lugarPaquete" oninput="actualizarPrevista()">
-                            <option>Quinta</option>
-                            <option>Salón</option>
-                            <option>Quinta y Salón</option>
+                        <label for="place_id" class="form-label">Lugar</label>
+                        <select name="place_id" id="place_id" class="form-control" required>
+                            <option value="">Selecciona un lugar</option>
+                            @foreach($places as $place)
+                                <option value="{{ $place->id }}">{{ $place->name }}</option>
+                            @endforeach
                         </select>
+                        @error('place_id')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3">
-                        <label for="maxPersonas" class="form-label">Cantidad Máxima de Personas:</label>
-                        <input type="number" class="form-control" id="maxPersonas" placeholder="Ej. 100" oninput="actualizarPrevista()">
+                        <label for="name" class="form-label">Nombre del Paquete</label>
+                        <input type="text" name="name" id="name" class="form-control" maxlength="50" required value="{{ old('name') }}">
+                        @error('name')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3">
-                        <label for="descripcionPaquete" class="form-label">Descripción:</label>
-                        <textarea class="form-control" id="descripcionPaquete" rows="3" oninput="actualizarPrevista()" placeholder="Ej. Música en vivo, Comida preparada, Servicio de meseros"></textarea>
+                        <label for="description" class="form-label">Descripción</label>
+                        <input type="text" name="description" id="description" class="form-control" maxlength="255" required value="{{ old('description') }}">
+                        @error('description')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3">
-                        <label for="precioPaquete" class="form-label">Precio Estimado:</label>
-                        <input type="number" class="form-control" id="precioPaquete" placeholder="Ej. 1500" oninput="actualizarPrevista()">
+                        <label for="max_people" class="form-label">Máximo de Personas</label>
+                        <input type="number" name="max_people" id="max_people" class="form-control" required value="{{ old('max_people') }}">
+                        @error('max_people')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
                     </div>
                     <div class="mb-3">
-                        <label for="imagenPaquete" class="form-label">Subir Imagen del Paquete:</label>
-                        <input type="file" class="form-control" id="imagenPaquete" onchange="actualizarImagen()" disabled>
+                        <label for="price" class="form-label">Precio del Paquete</label>
+                        <input type="number" name="price" id="price" class="form-control" required value="{{ old('price') }}">
+                        @error('price')
+                            <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <h4 class="mt-4">Categorías de Servicios</h4>
+                    <div class="row">
+                        @foreach($categories as $category)
+                        <div class="col-md-4 mb-3">
+                            <div class="card category-card" onclick="toggleServices('{{ $category->id }}')">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title">{{ $category->name }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="services-{{ $category->id }}" class="service-item mt-2 ms-4" style="display: none;">
+                            <ul class="list-group list-group-flush">
+                                @foreach($category->services as $service)
+                                <li class="list-group-item service-details">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="services[{{ $service->id }}][id]" value="{{ $service->id }}" class="form-check-input">
+                                        <label class="form-check-label">{{ $service->name }} - ${{ $service->price }}</label>
+                                    </div>
+                                    <div class="row mt-2">
+                                        <div class="col-md-3">
+                                            <input type="number" name="services[{{ $service->id }}][quantity]" placeholder="Cantidad" class="form-control">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="number" name="services[{{ $service->id }}][price]" placeholder="Precio" class="form-control">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" name="services[{{ $service->id }}][description]" placeholder="Descripción" class="form-control">
+                                        </div>
+                                        <div class="col-md-12 mt-2">
+                                            <textarea name="services[{{ $service->id }}][details_dj]" placeholder="Detalles adicionales" class="form-control"></textarea>
+                                        </div>
+                                    </div>
+                                </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        @endforeach
                     </div>
                 </form>
+                <button type="button" class="btn btn-warning" id="crearPaqueteBtn">Crear Paquete</button>
             </div>
-
-            <!-- Prevista de Paquete -->
-            <div class="col-md-6 d-flex justify-content-center align-items-center" id="previstaPaquete">
+            <div class="col-md-5 d-flex justify-content-center align-items-center" id="previstaServicio">
                 <h2>Prevista del Paquete</h2>
+                <div id="category-label" style="display: none;">Categoría</div>
                 <div class="prevista-imagen-container">
-                    <img src="/images/imagen3.jpg" id="previstaImagen" class="prevista-imagen" alt="Imagen del Paquete">
+                    <img src="{{ asset('images/imagen1.jpg') }}" alt="Imagen de Vista Previa" class="prevista-imagen">
                     <div class="prevista-caption">
-                        <h5 id="previstaTitulo">Título del Paquete</h5>
-                        <p id="previstaDescripcion">Descripción del paquete.</p>
-                        <ul id="previstaLugar">
-                            <li>Lugar: </li>
-                        </ul>
-                        <p id="previstaMaxPersonas">Capacidad Máxima: </p>
-                        <p id="previstaPrecio">Precio Estimado: </p>
+                        <h4 id="previewTitle">Nombre del Paquete</h4>
+                        <p id="previewDescription">Descripción del paquete.</p>
+                        <p id="previewPrice">$0.00</p>
                     </div>
                 </div>
-                <div id="crearBoton">
-                    <button type="button" class="btn btn-warning">Crear Paquete</button>
-                </div>
+                <button type="button" class="btn btn-warning" id="crearPaqueteBtn2">Crear Paquete</button>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function actualizarPrevista() {
-            document.getElementById("previstaTitulo").innerText = document.getElementById("tituloPaquete").value || "Título del Paquete";
-            document.getElementById("previstaLugar").innerHTML = "<li>Lugar: " + (document.getElementById("lugarPaquete").value || "Lugar del paquete") + "</li>";
-            document.getElementById("previstaMaxPersonas").innerText = "Capacidad Máxima: " + (document.getElementById("maxPersonas").value || "Cantidad");
-            document.getElementById("previstaDescripcion").innerText = document.getElementById("descripcionPaquete").value || "Descripción del paquete.";
-            document.getElementById("previstaPrecio").innerText = "Precio Estimado: $" + (document.getElementById("precioPaquete").value || "Precio");
+        function toggleServices(categoryId) {
+            const serviceList = document.getElementById(`services-${categoryId}`);
+            serviceList.style.display = serviceList.style.display === 'none' ? 'block' : 'none';
         }
 
-        function actualizarImagen() {
-            // Función para actualizar imagen en el futuro
-        }
+        document.getElementById('name').addEventListener('input', function() {
+            document.getElementById('previewTitle').textContent = this.value || 'Nombre del Paquete';
+        });
+
+        document.getElementById('description').addEventListener('input', function() {
+            document.getElementById('previewDescription').textContent = this.value || 'Descripción del paquete.';
+        });
+
+        document.getElementById('price').addEventListener('input', function() {
+            document.getElementById('previewPrice').textContent = '$' + this.value;
+        });
+
+        window.addEventListener('scroll', function() {
+            const vistaPrevia = document.getElementById('previstaServicio');
+            const offset = window.scrollY + (window.innerHeight / 2) - (vistaPrevia.offsetHeight / 2);
+            const limit = window.innerHeight * 0.7; 
+            vistaPrevia.style.top = `${Math.min(limit, Math.max(0, offset))}px`;
+        });
+
+        document.getElementById('crearPaqueteBtn').addEventListener('click', function() {
+            document.getElementById('paqueteForm').submit();
+        });
     </script>
 </body>
 </html>

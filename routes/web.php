@@ -11,13 +11,11 @@ use App\Http\Controllers\PaquetesAdminController;
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes
+// Rutas Web
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
+// Aquí es donde puedes registrar las rutas web para tu aplicación.
+// Estas rutas se cargan por el RouteServiceProvider y se les asigna el
+| grupo de middleware "web".
 */
 
 Route::get('/', function () {
@@ -36,9 +34,14 @@ Route::middleware('auth')->group(function () {
 
 // Rutas de Axelv2.0
 Route::get('/crearpaquetes', [PaquetesAdminController::class, 'create'])->name('crearpaquetes');
+Route::post('/paquetes', [PaquetesAdminController::class, 'store'])->name('paquetes.store'); // Agregar esta ruta
 Route::get('/crearservicios', [ServiciosAdminController::class, 'create'])->name('crearservicios');
+Route::post('/servicios', [ServiciosAdminController::class, 'store'])->name('servicios.store');
 Route::get('/cotizaciones', [CotizacionesClientesController::class, 'create'])->name('cotizaciones');
+Route::get('/inicio', [ServiciosAdminController::class, 'provisional'])->name('inicio');
+
+// Si necesitas una vista para listar paquetes
+Route::get('/paquetes', [PaquetesAdminController::class, 'index'])->name('paquetes.index'); // O lo que desees
 /*
 require __DIR__.'/auth.php';
-
 */
