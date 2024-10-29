@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Models\Consumable;
 use App\Models\Date;
+use App\Models\Event;
 use App\Models\Quote;
 use Illuminate\Support\Facades\Route;
 
@@ -19,7 +21,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
 
     $quotes = Quote::all();
-    return view('pages.dashboard', compact('quotes'));
+    $consumables = Consumable::all();
+    $events = Event::all();
+    return view('pages.dashboard', compact('quotes', 'consumables', 'events'));
 });
 
 Route::get('/dashboard', function () {
