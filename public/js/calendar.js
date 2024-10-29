@@ -5,7 +5,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // crea un arreglo de varias fechas en octubre de 2024
     //convertir el array de arriba pero ahora en objetos tipo Date
     
-    const dates = fechas.map(date => {
+    const quotesDatesFormatted = quotesDates.map(date => {
+            const dateString = date + 'T00:00:00';
+            return new Date(dateString).toDateString();
+        });
+
+    const evetsDatesFormated = eventsDates.map(date => {
             const dateString = date + 'T00:00:00';
             return new Date(dateString).toDateString();
         });
@@ -36,8 +41,9 @@ document.addEventListener('DOMContentLoaded', function() {
         for(let i = 1; i <= totalDays; i++) {
             const date = new Date(currentYear, currentMonth, i);
             const activeClass = date.toDateString() === new Date().toDateString() ? 'active' : '';
-            const apartedDateClass = dates.includes(date.toDateString()) ? 'aparted' : '';
-            datesHTML += `<div class="date ${activeClass} ${apartedDateClass}">${i}</div>`;
+            const apartedDateClass = quotesDatesFormatted.includes(date.toDateString()) ? 'aparted' : '';
+            const eventDateClass = evetsDatesFormated.includes(date.toDateString()) ? 'event' : '';
+            datesHTML += `<div class="date ${activeClass} ${apartedDateClass} ${eventDateClass}">${i}</div>`;
         }
         if(lastDayIndex !== 0){
             for(let i =1; i <= 7 - lastDayIndex; i++) {

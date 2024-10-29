@@ -39,28 +39,30 @@
             </div>
             <div class="row">
                 @foreach ($consumables as $consumable)
-                    <div class="col-3 border">
-                        <div class="row">
-                            <div class="col-6">
-                                <h5> {{ $consumable->name }} </h5>
-                            </div>
-                            <div class="col-6">
-                                <h6 class="text-end"> {{ $consumable->stock . '/' . $consumable->max_stock }} </h6>
+                    <div class="col-3 border card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-6">
+                                    <h5> {{ $consumable->name }} </h5>
+                                </div>
+                                <div class="col-6">
+                                    <h6 class="text-end"> {{ $consumable->stock . '/' . $consumable->max_stock }} </h6>
+                                </div>
                             </div>
                         </div>
                     </div>
                 @endforeach
             </div>
             <div class="row">
-                <div class="col-12 border col-md-6 col-xl-4">
-                    <div class="card">
+                <div class="col-12 col-md-6 col-xl-4">
+                    <div class="card first-row">
                         <div class="card-header">
                             <h2 class="h4">Eventos</h2>
                         </div>
                         <div class="card-body">
-                            <div class="row">
+                            <div class="row events-container">
                                 @foreach ($events as $event)
-                                    <div class="col-12 border">
+                                    <div class="col-12 border mb-3">
                                         <div class="row">
                                             <div class="col-6">
                                                 <h6> {{ $event->quote->type_event . ' de ' . $event->quote->user->person->firstName }}
@@ -69,7 +71,7 @@
                                             </div>
                                             <div class="col-6">
                                                 <h6 class="text-end">
-                                                    {{ Carbon::parse($event->quote->date->date)->format('d/m') }} <svg
+                                                    {{ Carbon::parse($event->date)->format('d/m') }} <svg
                                                         xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                         fill="currentColor" class="bi bi-calendar-x"
                                                         viewBox="0 0 16 16">
@@ -133,10 +135,9 @@
                                                 @if ($event->quote->place != null)
                                                     <p> {{ $event->quote->place->name }} </p>
                                                 @else
-                                                    <p> {{$event->quote->package->place->name}} </p>
-                                                    
+                                                    <p> {{ $event->quote->package->place->name }} </p>
                                                 @endif
-                                                <p> {{$event->advance_payment . "/" . $event->total_price}} </p>
+                                                <p> {{ $event->advance_payment . '/' . $event->total_price }} </p>
                                             </div>
                                         </div>
                                     </div>
@@ -146,19 +147,19 @@
                     </div>
                 </div>
                 <div class="col-12 col-md-6 col-xl-5">
-                    <div class="card">
+                    <div class="card first-row">
                         <div class="card-header">
                             <h2 class="h4">Cotizaciones Pendientes</h2>
                         </div>
                         <div class="card-body">
-                            <div class="container-fluid">
+                            <div class="container-fluid d-flex flex-column min-vh-100">
                                 <div class="row">
                                     @foreach ($quotes as $quote)
                                         @if ($quote->package_id === null)
                                             @php
-                                                $qServices = $quote->services()->paginate(2);
+                                                $qServices = $quote->services()->get();
                                             @endphp
-                                            <div class="col-6 card">
+                                            <div class="col-6 card mb-3">
                                                 <div class="card-header mb-2">
                                                     <h6>{{ $quote->type_event . ' de ' . $quote->user->person->firstName }}
                                                     </h6>
@@ -176,7 +177,7 @@
                                                         </div>
                                                         <div class="col-6">
                                                             <p class="text-end">
-                                                                {{ Carbon::parse($quote->date->date)->format('d/m') }}
+                                                                {{ Carbon::parse($quote->date)->format('d/m') }}
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16"
                                                                     height="16" fill="currentColor"
                                                                     class="bi bi-calendar-x" viewBox="0 0 16 16">
@@ -195,7 +196,7 @@
                                                                     <path
                                                                         d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M6 6.75v8.5a.75.75 0 0 0 1.5 0V10.5a.5.5 0 0 1 1 0v4.75a.75.75 0 0 0 1.5 0v-8.5a.25.25 0 1 1 .5 0v2.5a.75.75 0 0 0 1.5 0V6.5a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v2.75a.75.75 0 0 0 1.5 0v-2.5a.25.25 0 0 1 .5 0" />
                                                                 </svg>
-                                                                50
+                                                                {{ $quote->people_count }}
                                                             </p>
                                                         </div>
                                                         <div class="col-6">
@@ -214,30 +215,26 @@
                                                             </p>
                                                         </div>
                                                     </div>
-                                                    <h6 class="text-start">Servicios:</h6>
-                                                    <div class="row align-items-center ms-0">
-                                                        <div class="list-group d-flex justify-content-center w-100"
-                                                            style="height: 90px">
-                                                            @foreach ($qServices as $service)
-                                                                <div
-                                                                    class="list-group-item d-flex justify-content-center align-items-center text-center">
-                                                                    {{ $service->name }}
-                                                                </div>
-                                                            @endforeach
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-                                                        <div>
-                                                            {{ $qServices->links('pagination::simple-bootstrap-5') }}
+                                                    <div class="row align-items-center ms-0 mb-3">
+                                                        <h6 class="text-start">Servicios:</h6>
+                                                        <div class="service-list">
+                                                            <div class="list-group d-flex justify-content-center w-100">
+                                                                @foreach ($qServices as $service)
+                                                                    <div
+                                                                        class="list-group-item d-flex justify-content-center align-items-center text-center">
+                                                                        {{ $service->name }}
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         @else
                                             @php
-                                                $qPackagesS = $quote->package->services()->paginate(2);
+                                                $qPackagesS = $quote->package->services()->get();
                                             @endphp
-                                            <div class="col-6 card">
+                                            <div class="col-6 card mb-3">
                                                 <div class="card-header mb-2">
                                                     <h6>{{ $quote->type_event . ' de ' . $quote->user->person->firstName }}
                                                     </h6>
@@ -255,7 +252,7 @@
                                                         </div>
                                                         <div class="col-6">
                                                             <p class="text-end">
-                                                                {{ Carbon::parse($quote->date->date)->format('d/m') }}
+                                                                {{ Carbon::parse($quote->date)->format('d/m') }}
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16"
                                                                     height="16" fill="currentColor"
                                                                     class="bi bi-calendar-x" viewBox="0 0 16 16">
@@ -274,7 +271,7 @@
                                                                     <path
                                                                         d="M8 3a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3M6 6.75v8.5a.75.75 0 0 0 1.5 0V10.5a.5.5 0 0 1 1 0v4.75a.75.75 0 0 0 1.5 0v-8.5a.25.25 0 1 1 .5 0v2.5a.75.75 0 0 0 1.5 0V6.5a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v2.75a.75.75 0 0 0 1.5 0v-2.5a.25.25 0 0 1 .5 0" />
                                                                 </svg>
-                                                                50
+                                                                {{ $quote->people_count }}
                                                             </p>
                                                         </div>
                                                         <div class="col-6">
@@ -293,17 +290,17 @@
                                                             </p>
                                                         </div>
                                                     </div>
-                                                    <h6 class="text-start">Servicios:</h6>
-                                                    <div class="row align-items-center ms-0">
-                                                        <div class="list-group d-flex justify-content-center w-100"
-                                                            style="height: 90px">
-                                                            @foreach ($qPackagesS as $service)
-                                                                <div
-                                                                    class="list-group-item d-flex justify-content-center align-items-center text-center">
-                                                                    {{ $service->name }}
-                                                                </div>
-                                                            @endforeach
-                                                            <div>
+                                                    <div class="row align-items-center ms-0 mb-3">
+                                                        <h6 class="text-start">Servicios:</h6>
+                                                        <div class="service-list">
+                                                            <div
+                                                                class="list-group d-flex justify-content-center w-100">
+                                                                @foreach ($qPackagesS as $service)
+                                                                    <div
+                                                                        class="list-group-item d-flex justify-content-center align-items-center text-center">
+                                                                        {{ $service->name }}
+                                                                    </div>
+                                                                @endforeach
                                                             </div>
                                                         </div>
                                                     </div>
@@ -311,13 +308,18 @@
                                             </div>
                                         @endif
                                     @endforeach
+                                    <div class="row">
+                                        <div>
+                                            {{ $quotes->links('pagination::simple-bootstrap-5') }}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-8 border d-inline-flex col-xl-3 col-md-4">
-                    <div class="card">
+                <div class="col-8 d-inline-flex col-xl-3 col-md-4">
+                    <div class="card first-row">
                         <div class="card-header">
                             <h2 class="h4">Calendario</h2>
                         </div>
@@ -358,7 +360,8 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
     <script>
-        const fechas = @json($quotes->pluck('date.date'));
+        const quotesDates = @json($fullQuoteDates);
+        const eventsDates = @json($events->pluck('date'));
     </script>
     <script src="{{ asset('js/calendar.js') }}"></script>
 </body>

@@ -20,10 +20,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
 
-    $quotes = Quote::all();
+    $quotes = Quote::paginate(4);
     $consumables = Consumable::all();
     $events = Event::all();
-    return view('pages.dashboard', compact('quotes', 'consumables', 'events'));
+    $fullQuoteDates = Quote::selectRaw('date, count(*) as count')
+        ->groupBy('date')
+        ->having('count', '>=', 3)
+        ->pluck('date');
+    return view('pages.dashboard', compact('quotes', 'consumables', 'events', 'fullQuoteDates'));
 });
 
 Route::get('/dashboard', function () {
