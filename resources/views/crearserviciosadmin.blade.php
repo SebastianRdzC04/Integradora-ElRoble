@@ -71,6 +71,11 @@
             margin-top: 5px;
             color: rgb(218, 189, 189);
             font-weight: bold;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .fade-out {
+            opacity: 0;
+            transform: translateY(-10px);
         }
     </style>
 </head>
@@ -78,14 +83,12 @@
 
     <div class="container mt-4">
         <div class="row">
-            <!-- Mensaje de éxito -->
             @if(session('success'))
                 <div class="alert alert-success" role="alert">
                     {{ session('success') }}
                 </div>
             @endif
     
-            <!-- Formulario de Creación de Servicio -->
             <div class="col-md-6" id="crearServicio">
                 <h3>Crear Nuevo Servicio</h3>
                 <form id="formCrearServicio" action="{{ route('servicios.store') }}" method="POST" enctype="multipart/form-data">
@@ -128,23 +131,27 @@
     
                     <div class="mb-3">
                         <label for="estimatedPrice" class="form-label">Precio Estimado</label>
-                        <input type="number" id="estimatedPrice" name="price_estimate" class="form-control @error('price_estimate') is-invalid @enderror" placeholder="Ej. $500 - $1000">
+                        <input type="number" id="estimatedPrice" name="price_estimate" class="form-control @error('price_estimate') is-invalid @enderror" placeholder="Ej. $500 - $1000" min="0" max="99999">
                         @error('price_estimate')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
     
                     <div class="mb-3">
+                        <label for="quantity" class="form-label">Cantidad de Personas</label>
+                        <input type="number" id="quantity" name="quantity" class="form-control @error('quantity') is-invalid @enderror" placeholder="Ej. 10" min="1" max="500">
+                        @error('quantity')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    
+                    <div class="mb-3">
                         <label for="imageUpload" class="form-label">Subir Imagen del Servicio</label>
                         <input type="file" id="imageUpload" name="image" class="form-control" accept="image/*">
                     </div>
-    
-                    <!-- Botón de Crear Servicio -->
-                    <button type="submit" class="btn btn-warning mt-3" form="formCrearServicio">Crear Servicio</button>
                 </form>
             </div>
     
-            <!-- Prevista de Servicio -->
             <div class="col-md-6 d-flex justify-content-center align-items-center" id="previstaServicio">
                 <h2>Prevista del Servicio</h2>
                 <div id="category-label" style="display: none;">Categoría</div>
@@ -154,49 +161,87 @@
                         <h5 id="previewTitle">Nombre del Servicio</h5>
                         <p id="previewDescription">Descripción del servicio.</p>
                         <p id="previewPrice">Precio Estimado</p>
+                        <p id="previewQuantity">Cantidad de Personas: <span id="quantityPreview">0</span></p>
                     </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <button type="button" class="btn btn-warning mt-3" id="btnCrearServicio">Crear Servicio</button>
                 </div>
             </div>
         </div>
     </div>    
 
-<script>
-    const categorySelect = document.getElementById('category');
-    const newCategoryInput = document.getElementById('newCategory');
-    const categoryLabel = document.getElementById('category-label');
-
-    categorySelect.addEventListener('change', function() {
-        if (this.value === 'Otro') {
-            newCategoryInput.style.display = 'block';
-        } else {
-            newCategoryInput.style.display = 'none';
-            categoryLabel.style.display = 'inline-block';
-            categoryLabel.innerText = this.options[this.selectedIndex].text;
+    <script>
+        const categorySelect = document.getElementById('category');
+        const newCategoryInput = document.getElementById('newCategory');
+        const categoryLabel = document.getElementById('category-label');
+        const quantityInput = document.getElementById('quantity');
+        const quantityPreview = document.getElementById('quantityPreview');
+        const formCrearServicio = document.getElementById('formCrearServicio');
+        const estimatedPriceInput = document.getElementById('estimatedPrice');
+        const serviceNameInput = document.getElementById('serviceName');
+        const descriptionInput = document.getElementById('description');
+    
+        function removeInvalidClassOnInput(element) {
+            element.addEventListener('input', function() {
+                const invalidFeedback = this.nextElementSibling;
+                if (this.value.trim()) {
+                    this.classList.remove('is-invalid');
+                    if (invalidFeedback && invalidFeedback.classList.contains('invalid-feedback')) {
+                        invalidFeedback.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+                        invalidFeedback.style.opacity = "0";
+                        invalidFeedback.style.transform = "translateY(-10px)";
+                        setTimeout(() => invalidFeedback.style.display = "none", 500);
+                    }
+                }
+            });
         }
-    });
-
-    // Actualiza la vista previa con los datos del formulario
-    function actualizarPrevista() {
-        document.getElementById("previewTitle").innerText = document.getElementById("serviceName").value || "Nombre del Servicio";
-        document.getElementById("previewDescription").innerText = document.getElementById("description").value || "Descripción del servicio.";
-        document.getElementById("previewPrice").innerText = "Precio Estimado: " + (document.getElementById("estimatedPrice").value || "Precio");
-    }
-
-    // Actualiza la imagen de vista previa si se agrega una nueva
-    function actualizarImagen() {
-        // Aquí puedes agregar funcionalidad para actualizar la imagen
-    }
-
-    // Espera que el DOM esté cargado para ejecutar el script
-    document.addEventListener('DOMContentLoaded', function () {
-        // Verifica si hay un mensaje de éxito en la sesión
-        @if(session('success'))
-            // Muestra el modal de éxito
-            var myModal = new bootstrap.Modal(document.getElementById('successModal'));
-            myModal.show();
-        @endif
-    });
-</script>
-
+    
+        [serviceNameInput, descriptionInput, estimatedPriceInput].forEach(removeInvalidClassOnInput);
+    
+        categorySelect.addEventListener('change', function() {
+            if (this.value) {
+                this.classList.remove('is-invalid');
+                const invalidFeedback = this.nextElementSibling;
+                if (invalidFeedback && invalidFeedback.classList.contains('invalid-feedback')) {
+                    invalidFeedback.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+                    invalidFeedback.style.opacity = "0";
+                    invalidFeedback.style.transform = "translateY(-10px)";
+                    setTimeout(() => invalidFeedback.style.display = "none", 500);
+                }
+                categoryLabel.style.display = 'inline-block';
+                categoryLabel.innerText = this.options[this.selectedIndex].text;
+            } else {
+                categoryLabel.style.display = 'none';
+            }
+    
+            newCategoryInput.style.display = this.value === 'Otro' ? 'block' : 'none';
+        });
+    
+        quantityInput.addEventListener('input', function() {
+            quantityPreview.innerText = this.value || "0";
+            this.classList.remove('is-invalid');
+        });
+    
+        estimatedPriceInput.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5);
+            actualizarPrevista();
+            this.classList.remove('is-invalid');
+        });
+    
+        function actualizarPrevista() {
+            document.getElementById("previewTitle").innerText = serviceNameInput.value || "Nombre del Servicio";
+            document.getElementById("previewDescription").innerText = descriptionInput.value || "Descripción del servicio.";
+            document.getElementById("previewPrice").innerText = estimatedPriceInput.value ? `$${estimatedPriceInput.value}` : "Precio Estimado";
+        }
+    
+        actualizarPrevista();
+    
+        document.getElementById('btnCrearServicio').addEventListener('click', function() {
+            formCrearServicio.submit();
+        });
+    </script>    
+    
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

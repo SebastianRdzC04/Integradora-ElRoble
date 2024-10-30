@@ -22,7 +22,8 @@ class ServiciosAdminController extends Controller
             'name' => 'required|string|max:50',
             'description' => 'required|string|max:255',
             'price_estimate' => 'required|numeric',
-            'image' => 'nullable|image|max:2048', // Validación de imagen (Pendientes de funcionamiento)
+            'quantity' => 'integer|min:1',
+            'image' => 'nullable|image|max:2048', // Validación de imagen PENDIENTE
         ], [
             'category.required' => 'El campo categoría es obligatorio.',
             'new_category.required_if' => 'El campo nueva categoría es obligatorio si seleccionas "Otro".',
@@ -32,41 +33,36 @@ class ServiciosAdminController extends Controller
             'description.max' => 'La descripción no puede exceder 255 caracteres.',
             'price_estimate.required' => 'El precio estimado es obligatorio.',
             'price_estimate.numeric' => 'El precio estimado debe ser un número.',
+            'quantity.integer' => 'La cantidad debe ser un número entero.',
+            'quantity.min' => 'La cantidad debe ser al menos 1.',
             'image.image' => 'El archivo debe ser una imagen.',
             'image.max' => 'La imagen no puede exceder 2MB.',
         ]);
 
-        // Verificar la categoría seleccionada
         if ($validated['category'] === 'Otro' && empty($validated['new_category'])) {
             return back()->withErrors(['new_category' => 'El campo no puede dejarse nulo.'])->withInput();
         }
 
-        // Obtener el ID de la categoría
         if ($validated['category'] === 'Otro') {
-            // Si es 'Otro', se crea una nueva categoría
             $category = ServiceCategory::firstOrCreate(['name' => $validated['new_category']]);
-            $categoryId = $category->id; // Se obtiene el ID de la nueva categoría
+            $categoryId = $category->id;
         } else {
-            // Se busca el ID de la categoría existente
             $category = ServiceCategory::where('name', $validated['category'])->first();
-            $categoryId = $category ? $category->id : null; // Se asegura de obtener el ID o null si no existe
+            $categoryId = $category ? $category->id : null;
 
             if (!$categoryId) {
                 return back()->withErrors(['category' => 'Categoría no encontrada.'])->withInput();
             }
         }
 
-        // Crear el servicio
         Service::create([
             'name' => $validated['name'],
             'description' => $validated['description'],
             'service_category_id' => $categoryId,
             'price' => $validated['price_estimate'],
-            // Manejo de la imagen si es necesario
+            'cantidad' => $validated['quantity'],
         ]);
 
         return redirect()->route('crearservicios')->with('success', 'El servicio ha sido creado con éxito.');
-
     }
-    
 }
