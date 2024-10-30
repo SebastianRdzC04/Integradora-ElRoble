@@ -18,7 +18,12 @@
             </div>
     @endif
 
-    <form action="{{route('registerperson.store') }}" method="POST">
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+    <form action="{{ route('registerpersonadmin.store') }}" method="POST">
         @csrf
 
         <label for="firstName">Nombre:</label>
@@ -51,5 +56,6 @@
 
         <button type="submit">Enviar</button>
     </form>
+    
 </body>
 </html>

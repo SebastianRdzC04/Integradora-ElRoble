@@ -3,8 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterPersonController;
+use App\Http\Controllers\RegisterPersonAdminController;
 use App\Http\Controllers\RegisterUserController;
-use App\Models\Quote;
 
 Route::middleware('guest')->group(function(){
     Route::get('/login', [LoginController::class, 'create'])->name('login');
@@ -15,6 +15,12 @@ Route::middleware('guest')->group(function(){
 
     Route::get('/personregister', [RegisterPersonController::class, 'create'])->name('registerperson.create');
     Route::post('/personregister', [RegisterPersonController::class, 'store'])->name('registerperson.store');
+});
+
+Route::middleware('auth')->group(function(){
+    Route::get('/personregisteradmi', [RegisterPersonAdminController::class, 'create'])->name('registerpersonadmin.create');
+    Route::post('/personregisteradmin', [RegisterPersonAdminController::class, 'store'])->name('registerpersonadmin.store');
+    Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
 });
 
 Route::get('/prueba', function () {

@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 class RegisterPersonController extends Controller
 {
     public function create()
     {
-        return view('pages.sesion.person_register'); 
+        return view('pages.people.person_register');
     }
 
     public function store(Request $request)
@@ -22,14 +21,14 @@ class RegisterPersonController extends Controller
             'phone' => 'required|string|size:10|regex:/^[0-9]+$/',
             'age' => 'required|integer|min:0|max:120',
         ]);
-
+        
+        // Guardar datos de persona temporalmente en la sesión
         session()->put('person_data', $request->except('_token'));
         
         $personData = session()->get('person_data');
 
-        if (!$personData) 
-        {
-            return redirect()->route('register-person.create')->withErrors('Por favor complete sus datos personales.');
+        if (!$personData) {
+            return redirect()->route('registerperson.create')->withErrors('Por favor complete sus datos personales.');
         }
 
         return redirect()->route('registeruser.create');
