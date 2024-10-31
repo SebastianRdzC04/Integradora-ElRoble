@@ -23,7 +23,6 @@ Route::get('/', function () {
     $quotes = Quote::paginate(4);
     $consumables = Consumable::all();
     $events = Event::orderBy('date', 'asc')->where('status', 'Pendiente')->get();
-    // hacer una consulta que consulte si la fecha de un evento es igual a la fecha actual para que se marque como el evento que esta ocurriendo ese dia
     $currentEvent = Event::where('date', date('Y-m-d'))->first();
     $fullQuoteDates = Quote::selectRaw('date, count(*) as count')
         ->groupBy('date')

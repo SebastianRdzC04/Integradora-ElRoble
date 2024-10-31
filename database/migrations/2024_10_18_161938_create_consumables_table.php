@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('name', 50);
             $table->integer('stock');
             $table->integer('minimum_stock');
+            $table->integer('maximum_stock');
+            $table->string('unit', 20);
             $table->foreignId('category_id')->constrained('consumable_categories');
             $table->string('description', 100);
             $table->timestamps();

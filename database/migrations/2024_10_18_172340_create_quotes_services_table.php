@@ -17,10 +17,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('quote_id')->constrained('quotes')->onDelete('cascade');
             $table->foreignId('service_id')->constrained('services')->onDelete('cascade');
-            $table->integer('quantity');
-            $table->decimal('price', 10, 2);
-            $table->string('description', 255);
-            $table->text('details_dj');
+            $table->integer('quantity')->nullable();
+            $table->decimal('price', 10, 2)->nullable();
+            $table->string('description', 255)->nullable();
+            $table->text('details_dj')->nullable();
             $table->timestamps();
         });
     }
