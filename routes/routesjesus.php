@@ -18,9 +18,9 @@ Route::middleware('guest')->group(function(){
     Route::post('/personregister', [RegisterPersonController::class, 'store'])->name('registerperson.store');
 });
 
+Route::get('lista',[RegisterPersonController::class, 'index'])->name('tablepeople');
 Route::middleware('auth')->group(function(){
-    Route::get('/personregisteradmi', [RegisterPersonAdminController::class, 'create'])->name('registerpersonadmin.create');
-    Route::post('/personregisteradmin', [RegisterPersonAdminController::class, 'store'])->name('registerpersonadmin.store');
+    
     Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
 });
 

@@ -35,5 +35,13 @@ class RegisterPersonController extends Controller
 
         // Redirigir a la ruta para crear un usuario asociado a la persona
         return redirect()->route('registeruser.create');
+
+        
+    }
+
+    public function index()
+    {
+        $people = Person::all();
+        return view('pages.people.person_list',compact('people'));
     }
 }
