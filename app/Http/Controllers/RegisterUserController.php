@@ -12,9 +12,9 @@ use Illuminate\Support\Facades\Log;
 class RegisterUserController extends Controller
 {
     //
-    public function create()
+    public function create($phoneoremail)
     {
-        return view('pages.users.user_register');
+        return view('pages.users.user_register',compact('phoneoremail'));
     }
 
     public function store(Request $request)

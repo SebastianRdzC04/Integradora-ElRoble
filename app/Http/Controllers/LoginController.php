@@ -19,13 +19,20 @@ class LoginController extends Controller
     /**
      * Display the registration view.
      */
-    public function create(): View
+    public function verifyemail(): View
     {
         return view('pages.sesion.login');
     }
 
+    public function verifypassword(Request $request)
+    {
+        $email = $request->input('phoneoremail');
+        return view('pages.sesion.passwordlogin',compact('email'));
+    }
+
     public function store(LoginRequest $request): RedirectResponse
     {
+        
         $request->authenticate();
 
         $request->session()->regenerate();

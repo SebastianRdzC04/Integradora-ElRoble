@@ -7,10 +7,11 @@ use App\Http\Controllers\RegisterPersonAdminController;
 use App\Http\Controllers\RegisterUserController;
 
 Route::middleware('guest')->group(function(){
-    Route::get('/login', [LoginController::class, 'create'])->name('login');
+    Route::get('/login', [LoginController::class, 'verifyemail'])->name('login');
+    Route::get('/login/{phoneoremail?}', [LoginController::class, 'verifypassword'])->middleware('checkemailorphoneregistered')->name('login.password');
     Route::post('/login', [LoginController::class, 'store']);
     
-    Route::get('/registeruser', [RegisterUserController::class, 'create'])->name('registeruser.create');
+    Route::get('/registeruser/{phoneoremail}', [RegisterUserController::class, 'create'])->name('registeruser.create');
     Route::post('/registeruser', [RegisterUserController::class, 'store'])->name('registeruser.store');
 
     Route::get('/personregister', [RegisterPersonController::class, 'create'])->name('registerperson.create');
