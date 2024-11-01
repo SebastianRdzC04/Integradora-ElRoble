@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Faker\Factory as Faker;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,5 +23,28 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
+        //ejecutar people seeder
+        $this->call(PeopleTableSeeder::class);
+        $this->call(ConcumableCategoriesTable::class);
+        $this->call(ServiceCategoriesTable::class);
+        $this->call(InventoryCategoriesTable::class);
+        $this->call(PlacesTable::class);
+
+
+        $faker = Faker::create();
+        
+        for ($i = 1; $i <= 10; $i++) {
+            $user = new User();
+            $user->userName = $faker->name;
+            $user->email = $faker->email;
+            $user->password = Hash::make('password');
+            $user->person_id = $i;
+            $user->save();
+        }
+        
+
+
+
+
     }
 }
