@@ -8,6 +8,7 @@ use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
+
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -31,7 +32,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PlacesTable::class);
 
 
-        $faker = Faker::create();
+        $faker = Faker::create('es_MX');
         
         for ($i = 1; $i <= 10; $i++) {
             $user = new User();
