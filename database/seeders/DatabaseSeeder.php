@@ -35,7 +35,6 @@ class DatabaseSeeder extends Seeder
         
         for ($i = 1; $i <= 10; $i++) {
             $user = new User();
-            $user->userName = $faker->name;
             $user->email = $faker->email;
             $user->password = Hash::make('password');
             $user->person_id = $i;
