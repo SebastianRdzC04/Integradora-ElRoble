@@ -30,6 +30,8 @@ class DatabaseSeeder extends Seeder
         $this->call(ServiceCategoriesTable::class);
         $this->call(InventoryCategoriesTable::class);
         $this->call(PlacesTable::class);
+        $this->call(RolesSeeder::class);
+        $this->call(InventoryTable::class);
 
 
         $faker = Faker::create('es_MX');
