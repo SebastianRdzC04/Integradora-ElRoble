@@ -18,7 +18,9 @@ Route::middleware('guest')->group(function(){
     Route::post('/personregister', [RegisterPersonController::class, 'store'])->name('registerperson.store');
 });
 
-Route::get('lista',[RegisterPersonController::class, 'index'])->name('tablepeople');
+Route::get('/list',[RegisterPersonController::class, 'index'])->name('tablepeople.index');
+Route::patch('/list/personupdate/{id}',[RegisterPersonController::class,'update'])->name('person.update');
+Route::patch('/list/personupdate/',[RegisterPersonController::class,'destroy'])->name('person.delete');
 Route::middleware('auth')->group(function(){
     
     Route::post('logout', [LoginController::class, 'destroy'])->name('logout');

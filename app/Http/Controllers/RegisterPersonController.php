@@ -39,6 +39,11 @@ class RegisterPersonController extends Controller
         
     }
 
+    public function update($id)
+    {
+        $person = Person::find($id);
+        return view('pages.people.person_edit',compact('person'));
+    }
     public function index()
     {
         $people = Person::all();

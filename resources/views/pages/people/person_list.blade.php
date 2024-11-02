@@ -2,9 +2,6 @@
 
 @section('title')Lista de personas Registradas
 @endsection
-@section('head')
-<script>addEventListener()</script>
-@endsection
 
 @section('columns')
 <div class="container mt-5">
@@ -48,5 +45,9 @@
         </table>
     </div>
 </div>
+
+<script>
+    
+</script>
 
 
