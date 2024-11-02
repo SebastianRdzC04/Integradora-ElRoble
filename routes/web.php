@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('pages.inicio');
+    return view('pages.tables');
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
