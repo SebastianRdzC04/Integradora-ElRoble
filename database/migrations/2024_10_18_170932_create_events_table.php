@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('quote_id')->nullable()->constrained('quotes')->onDelete('set null');
             $table->date('date');
-            $table->enum('status', ['Pendiente', 'En proceso', 'Finalizado', 'Cancelado']);
+            $table->enum('status', ['Pendiente', 'En proceso', 'Finalizado', 'Cancelado'])->default('Pendiente');
             $table->time('estimated_start_time');
             $table->time('start_time')->nullable();
             $table->time('estimated_end_time');

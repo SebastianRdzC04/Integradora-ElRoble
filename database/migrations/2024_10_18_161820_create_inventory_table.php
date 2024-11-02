@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('description', 100);
             $table->foreignId('category_id')->nullable()->constrained('inventory_categories')->onDelete('set null');
             $table->float('price', 5, 2);
-            $table->enum('status', ['disponible', 'no disponible', 'en reparacion', 'en mantenimiento', 'dado de baja']);
+            $table->enum('status', ['disponible', 'no disponible', 'en reparacion', 'en mantenimiento', 'dado de baja'])->default('disponible');
             $table->string('details', 100);
             $table->timestamps();
         });
