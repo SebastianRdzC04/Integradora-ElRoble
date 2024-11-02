@@ -45,14 +45,14 @@
             </div>
             <div class="row">
                 @foreach ($consumables as $consumable)
-                    <div class="col-3 border card mb-3">
+                    <div class="col-3  card mb-3 consumibles">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-6">
                                     <h5> {{ $consumable->name }} </h5>
                                 </div>
                                 <div class="col-6">
-                                    <h6 class="text-end"> {{ $consumable->stock . '/' . $consumable->max_stock }} </h6>
+                                    <h6 class="text-end"> {{ $consumable->stock . '/' . $consumable->maximum_stock }} </h6>
                                 </div>
                             </div>
                         </div>
@@ -152,7 +152,7 @@
                                     </div>
                                     <div class="row">
                                         <h4 class="text-center">Servicios:</h4>
-                                        <div class="col-12 border event-services list-group">
+                                        <div class="col-12  event-services list-group">
                                             @if ($currentEvent->quote->package_id)
                                                 @foreach ($currentEvent->quote->package->services as $pServices)
                                                     <div class="list-group-item"> {{ $pServices->name }} </div>
@@ -174,7 +174,7 @@
                                     </div>
                                 @else
                                     @foreach ($events as $event)
-                                        <div class="col-12 border mb-3">
+                                        <div class="col-12  mb-3">
                                             <div class="row">
                                                 <div class="col-6">
                                                     <h6> {{ $event->quote->type_event . ' de ' . $event->quote->user->person->firstName }}
@@ -438,7 +438,7 @@
                         <div class="card-header">
                             <h2 class="h4">Calendario</h2>
                         </div>
-                        <div class="container-fluid align-items-center d-inline-flex border" id="calendar-container">
+                        <div class="container-fluid align-items-center d-inline-flex " id="calendar-container">
                             <div class="row justify-content-center align-items-center">
                                 <div class="col">
                                     <button class="btn" id="prev">
@@ -461,7 +461,7 @@
                                 <div class="day">Dom</div>
 
                             </div>
-                            <div class="border" id="calendar"></div>
+                            <div class="" id="calendar"></div>
                         </div>
                     </div>
                 </div>

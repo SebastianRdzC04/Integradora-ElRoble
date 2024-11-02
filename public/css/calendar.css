@@ -13,6 +13,8 @@
     grid-template-columns: repeat(7, 1fr);
     gap: 0px;
     width: 100%;
+    background-color: #ffffff;
+
 }
 #days {
     display: grid;
@@ -36,6 +38,7 @@
     cursor: pointer;
     font-weight: 600;
     border-radius: 15%;
+
 }
 .date.active {
     background-color: #007bff;
@@ -43,7 +46,8 @@
 }
 .date.inactive {
     background-color: #8b918c;
-    color: #ffffff;
+    color: #ffffff !important;
+
 }
 .date.aparted {
     background-color: #f7c933;

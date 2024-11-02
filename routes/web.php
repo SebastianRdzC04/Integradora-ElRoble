@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Consumable;
 use App\Models\Date;
@@ -19,21 +20,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-
-    $quotes = Quote::paginate(4);
-    $consumables = Consumable::all();
-    $events = Event::orderBy('date', 'asc')->where('status', 'Pendiente')->get();
-    $currentEvent = Event::where('date', date('Y-m-d'))->first();
-    $fullQuoteDates = Quote::selectRaw('date, count(*) as count')
-        ->groupBy('date')
-        ->having('count', '>=', 3)
-        ->pluck('date'); 
-    return view('pages.dashboard', compact('quotes', 'consumables', 'events', 'fullQuoteDates', 'currentEvent'));
+    return view('pages.inicio');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
