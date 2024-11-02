@@ -1,12 +1,18 @@
+body {
+    background-color: #f0f0f0;
+
+}
+
 .quotes {
     border: 1px solid #e9ecef;
     
 }
 
+
 .first-row {
     height: 790px;
-}
 
+}
 .pagination-row {
     margin-top: auto;
 }
