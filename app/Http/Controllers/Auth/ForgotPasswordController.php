@@ -19,7 +19,7 @@ class ForgotPasswordController extends Controller
      */
     public function showLinkRequestForm()
     {
-        return view('pages.sesion.forgotpassword'); // Asegúrate de crear esta vista
+        return view('pages.sesion.forgotpassword'); 
     }
 
     /**
@@ -32,7 +32,6 @@ class ForgotPasswordController extends Controller
     {
         $request->validate(['email' => 'required|email']);
 
-        // Intentar obtener el usuario
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
@@ -40,15 +39,14 @@ class ForgotPasswordController extends Controller
         }
 
         $email = $user->getEmailForPasswordReset();
-$token = 'abc123xyz'; // This should be generated securely
+$token = 'abc123xyz'; 
 
 $url = URL::temporarySignedRoute(
-    'password.reset', // Named route for password reset
-    now()->addMinutes(30), // URL expiration time
-    ['token' => $token, 'email' => $email] // Parameters
+    'password.reset', 
+    now()->addMinutes(30), 
+    ['token' => $token, 'email' => $email] 
 );
 
-// Now you can send this URL in an email
 Mail::to($user->email)->send(new ResetPasswordMail($url));
 
         return back()->with('status', 'Hemos enviado un enlace para restablecer tu contraseña.');

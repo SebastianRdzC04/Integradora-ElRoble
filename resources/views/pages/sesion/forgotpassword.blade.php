@@ -9,17 +9,17 @@
     <style>
         
         .background-image {
-            position: fixed; /* Fija la imagen en el fondo */
+            position: fixed; 
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             background-image: url("{{ asset('js/images/El roble photo1.jpg') }}");
-            background-size: cover;  /* Hace que la imagen cubra todo el fondo */
-            background-position: center; /* Centra la imagen */
-            background-repeat: no-repeat; /* Evita que la imagen se repita */
-            filter: blur(8px); /* Aplica el desenfoque */
-            z-index: -1; /* Coloca la imagen detrás del contenido */
+            background-size: cover;  
+            background-position: center; 
+            background-repeat: no-repeat; 
+            filter: blur(8px); 
+            z-index: -1; 
         }
 
         
@@ -65,7 +65,6 @@
             const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             let isValid = false;
 
-            // Validación de correo electrónico
                 isValid = email.test(input);
 
 
@@ -74,7 +73,6 @@
                 document.getElementById('email').classList.add('is-invalid');
             } else {
                 document.getElementById('email').classList.remove('is-invalid');
-                // Reemplaza 'PLACEHOLDER' en la URL con el valor ingresado
                 this.action = this.action.replace('PLACEHOLDER', encodeURIComponent(input));
             }
         };

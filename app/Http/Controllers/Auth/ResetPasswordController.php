@@ -17,7 +17,7 @@ class ResetPasswordController extends Controller
     public function showResetForm(Request $request, $token = null)
     {
         if (!$request->hasValidSignature()) {
-            abort(403); // Acceso denegado si la firma no es válida
+            abort(403); 
         }
     
         if (is_null($token) || is_null($request->email)) {

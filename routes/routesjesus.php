@@ -22,16 +22,12 @@ Route::middleware('guest')->group(function(){
 
 Route::group(['middleware' => 'guest'], function () {
     
-    // 1. Ruta para mostrar el formulario de solicitud de restablecimiento
     Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
     
-    // 2. Ruta para enviar el enlace de restablecimiento
     Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
     
-    // 3. Ruta para mostrar el formulario de restablecimiento de contraseña (con token en el enlace)
     Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
     
-    // 4. Ruta para guardar la nueva contraseña
     Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 });
 
