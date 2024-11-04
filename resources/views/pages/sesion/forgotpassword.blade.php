@@ -38,16 +38,16 @@
                 </div>
 
                 <div class="text-center mb-4">
-                    <h5>Iniciar sesion o crear cuenta</h5>
-                    <h7>Para poder enviar tus cotizaciones</h7>
+                    <h5>Recuperacion de cuenta</h5>
+                    <h7>Introduce tu email para enviarte un correo de verificacion</h7>
                 </div>
                 
-                <form id="loginForm" action="{{ route('login.password', ['phoneoremail' => 'PLACEHOLDER']) }}" method="get">
+                <form id="loginForm" action="{{ route('password.email') }}" method="post">
                     @csrf
 
                     <div class="form-floating mb-3">
-                        <input type="text" id="email" name="phoneoremail" class="form-control" placeholder="name@example.com" required>
-                        <label for="email">Correo Electrónico o Teléfono</label>
+                        <input type="text" id="email" name="email" class="form-control" placeholder="name@example.com" required>
+                        <label for="email">Correo Electrónico</label>
                     </div>
                     
                     <div class="d-grid mb-3">
@@ -63,17 +63,11 @@
         document.getElementById('loginForm').onsubmit = function(event) {
             const input = document.getElementById('email').value;
             const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            const phone = /^\d{10,14}$/;
             let isValid = false;
 
             // Validación de correo electrónico
-            if (/[a-zA-Z]/.test(input)) {
-                // Si contiene letras, debe ser un correo electrónico válido
                 isValid = email.test(input);
-            } else {
-                // Si no contiene letras, debe ser un número de teléfono con un largo máximo de 14
-                isValid = phone.test(input);
-            }
+
 
             if (!isValid) {
                 event.preventDefault();

@@ -38,23 +38,35 @@
                 </div>
 
                 <div class="text-center mb-4">
-                    <h5>Iniciar sesion o crear cuenta</h5>
-                    <h7>Para poder enviar tus cotizaciones</h7>
+                    <h5>Restablecimiento de contraseña</h5>
+                    <h7>Escribe la nueva contraseña de tu cuenta</h7>
                 </div>
                 
-                <form id="loginForm" action="{{ route('login.password', ['phoneoremail' => 'PLACEHOLDER']) }}" method="get">
+                <form id="loginForm" action="{{ route('password.update') }}" method="post">
                     @csrf
-
+                    
+                    <input type="hidden" name="token" value="{{ request()->route('token') }}">
+                    
                     <div class="form-floating mb-3">
-                        <input type="text" id="email" name="phoneoremail" class="form-control" placeholder="name@example.com" required>
-                        <label for="email">Correo Electrónico o Teléfono</label>
+                        <input type="text" id="email" name="email" class="form-control" placeholder="name@example.com" required>
+                        <label for="email">Correo Electrónico</label>
+                    </div>
+                    
+                    <div class="form-floating mb-3">
+                        <input type="password" id="password" name="password" class="form-control" placeholder="name@example.com" required>
+                        <label for="password">Nueva Contraseña</label>
+                    </div>
+                    
+                    <div class="form-floating mb-3">
+                        <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" placeholder="Confirma tu contraseña" required>
+                        <label for="password_confirmation">Confirma tu contraseña</label>
                     </div>
                     
                     <div class="d-grid mb-3">
-                        <button type="submit" class="btn" style="background-color: #af6400b3;">Siguiente</button>
+                        <button type="submit" class="btn" style="background-color: #af6400b3;">Restablecer Contraseña</button>
                     </div>
-
                 </form>
+                    
             </div>
         </div>
     </div>
@@ -63,25 +75,17 @@
         document.getElementById('loginForm').onsubmit = function(event) {
             const input = document.getElementById('email').value;
             const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            const phone = /^\d{10,14}$/;
             let isValid = false;
 
             // Validación de correo electrónico
-            if (/[a-zA-Z]/.test(input)) {
-                // Si contiene letras, debe ser un correo electrónico válido
                 isValid = email.test(input);
-            } else {
-                // Si no contiene letras, debe ser un número de teléfono con un largo máximo de 14
-                isValid = phone.test(input);
-            }
+
 
             if (!isValid) {
                 event.preventDefault();
                 document.getElementById('email').classList.add('is-invalid');
             } else {
                 document.getElementById('email').classList.remove('is-invalid');
-                // Reemplaza 'PLACEHOLDER' en la URL con el valor ingresado
-                this.action = this.action.replace('PLACEHOLDER', encodeURIComponent(input));
             }
         };
     </script>

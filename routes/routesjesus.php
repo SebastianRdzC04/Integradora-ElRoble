@@ -3,8 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterPersonController;
-use App\Http\Controllers\RegisterPersonAdminController;
 use App\Http\Controllers\RegisterUserController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 
 Route::middleware('guest')->group(function(){
     Route::get('/login', [LoginController::class, 'verifyemail'])->name('login');
@@ -14,13 +15,30 @@ Route::middleware('guest')->group(function(){
     Route::get('/registeruser/{phoneoremail}', [RegisterUserController::class, 'create'])->name('registeruser.create');
     Route::post('/registeruser', [RegisterUserController::class, 'store'])->name('registeruser.store');
 
-    Route::get('/personregister', [RegisterPersonController::class, 'create'])->name('registerperson.create');
-    Route::post('/personregister', [RegisterPersonController::class, 'store'])->name('registerperson.store');
+
+    //Route::get('/personregister', [RegisterPersonController::class, 'create'])->name('registerperson.create');
+    //Route::post('/personregister', [RegisterPersonController::class, 'store'])->name('registerperson.store');
 });
 
-Route::get('/list',[RegisterPersonController::class, 'index'])->name('tablepeople.index');
+Route::group(['middleware' => 'guest'], function () {
+    
+    // 1. Ruta para mostrar el formulario de solicitud de restablecimiento
+    Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+    
+    // 2. Ruta para enviar el enlace de restablecimiento
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+    
+    // 3. Ruta para mostrar el formulario de restablecimiento de contraseña (con token en el enlace)
+    Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+    
+    // 4. Ruta para guardar la nueva contraseña
+    Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
+});
+
+Route::get('/list/{id?}',[RegisterPersonController::class, 'index'])->name('tablepeople.index');
+Route::get('/list/personupdate/{id}',[RegisterPersonController::class,'edit'])->name('person.createupdate');
 Route::patch('/list/personupdate/{id}',[RegisterPersonController::class,'update'])->name('person.update');
-Route::patch('/list/personupdate/',[RegisterPersonController::class,'destroy'])->name('person.delete');
+Route::delete('/list/persondestroy/{id}',[RegisterPersonController::class,'destroy'])->name('person.destroy');
 Route::middleware('auth')->group(function(){
     
     Route::post('logout', [LoginController::class, 'destroy'])->name('logout');

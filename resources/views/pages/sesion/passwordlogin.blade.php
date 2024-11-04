@@ -27,6 +27,7 @@
                         <input type="password" id="password" name="password" class="form-control" placeholder="contraseña" required>
                         <label for="password">Contraseña:</label>
                     </div>
+                    <a href="{{route('password.request')}}">¿Olvidate la contraseña?</a>
 
                     <div class="d-grid mb-3">
                         <button type="submit" class="btn" style="background-color: #af6400b3;">Iniciar Sesion</button>

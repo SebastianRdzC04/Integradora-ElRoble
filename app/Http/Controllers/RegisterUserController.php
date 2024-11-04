@@ -14,7 +14,7 @@ class RegisterUserController extends Controller
     //
     public function create($phoneoremail)
     {
-        return view('pages.users.user_register',compact('phoneoremail'));
+        return view('pages.sesion.user_register',compact('phoneoremail'));
     }
 
     public function store(Request $request)
