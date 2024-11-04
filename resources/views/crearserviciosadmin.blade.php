@@ -209,39 +209,36 @@
                     invalidFeedback.style.transform = "translateY(-10px)";
                     setTimeout(() => invalidFeedback.style.display = "none", 500);
                 }
-                categoryLabel.style.display = 'inline-block';
-                categoryLabel.innerText = this.options[this.selectedIndex].text;
-            } else {
-                categoryLabel.style.display = 'none';
             }
-    
-            newCategoryInput.style.display = this.value === 'Otro' ? 'block' : 'none';
+            if (this.value === "Otro") {
+                newCategoryInput.style.display = "block";
+            } else {
+                newCategoryInput.style.display = "none";
+            }
+            categoryLabel.style.display = this.value ? "inline-block" : "none";
+            categoryLabel.textContent = this.value;
         });
     
-        quantityInput.addEventListener('input', function() {
-            quantityPreview.innerText = this.value || "0";
-            this.classList.remove('is-invalid');
+        serviceNameInput.addEventListener('input', function() {
+            document.getElementById('previewTitle').textContent = this.value || "Nombre del Servicio";
+        });
+    
+        descriptionInput.addEventListener('input', function() {
+            document.getElementById('previewDescription').textContent = this.value || "Descripción del servicio.";
         });
     
         estimatedPriceInput.addEventListener('input', function() {
-            this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5);
-            actualizarPrevista();
-            this.classList.remove('is-invalid');
+            document.getElementById('previewPrice').textContent = `Precio Estimado: $${this.value || "0"}`;
         });
     
-        function actualizarPrevista() {
-            document.getElementById("previewTitle").innerText = serviceNameInput.value || "Nombre del Servicio";
-            document.getElementById("previewDescription").innerText = descriptionInput.value || "Descripción del servicio.";
-            document.getElementById("previewPrice").innerText = estimatedPriceInput.value ? `$${estimatedPriceInput.value}` : "Precio Estimado";
-        }
-    
-        actualizarPrevista();
+        quantityInput.addEventListener('input', function() {
+            quantityPreview.textContent = this.value || "0";
+        });
     
         document.getElementById('btnCrearServicio').addEventListener('click', function() {
             formCrearServicio.submit();
         });
-    </script>    
-    
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    </script>
+
 </body>
 </html>

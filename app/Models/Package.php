@@ -11,8 +11,8 @@ class Package extends Model
 
     protected $table = 'packages';
     protected $fillable = [
-        'place_id', 'name', 'description', 'max_people', 'price'
-    ];
+        'place_id', 'name', 'description', 'max_people', 'price', 'start_date', 'end_date', 'status'
+    ];    
 
     public function place()
     {
