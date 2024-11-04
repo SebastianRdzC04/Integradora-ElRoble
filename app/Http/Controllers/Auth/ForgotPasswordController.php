@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\URL;
-use App\Mail\ResetPasswordMail; // Asegúrate de tener este mail configurado
+use Illuminate\Support\Str;
+use Carbon\Carbon;
+use App\Mail\ResetPasswordMail;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
-class ForgotPasswordController extends Controller
+class ForgotPasswordController extends Auth
 {
     /**
      * Muestra el formulario para solicitar un enlace de restablecimiento de contraseña.
@@ -19,7 +22,7 @@ class ForgotPasswordController extends Controller
      */
     public function showLinkRequestForm()
     {
-        return view('pages.sesion.forgotpassword'); 
+        return view('pages.sesion.forgotpassword'); // Vista donde el usuario ingresa su email
     }
 
     /**
@@ -32,23 +35,30 @@ class ForgotPasswordController extends Controller
     {
         $request->validate(['email' => 'required|email']);
 
+        
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
-            return back()->withErrors(['email' => 'No encontramos a un usuario con ese correo.']);
+            return back()->withErrors(['email' => 'No encontramos un usuario con ese correo.']);
         }
+        $email= $user->email;
+        $token = Str::random(60);
 
-        $email = $user->getEmailForPasswordReset();
-$token = 'abc123xyz'; 
+        DB::table('password_resets')->insert([
+            'email' => $user->email,
+            'token' => Hash::make($token),
+            'created_at' => Carbon::now(),
+        ]);
 
-$url = URL::temporarySignedRoute(
-    'password.reset', 
-    now()->addMinutes(30), 
-    ['token' => $token, 'email' => $email] 
-);
+        $url = URL::temporarySignedRoute(
+            'password.reset',
+            now()->addMinutes(30), 
+            ['token' => $token, 'email' => $user->email]
+        );
 
-Mail::to($user->email)->send(new ResetPasswordMail($url));
 
+        Mail::to(['email' => $email])->send(new ResetPasswordMail($url));
         return back()->with('status', 'Hemos enviado un enlace para restablecer tu contraseña.');
-    }
+        
+    }   
 }

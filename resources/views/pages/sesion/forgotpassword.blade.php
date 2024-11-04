@@ -45,10 +45,17 @@
                 <form id="loginForm" action="{{ route('password.email') }}" method="post">
                     @csrf
 
+                    @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                        {{ session('status') }}
+                        </div>
+                    @else
+
                     <div class="form-floating mb-3">
                         <input type="text" id="email" name="email" class="form-control" placeholder="name@example.com" required>
                         <label for="email">Correo Electrónico</label>
                     </div>
+                    @endif
                     
                     <div class="d-grid mb-3">
                         <button type="submit" class="btn" style="background-color: #af6400b3;">Siguiente</button>
