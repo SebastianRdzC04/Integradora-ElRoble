@@ -27,7 +27,16 @@
 <div class="background-image"></div>
     <div class="container d-flex justify-content-center">
         <div class="card shadow-lg border-0 rounded" style="width: 100%; max-width: 400px; background-color: #292005e3;">
-            
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+    @endif
             <div class="card-body">
                 <div >
                 <button class="btn btn-toolbar" onclick="backStep()" id="btnback" style="display:none; color:brown;">
@@ -42,8 +51,6 @@
 
                     <!-- paso 1 ----------------------------------------------------------- -->
                     <div id="step1">
-                    <form method="POST" action="{{ route('registeruser.store') }}">
-                    @csrf
 
                     @if (filter_var($phoneoremail, FILTER_VALIDATE_EMAIL))
                         <div class="form-floating mb-3">
@@ -73,8 +80,8 @@
                         </div>
 
                         <div class="form-floating mb-3">
-                            <input type="text" name="lastNamepat" id="lastName" class="form-control" required>
-                            <label for="lastNamepat">Apellido(s):</label>
+                            <input type="text" name="lastName" id="lastName" class="form-control" required>
+                            <label for="lastName">Apellido(s):</label>
                         </div>
 
                         <button type="button" class="btn btn-primary w-100" onclick="nextStep()">Siguiente</button>

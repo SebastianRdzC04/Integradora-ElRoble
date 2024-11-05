@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\DB;
+
+
 
 class ResetPasswordController extends Controller
 {
@@ -51,9 +54,11 @@ class ResetPasswordController extends Controller
                 $user->save();
             }
         );
-
+        DB::table('password_resets')->where('email', $request->email)->delete();
         return $response == Password::PASSWORD_RESET
             ? redirect()->route('login')->with('status', trans($response))
             : back()->withErrors(['email' => trans($response)]);
+
+        
     }
 }

@@ -6,7 +6,7 @@ use App\Http\Controllers\RegisterPersonController;
 use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
-
+//rutas de inicio de sesion y creacion de cuenta
 Route::middleware('guest')->group(function(){
     Route::get('/login', [LoginController::class, 'verifyemail'])->name('login');
     Route::get('/login/{phoneoremail?}', [LoginController::class, 'verifypassword'])->middleware('checkemailorphoneregistered')->name('login.password');
@@ -19,7 +19,7 @@ Route::middleware('guest')->group(function(){
     //Route::get('/personregister', [RegisterPersonController::class, 'create'])->name('registerperson.create');
     //Route::post('/personregister', [RegisterPersonController::class, 'store'])->name('registerperson.store');
 });
-
+//rutas de restablecimiento de contraseña
 Route::group(['middleware' => 'guest'], function () {
     
     Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
@@ -31,6 +31,10 @@ Route::group(['middleware' => 'guest'], function () {
     })->name('password.reset')->middleware('signed');    
     Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 });
+
+
+
+
 
 Route::get('/list/{id?}',[RegisterPersonController::class, 'index'])->name('tablepeople.index');
 Route::get('/list/personupdate/{id}',[RegisterPersonController::class,'edit'])->name('person.createupdate');

@@ -48,7 +48,7 @@
                     <input type="hidden" name="token" value="{{ request()->route('token') }}">
                     
                     <div class="form-floating mb-3">
-                        <input type="text" id="email" name="email" class="form-control" placeholder="name@example.com" required>
+                        <input type="text" id="email" name="email" class="form-control" placeholder="name@example.com" required value="{{session('email')}}" readonly>
                         <label for="email">Correo Electrónico</label>
                     </div>
                     

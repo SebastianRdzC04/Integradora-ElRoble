@@ -57,7 +57,7 @@ class ForgotPasswordController extends Auth
         );
 
 
-        Mail::to(['email' => $email])->send(new ResetPasswordMail($url));
+        Mail::to(['email' => $email])->send(new ResetPasswordMail($url,$email));
         return back()->with('status', 'Hemos enviado un enlace para restablecer tu contraseña.');
         
     }   

@@ -44,6 +44,11 @@
                 
                 <form id="loginForm" action="{{ route('login.password', ['phoneoremail' => 'PLACEHOLDER']) }}" method="get">
                     @csrf
+                    @if (session('success'))
+                        <div class="alert alert-success" role="alert">
+                        {{ session('success') }}
+                        </div>
+                    @endif
 
                     <div class="form-floating mb-3">
                         <input type="text" id="email" name="phoneoremail" class="form-control" placeholder="name@example.com" required>
