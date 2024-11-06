@@ -12,10 +12,9 @@ class PaquetesAdminController extends Controller
 {
     public function create()
     {
-        // Obtener todos los lugares y servicios para mostrarlos en el formulario
         $places = Place::all();
         $categories = ServiceCategory::with('services')->get();
-        
+
         return view('crearpaquetesadmin', compact('places', 'categories'));
     }
 
@@ -24,7 +23,7 @@ class PaquetesAdminController extends Controller
         $request->validate([
             'place_id' => 'required|exists:places,id',
             'name' => 'required|max:50',
-            'description' => 'required|max:60',
+            'description' => 'required|max:255',
             'max_people' => 'required|integer',
             'price' => 'required|numeric',
             'start_date' => 'required|date',
@@ -33,8 +32,11 @@ class PaquetesAdminController extends Controller
             'services.*.id' => 'required|exists:services,id',
             'services.*.quantity' => 'nullable|integer|min:1',
             'services.*.price' => 'required|numeric',
+            'services.*.description' => 'nullable|string|max:255',
+            'services.*.details' => 'nullable|string|max:255',
         ]);
-    
+        
+        // Crear el paquete
         $package = new Package();
         $package->place_id = $request->place_id;
         $package->name = $request->name;
@@ -43,17 +45,28 @@ class PaquetesAdminController extends Controller
         $package->price = $request->price;
         $package->start_date = $request->start_date;
         $package->end_date = $request->end_date;
+        $package->status = 'active';
         $package->save();
     
-        foreach ($request->services as $serviceData) {
-            $package->services()->attach($serviceData['id'], [
-                'quantity' => $serviceData['quantity'],
-                'price' => $serviceData['price'],
-                'description' => $serviceData['description'],
-                'details' => $serviceData['details']
-            ]);
+        // Relacionar los servicios con el paquete
+        if ($request->has('services')) {
+            foreach ($request->services as $serviceData) {
+                // Verificar que los datos del servicio sean correctos
+                if (isset($serviceData['id'], $serviceData['price'])) {
+                    // Agregar los servicios al paquete
+                    $package->services()->attach($serviceData['id'], [
+                        'quantity' => $serviceData['quantity'] ?? 1, // Si no se pasa cantidad, usar 1 como valor por defecto
+                        'price' => $serviceData['price'],
+                        'description' => $serviceData['description'] ?? '',
+                        'details_dj' => $serviceData['details'] ?? '',
+                    ]);
+                } else {
+                    // Si algún dato está mal, podemos lanzar una excepción o mostrar un mensaje
+                    return back()->withErrors('Faltan datos de servicios');
+                }
+            }
         }
-    
+        
         return redirect()->route('paquetes.index')->with('success', 'Paquete creado exitosamente');
     }
     

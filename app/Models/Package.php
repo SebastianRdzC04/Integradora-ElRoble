@@ -14,6 +14,11 @@ class Package extends Model
         'place_id', 'name', 'description', 'max_people', 'price', 'start_date', 'end_date', 'status'
     ];    
 
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+    ];
+
     public function place()
     {
         return $this->belongsTo(Place::class);

@@ -72,6 +72,9 @@ li {
 @media (max-width: 770px) {
     #previstaServicio {
         position: static;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 100%;
         margin-top: 20px;
         transform: none;
@@ -106,7 +109,6 @@ li {
     text-align: center;
 }
 
-/* Estilo para cada tarjeta de servicio */
 .service-card {
     width: 100%;
     margin-bottom: 15px;
@@ -118,7 +120,7 @@ li {
     transition: transform 0.3s;
     margin: 0 auto;
     width: 90%;
-    transition: visibility 0s, height 0.2s ease; /* Transición suave para ocultar */
+    transition: visibility 0s, height 0.2s ease;
     margin-bottom: 20px;
 }
 
@@ -148,9 +150,8 @@ li {
     font-size: 0.9em;
 }
 
-/* Contenedor de entrada de datos para el servicio seleccionado */
 .selected-service-container {
-    display: none; /* Se mostrará solo cuando se seleccione un servicio */
+    display: none;
     padding: 15px;
     border: 2px solid yellow;
     border-radius: 8px;
@@ -192,7 +193,7 @@ li {
     height: 100%;
 }
 .servicios-seleccionados {
-    margin-top: 10px; /* Espaciado superior para separar de la imagen */
-    color: white; /* Asegúrate de que el texto sea legible */
-    text-align: left; /* Alineación del texto a la izquierda */
+    margin-top: 10px;
+    color: white;
+    text-align: left;
 }
