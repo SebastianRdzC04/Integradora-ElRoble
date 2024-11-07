@@ -1,32 +1,83 @@
-body {
+body 
+{
     background-color: #f0f0f0;
-
 }
-
-.quotes {
-    border: 1px solid #e9ecef;
+.quotes 
+{
+    background-color: #ffffff;
     
 }
+.quote-time 
+{
+    font-size: 14px;
+    padding-right: -12px;
+}
+.quote-time-container
+{
+    padding-right: 0px;
+}
+.quotes-pages 
+{
+    height: 100%;
+}
+.quote-card:hover 
+{
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
 
 
-.first-row {
-    height: 790px;
 
+.consumibles 
+{
+    background-color: rgb(197, 240, 199);
+    height: 100%;
 }
-.pagination-row {
-    margin-top: auto;
+.consumibles:hover 
+{
+    background-color: rgb(30, 218, 40);
+    height: 100%;
+    cursor: pointer;
 }
-.service-list {
-    max-height: 90px;
-    overflow-y: auto;
+.consumable-name {
+    font-size: 20px;  
 }
-.events-container {
+
+
+.events-container 
+{
     max-height: 710px;
     overflow-y: auto;
 }
-.event-services {
+.event-services 
+{
     height: 250px;
     max-height: 250px;
     overflow-y: auto;
+}
+.events:hover 
+{
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.pene {
+    border-radius: 0 0 10px 10px;
+}
+
+
+
+.service-list 
+{
+    max-height: 90px;
+    overflow-y: auto;
+}
+.first-row 
+{
+    height: 750px;
+}
+.pagination-row 
+{
+    margin-top: auto;
 }
 
