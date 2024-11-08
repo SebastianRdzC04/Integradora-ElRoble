@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignId('service_category_id')->constrained('service_categories');
             $table->decimal('price', 10, 2);
             $table->integer('people_quantity')->nullable();
+            $table->decimal('coast', 10, 2)->nullable();
             $table->timestamps();
         });
     }
