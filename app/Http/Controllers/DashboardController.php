@@ -20,6 +20,7 @@ class DashboardController extends Controller
             ->groupBy('date')
             ->having('count', '>=', 3)
             ->pluck('date'); 
+
         return view('pages.dashboard', compact('quotes', 'consumables', 'events', 'fullQuoteDates', 'currentEvent'));
     }
 }

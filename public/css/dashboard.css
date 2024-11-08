@@ -2,6 +2,15 @@ body
 {
     background-color: #f0f0f0;
 }
+
+main {
+    display: grid;
+    grid-template-columns: 3fr 10fr;
+}
+
+
+
+/*
 .quotes 
 {
     background-color: #ffffff;
@@ -80,4 +89,6 @@ body
 {
     margin-top: auto;
 }
+
+*/
 
