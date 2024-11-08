@@ -54,6 +54,7 @@ class ResetPasswordController extends Controller
                 $user->save();
             }
         );
+        
         DB::table('password_resets')->where('email', $request->email)->delete();
         return $response == Password::PASSWORD_RESET
             ? redirect()->route('login')->with('status', trans($response))

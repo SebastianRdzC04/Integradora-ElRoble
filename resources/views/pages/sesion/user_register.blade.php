@@ -46,7 +46,7 @@
                     </button>  
                 <h3 class="text-center mb-4">Crear una Cuenta</h3>
 
-                <form method="POST" action="{{ route('registeruser.store') }}" id="registrationForm">
+                <form method="POST" action="{{ route('register.store') }}" id="registrationForm">
                     @csrf
 
                     <!-- paso 1 ----------------------------------------------------------- -->
