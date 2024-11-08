@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Models\Consumable;
 use App\Models\Date;
 use App\Models\Event;
+use App\Models\Package;
 use App\Models\Quote;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,12 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+Route::get('dashboard/packages', function () {
+
+    $packages = Package::paginate(10);
+    return view('pages.dashboard.packages', compact('packages'));
+})->name('dashboard.packages');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

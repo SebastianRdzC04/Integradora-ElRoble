@@ -1,11 +1,7 @@
-body 
-{
-    background-color: #f0f0f0;
-}
+.dsh-button {
+    right: 5px;
+    transform: translateY(-70%);
 
-main {
-    display: grid;
-    grid-template-columns: 3fr 10fr;
 }
 
 
