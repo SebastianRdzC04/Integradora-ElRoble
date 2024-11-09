@@ -49,24 +49,38 @@ class LoginController extends Controller
 
     public function store(LoginRequest $request): RedirectResponse
     {
-        
-        $request->authenticate();
-
-        $request->session()->regenerate();
-
-        return redirect()->intended(RouteServiceProvider::HOME);
+        // Obtener las credenciales del usuario
+        $credentials = $request->only('email', 'password');
+    
+        // Revisar si la casilla "Recordarme" fue marcada
+        $remember = $request->has('remember');
+    
+        // Autenticar al usuario usando las credenciales y la opción "Recordarme"
+        if (Auth::attempt($credentials, $remember)) {
+            // Regenerar la sesión para evitar ataques de sesión fija
+            $request->session()->regenerate();
+    
+            // Redireccionar al usuario a la página de destino
+            return redirect()->intended(RouteServiceProvider::HOME);
+        }
+    
+        // Si la autenticación falla, redirigir de vuelta con un mensaje de error
+        return back()->withErrors([
+            'email' => 'Las credenciales no coinciden.',
+        ]);
     }
-
+    
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
-
+    
         $request->session()->invalidate();
-
+    
         $request->session()->regenerateToken();
-
+    
         return redirect('/');
     }
+    
 }
 
 

@@ -27,6 +27,12 @@
                         <input type="password" id="password" name="password" class="form-control" placeholder="contraseña" required>
                         <label for="password">Contraseña:</label>
                     </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">Recuerdame</label>
+                    </div>
+
                     <a href="{{route('password.request')}}">¿Olvidate la contraseña?</a>
 
                     <div class="d-grid mb-3">

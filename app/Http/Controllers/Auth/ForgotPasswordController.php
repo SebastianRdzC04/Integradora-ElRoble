@@ -34,63 +34,72 @@ class ForgotPasswordController extends Auth
     public function sendResetLinkEmail(Request $request)
     {
         $request->validate(['email' => 'required|email']);
-
-        
+    
         $user = User::where('email', $request->email)->first();
         if (!$user) {
             return back()->withErrors(['email' => 'No encontramos un usuario con ese correo.']);
         }
-
+    
         $email = $user->email;
-
-        
+    
+        $resetEntry = DB::table('password_resets')->where('email', $email)->first();
+    
+        if ($resetEntry && Carbon::parse($resetEntry->created_at)->addMinutes(2) > now()) {
+            return back()->withErrors([
+                'email' => 'Ya has solicitado un enlace recientemente. Inténtalo de nuevo en unos minutos.',
+            ]);
+        }
+    
         DB::table('password_resets')->where('email', $email)->delete();
-
-        // aqui crea el tocken para insertarlo en la bd
+    
         $token = Str::random(60);
         DB::table('password_resets')->insert([
             'email' => $email,
             'token' => Hash::make($token),
             'created_at' => Carbon::now(),
         ]);
-
+    
         $url = URL::temporarySignedRoute(
             'password.reset',
             now()->addMinutes(30),
             ['token' => $token, 'email' => $email]
         );
-
+    
+        // Enviar el correo electrónico con el enlace
         Mail::to($email)->send(new ResetPasswordMail($url, $email));
-
+    
         return back()->with('status', 'Hemos enviado un enlace para restablecer tu contraseña.');
     }
-
+    
     /**
-     * Verifica el token y redirige al usuario a una pantalla predeterminada si es inválido o expirado.
+     * verifica el token y redirige al usuario a una pantalla predeterminada si es inválido o expirado.
      *
      * @param Request $request
      * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
     */
 
-    public function showResetForm(Request $request, $token)
-    {
-        // Verifica si el token existe y es válido en la base de datos
-        $resetEntry = DB::table('password_resets')
-            ->where('email', $request->email)
-            ->where('token', $token)
-            ->first();
-    
-        if (!$resetEntry) {
-            return redirect()->route('error.invalid_token')->withErrors([
-                'message' => 'El token es inválido o ha expirado. Por favor, solicita un nuevo enlace.'
-            ]);
-        }
-    
-        return view('pages.sesion.createnewpassword', [
-            'token' => $token,
-            'email' => $request->email,
+        public function showResetForm(Request $request, $token)
+{
+    $email = $request->email;
+
+    // Verificar si el token es válido
+    $resetEntry = DB::table('password_resets')
+        ->where('email', $email)
+        ->first();
+
+    // Si no existe o el token no coincide, redirigir con un mensaje de error
+    if (!$resetEntry || !Hash::check($token, $resetEntry->token)) {
+        return redirect()->route('password.request')->withErrors([
+            'email' => 'El enlace para restablecer la contraseña es inválido o ha expirado.',
         ]);
     }
+
+    // Mostrar el formulario si el token es válido
+    return view('pages.sesion.createnewpassword', [
+        'token' => $token,
+        'email' => $email,
+    ]);
+}
     
     public function reset(Request $request)
     {

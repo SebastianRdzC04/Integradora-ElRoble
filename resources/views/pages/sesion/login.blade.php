@@ -1,37 +1,36 @@
 @extends('layouts.formslogin')
 
-        @section('title')
-        Inicio de sesion
-        @endsection
+@section('title')
+    Inicio de sesión
+@endsection
 
-                @section('title form')
-                Iniciar sesion o crear cuenta
-                @endsection
-                
-                @section('subtitle form')
-                <h7>Para poder enviar tus cotizaciones</h7>
-                @endsection
-                
-            @section('form')
-                <form id="loginForm" action="{{ route('login.password', ['phoneoremail' => 'PLACEHOLDER']) }}" method="get">
-                    @csrf
-                    @if (session('success'))
-                        <div class="alert alert-success" role="alert">
-                        {{ session('success') }}
-                        </div>
-                    @endif
+@section('title form')
+    Iniciar sesión o crear cuenta
+@endsection
 
-                    <div class="form-floating mb-3">
-                        <input type="text" id="email" name="phoneoremail" class="form-control" placeholder="name@example.com" required>
-                        <label for="email">Correo Electrónico o Teléfono</label>
-                    </div>
-                    
-                    <div class="d-grid mb-3">
-                        <button type="submit" class="btn" style="background-color: #af6400b3;">Siguiente</button>
-                    </div>
+@section('subtitle form')
+    <h7>Para poder enviar tus cotizaciones</h7>
+@endsection
 
-                </form>
-            @endsection
+@section('form')
+    <form id="loginForm" action="{{ route('login.password', ['phoneoremail' => 'PLACEHOLDER']) }}" method="get">
+        @csrf
+        @if (session('success'))
+            <div class="alert alert-success" role="alert">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <div class="form-floating mb-3">
+            <input type="text" id="email" name="phoneoremail" class="form-control" placeholder="name@example.com" required>
+            <label for="email">Correo Electrónico o Teléfono</label>
+        </div>
+
+        <div class="d-grid mb-3">
+            <button type="submit" class="btn" style="background-color: #af6400b3;">Siguiente</button>
+        </div>
+    </form>
+@endsection
 
 @section('script')
     <script>
@@ -57,4 +56,5 @@
         };
     </script>
 @endsection
+
 

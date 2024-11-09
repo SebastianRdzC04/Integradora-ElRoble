@@ -7,6 +7,10 @@ use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\ConsumableController;
 
+Route::get('/error',function () {
+    return view('general_error');
+})->name('error');
+
 
 //logica de laravel para verificacion de correos y envio de correos
 
