@@ -7,6 +7,7 @@ use App\Models\Place;
 use App\Models\ServiceCategory;
 use App\Models\Service;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PaquetesAdminController extends Controller
 {
@@ -20,6 +21,7 @@ class PaquetesAdminController extends Controller
 
     public function store(Request $request)
     {
+        // Validación de los datos del paquete
         $request->validate([
             'place_id' => 'required|exists:places,id',
             'name' => 'required|max:50',
@@ -29,14 +31,12 @@ class PaquetesAdminController extends Controller
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'services' => 'array',
-            'services.*.id' => 'required|exists:services,id',
+            'services.*.id' => 'nullable|exists:services,id',
             'services.*.quantity' => 'nullable|integer|min:1',
-            'services.*.price' => 'required|numeric',
+            'services.*.price' => 'nullable|numeric',
             'services.*.description' => 'nullable|string|max:255',
-            'services.*.details' => 'nullable|string|max:255',
         ]);
-        
-        // Crear el paquete
+    
         $package = new Package();
         $package->place_id = $request->place_id;
         $package->name = $request->name;
@@ -48,26 +48,18 @@ class PaquetesAdminController extends Controller
         $package->status = 'active';
         $package->save();
     
-        // Relacionar los servicios con el paquete
-        if ($request->has('services')) {
-            foreach ($request->services as $serviceData) {
-                // Verificar que los datos del servicio sean correctos
-                if (isset($serviceData['id'], $serviceData['price'])) {
-                    // Agregar los servicios al paquete
-                    $package->services()->attach($serviceData['id'], [
-                        'quantity' => $serviceData['quantity'] ?? 1, // Si no se pasa cantidad, usar 1 como valor por defecto
-                        'price' => $serviceData['price'],
-                        'description' => $serviceData['description'] ?? '',
-                        'details_dj' => $serviceData['details'] ?? '',
-                    ]);
-                } else {
-                    // Si algún dato está mal, podemos lanzar una excepción o mostrar un mensaje
-                    return back()->withErrors('Faltan datos de servicios');
-                }
-            }
-        }
-        
-        return redirect()->route('paquetes.index')->with('success', 'Paquete creado exitosamente');
-    }
+        $confirmedServices = collect($request->input('services', []))->filter(function($service) {
+            return isset($service['id']) && isset($service['quantity']) && isset($service['price']) && isset($service['description']);
+        });
     
+        foreach ($confirmedServices as $serviceData) {
+            $package->services()->attach($serviceData['id'], [
+                'quantity' => $serviceData['quantity'] ?? 1,
+                'price' => $serviceData['price'],
+                'description' => $serviceData['description'] ?? '',
+            ]);
+        }
+    
+        return redirect()->route('crearpaquetes')->with('success', 'Paquete creado exitosamente');
+    }    
 }

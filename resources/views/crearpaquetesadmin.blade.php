@@ -16,6 +16,11 @@
 <body>
     <div class="container mt-4">
         <div class="row">
+            @if(session('success'))
+            <div class="alert alert-success" role="alert">
+                {{ session('success') }}
+            </div>
+            @endif
             <div class="col-md-7" id="crearPaquete">
                 <h3>Crear Nuevo Paquete</h3>
                 <form action="{{ route('paquetes.store') }}" method="POST" enctype="multipart/form-data" id="paqueteForm">
@@ -131,7 +136,7 @@
                     <h6><strong>Servicios:</strong></h6>
                     <div id="servicios-lista"></div>
                 </div>
-                <button type="button" class="btn btn-success mt-3" id="crearPaquete" onclick="submitForm()">Crear Paquete</button>
+                <button type="button" class="btn btn-success mt-3" id="crearPaquete" onclick="crearPaquete()">Crear Paquete</button>
             </div>
         </div>
     </div>    
@@ -139,36 +144,26 @@
 
     <script>
 
+        // Declaración de Variables
         let confirmedServices = {};
         let selectedServices = {};
 
-        function submitForm() {
-    // Solo enviar el formulario si todos los servicios están confirmados
-    if (Object.values(confirmedServices).every(service => service.isConfirmed)) {
-        document.getElementById('paqueteForm').submit();
-    } else {
-        alert('Por favor, confirma todos los servicios antes de crear el paquete.');
-    }
-}
+        // Funciones Bárbaras
 
         function confirmarServicio() {
-            // Captura los datos del formulario emergente del servicio
             let cantidad = document.getElementById('cantidad').value;
             let precio = document.getElementById('precio').value;
             let descripcion = document.getElementById('descripcion').value;
 
-            // Valida los campos para asegurarse de que todos están completos
             if (!cantidad || !precio || !descripcion) {
                 alert('Por favor, completa todos los campos.');
                 return;
             }
 
-            // Muestra los datos confirmados en la vista previa
             document.getElementById('vistaPrevia').innerHTML += `
                 <p>Servicio: ${descripcion}, Cantidad: ${cantidad}, Precio: ${precio}</p>
             `;
 
-            // Cierra el modal después de confirmar (opcional)
             $('#modalServicio').modal('hide');
         }
 
@@ -177,51 +172,46 @@
             const price = document.querySelector(`input[name="services[${serviceId}][price]"]`).value;
             const description = document.querySelector(`input[name="services[${serviceId}][description]"]`).value;
 
-            // Activa el botón de confirmación solo si todos los campos están completos
             const confirmButton = document.getElementById(`confirmButton-${serviceId}`);
             confirmButton.disabled = !(quantity && price && description);
         }
 
-
         function confirmService(serviceId, categoryId) {
-    const quantity = document.querySelector(`input[name="services[${serviceId}][quantity]"]`).value;
-    const price = document.querySelector(`input[name="services[${serviceId}][price]"]`).value;
-    const description = document.querySelector(`input[name="services[${serviceId}][description]"]`).value;
+            const quantity = document.querySelector(`input[name="services[${serviceId}][quantity]"]`).value;
+            const price = document.querySelector(`input[name="services[${serviceId}][price]"]`).value;
+            const description = document.querySelector(`input[name="services[${serviceId}][description]"]`).value;
 
-    // Almacena los detalles sin enviar el formulario, marcando el servicio como confirmado
-    confirmedServices[serviceId] = {
-        categoryId,
-        quantity,
-        price,
-        description,
-        isConfirmed: true // Marca el servicio como confirmado
-    };
+            if (quantity && price && description) {
+                confirmedServices[serviceId] = {
+                    categoryId,
+                    quantity,
+                    price,
+                    description,
+                    isConfirmed: true
+                };
 
-    // Actualiza la vista previa
-    updateServicePreview();
-    document.getElementById(`service-details-${serviceId}`).style.display = 'none';
+                delete selectedServices[serviceId];
 
-    // Revisa si todos los servicios están confirmados y actualiza el estado del botón
-    toggleCreatePackageButton();
-}
+                updateServicePreview();
+                document.getElementById(`service-details-${serviceId}`).style.display = 'none';
 
+                toggleCreatePackageButton();
+            } else {
+                alert('Por favor, completa todos los campos del servicio.');
+            }
+        }
 
         function updateServicePreview() {
-    const serviciosLista = document.getElementById('servicios-lista');
-    serviciosLista.innerHTML = '';
+            const serviciosLista = document.getElementById('servicios-lista');
+            serviciosLista.innerHTML = '';
 
-    // Muestra todos los servicios confirmados en la vista previa
-    for (let serviceId in confirmedServices) {
-        const service = confirmedServices[serviceId];
-        const serviceName = document.querySelector(`input[value="${serviceId}"]`).closest('.service-card').querySelector('.card-title').innerText;
-
-        // Agrega el texto de confirmación (sin confirmar o confirmado)
-        const confirmationText = service.isConfirmed ? "" : " <span style='color: red;'>(Sin confirmar)</span>";
-
-        serviciosLista.innerHTML += `<p><strong>Servicio:</strong> ${serviceName} (Cant. ${service.quantity}, $${service.price}, ${service.description})${confirmationText}</p>`;
-    }
-}
-
+            for (let serviceId in confirmedServices) {
+                const service = confirmedServices[serviceId];
+                const serviceName = document.querySelector(`input[value="${serviceId}"]`).closest('.service-card').querySelector('.card-title').innerText;
+                const confirmationText = service.isConfirmed ? "" : " <span style='color: red;'>(Sin confirmar)</span>";
+                serviciosLista.innerHTML += `<p><strong>Servicio:</strong> ${serviceName} (Cant. ${service.quantity}, $${service.price}, ${service.description})${confirmationText}</p>`;
+            }
+        }
 
         function updatePreview() {
             const name = document.getElementById('name').value;
@@ -240,62 +230,71 @@
             const servicesDiv = document.getElementById(`services-${categoryId}`);
             const isVisible = servicesDiv.style.display === 'block';
             servicesDiv.style.display = isVisible ? 'none' : 'block';
-        }
+        } 
 
         function selectService(checkbox, categoryId) {
             const selectedServiceId = checkbox.value;
             const isSelected = checkbox.checked;
-            const serviciosLista = document.getElementById('servicios-lista');
-
             const serviceCard = checkbox.closest('.service-card');
             const serviceName = serviceCard.querySelector('.card-title').innerText;
+
             const serviceQuantityInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][quantity]"]`);
             const servicePriceInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][price]"]`);
-
-            const serviceQuantity = serviceQuantityInput ? serviceQuantityInput.value : 0;
-            const servicePrice = servicePriceInput ? servicePriceInput.value : 0;
+            const serviceDescriptionInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][description]"]`);
 
             if (isSelected) {
-                // Agregar texto "(Sin confirmar)" si no está confirmado
-                serviciosLista.innerHTML += `<p><strong>${categoryId}</strong>: ${serviceName} (Cant. ${serviceQuantity}, $${servicePrice}) ${confirmedServices[selectedServiceId] && !confirmedServices[selectedServiceId].isConfirmed ? "<span style='color: red;'>(Sin confirmar)</span>" : ""}</p>`;
-            } else {
-                serviciosLista.innerHTML = serviciosLista.innerHTML.split('<p>').filter(p => !p.includes(selectedServiceId)).join('<p>');
-            }
+                const detailsContainer = document.getElementById(`service-details-${selectedServiceId}`);
+                if (detailsContainer) {
+                    detailsContainer.style.display = 'block';
+                }
 
-            document.querySelectorAll('.service-input-details').forEach(container => {
-                container.style.display = 'none';
-            });
-
-            const detailsContainer = document.getElementById(`service-details-${selectedServiceId}`);
-            if (detailsContainer) {
-                detailsContainer.style.display = isSelected ? 'block' : 'none';
-            }
-
-            const allServices = document.querySelectorAll(`input[name="services[${categoryId}][id]"]`);
-            allServices.forEach(service => {
-                const serviceCard = service.closest('.service-card');
-                if (serviceCard) {
-                    if (service.value !== selectedServiceId) {
-                        serviceCard.style.visibility = isSelected ? 'hidden' : 'visible';
-                        serviceCard.style.height = isSelected ? '0' : '';
-                        serviceCard.style.overflow = 'hidden';
+                if (serviceQuantityInput.value && servicePriceInput.value && serviceDescriptionInput.value) {
+                    if (isSelected) {
+                        selectedServices[selectedServiceId] = {
+                            categoryId,
+                            serviceName,
+                            quantity: serviceQuantityInput.value,
+                            price: servicePriceInput.value,
+                            description: serviceDescriptionInput.value
+                        };
                     } else {
-                        serviceCard.style.visibility = 'visible';
-                        serviceCard.style.height = '';
+                        delete selectedServices[selectedServiceId];
                     }
                 }
-            });
+            } else {
+                delete selectedServices[selectedServiceId];
+                delete confirmedServices[selectedServiceId];
+
+                updateServicePreview();
+
+                const detailsContainer = document.getElementById(`service-details-${selectedServiceId}`);
+                if (detailsContainer) {
+                    detailsContainer.style.display = 'none';
+                }
+            }
+            updateServicePreview();
         }
 
-        function checkIfAllServicesConfirmed() {
-    // Verifica si todos los servicios han sido confirmados
-    return Object.values(confirmedServices).every(service => service.isConfirmed);
-}
+        function updateServicePreview() {
+            const serviciosLista = document.getElementById('servicios-lista');
+            serviciosLista.innerHTML = '';
 
-function toggleCreatePackageButton() {
-    const createButton = document.getElementById('crearPaqueteButton');
-    createButton.disabled = !checkIfAllServicesConfirmed();  // Deshabilita si no todos los servicios están confirmados
-}
+            for (let serviceId in confirmedServices) {
+                const service = confirmedServices[serviceId];
+                const serviceName = document.querySelector(`input[value="${serviceId}"]`).closest('.service-card').querySelector('.card-title').innerText;
+                serviciosLista.innerHTML += `<p><strong>Servicio:</strong> ${serviceName} (Cant. ${service.quantity}, $${service.price}, ${service.description})</p>`;
+            }
+        }       
+
+
+        function checkIfAllServicesConfirmed() {
+            return Object.values(confirmedServices).every(service => service.isConfirmed);
+        }
+
+        function toggleCreatePackageButton() {
+            const createButton = document.getElementById('crearPaqueteButton');
+        createButton.disabled = !checkIfAllServicesConfirmed();
+        }
 
         function changeService(categoryId) {
             const servicesDiv = document.getElementById(`services-${categoryId}`);
@@ -310,58 +309,44 @@ function toggleCreatePackageButton() {
             changeButton.style.display = 'none';
             updatePreview();
         }
-        
-        function crearPaquete() {
-    // Verificar si hay servicios sin confirmar
-    const unconfirmedServices = Object.values(confirmedServices).some(service => !service.isConfirmed);
 
-    if (unconfirmedServices) {
-        // Mostrar el mensaje de confirmación
-        if (confirm("El paquete se creará sin los servicios que no se han confirmado, ¿estás seguro de continuar?")) {
+        function crearPaquete() {
             const form = document.getElementById('paqueteForm');
 
-            // Eliminar los servicios previos para evitar duplicados
             document.querySelectorAll('.service-hidden-input').forEach(input => input.remove());
 
-            // Agregar cada servicio confirmado como campos ocultos en el formulario
             for (let serviceId in confirmedServices) {
                 const service = confirmedServices[serviceId];
 
-                // Solo añadir servicios confirmados
-                if (service.isConfirmed) {
-                    const serviceInput = document.createElement('input');
-                    serviceInput.type = 'hidden';
-                    serviceInput.name = `services[${serviceId}]`;
-                    serviceInput.value = JSON.stringify(service);
-                    serviceInput.classList.add('service-hidden-input');
+                if (service.isConfirmed && service.quantity && service.price && service.description) {
+                    const serviceQuantityInput = document.createElement('input');
+                    serviceQuantityInput.type = 'hidden';
+                    serviceQuantityInput.name = `services[${serviceId}][quantity]`;
+                    serviceQuantityInput.value = service.quantity;
+                    form.appendChild(serviceQuantityInput);
 
-                    form.appendChild(serviceInput);
+                    const servicePriceInput = document.createElement('input');
+                    servicePriceInput.type = 'hidden';
+                    servicePriceInput.name = `services[${serviceId}][price]`;
+                    servicePriceInput.value = service.price;
+                    form.appendChild(servicePriceInput);
+
+                    const serviceDescriptionInput = document.createElement('input');
+                    serviceDescriptionInput.type = 'hidden';
+                    serviceDescriptionInput.name = `services[${serviceId}][description]`;
+                    serviceDescriptionInput.value = service.description;
+                    form.appendChild(serviceDescriptionInput);
+
+                    const serviceIdInput = document.createElement('input');
+                    serviceIdInput.type = 'hidden';
+                    serviceIdInput.name = `services[${serviceId}][id]`;
+                    serviceIdInput.value = serviceId;
+                    form.appendChild(serviceIdInput);
                 }
             }
-
-            // Enviar el formulario
+            console.log(new FormData(form));
             form.submit();
         }
-    } else {
-        // Si todos los servicios están confirmados, simplemente crea el paquete
-        const form = document.getElementById('paqueteForm');
-        document.querySelectorAll('.service-hidden-input').forEach(input => input.remove());
-
-        for (let serviceId in confirmedServices) {
-            const service = confirmedServices[serviceId];
-
-            const serviceInput = document.createElement('input');
-            serviceInput.type = 'hidden';
-            serviceInput.name = `services[${serviceId}]`;
-            serviceInput.value = JSON.stringify(service);
-            serviceInput.classList.add('service-hidden-input');
-
-            form.appendChild(serviceInput);
-        }
-
-        form.submit();
-    }
-}
 
         window.onscroll = function() {
             const prevista = document.getElementById('previstaServicio');
@@ -370,5 +355,6 @@ function toggleCreatePackageButton() {
             prevista.style.top = offset + 'px';
         };
     </script>
+
 </body>
 </html>
