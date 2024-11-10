@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('pages.sesion.login');
+    return view('pages.calendario');
 });
 
 Route::middleware('auth')->group(function () {

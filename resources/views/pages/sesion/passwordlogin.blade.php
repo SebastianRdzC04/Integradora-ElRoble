@@ -16,7 +16,7 @@
 
                 <h3 class="text-center mb-4">Iniciar Sesión</h3>
                 
-                <form action="{{route('login')}}" method="post">
+                <form action="{{route('login.store')}}" method="post">
                     @csrf
                     <div class="form-floating mb-3">
                         <input type="email" id="email" name="email" value="{{$email}}" class="form-control" readonly>

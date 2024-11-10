@@ -12,6 +12,32 @@
     <title>Document</title>
 </head>
 
+<div class="alert alert-danger">{{ session('logout') }}</div>
+
+<form action="{{ route('logout') }}" method="post">
+    @csrf
+    <button type="submit">Cerrar sesión</button>
+</form>
+
+<form action="{{ route('login') }}" method="get">
+    @csrf
+    <button type="submit">Iniciar sesion</button>
+</form>
+
+@if (auth()->check() && auth()->user()->email_verified_at)
+    <p>Tu cuenta ya está verificada.</p>
+@elseif (auth()->check())
+    <form action="{{ route('verification.send') }}" method="post">
+        @csrf
+        <button type="submit">Verificar cuenta</button>
+    </form>
+@else
+    <p>Por favor, inicia sesión para verificar tu cuenta.</p>
+@endif
+
+
+
+
 <body>
     <header>
         <div class="container d-flex justify-content-center align-items-center">
