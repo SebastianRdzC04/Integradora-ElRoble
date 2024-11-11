@@ -13,14 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('services', function (Blueprint $table) {
+        Schema::create('serial_number_types_inventory', function (Blueprint $table) {
             $table->id();
+            $table->string('code', 10)->unique();
             $table->string('name', 50);
-            $table->string('description', 255);
-            $table->foreignId('service_category_id')->constrained('service_categories');
-            $table->decimal('price', 10, 2);
-            $table->integer('people_quantity')->nullable();
-            $table->decimal('coast', 10, 2)->nullable();
+            $table->foreignId('category_id')->constrained('inventory_categories');
             $table->timestamps();
         });
     }
@@ -32,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('services');
+        Schema::dropIfExists('serial_number_types_inventory');
     }
 };

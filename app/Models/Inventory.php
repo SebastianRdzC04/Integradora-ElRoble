@@ -11,9 +11,9 @@ class Inventory extends Model
 
     protected $table = 'inventory';
 
-    public function inventoryCategory()
+    public function SerialType()
     {
-        return $this->belongsTo(InventoryCategory::class, 'category_id', 'id');
+        return $this->belongsTo(SerialNumberType::class, 'serial_number_type_id', 'id');
     }
 
 

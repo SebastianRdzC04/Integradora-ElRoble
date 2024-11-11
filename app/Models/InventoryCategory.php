@@ -11,8 +11,8 @@ class InventoryCategory extends Model
 
     protected $table = 'inventory_categories';
 
-    public function inventories()
+    public function SerialNumberTypes()
     {
-        return $this->hasMany(Inventory::class);
+        return $this->hasMany(SerialNumberType::class, 'category_id', 'id');
     }
 }
