@@ -21,20 +21,44 @@ class PaquetesAdminController extends Controller
 
     public function store(Request $request)
     {
-        // Validación de los datos del paquete
         $request->validate([
             'place_id' => 'required|exists:places,id',
             'name' => 'required|max:50',
             'description' => 'required|max:255',
-            'max_people' => 'required|integer',
-            'price' => 'required|numeric',
-            'start_date' => 'required|date',
+            'max_people' => 'required|integer|min:30',
+            'price' => 'required|numeric|min:1000',
+            'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after_or_equal:start_date',
             'services' => 'array',
             'services.*.id' => 'nullable|exists:services,id',
             'services.*.quantity' => 'nullable|integer|min:1',
             'services.*.price' => 'nullable|numeric',
-            'services.*.description' => 'nullable|string|max:255',
+            'services.*.description' => 'nullable|string|max:70',
+        ], [
+            'place_id.required' => 'El lugar es obligatorio.',
+            'place_id.exists' => 'El lugar seleccionado no es válido.',
+            'name.required' => 'El nombre es obligatorio.',
+            'name.max' => 'El nombre no puede tener más de 50 caracteres.',
+            'description.required' => 'La descripción es obligatoria.',
+            'description.max' => 'La descripción no puede tener más de 255 caracteres.',
+            'max_people.required' => 'El número máximo de personas es obligatorio.',
+            'max_people.integer' => 'El número máximo de personas debe ser un número entero.',
+            'max_people.min' => 'El número máximo de personas debe ser al menos 30.',
+            'price.required' => 'El precio es obligatorio.',
+            'price.numeric' => 'El precio debe ser un número.',
+            'price.min' => 'El precio debe ser al menos 1000.',
+            'start_date.required' => 'La fecha de inicio es obligatoria.',
+            'start_date.date' => 'La fecha de inicio no tiene un formato válido.',
+            'end_date.required' => 'La fecha de finalización es obligatoria.',
+            'end_date.date' => 'La fecha de finalización no tiene un formato válido.',
+            'end_date.after_or_equal' => 'La fecha de finalización debe ser igual o posterior a la fecha de inicio.',
+            'services.array' => 'El campo de servicios debe ser un arreglo.',
+            'services.*.id.exists' => 'El servicio seleccionado no es válido.',
+            'services.*.quantity.integer' => 'La cantidad debe ser un número entero.',
+            'services.*.quantity.min' => 'La cantidad debe ser al menos 1.',
+            'services.*.price.numeric' => 'El precio del servicio debe ser un número.',
+            'services.*.description.string' => 'La descripción del servicio debe ser una cadena de texto.',
+            'services.*.description.max' => 'La descripción del servicio no puede tener más de 70 caracteres.',
         ]);
     
         $package = new Package();

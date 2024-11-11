@@ -17,7 +17,7 @@
     <div class="container mt-4">
         <div class="row">
             @if(session('success'))
-            <div class="alert alert-success" role="alert">
+            <div class="alert alert-success" role="alert" style="background-color: rgb(30, 78, 21); color: white;">
                 {{ session('success') }}
             </div>
             @endif
@@ -51,19 +51,21 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-                    <div class="mb-3">
-                        <label for="max_people" class="form-label">Máximo de Personas</label>
-                        <input type="number" name="max_people" id="max_people" class="form-control" placeholder="Ej. 50" value="{{ old('max_people') }}" oninput="updatePreview()">
-                        @error('max_people')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="mb-3">
-                        <label for="price" class="form-label">Precio del Paquete</label>
-                        <input type="number" name="price" id="price" class="form-control" placeholder="Ej. $5000" value="{{ old('price') }}" oninput="updatePreview()">
-                        @error('price')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                    <div class="mb-3 row">
+                        <div class="col-md-6">
+                            <label for="max_people" class="form-label">Máximo de Personas</label>
+                            <input type="number" name="max_people" id="max_people" class="form-control" placeholder="Ej. 50" value="{{ old('max_people') }}" oninput="updatePreview()">
+                            @error('max_people')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label for="price" class="form-label">Precio del Paquete</label>
+                            <input type="number" name="price" id="price" class="form-control" placeholder="Ej. $5000" value="{{ old('price') }}" oninput="updatePreview()">
+                            @error('price')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
                     <div class="mb-3 row">
                         <div class="col-md-6">
@@ -91,7 +93,7 @@
                             <div class="col-md-4 mb-3 equal-height">
                                 <div class="card category-card" onclick="toggleServices('{{ $category->id }}')">
                                     <div class="card-body text-center">
-                                        <h5 class="card-title">{{ $category->name }}</h5>
+                                        <h6 class="card-title">{{ $category->name }}</h6>
                                     </div>
                                 </div>
                             </div>
@@ -136,7 +138,7 @@
                     <h6><strong>Servicios:</strong></h6>
                     <div id="servicios-lista"></div>
                 </div>
-                <button type="button" class="btn btn-success mt-3" id="crearPaquete" onclick="crearPaquete()">Crear Paquete</button>
+                <button type="button" class="btn btn-success mt-3" id="crearPaqueteBoton" onclick="crearPaquete()">Crear Paquete</button>
             </div>
         </div>
     </div>    
@@ -177,29 +179,35 @@
         }
 
         function confirmService(serviceId, categoryId) {
-            const quantity = document.querySelector(`input[name="services[${serviceId}][quantity]"]`).value;
-            const price = document.querySelector(`input[name="services[${serviceId}][price]"]`).value;
-            const description = document.querySelector(`input[name="services[${serviceId}][description]"]`).value;
+    const quantity = document.querySelector(`input[name="services[${serviceId}][quantity]"]`).value;
+    const price = document.querySelector(`input[name="services[${serviceId}][price]"]`).value;
+    const description = document.querySelector(`input[name="services[${serviceId}][description]"]`).value;
 
-            if (quantity && price && description) {
-                confirmedServices[serviceId] = {
-                    categoryId,
-                    quantity,
-                    price,
-                    description,
-                    isConfirmed: true
-                };
+    if (quantity && price && description) {
+        confirmedServices[serviceId] = {
+            categoryId,
+            quantity,
+            price,
+            description,
+            isConfirmed: true
+        };
 
-                delete selectedServices[serviceId];
+        delete selectedServices[serviceId];
 
-                updateServicePreview();
-                document.getElementById(`service-details-${serviceId}`).style.display = 'none';
+        updateServicePreview();
+        document.getElementById(`service-details-${serviceId}`).style.display = 'none';
 
-                toggleCreatePackageButton();
-            } else {
-                alert('Por favor, completa todos los campos del servicio.');
-            }
-        }
+        // Oculta permanentemente todos los servicios de la misma categoría
+        const categoryServices = document.querySelectorAll(`#services-${categoryId} .service-card`);
+        categoryServices.forEach(card => {
+            card.style.display = 'none';
+        });
+
+        toggleCreatePackageButton();
+    } else {
+        alert('Por favor, completa todos los campos del servicio.');
+    }
+}
 
         function updateServicePreview() {
             const serviciosLista = document.getElementById('servicios-lista');
@@ -233,47 +241,61 @@
         } 
 
         function selectService(checkbox, categoryId) {
-            const selectedServiceId = checkbox.value;
-            const isSelected = checkbox.checked;
-            const serviceCard = checkbox.closest('.service-card');
-            const serviceName = serviceCard.querySelector('.card-title').innerText;
+    const selectedServiceId = checkbox.value;
+    const isSelected = checkbox.checked;
+    const serviceCard = checkbox.closest('.service-card');
+    const serviceName = serviceCard.querySelector('.card-title').innerText;
 
-            const serviceQuantityInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][quantity]"]`);
-            const servicePriceInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][price]"]`);
-            const serviceDescriptionInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][description]"]`);
+    const serviceQuantityInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][quantity]"]`);
+    const servicePriceInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][price]"]`);
+    const serviceDescriptionInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][description]"]`);
 
-            if (isSelected) {
-                const detailsContainer = document.getElementById(`service-details-${selectedServiceId}`);
-                if (detailsContainer) {
-                    detailsContainer.style.display = 'block';
-                }
-
-                if (serviceQuantityInput.value && servicePriceInput.value && serviceDescriptionInput.value) {
-                    if (isSelected) {
-                        selectedServices[selectedServiceId] = {
-                            categoryId,
-                            serviceName,
-                            quantity: serviceQuantityInput.value,
-                            price: servicePriceInput.value,
-                            description: serviceDescriptionInput.value
-                        };
-                    } else {
-                        delete selectedServices[selectedServiceId];
-                    }
-                }
-            } else {
-                delete selectedServices[selectedServiceId];
-                delete confirmedServices[selectedServiceId];
-
-                updateServicePreview();
-
-                const detailsContainer = document.getElementById(`service-details-${selectedServiceId}`);
-                if (detailsContainer) {
-                    detailsContainer.style.display = 'none';
-                }
-            }
-            updateServicePreview();
+    if (isSelected) {
+        // Muestra el formulario emergente de detalles del servicio
+        const detailsContainer = document.getElementById(`service-details-${selectedServiceId}`);
+        if (detailsContainer) {
+            detailsContainer.style.display = 'block';
         }
+
+        // Oculta temporalmente otros servicios de la misma categoría
+        const categoryServices = document.querySelectorAll(`#services-${categoryId} .service-card`);
+        categoryServices.forEach(card => {
+            if (card !== serviceCard) {
+                card.style.display = 'none';
+            }
+        });
+
+        // Si los campos están completos, agrega el servicio a selectedServices
+        if (serviceQuantityInput.value && servicePriceInput.value && serviceDescriptionInput.value) {
+            selectedServices[selectedServiceId] = {
+                categoryId,
+                serviceName,
+                quantity: serviceQuantityInput.value,
+                price: servicePriceInput.value,
+                description: serviceDescriptionInput.value
+            };
+        }
+    } else {
+        // Quita el servicio de selectedServices y muestra nuevamente otros servicios de la categoría
+        delete selectedServices[selectedServiceId];
+        delete confirmedServices[selectedServiceId];
+
+        updateServicePreview();
+
+        // Oculta el formulario emergente de detalles del servicio
+        const detailsContainer = document.getElementById(`service-details-${selectedServiceId}`);
+        if (detailsContainer) {
+            detailsContainer.style.display = 'none';
+        }
+
+        // Vuelve a mostrar todos los servicios de la categoría
+        const categoryServices = document.querySelectorAll(`#services-${categoryId} .service-card`);
+        categoryServices.forEach(card => {
+            card.style.display = 'block';
+        });
+    }
+    updateServicePreview();
+}
 
         function updateServicePreview() {
             const serviciosLista = document.getElementById('servicios-lista');

@@ -25,7 +25,7 @@ body {
     border-radius: 8px;
 }
 h2, h3, label {
-    color: #FFD700;
+    color: #ffffff;
     text-align: center;
 }
 ul {
@@ -38,24 +38,34 @@ li {
 .category-card { 
     cursor: pointer; 
     transition: transform 0.2s; 
-    background-color: #3a2b18; 
+    background-color: #2b1a06; 
     color: white; 
-    border: 2px solid yellow;
+    border: 2px solid rgb(255, 255, 255);
 }
 .category-card:hover { transform: scale(1.05); }
 #crearPaquete {
-    background-color: rgba(34, 52, 34, 0.8);
+    background-color: rgba(18, 58, 18, 0.76);
     padding: 20px;
     border-radius: 8px;
     color: white;
     margin-top: 20px;
     margin-bottom: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.904);
+}
+#crearPaqueteBoton {
+    background-color: #2b1a06; 
+    padding: 10px;
+    border-radius: 100px;
+    color: white;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.904);
 }
 #previstaServicio {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: rgba(34, 52, 34, 0.8);
+    background-color: rgba(18, 58, 18, 0.76);
     padding: 20px;
     border-radius: 8px;
     color: white;
@@ -68,6 +78,7 @@ li {
     transform: translateY(-50%);
     transition: top 0.5s ease;
     margin-bottom: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.904);
 }
 @media (max-width: 770px) {
     #previstaServicio {
@@ -78,6 +89,7 @@ li {
         width: 100%;
         margin-top: 20px;
         transform: none;
+        margin-left: 40px;
     }
 }
 .prevista-imagen-container {
@@ -112,7 +124,7 @@ li {
 .service-card {
     width: 100%;
     margin-bottom: 15px;
-    border: 2px solid yellow;
+    border: 2px solid rgb(255, 255, 255);
     border-radius: 8px;
     background-color: rgba(34, 52, 34, 0.9);
     color: white;
@@ -141,7 +153,7 @@ li {
 }
 
 .service-card h5 {
-    color: #FFD700;
+    color: #ffffff;
     margin-bottom: 5px;
 }
 
@@ -153,7 +165,7 @@ li {
 .selected-service-container {
     display: none;
     padding: 15px;
-    border: 2px solid yellow;
+    border: 2px solid rgb(255, 255, 255);
     border-radius: 8px;
     background-color: rgba(34, 52, 34, 0.8);
     color: white;
@@ -162,7 +174,7 @@ li {
 }
 
 .service-details {
-    border: 2px solid yellow;
+    border: 2px solid rgb(255, 255, 255);
     border-radius: 8px;
     padding: 10px;
     margin-top: 10px;
