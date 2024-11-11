@@ -31,6 +31,7 @@ class DatabaseSeeder extends Seeder
         $this->call(InventoryCategoriesTable::class);
         $this->call(PlacesTable::class);
         $this->call(RolesSeeder::class);
+        $this->call(SerialNumberSeeder::class);
         $this->call(InventoryTable::class);
 
 
