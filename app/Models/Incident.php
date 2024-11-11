@@ -15,4 +15,10 @@ class Incident extends Model
     {
         return $this->belongsTo(Event::class);
     }
+    public function inventory()
+    {
+        return $this->belongsToMany(Inventory::class, 'incident_inventory')
+                    ->withPivot('description', 'price')
+                    ->withTimestamps();
+    }
 }
