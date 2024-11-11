@@ -1,0 +1,21 @@
+.mini-table {
+    position: relative;
+    max-height: 400px;
+    height: 400px;
+    overflow-y: auto;
+
+}
+.mini-table table {
+    margin-bottom: 0;
+}
+.mini-table thead {
+    position: sticky;
+    top: 0;
+
+}
+.big-table {
+    position: relative;
+    max-height: 500px;
+    height: 500px;
+    overflow-y: auto;
+}
