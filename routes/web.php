@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Models\Consumable;
 use App\Models\Date;
+use App\Models\Event;
 use App\Models\Quote;
 use Illuminate\Support\Facades\Route;
 
@@ -17,7 +19,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('pages.calendario');
+
+    $quotes = Quote::paginate(4);
+    $consumables = Consumable::all();
+    $events = Event::orderBy('date', 'asc')->where('status', 'Pendiente')->get();
+    $currentEvent = Event::where('date', date('Y-m-d'))->first();
+    $fullQuoteDates = Quote::selectRaw('date, count(*) as count')
+        ->groupBy('date')
+        ->having('count', '>=', 3)
+        ->pluck('date'); 
+    return view('pages.dashboard', compact('quotes', 'consumables', 'events', 'fullQuoteDates', 'currentEvent'));
 });
 
 Route::middleware('auth')->group(function () {
