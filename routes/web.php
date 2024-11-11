@@ -3,10 +3,13 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Consumable;
+use App\Models\ConsumableRecord;
 use App\Models\Date;
 use App\Models\Event;
+use App\Models\Inventory;
 use App\Models\Package;
 use App\Models\Quote;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,6 +28,24 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+Route::get('dashboard/records', function () {
+    $events = Event::orderBy('date', 'asc')->get();
+    $consumableRecords = ConsumableRecord::all();
+    
+    $inventory = Inventory::select(
+        DB::raw('SUBSTRING_INDEX(serial_number, "-", 1) as serial_number'),
+        'name',
+        'category_id',
+        DB::raw('COUNT(*) as total'),
+        DB::raw('SUBSTRING_INDEX(serial_number, "-", 1) as item_type')
+    )
+    ->with('inventoryCategory')
+    ->groupBy('name', 'category_id', DB::raw('SUBSTRING_INDEX(serial_number, "-", 1)'))
+    ->orderBy('category_id', 'asc')
+    ->get();
+    return view('pages.dashboard.registro', compact('events', 'consumableRecords', 'inventory'));
+})->name('dashboard.records');
 
 Route::get('dashboard/packages', function () {
 

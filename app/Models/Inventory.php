@@ -13,7 +13,7 @@ class Inventory extends Model
 
     public function inventoryCategory()
     {
-        return $this->belongsTo(InventoryCategory::class);
+        return $this->belongsTo(InventoryCategory::class, 'category_id', 'id');
     }
 
 

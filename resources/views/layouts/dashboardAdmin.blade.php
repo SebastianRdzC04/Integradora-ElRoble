@@ -28,16 +28,19 @@
             display: grid;
             grid-template-columns: 2fr 10fr;
         }
+        .sidebar {
+            height: 100%;
+        }
     </style>
 </head>
 
 <body>
     <main>
-        <div class="container-fluid">
-            <div class="row flex-nowrap">
+        <div class="container-fluid sidebar">
+            <div class="row flex-nowrap sidebar">
                 <div class="col-12 px-sm-2 px-0 bg-dark">
                     <div
-                        class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
+                        class="sidebar d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
                         <a href="/"
                             class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                             <span class="fs-5 d-none d-sm-inline">Menu</span>
@@ -63,7 +66,7 @@
                                                 class="d-none d-sm-inline">Graficos</span> </a>
                                     </li>
                                     <li>
-                                        <a href="#" class="nav-link px-0"> <span
+                                        <a href="{{route('dashboard.records')}}" class="nav-link px-0"> <span
                                                 class="d-none d-sm-inline">Registro</span> </a>
                                     </li>
 
@@ -149,6 +152,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
+
+    
     @yield('scripts')
 </body>
 
