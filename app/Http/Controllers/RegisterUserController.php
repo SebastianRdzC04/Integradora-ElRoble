@@ -51,27 +51,14 @@ class RegisterUserController extends Controller
             if ($role) {
                 $user->roles()->attach($role->id);
             }
-    
-            // Verificar si el usuario ya solicitó el correo en los últimos 2 minutos
-            if ($user->email_verification_requested_at && 
-                $user->email_verification_requested_at->addMinutes(2)->isFuture()) {
-                return redirect()->route('verification.notice')->withErrors([
-                    'email' => 'Ya solicitaste un enlace de verificación recientemente. Inténtalo de nuevo en unos minutos.',
-                ]);
-            }
-    
-            // Actualizar el campo de última solicitud de verificación
-            $user->update(['email_verification_requested_at' => now()]);
-    
-            // Enviar correo de verificación
-            $user->sendEmailVerificationNotification();
-    
-            // Autenticar al usuario después de registrarlo
+        
             Auth::login($user);
+
+            // Enviar correo de verificación
+            return redirect()->route('verification.send');
+    
         });
     
-        // Redirigir al usuario al dashboard o a donde se quiera después de registrarse
-        return redirect()->route('verification.notice');
     }
     
     

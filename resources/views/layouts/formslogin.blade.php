@@ -32,6 +32,7 @@
     <div class="container d-flex justify-content-center content">
         <div class="card shadow-lg border-0 rounded" style="width: 100%; max-width: 400px; background-color: #3a3822f7;">
             <div class="card-body">
+                
                 <div class="d-flex justify-content-center mb-3">
                     
                     <img src="{{asset('js\images\El roble.jpg') }}" class="img-login" alt="Descripción de la imagen">

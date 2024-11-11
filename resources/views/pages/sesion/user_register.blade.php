@@ -1,32 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro</title>
+@extends('layouts.formslogin')
 
+@section('link')
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<style>
-    .background-image {
-            position: fixed; 
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url("{{ asset('js/images/El roble photo1.jpg') }}");
-            background-size: cover; 
-            background-position: center;
-            background-repeat: no-repeat;
-            filter: blur(8px);
-            z-index: -1; 
-        }
-</style>
+@endsection
 
-<body class="bg-light d-flex align-items-center justify-content-center" style="min-height: 100vh; ">
-<div class="background-image"></div>
-    <div class="container d-flex justify-content-center">
-        <div class="card shadow-lg border-0 rounded" style="width: 100%; max-width: 400px; background-color: #292005e3;">
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -36,16 +13,19 @@
                     @endforeach
                 </ul>
             </div>
-    @endif
-            <div class="card-body">
-                <div >
+        @endif
+        <div >
                 <button class="btn btn-toolbar" onclick="backStep()" id="btnback" style="display:none; color:brown;">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
                     </svg>
                     </button>  
-                <h3 class="text-center mb-4">Crear una Cuenta</h3>
+                @section('title form') 
+                Crear una Cuenta 
+                @endsection
 
+            @section('form')
+                    
                 <form method="POST" action="{{ route('register.store') }}" id="registrationForm">
                     @csrf
 
@@ -118,15 +98,11 @@
                         <button type="submit" class="btn btn-success w-100">Registrar</button>
                     </div>
                 </form>
-                </div>
-                <div>
 
-                </div>
-                    
-            </div>
+            @endsection
         </div>
-    </div>
 
+@section('script')
     <script>
             function backStep() {
             document.getElementById("step1").style.display = "block";
@@ -139,8 +115,4 @@
             document.getElementById("btnback").style.display = "block";
         }
     </script>
-</body>
-
-
-
-</html>
+@endsection
