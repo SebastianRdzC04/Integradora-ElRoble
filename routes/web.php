@@ -33,17 +33,7 @@ Route::get('dashboard/records', function () {
     $events = Event::orderBy('date', 'asc')->get();
     $consumableRecords = ConsumableRecord::all();
     
-    $inventory = Inventory::select(
-        DB::raw('SUBSTRING_INDEX(serial_number, "-", 1) as serial_number'),
-        'name',
-        'category_id',
-        DB::raw('COUNT(*) as total'),
-        DB::raw('SUBSTRING_INDEX(serial_number, "-", 1) as item_type')
-    )
-    ->with('inventoryCategory')
-    ->groupBy('name', 'category_id', DB::raw('SUBSTRING_INDEX(serial_number, "-", 1)'))
-    ->orderBy('category_id', 'asc')
-    ->get();
+    $inventory = Inventory::select('serial_number_type_id', DB::raw('count(*) as total'))->groupBy('serial_number_type_id')->get();
     return view('pages.dashboard.registro', compact('events', 'consumableRecords', 'inventory'));
 })->name('dashboard.records');
 

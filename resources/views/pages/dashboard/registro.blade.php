@@ -86,10 +86,11 @@
                         <tbody>
                             @foreach ($inventory as $item )
                             <tr>
-                                <td>{{strtoupper($item->serial_number)}}</td>
-                                <td> {{$item->name}} </td>
-                                <td>{{$item->total}} </td>
-                                <td> {{$item->inventoryCategory->name}} </td>
+                                <td>{{$item->SerialType->code}}</td>
+                                <td> {{$item->SerialType->name}} </td>
+                                <td>{{$item->total}}</td>
+                                <td> {{$item->SerialType->category->name}} </td>
+                       
                             </tr>
                             @endforeach
 
