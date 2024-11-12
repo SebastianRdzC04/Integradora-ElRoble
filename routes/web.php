@@ -43,6 +43,11 @@ Route::get('dashboard/packages', function () {
     return view('pages.dashboard.packages', compact('packages'));
 })->name('dashboard.packages');
 
+Route::get('dashboard/graphics', function () {
+    return view('pages.dashboard.graficos');
+})->name('dashboard.graphics');
+
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
