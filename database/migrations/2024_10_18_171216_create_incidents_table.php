@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('incidents', function (Blueprint $table) {
             $table->id();
             $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('title', 100);
             $table->string('description', 100);
             $table->decimal('price', 8, 2)->default(0);

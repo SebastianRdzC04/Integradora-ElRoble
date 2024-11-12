@@ -38,13 +38,15 @@ Route::middleware('guest')->group(function()
 
     Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update');
 
-
-
-
     Route::get('/login', [LoginController::class, 'create'])->name('login');
+
     Route::get('/login/{phoneoremail?}', [LoginController::class, 'password'])->middleware('checkemailorphoneregistered')->name('login.password');
+
     Route::post('/login', [LoginController::class, 'store'])->name('login.store');
 });
+
+
+
 
 Route::middleware('auth')->group(function(){
     // Ruta para el enlace de verificación del email
