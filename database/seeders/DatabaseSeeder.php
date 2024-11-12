@@ -24,7 +24,6 @@ class DatabaseSeeder extends Seeder
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',
         // ]);
-        //ejecutar people seeder
         $this->call(PeopleTableSeeder::class);
         $this->call(ConcumableCategoriesTable::class);
         $this->call(ServiceCategoriesTable::class);
@@ -33,17 +32,24 @@ class DatabaseSeeder extends Seeder
         $this->call(RolesSeeder::class);
         $this->call(SerialNumberSeeder::class);
         $this->call(InventoryTable::class);
+        $this->call(ServiceSeeder::class);
+        $this->call(PackageSeeder::class);
 
 
-        $faker = Faker::create('es_MX');
-        
         for ($i = 1; $i <= 10; $i++) {
+            $faker = Faker::create('es_MX');
             $user = new User();
             $user->email = $faker->email;
             $user->password = Hash::make('password');
             $user->person_id = $i;
             $user->save();
         }
+
+
+        $this->call(QuoteSeeder::class);
+
+
+
         
 
 
