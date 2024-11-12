@@ -12,19 +12,23 @@
             margin-bottom: 20px;
         }
         #crearServicio {
-            background-color: rgba(34, 52, 34, 0.8);
+            background-color: rgba(18, 58, 18, 0.76);
             padding: 20px;
             border-radius: 8px;
             color: white;
+            margin: 5px;
+            border: 2px solid rgb(255, 255, 255);
         }
         #previstaServicio {
             display: flex;
             flex-direction: column;
             align-items: center;
-            background-color: rgba(34, 52, 34, 0.8);
+            background-color: rgba(18, 58, 18, 0.76);
             padding: 20px;
+            margin: 5px;
             border-radius: 8px;
-            color: #FFD700;
+            color: #ffffff;
+            border: 2px solid rgb(255, 255, 255);
         }
         .prevista-imagen-container {
             position: relative;
@@ -34,6 +38,8 @@
             justify-content: center;
             align-items: center;
             margin-bottom: 20px;
+            border-radius: 3%;
+            border: 2px solid rgb(255, 255, 255);
         }
         .prevista-imagen {
             width: 100%;
@@ -56,7 +62,7 @@
         }
         #category-label {
             display: inline-block;
-            background-color: #FFD700;
+            background-color: #ffffff;
             color: black;
             border-radius: 20px;
             padding: 5px 10px;
@@ -76,6 +82,15 @@
         .fade-out {
             opacity: 0;
             transform: translateY(-10px);
+        }
+        #crearPaqueteBoton {
+            background-color: #2b1a06; 
+            padding: 10px;
+            border-radius: 100px;
+            color: white;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.904);
         }
     </style>
 </head>
@@ -152,7 +167,7 @@
                 </form>
             </div>
     
-            <div class="col-md-6 d-flex justify-content-center align-items-center" id="previstaServicio">
+            <div class="col-md-5 d-flex justify-content-center align-items-center" id="previstaServicio">
                 <h2>Prevista del Servicio</h2>
                 <div id="category-label" style="display: none;">Categoría</div>
                 <div class="prevista-imagen-container">
@@ -165,7 +180,7 @@
                     </div>
                 </div>
                 <div class="d-flex justify-content-center">
-                    <button type="button" class="btn btn-warning mt-3" id="btnCrearServicio">Crear Servicio</button>
+                    <button type="button" class="btn btn-warning mt-3" id="crearPaqueteBoton">Crear Servicio</button>
                 </div>
             </div>
         </div>

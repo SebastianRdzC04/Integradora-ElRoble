@@ -37,7 +37,8 @@ Route::get('/crearpaquetes', [PaquetesAdminController::class, 'create'])->name('
 Route::post('/paquetes', [PaquetesAdminController::class, 'store'])->name('paquetes.store'); // Agregar esta ruta
 Route::get('/crearservicios', [ServiciosAdminController::class, 'create'])->name('crearservicios');
 Route::post('/servicios', [ServiciosAdminController::class, 'store'])->name('servicios.store');
-Route::get('/cotizaciones', [CotizacionesClientesController::class, 'create'])->name('cotizaciones');
+Route::get('/cotizaciones', [CotizacionesClientesController::class, 'create'])->name('cotizaciones.create');
+Route::post('cotizacionesclientes', [CotizacionesClientesController::class, 'store'])->name('cotizacionesclientes.store');
 Route::get('/inicio', [ServiciosAdminController::class, 'provisional'])->name('inicio');
 
 // Si necesitas una vista para listar paquetes
