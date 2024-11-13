@@ -48,7 +48,7 @@
                             @enderror
                         </div>
                         <div class="col-md-3">
-                            <label for="end_time" class="form-label">Hora de Finalización</label>
+                            <label for="end_time" class="form-label">Hora de Final</label>
                             <input type="time" name="end_time" id="end_time" class="form-control @error('end_time') is-invalid @enderror" min="11:00" max="03:00" step="1800" value="{{ old('end_time') }}">
                             @error('end_time')
                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -282,11 +282,11 @@
             vistaPrevia.style.top = offset + 'px';
         };
 
-    document.getElementById('hora_inicio').addEventListener('input', function() {
+    document.getElementById('start_time').addEventListener('input', function() {
         validarHora(this);
     });
 
-    document.getElementById('hora_fin').addEventListener('input', function() {
+    document.getElementById('sart_time').addEventListener('input', function() {
         validarHora(this);
     });
 
@@ -303,12 +303,12 @@
         }
     }
 
-    document.getElementById('hora_inicio').setAttribute('step', '1800');
-    document.getElementById('hora_fin').setAttribute('step', '1800');
+    document.getElementById('start_time').setAttribute('step', '1800');
+    document.getElementById('end_time').setAttribute('step', '1800');
     
     function establecerHorasDisponibles() {
-        let horaInicioSelect = document.getElementById('hora_inicio');
-        let horaFinSelect = document.getElementById('hora_fin');
+        let horaInicioSelect = document.getElementById('start_time');
+        let horaFinSelect = document.getElementById('end_time');
         
         for (let i = 0; i < 24; i++) {
             for (let j = 0; j < 60; j += 30) {
@@ -339,7 +339,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        const fieldsToWatch = ['place_id', 'fecha', 'hora_inicio', 'hora_fin', 'cantidad_invitados', 'type_event', 'nombre', 'telefono'];
+        const fieldsToWatch = ['place_id', 'date', 'start_time', 'end_time', 'guest_count', 'type_event', 'owner_name', 'owner_phone'];
 
         fieldsToWatch.forEach(fieldId => {
             const field = document.getElementById(fieldId);
@@ -353,11 +353,11 @@
         });
 
         function updatePreview() {
-            const name = document.getElementById('nombre').value || 'Nombre';
-            const date = document.getElementById('fecha').value || '-';
-            const startTime = document.getElementById('hora_inicio').value || '-';
-            const endTime = document.getElementById('hora_fin').value || '-';
-            const guests = document.getElementById('cantidad_invitados').value || '-';
+            const name = document.getElementById('owner_name').value || 'Nombre';
+            const date = document.getElementById('date').value || '-';
+            const startTime = document.getElementById('start_time').value || '-';
+            const endTime = document.getElementById('end_date').value || '-';
+            const guests = document.getElementById('guest_count').value || '-';
             const typeEvent = document.getElementById('type_event').value || 'Evento';
 
             document.getElementById('prevista-nombre').innerText = name;
