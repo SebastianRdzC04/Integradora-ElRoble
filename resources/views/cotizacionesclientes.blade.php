@@ -13,6 +13,9 @@
             @if(session('success'))
             <div class="alert alert-success" role="alert" style="background-color: rgb(30, 78, 21); color: white;">
                 {{ session('success') }}
+                @elseif(session('error'))
+                <div class="alert alert-error" role="alert" style="background-color: rgb(30, 78, 21); color: white;">
+                    {{ session('error') }}
             </div>
             @endif
             <div class="col-md-7" id="crearPaquete">
@@ -35,21 +38,21 @@
                     <div class="mb-3 row">
                         <div class="col-md-6">
                             <label for="date" class="form-label">Fecha</label>
-                            <input type="date" name="date" id="date" class="form-control @error('date') is-invalid @enderror" value="{{ old('date') }}">
+                            <input type="date" name="date" id="date" class="form-control @error('date') is-invalid @enderror" oninput="updatePreview()" value="{{ old('date') }}">
                             @error('date')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-md-3">
                             <label for="start_time" class="form-label">Hora de Inicio</label>
-                            <input type="time" name="start_time" id="start_time" class="form-control @error('start_time') is-invalid @enderror" min="11:00" max="03:00" step="1800" value="{{ old('start_time') }}">
+                            <input type="time" name="start_time" id="start_time" class="form-control @error('start_time') is-invalid @enderror" min="11:00" max="03:00" step="1800" oninput="updatePreview()" value="{{ old('start_time') }}">
                             @error('start_time')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-md-3">
                             <label for="end_time" class="form-label">Hora de Final</label>
-                            <input type="time" name="end_time" id="end_time" class="form-control @error('end_time') is-invalid @enderror" min="11:00" max="03:00" step="1800" value="{{ old('end_time') }}">
+                            <input type="time" name="end_time" id="end_time" class="form-control @error('end_time') is-invalid @enderror" min="11:00" max="03:00" step="1800" oninput="updatePreview()" value="{{ old('end_time') }}">
                             @error('end_time')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -59,7 +62,7 @@
                     <div class="mb-3 row">
                         <div class="col-md-6">
                             <label for="guest_count" class="form-label">Cantidad de Invitados</label>
-                            <input type="number" name="guest_count" id="guest_count" class="form-control @error('guest_count') is-invalid @enderror" value="{{ old('guest_count') }}">
+                            <input type="number" name="guest_count" id="guest_count" class="form-control @error('guest_count') is-invalid @enderror" oninput="updatePreview()" value="{{ old('guest_count') }}">
                             @error('guest_count')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -92,14 +95,14 @@
         
                     <div class="mb-3">
                         <label for="owner_name" class="form-label">Nombre</label>
-                        <input type="text" name="owner_name" id="owner_name" class="form-control @error('owner_name') is-invalid @enderror" value="{{ old('owner_name') }}">
+                        <input type="text" name="owner_name" id="owner_name" class="form-control @error('owner_name') is-invalid @enderror" oninput="updatePreview()" value="{{ old('owner_name') }}">
                         @error('owner_name')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
                     <div class="mb-3">
                         <label for="owner_phone" class="form-label">Teléfono</label>
-                        <input type="number" name="owner_phone" id="owner_phone" class="form-control @error('owner_phone') is-invalid @enderror" value="{{ old('owner_phone') }}">
+                        <input type="number" name="owner_phone" id="owner_phone" class="form-control @error('owner_phone') is-invalid @enderror" oninput="updatePreview()" value="{{ old('owner_phone') }}">
                         @error('owner_phone')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -286,10 +289,6 @@
         validarHora(this);
     });
 
-    document.getElementById('sart_time').addEventListener('input', function() {
-        validarHora(this);
-    });
-
     function validarHora(input) {
         let hora = input.value;
         let horaObj = new Date('1970-01-01T' + hora + ':00');
@@ -339,43 +338,45 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-        const fieldsToWatch = ['place_id', 'date', 'start_time', 'end_time', 'guest_count', 'type_event', 'owner_name', 'owner_phone'];
+    const fieldsToWatch = ['place_id', 'date', 'start_time', 'end_time', 'guest_count', 'type_event', 'owner_name', 'owner_phone'];
 
-        fieldsToWatch.forEach(fieldId => {
-            const field = document.getElementById(fieldId);
-            if (field) {
-                field.addEventListener('input', updatePreview);
-            }
-        });
-
-        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-            checkbox.addEventListener('change', updateServicePreview);
-        });
-
-        function updatePreview() {
-            const name = document.getElementById('owner_name').value || 'Nombre';
-            const date = document.getElementById('date').value || '-';
-            const startTime = document.getElementById('start_time').value || '-';
-            const endTime = document.getElementById('end_date').value || '-';
-            const guests = document.getElementById('guest_count').value || '-';
-            const typeEvent = document.getElementById('type_event').value || 'Evento';
-
-            document.getElementById('prevista-nombre').innerText = name;
-            document.getElementById('prevista-fecha').innerText = `Fecha: ${date}`;
-            document.getElementById('prevista-horario').innerText = `Hora: ${startTime} - ${endTime}`;
-            document.getElementById('prevista-invitados').innerText = `Invitados: ${guests}`;
-        }
-
-        function updateServicePreview() {
-            const servicesList = document.getElementById('prevista-servicios');
-            servicesList.innerHTML = 'Servicios seleccionados:';
-            document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
-                const serviceCard = checkbox.closest('.service-card');
-                const serviceName = serviceCard.querySelector('.card-title').innerText;
-                servicesList.innerHTML += `<p>${serviceName}</p>`;
-            });
+    fieldsToWatch.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.addEventListener('input', updatePreview);
         }
     });
+
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', updateServicePreview);
+    });
+
+    function updatePreview() {
+        const name = document.getElementById('owner_name').value || 'Nombre';
+        const date = document.getElementById('date').value || '-';
+        const startTime = document.getElementById('start_time').value || '-';
+        const endTime = document.getElementById('end_time').value || '-';
+        const guests = document.getElementById('guest_count').value || '-';
+        const typeEvent = document.getElementById('type_event').value || 'Evento';
+
+        document.getElementById('prevista-nombre').innerText = name;
+        document.getElementById('prevista-fecha').innerText = `Fecha: ${date}`;
+        document.getElementById('prevista-horario').innerText = `Hora: ${startTime} - ${endTime}`;
+        document.getElementById('prevista-invitados').innerText = `Invitados: ${guests}`;
+        document.getElementById('prevista-tipo-evento').innerText = `Tipo de Evento: ${typeEvent}`;
+    }
+
+    function updateServicePreview() {
+        const servicesList = document.getElementById('prevista-servicios');
+        servicesList.innerHTML = 'Servicios seleccionados:';
+
+        document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+            const serviceCard = checkbox.closest('.service-card');
+            const serviceName = serviceCard.querySelector('.card-title').innerText;
+            servicesList.innerHTML += `<p>${serviceName}</p>`;
+        });
+    }
+});
 
     </script>
     

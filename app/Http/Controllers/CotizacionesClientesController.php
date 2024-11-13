@@ -27,6 +27,8 @@ class CotizacionesClientesController extends Controller
     
     public function store(Request $request)
     {
+    
+        // Validación de los campos obligatorios (sin incluir los servicios)
         $validated = $request->validate([
             'user_id' => 'nullable|exists:users,id',
             'package_id' => 'nullable|exists:packages,id',
@@ -35,17 +37,8 @@ class CotizacionesClientesController extends Controller
             'status' => 'nullable|string|max:255',
             'estimated_price' => 'nullable|numeric|min:0',
             'espected_advance' => 'nullable|numeric|min:0',
-            'start_time' => [
-                'required',
-                'date_format:H:i',
-                'after_or_equal:11:00',
-                'before_or_equal:03:00',
-            ],
-            'end_time' => [
-                'required',
-                'date_format:H:i',
-                'after:start_time',
-            ],
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i',
             'type_event' => 'required|string|max:255',
             'otro_tipo_evento' => 'required_if:type_event,Otro|string|max:255',
             'owner_name' => 'required|string|max:255',
@@ -83,10 +76,12 @@ class CotizacionesClientesController extends Controller
             'guest_count.integer' => 'La cantidad de invitados debe ser un número entero.',
             'guest_count.min' => 'La cantidad de invitados debe ser al menos 1.',
         ]);
-
+    
+        // Comienza la transacción
         DB::beginTransaction();
-        
+    
         try {
+            // Crear la cotización
             $quote = Quote::create([
                 'user_id' => $request->input('user_id'),
                 'package_id' => $request->input('package_id'),
@@ -100,31 +95,41 @@ class CotizacionesClientesController extends Controller
                 'type_event' => $request->input('type_event'),
                 'otro_tipo_evento' => $request->input('otro_tipo_evento', null),
                 'owner_name' => $request->input('owner_name'),
-                'owner_phone' => $request->input('owner_phone')
+                'owner_phone' => $request->input('owner_phone'),
+                'guest_count' => $request->input('guest_count'),
             ]);
-
+    
+            // Obtener los servicios seleccionados (si existen)
             $services = $request->input('services', []);
-            $servicesData = [];
-
-            foreach ($services as $serviceId => $serviceData) {
-                $servicesData[$serviceId] = [
-                    'quantity' => $serviceData['quantity'],
-                    'price' => $serviceData['price'],
-                    'description' => $serviceData['description'],
-                    'details_dj' => $serviceData['details_dj'],
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
+    
+            // Solo procesar los servicios si hay alguno seleccionado
+            if (!empty($services)) {
+                $servicesData = [];
+    
+                foreach ($services as $serviceId => $serviceData) {
+                    $servicesData[$serviceId] = [
+                        'quantity' => $serviceData['quantity'],
+                        'price' => $serviceData['price'],
+                        'description' => $serviceData['description'],
+                        'details_dj' => $serviceData['details_dj'],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+    
+                // Sincronizar los servicios seleccionados con la cotización
+                $quote->services()->sync($servicesData);
             }
-
-            $quote->services()->sync($servicesData);
-
+    
+            // Confirmar transacción
             DB::commit();
-
+    
             return redirect()->route('cotizaciones.create')->with('success', 'Cotización y servicios creados exitosamente.');
         } catch (\Exception $e) {
+            // Si ocurre un error, revertir la transacción
             DB::rollBack();
             return redirect()->route('cotizaciones.create')->with('error', 'Error al crear la cotización: ' . $e->getMessage());
         }
     }
+    
 }
