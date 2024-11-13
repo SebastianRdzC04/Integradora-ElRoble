@@ -1,14 +1,9 @@
-.tabla-pivote {
-    padding: 0 20px 0 20px;
-}
-.pack-table {
+#quote-table {
     height: 500px;
     max-height: 500px;
     overflow-y: auto;
-
 }
-.pack-table thead {
+#quote-table thead {
     position: sticky;
     top: 0;
-
 }

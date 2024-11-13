@@ -9,6 +9,7 @@ use App\Models\Event;
 use App\Models\Inventory;
 use App\Models\Package;
 use App\Models\Quote;
+use App\Models\Service;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
@@ -43,10 +44,31 @@ Route::get('dashboard/packages', function () {
     return view('pages.dashboard.packages', compact('packages'));
 })->name('dashboard.packages');
 
+Route::get('dashboard/services', function () {
+    $services = Service::paginate(10);
+    return view('pages.dashboard.services', compact('services'));
+})->name('dashboard.services');
+
+Route::get('dashboard/quotes', function () {
+    $quotes = Quote::paginate(10);
+    return view('pages.dashboard.quotes', compact('quotes'));
+})->name('dashboard.quotes');
+
 Route::get('dashboard/graphics', function () {
     return view('pages.dashboard.graficos');
 })->name('dashboard.graphics');
 
+Route::get('dashboard/events', function () {
+    $events = Event::orderBy('date', 'asc')->get();
+    return view('pages.dashboard.events', compact('events'));
+})->name('dashboard.events');
+
+Route::get('dashboard/inventory', function () {
+    $inventory = Inventory::paginate(50);
+    $consumableRecords = ConsumableRecord::all();
+    $inventoryGroup = Inventory::select('serial_number_type_id', DB::raw('count(*) as total'))->groupBy('serial_number_type_id')->get();
+    return view('pages.dashboard.inventory', compact('inventory', 'consumableRecords', 'inventoryGroup'));
+})->name('dashboard.inventory');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -1,14 +1,14 @@
-.tabla-pivote {
-    padding: 0 20px 0 20px;
-}
-.pack-table {
+#inventory-table {
     height: 500px;
     max-height: 500px;
     overflow-y: auto;
-
 }
-.pack-table thead {
+
+#inventory-table table {
+    margin-bottom: 0;
+}
+
+#inventory-table thead {
     position: sticky;
     top: 0;
-
 }

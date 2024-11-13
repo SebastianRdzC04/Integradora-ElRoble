@@ -28,6 +28,7 @@
             display: grid;
             grid-template-columns: 2fr 10fr;
         }
+
         .sidebar {
             height: 100%;
         }
@@ -56,69 +57,61 @@
                                 <a href="#submenu1" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
                                     <i class="fs-4 bi-speedometer2"></i> <span
                                         class="ms-1 d-none d-sm-inline">Dashboard</span> </a>
-                                <ul class="collapse show nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
+                                <ul class="collapse nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
                                     <li class="w-100">
-                                        <a href="{{route('dashboard')}}" class="nav-link px-0"> <span
+                                        <a href="{{ route('dashboard') }}" class="nav-link px-0"> <span
                                                 class="d-none d-sm-inline">Inicio</span> </a>
                                     </li>
                                     <li>
-                                        <a href="{{route('dashboard.graphics')}}" class="nav-link px-0"> <span
+                                        <a href="{{ route('dashboard.graphics') }}" class="nav-link px-0"> <span
                                                 class="d-none d-sm-inline">Graficos</span> </a>
                                     </li>
                                     <li>
-                                        <a href="{{route('dashboard.records')}}" class="nav-link px-0"> <span
+                                        <a href="{{ route('dashboard.records') }}" class="nav-link px-0"> <span
                                                 class="d-none d-sm-inline">Registro</span> </a>
                                     </li>
 
                                 </ul>
                             </li>
                             <li>
-                                <a href="{{route('dashboard.packages')}}" class="nav-link px-0 align-middle">
-                                    <i class="fs-4 bi-table"></i> <span
-                                        class="ms-1 d-none d-sm-inline">Orders</span></a>
-                            </li>
-                            <li>
-                                <a href="#submenu2" data-bs-toggle="collapse" class="nav-link px-0 align-middle ">
-                                    <i class="fs-4 bi-bootstrap"></i> <span
-                                        class="ms-1 d-none d-sm-inline">Bootstrap</span></a>
+                                <a href="#submenu2" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+                                    <i class="fs-4 bi bi-table"></i> <span
+                                        class="ms-1 d-none d-sm-inline">Registros</span>
+                                </a>
                                 <ul class="collapse nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
                                     <li class="w-100">
-                                        <a href="#" class="nav-link px-0"> <span
-                                                class="d-none d-sm-inline">Item</span> 1</a>
+                                        <a href="{{ route('dashboard.packages') }}" class="nav-link px-0"> <span
+                                                class="d-none d-sm-inline">Paquetes</span> </a>
                                     </li>
                                     <li>
-                                        <a href="#" class="nav-link px-0"> <span
-                                                class="d-none d-sm-inline">Item</span> 2</a>
+                                        <a href="{{ route('dashboard.services') }}" class="nav-link px-0"> <span
+                                                class="d-none d-sm-inline">Servicios</span> </a>
                                     </li>
+                                    <li>
+                                        <a href="{{ route('dashboard.events') }}" class="nav-link px-0"> <span
+                                                class="d-none d-sm-inline">Eventos</span> </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('dashboard.quotes') }}" class="nav-link px-0"> <span
+                                                class="d-none d-sm-inline">Cotizaciones</span> </a>
+                                    </li>
+
                                 </ul>
                             </li>
                             <li>
                                 <a href="#submenu3" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-                                    <i class="fs-4 bi-grid"></i> <span class="ms-1 d-none d-sm-inline">Products</span>
-                                </a>
+                                    <i class="fs-4 bi bi-archive"></i> <span
+                                        class="ms-1 d-none d-sm-inline">Inventario</span> </a>
                                 <ul class="collapse nav flex-column ms-1" id="submenu3" data-bs-parent="#menu">
                                     <li class="w-100">
-                                        <a href="#" class="nav-link px-0"> <span
-                                                class="d-none d-sm-inline">Product</span> 1</a>
+                                        <a href="{{ route('dashboard') }}" class="nav-link px-0"> <span
+                                                class="d-none d-sm-inline">Insumos</span> </a>
                                     </li>
                                     <li>
-                                        <a href="#" class="nav-link px-0"> <span
-                                                class="d-none d-sm-inline">Product</span> 2</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="nav-link px-0"> <span
-                                                class="d-none d-sm-inline">Product</span> 3</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" class="nav-link px-0"> <span
-                                                class="d-none d-sm-inline">Product</span> 4</a>
+                                        <a href="{{ route('dashboard.inventory') }}" class="nav-link px-0"> <span
+                                                class="d-none d-sm-inline">Equipamiento</span> </a>
                                     </li>
                                 </ul>
-                            </li>
-                            <li>
-                                <a href="#" class="nav-link px-0 align-middle">
-                                    <i class="fs-4 bi-people"></i> <span
-                                        class="ms-1 d-none d-sm-inline">Customers</span> </a>
                             </li>
                         </ul>
                         <hr>
@@ -153,7 +146,7 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
 
-    
+
     @yield('scripts')
 </body>
 
