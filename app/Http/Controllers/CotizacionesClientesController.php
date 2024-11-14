@@ -27,7 +27,7 @@ class CotizacionesClientesController extends Controller
     
     public function store(Request $request)
     {
-    
+        dd(request()->all());
         // Validación de los campos obligatorios (sin incluir los servicios)
         $validated = $request->validate([
             'user_id' => 'nullable|exists:users,id',
@@ -37,14 +37,15 @@ class CotizacionesClientesController extends Controller
             'status' => 'nullable|string|max:255',
             'estimated_price' => 'nullable|numeric|min:0',
             'espected_advance' => 'nullable|numeric|min:0',
-            'start_time' => 'required|date_format:H:i',
-            'end_time' => 'required|date_format:H:i',
+            'start_time' => 'required|date_format:Y-m-d H:i',
+            'end_time' => 'required|date_format:Y-m-d H:i|after:start_time',
             'type_event' => 'required|string|max:255',
             'otro_tipo_evento' => 'required_if:type_event,Otro|string|max:255',
             'owner_name' => 'required|string|max:255',
             'owner_phone' => 'required|string|max:20',
             'guest_count' => 'required|integer|min:1',
         ], [
+            // Mensajes de error personalizados
             'place_id.required' => 'El campo de lugar es obligatorio.',
             'place_id.exists' => 'El lugar seleccionado no es válido.',
             'status.string' => 'El estado debe ser una cadena de texto.',
@@ -75,7 +76,39 @@ class CotizacionesClientesController extends Controller
             'guest_count.required' => 'La cantidad de invitados es obligatoria.',
             'guest_count.integer' => 'La cantidad de invitados debe ser un número entero.',
             'guest_count.min' => 'La cantidad de invitados debe ser al menos 1.',
+            'date.required' => 'El campo de fecha es obligatorio.',
+            'date.date' => 'El campo de fecha debe ser una fecha válida.',
+            'date.after' => 'La fecha debe ser posterior a hoy.',
         ]);
+    
+        // Validación personalizada para asegurar que el día de `date` coincida con el día de `start_time`
+        $dateOnly = \Carbon\Carbon::parse($request->input('date'))->toDateString();
+        $startTime = \Carbon\Carbon::parse($request->input('start_time'));
+        $startTimeDateOnly = $startTime->toDateString();
+        
+        if ($dateOnly !== $startTimeDateOnly) {
+            return redirect()->back()->withErrors([
+                'date' => 'El día en la fecha de inicio debe coincidir con el campo de fecha.',
+            ])->withInput();
+        }
+    
+        // Validación de que `start_time` no sea antes de las 12:00 pm y `end_time` no sea después de las 03:00 am del día siguiente
+        $startLimit = \Carbon\Carbon::parse($dateOnly . ' 12:00:00');
+        $endLimit = \Carbon\Carbon::parse($dateOnly . ' 03:00:00')->addDay();
+    
+        $endTime = \Carbon\Carbon::parse($request->input('end_time'));
+    
+        if ($startTime->lt($startLimit)) {
+            return redirect()->back()->withErrors([
+                'start_time' => 'La hora de inicio no puede ser antes de las 12:00 pm.',
+            ])->withInput();
+        }
+    
+        if ($endTime->gt($endLimit)) {
+            return redirect()->back()->withErrors([
+                'end_time' => 'La hora de finalización no puede ser después de las 03:00 am del día siguiente.',
+            ])->withInput();
+        }
     
         // Comienza la transacción
         DB::beginTransaction();
@@ -130,6 +163,6 @@ class CotizacionesClientesController extends Controller
             DB::rollBack();
             return redirect()->route('cotizaciones.create')->with('error', 'Error al crear la cotización: ' . $e->getMessage());
         }
-    }
+    }    
     
 }

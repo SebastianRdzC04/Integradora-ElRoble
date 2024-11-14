@@ -35,6 +35,7 @@
                         @enderror
                     </div>
         
+                    <!-- Campo de Fecha -->
                     <div class="mb-3 row">
                         <div class="col-md-6">
                             <label for="date" class="form-label">Fecha</label>
@@ -43,21 +44,30 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+
+                        <!-- Campos de Hora de Inicio y Fin -->
                         <div class="col-md-3">
                             <label for="start_time" class="form-label">Hora de Inicio</label>
-                            <input type="time" name="start_time" id="start_time" class="form-control @error('start_time') is-invalid @enderror" min="11:00" max="03:00" step="1800" oninput="updatePreview()" value="{{ old('start_time') }}">
+                            <input type="time" name="start_time" id="start_time" class="form-control @error('start_time') is-invalid @enderror" min="12:00" max="23:59" step="1800" oninput="updatePreview()" value="{{ old('start_time') }}">
                             @error('start_time')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+
                         <div class="col-md-3">
                             <label for="end_time" class="form-label">Hora de Final</label>
-                            <input type="time" name="end_time" id="end_time" class="form-control @error('end_time') is-invalid @enderror" min="11:00" max="03:00" step="1800" oninput="updatePreview()" value="{{ old('end_time') }}">
+                            <input type="time" name="end_time" id="end_time" class="form-control @error('end_time') is-invalid @enderror" min="12:00" max="23:59" step="1800" oninput="updatePreview()" value="{{ old('end_time') }}">
                             @error('end_time')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" id="day_after_checkbox" class="form-check-input" onchange="toggleEndTimeRange()">
+                        <label for="day_after_checkbox" class="form-check-label">¿El evento finalizará al día siguiente?</label>
+                    </div>
+    
         
                     <div class="mb-3 row">
                         <div class="col-md-6">
@@ -195,14 +205,6 @@
             }
         }
     
-        function validateAndShowConfirm(serviceId) {
-            const cantidad = document.querySelector(`input[name="services[${serviceId}][quantity]"]`).value;
-            const precio = document.querySelector(`input[name="services[${serviceId}][price]"]`).value;
-            const descripcion = document.querySelector(`input[name="services[${serviceId}][description]"]`).value;
-    
-            document.getElementById(`confirmButton-${serviceId}`).disabled = !(cantidad && precio && descripcion);
-        }
-    
         function toggleServices(categoryId) {
             const servicesDiv = document.getElementById(`services-${categoryId}`);
             servicesDiv.style.display = servicesDiv.style.display === 'block' ? 'none' : 'block';
@@ -255,21 +257,57 @@
         }
     
         function crearPaquete() {
-            const form = document.getElementById('cotizacionForm');
-            document.querySelectorAll('.service-hidden-input').forEach(input => input.remove());
+    const form = document.getElementById('cotizacionForm');
+    document.querySelectorAll('.service-hidden-input').forEach(input => input.remove());
+
+    // Obtener valores de fecha y hora
+    const date = document.getElementById('date').value;
+    const startTime = document.getElementById('start_time').value;
+    const endTime = document.getElementById('end_time').value;
+    const dayAfterCheckbox = document.getElementById('day_after_checkbox').checked;
+
+    // Validar que todos los valores necesarios estén presentes
+    if (!date || !startTime || !endTime) {
+        alert("Por favor, selecciona la fecha y las horas de inicio y fin del evento.");
+        return;
+    }
+
+    // Ensamblar start_time en formato DATETIME
+    const startDateTime = new Date(`${date}T${startTime}:00`);
     
-            for (let serviceId in confirmedServices) {
-                const service = confirmedServices[serviceId];
-                if (service.isConfirmed && service.cantidad && service.precio && service.descripcion) {
-                    form.appendChild(generarInputOculto(`services[${serviceId}][quantity]`, service.cantidad));
-                    form.appendChild(generarInputOculto(`services[${serviceId}][price]`, service.precio));
-                    form.appendChild(generarInputOculto(`services[${serviceId}][description]`, service.descripcion));
-                    form.appendChild(generarInputOculto(`services[${serviceId}][id]`, serviceId));
-                }
-            }
-            console.log(new FormData(form));
-            form.submit();
+    // Ensamblar end_time en formato DATETIME, ajustando al día siguiente si corresponde
+    let endDateTime = new Date(`${date}T${endTime}:00`);
+    if (dayAfterCheckbox) {
+        endDateTime.setDate(endDateTime.getDate() + 1);
+    }
+
+    // Validación de rango de horas para el centro de convenciones
+    const startHour = startDateTime.getHours();
+    const endHour = endDateTime.getHours();
+    const endMinutes = endDateTime.getMinutes();
+    if (startHour < 12 || (endHour >= 3 && endMinutes > 0)) {
+        alert("El evento debe comenzar después de las 12:00 pm y finalizar antes de las 03:00 am del día siguiente.");
+        return;
+    }
+
+    // Asignar los valores de start_time y end_time ya formateados al formulario
+    form.appendChild(generarInputOculto('start_time', startDateTime.toISOString().slice(0, 19)));
+    form.appendChild(generarInputOculto('end_time', endDateTime.toISOString().slice(0, 19)));
+
+    // Procesar servicios confirmados y agregarlos al formulario como inputs ocultos
+    for (let serviceId in confirmedServices) {
+        const service = confirmedServices[serviceId];
+        if (service.isConfirmed && service.cantidad && service.precio && service.descripcion) {
+            form.appendChild(generarInputOculto(`services[${serviceId}][quantity]`, service.cantidad));
+            form.appendChild(generarInputOculto(`services[${serviceId}][price]`, service.precio));
+            form.appendChild(generarInputOculto(`services[${serviceId}][description]`, service.descripcion));
+            form.appendChild(generarInputOculto(`services[${serviceId}][id]`, serviceId));
         }
+    }
+
+    console.log(new FormData(form));
+    form.submit();
+}
     
         function generarInputOculto(nombre, valor) {
             const input = document.createElement('input');
@@ -332,9 +370,17 @@
     };
 
     function toggleOtroTipoEvento() {
-        var typeEventSelect = document.getElementById('type_event');
-        var otroTipoEventoDiv = document.getElementById('otro_tipo_evento_div');
-        otroTipoEventoDiv.style.display = (typeEventSelect.value === 'Otro') ? 'block' : 'none';
+        const tipoEvento = document.getElementById('type_event').value;
+        const otroTipoDiv = document.getElementById('otro_tipo_evento_div');
+        const otroTipoInput = document.getElementById('otro_tipo_evento');
+
+        if (tipoEvento === 'Otro') {
+            otroTipoDiv.style.display = 'block';
+            otroTipoInput.required = true;
+        } else {
+            otroTipoDiv.style.display = 'none';
+            otroTipoInput.required = false;
+        }
     }
 
     document.addEventListener('DOMContentLoaded', function() {

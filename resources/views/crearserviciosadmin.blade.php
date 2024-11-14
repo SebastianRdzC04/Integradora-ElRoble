@@ -250,7 +250,7 @@
             quantityPreview.textContent = this.value || "0";
         });
     
-        document.getElementById('btnCrearServicio').addEventListener('click', function() {
+        document.getElementById('crearPaqueteBoton').addEventListener('click', function() {
             formCrearServicio.submit();
         });
     </script>

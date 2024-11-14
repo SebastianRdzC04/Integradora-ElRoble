@@ -151,7 +151,6 @@
         let selectedServices = {};
 
         // Funciones Bárbaras
-
         function confirmarServicio() {
             let cantidad = document.getElementById('cantidad').value;
             let precio = document.getElementById('precio').value;
@@ -197,7 +196,6 @@
         updateServicePreview();
         document.getElementById(`service-details-${serviceId}`).style.display = 'none';
 
-        // Oculta permanentemente todos los servicios de la misma categoría
         const categoryServices = document.querySelectorAll(`#services-${categoryId} .service-card`);
         categoryServices.forEach(card => {
             card.style.display = 'none';
@@ -241,61 +239,55 @@
         } 
 
         function selectService(checkbox, categoryId) {
-    const selectedServiceId = checkbox.value;
-    const isSelected = checkbox.checked;
-    const serviceCard = checkbox.closest('.service-card');
-    const serviceName = serviceCard.querySelector('.card-title').innerText;
+            const selectedServiceId = checkbox.value;
+            const isSelected = checkbox.checked;
+            const serviceCard = checkbox.closest('.service-card');
+            const serviceName = serviceCard.querySelector('.card-title').innerText;
 
-    const serviceQuantityInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][quantity]"]`);
-    const servicePriceInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][price]"]`);
-    const serviceDescriptionInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][description]"]`);
+            const serviceQuantityInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][quantity]"]`);
+            const servicePriceInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][price]"]`);
+            const serviceDescriptionInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][description]"]`);
 
-    if (isSelected) {
-        // Muestra el formulario emergente de detalles del servicio
-        const detailsContainer = document.getElementById(`service-details-${selectedServiceId}`);
-        if (detailsContainer) {
-            detailsContainer.style.display = 'block';
-        }
+            if (isSelected) {
+                const detailsContainer = document.getElementById(`service-details-${selectedServiceId}`);
+                if (detailsContainer) {
+                    detailsContainer.style.display = 'block';
+                }
 
-        // Oculta temporalmente otros servicios de la misma categoría
-        const categoryServices = document.querySelectorAll(`#services-${categoryId} .service-card`);
-        categoryServices.forEach(card => {
-            if (card !== serviceCard) {
-                card.style.display = 'none';
+                const categoryServices = document.querySelectorAll(`#services-${categoryId} .service-card`);
+                categoryServices.forEach(card => {
+                    if (card !== serviceCard) {
+                        card.style.display = 'none';
+                    }
+                });
+
+                if (serviceQuantityInput.value && servicePriceInput.value && serviceDescriptionInput.value) {
+                    selectedServices[selectedServiceId] = {
+                        categoryId,
+                        serviceName,
+                        quantity: serviceQuantityInput.value,
+                        price: servicePriceInput.value,
+                        description: serviceDescriptionInput.value
+                    };
+                }
+            } else {
+                delete selectedServices[selectedServiceId];
+                delete confirmedServices[selectedServiceId];
+
+                updateServicePreview();
+
+                const detailsContainer = document.getElementById(`service-details-${selectedServiceId}`);
+                if (detailsContainer) {
+                    detailsContainer.style.display = 'none';
+                }
+
+                const categoryServices = document.querySelectorAll(`#services-${categoryId} .service-card`);
+                categoryServices.forEach(card => {
+                    card.style.display = 'block';
+                });
             }
-        });
-
-        // Si los campos están completos, agrega el servicio a selectedServices
-        if (serviceQuantityInput.value && servicePriceInput.value && serviceDescriptionInput.value) {
-            selectedServices[selectedServiceId] = {
-                categoryId,
-                serviceName,
-                quantity: serviceQuantityInput.value,
-                price: servicePriceInput.value,
-                description: serviceDescriptionInput.value
-            };
+            updateServicePreview();
         }
-    } else {
-        // Quita el servicio de selectedServices y muestra nuevamente otros servicios de la categoría
-        delete selectedServices[selectedServiceId];
-        delete confirmedServices[selectedServiceId];
-
-        updateServicePreview();
-
-        // Oculta el formulario emergente de detalles del servicio
-        const detailsContainer = document.getElementById(`service-details-${selectedServiceId}`);
-        if (detailsContainer) {
-            detailsContainer.style.display = 'none';
-        }
-
-        // Vuelve a mostrar todos los servicios de la categoría
-        const categoryServices = document.querySelectorAll(`#services-${categoryId} .service-card`);
-        categoryServices.forEach(card => {
-            card.style.display = 'block';
-        });
-    }
-    updateServicePreview();
-}
 
         function updateServicePreview() {
             const serviciosLista = document.getElementById('servicios-lista');
