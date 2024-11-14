@@ -8,6 +8,7 @@ use App\Models\Date;
 use App\Models\Event;
 use App\Models\Inventory;
 use App\Models\Package;
+use App\Models\Place;
 use App\Models\Quote;
 use App\Models\Service;
 use Illuminate\Support\Facades\DB;
@@ -55,7 +56,11 @@ Route::get('dashboard/quotes', function () {
 })->name('dashboard.quotes');
 
 Route::get('dashboard/graphics', function () {
-    return view('pages.dashboard.graficos');
+    $places = Place::all();
+    // obtener las cotizaciones por lugar
+
+
+    return view('pages.dashboard.graficos', compact('places'));
 })->name('dashboard.graphics');
 
 Route::get('dashboard/events', function () {

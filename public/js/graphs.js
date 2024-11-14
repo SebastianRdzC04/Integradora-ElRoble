@@ -2,7 +2,9 @@
 
 let myChart = echarts.init(document.getElementById('grafico1'));
 
-console.log('hola');    
+console.log(datos);
+
+
 
 const option = {
   tooltip: {
@@ -14,7 +16,7 @@ const option = {
   },
   series: [
     {
-      name: 'Access From',
+      name: 'Rentas',
       type: 'pie',
       radius: ['40%', '70%'],
       avoidLabelOverlap: true,
@@ -37,13 +39,8 @@ const option = {
       labelLine: {
         show: false
       },
-      data: [
-        { value: 1048, name: 'Search Engine' },
-        { value: 735, name: 'Direct' },
-        { value: 580, name: 'Email' },
-        { value: 484, name: 'Union Ads' },
-        { value: 300, name: 'Video Ads' }
-      ]
+      data: datos
+
     }
   ]
 };
