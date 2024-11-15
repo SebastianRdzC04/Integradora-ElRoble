@@ -29,7 +29,6 @@ class CotizacionesClientesController extends Controller
     {
 
         try{
-
             $request->merge(['type_event' => (string) $request->input('type_event')]);
         // Validación de los campos obligatorios (sin incluir los servicios)
         $validated = $request->validate([
