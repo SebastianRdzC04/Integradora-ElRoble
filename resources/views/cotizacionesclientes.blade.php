@@ -13,9 +13,10 @@
             @if(session('success'))
             <div class="alert alert-success" role="alert" style="background-color: rgb(30, 78, 21); color: white;">
                 {{ session('success') }}
-                @elseif(session('error'))
-                <div class="alert alert-error" role="alert" style="background-color: rgb(30, 78, 21); color: white;">
-                    {{ session('error') }}
+            </div>
+            @elseif(session('error'))
+            <div class="alert alert-success" role="alert" style="background-color: rgb(228, 13, 13); color: white;">
+                {{ session('error') }}
             </div>
             @endif
             <div class="col-md-7" id="crearPaquete">
@@ -167,6 +168,7 @@
             </div>
         </div>
     </div>
+
     <script>
         // Variables Globales
         let confirmedServices = {};
@@ -265,6 +267,10 @@
     const startTime = document.getElementById('start_time').value;
     const endTime = document.getElementById('end_time').value;
     const dayAfterCheckbox = document.getElementById('day_after_checkbox').checked;
+    
+    // Convertir el valor de type_event a tipo cadena
+    const typeEventElement = document.getElementById('type_event');
+    const typeEventValue = typeEventElement ? String(typeEventElement.value) : '';
 
     // Validar que todos los valores necesarios estén presentes
     if (!date || !startTime || !endTime) {
@@ -272,29 +278,35 @@
         return;
     }
 
-    // Ensamblar start_time en formato DATETIME
-    const startDateTime = new Date(`${date}T${startTime}:00`);
-    
-    // Ensamblar end_time en formato DATETIME, ajustando al día siguiente si corresponde
-    let endDateTime = new Date(`${date}T${endTime}:00`);
+    // Ensamblar start_time y end_time en formato DATETIME (Y-m-d H:i) sin segundos
+    const startDateTime = `${date} ${startTime.slice(0, 5)}`;
+    let endDateTime = `${date} ${endTime.slice(0, 5)}`;
+
+    // Ajustar endDateTime al día siguiente si está marcado el checkbox
     if (dayAfterCheckbox) {
-        endDateTime.setDate(endDateTime.getDate() + 1);
+        const dateObj = new Date(`${date}T${endTime}:00`);
+        dateObj.setDate(dateObj.getDate() + 1);
+        const endDate = dateObj.toISOString().slice(0, 10);
+        endDateTime = `${endDate} ${endTime.slice(0, 5)}`;
     }
 
     // Validación de rango de horas para el centro de convenciones
-    const startHour = startDateTime.getHours();
-    const endHour = endDateTime.getHours();
-    const endMinutes = endDateTime.getMinutes();
+    const startHour = parseInt(startTime.split(':')[0], 10);
+    const endHour = parseInt(endTime.split(':')[0], 10);
+    const endMinutes = parseInt(endTime.split(':')[1], 10);
+
     if (startHour < 12 || (endHour >= 3 && endMinutes > 0)) {
         alert("El evento debe comenzar después de las 12:00 pm y finalizar antes de las 03:00 am del día siguiente.");
         return;
     }
 
-    // Asignar los valores de start_time y end_time ya formateados al formulario
-    form.appendChild(generarInputOculto('start_time', startDateTime.toISOString().slice(0, 19)));
-    form.appendChild(generarInputOculto('end_time', endDateTime.toISOString().slice(0, 19)));
+    // Asignar los valores de start_time, end_time, y type_event ya formateados al formulario
+    form.appendChild(generarInputOculto('start_time', startDateTime));
+    form.appendChild(generarInputOculto('end_time', endDateTime));
+    form.appendChild(generarInputOculto('type_event', typeEventValue));
 
-    // Procesar servicios confirmados y agregarlos al formulario como inputs ocultos
+    // Procesar servicios confirmados y agregarlos al formulario solo si hay al menos uno confirmado
+    let anyServiceConfirmed = false;
     for (let serviceId in confirmedServices) {
         const service = confirmedServices[serviceId];
         if (service.isConfirmed && service.cantidad && service.precio && service.descripcion) {
@@ -302,12 +314,19 @@
             form.appendChild(generarInputOculto(`services[${serviceId}][price]`, service.precio));
             form.appendChild(generarInputOculto(`services[${serviceId}][description]`, service.descripcion));
             form.appendChild(generarInputOculto(`services[${serviceId}][id]`, serviceId));
+            anyServiceConfirmed = true;
         }
+    }
+
+    // Verificar si hay servicios confirmados antes de enviar el formulario
+    if (!anyServiceConfirmed) {
+        console.log("No se seleccionaron servicios. Enviando formulario sin información de servicios.");
     }
 
     console.log(new FormData(form));
     form.submit();
 }
+
     
         function generarInputOculto(nombre, valor) {
             const input = document.createElement('input');

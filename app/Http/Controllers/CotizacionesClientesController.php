@@ -27,7 +27,10 @@ class CotizacionesClientesController extends Controller
     
     public function store(Request $request)
     {
-        dd(request()->all());
+
+        try{
+
+            $request->merge(['type_event' => (string) $request->input('type_event')]);
         // Validación de los campos obligatorios (sin incluir los servicios)
         $validated = $request->validate([
             'user_id' => 'nullable|exists:users,id',
@@ -40,7 +43,7 @@ class CotizacionesClientesController extends Controller
             'start_time' => 'required|date_format:Y-m-d H:i',
             'end_time' => 'required|date_format:Y-m-d H:i|after:start_time',
             'type_event' => 'required|string|max:255',
-            'otro_tipo_evento' => 'required_if:type_event,Otro|string|max:255',
+            'otro_tipo_evento' => 'nullable|string|max:255',
             'owner_name' => 'required|string|max:255',
             'owner_phone' => 'required|string|max:20',
             'guest_count' => 'required|integer|min:1',
@@ -80,7 +83,12 @@ class CotizacionesClientesController extends Controller
             'date.date' => 'El campo de fecha debe ser una fecha válida.',
             'date.after' => 'La fecha debe ser posterior a hoy.',
         ]);
-    
+
+        
+    } catch (\Exception $e) {
+        dd("Error en la validación: " . $e->getMessage());
+    }
+
         // Validación personalizada para asegurar que el día de `date` coincida con el día de `start_time`
         $dateOnly = \Carbon\Carbon::parse($request->input('date'))->toDateString();
         $startTime = \Carbon\Carbon::parse($request->input('start_time'));
@@ -109,7 +117,7 @@ class CotizacionesClientesController extends Controller
                 'end_time' => 'La hora de finalización no puede ser después de las 03:00 am del día siguiente.',
             ])->withInput();
         }
-    
+
         // Comienza la transacción
         DB::beginTransaction();
     
@@ -142,9 +150,6 @@ class CotizacionesClientesController extends Controller
                 foreach ($services as $serviceId => $serviceData) {
                     $servicesData[$serviceId] = [
                         'quantity' => $serviceData['quantity'],
-                        'price' => $serviceData['price'],
-                        'description' => $serviceData['description'],
-                        'details_dj' => $serviceData['details_dj'],
                         'created_at' => now(),
                         'updated_at' => now(),
                     ];
