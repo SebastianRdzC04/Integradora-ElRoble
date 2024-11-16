@@ -1,9 +1,0 @@
-#quote-table {
-    height: 500px;
-    max-height: 500px;
-    overflow-y: auto;
-}
-#quote-table thead {
-    position: sticky;
-    top: 0;
-}

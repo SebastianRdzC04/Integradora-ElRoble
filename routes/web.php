@@ -41,17 +41,17 @@ Route::get('dashboard/records', function () {
 
 Route::get('dashboard/packages', function () {
 
-    $packages = Package::paginate(10);
+    $packages = Package::all();
     return view('pages.dashboard.packages', compact('packages'));
 })->name('dashboard.packages');
 
 Route::get('dashboard/services', function () {
-    $services = Service::paginate(10);
+    $services = Service::all();
     return view('pages.dashboard.services', compact('services'));
 })->name('dashboard.services');
 
 Route::get('dashboard/quotes', function () {
-    $quotes = Quote::paginate(10);
+    $quotes = Quote::all();
     return view('pages.dashboard.quotes', compact('quotes'));
 })->name('dashboard.quotes');
 
@@ -68,8 +68,9 @@ Route::get('dashboard/events', function () {
     return view('pages.dashboard.events', compact('events'));
 })->name('dashboard.events');
 
+
 Route::get('dashboard/inventory', function () {
-    $inventory = Inventory::paginate(50);
+    $inventory = Inventory::all();
     $consumableRecords = ConsumableRecord::all();
     $inventoryGroup = Inventory::select('serial_number_type_id', DB::raw('count(*) as total'))->groupBy('serial_number_type_id')->get();
     return view('pages.dashboard.inventory', compact('inventory', 'consumableRecords', 'inventoryGroup'));

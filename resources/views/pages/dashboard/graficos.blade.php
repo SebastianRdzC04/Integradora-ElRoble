@@ -35,5 +35,5 @@
         let datos = @json($datos);
     </script>
 
-    <script src="{{ asset('js/graphs.js') }}"></script>
+    <script src="{{ asset('js/dashboard/graphs.js') }}"></script>
 @endsection
