@@ -4,141 +4,300 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reportar Incidencia</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Estilos personalizados */
+        body {
+            min-height: 100dvh;
+            overflow-x: hidden;
+        }
+
+        #sidebar {
+            width: 280px;
+            max-width: 80%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #343a40;
+            color: white;
+            z-index: 1050;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        #sidebar.open {
+            transform: translateX(0);
+        }
+
+        #closeSidebarBtn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        #openSidebarBtn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1100;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 767px) {
+            #dropzone {
+                padding: 15px;
+            }
+
+            .modal-dialog {
+                max-width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-4">
-        <h2>Reportar Incidencia</h2>
-        <form id="incidentForm" enctype="multipart/form-data">
-            
-            <!-- Título de la incidencia -->
-            <div class="form-floating mb-3">
-                <input type="text" name="title" id="title" class="form-control" placeholder="Título de la incidencia" maxlength="100">
-                <label for="title">Título</label>
+
+<!-- Botón para abrir el menú -->
+<button id="openSidebarBtn"></button>
+
+<!-- Menú lateral (sidebar) -->
+<div id="sidebar" class="d-flex flex-column p-3">
+    <span id="closeSidebarBtn">&times;</span>
+    <a href="/" class="d-flex align-items-center mb-3 text-white text-decoration-none">
+        <span class="fs-4">Jesus Alberto</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li class="nav-item">
+            <a href="#" class="nav-link active text-white">Inicio</a>
+        </li>
+        <li>
+            <a href="#" class="nav-link text-white">Evento</a>
+        </li>
+        <li>
+            <a href="#" class="nav-link text-white">Eventos proximos</a>
+        </li>
+        <li>
+            <a href="#" class="nav-link text-white">Registro de incidencia</a>
+        </li>
+        <li>
+            <a href="#" class="nav-link text-white">Incidencias reportadas</a>
+        </li>
+    </ul>
+</div>
+
+<!-- Contenido principal -->
+<div class="container mt-4">
+    <h2>Reportar Incidencia</h2>
+    <form id="incidentForm">
+        <div class="form-floating mb-3">
+            <input type="text" id="title" class="form-control" placeholder="Título de la incidencia" maxlength="100">
+            <label for="title">Título</label>
+        </div>
+        <div class="d-flex mb-3">
+            <div class="form-floating flex-grow-1 me-2">
+                <textarea id="description" class="form-control" placeholder="Descripción" style="height: 100px;"></textarea>
+                <label for="description">Descripción</label>
             </div>
-
-            <!-- Descripción de la incidencia -->
-            <div class="form-floating">
-                <textarea name="description" maxlength="100" id="description" class="form-control" placeholder="Descripción de la incidencia" style="height: 100px;" required></textarea>
-                <label for="description">Descripción </label>
+            <button type="button" id="addSerialButton" class="btn btn-primary align-self-end">Inventario Afectado</button>
+        </div>
+        <div class="mb-3">
+            <label for="images" class="form-label">Subir Imágenes</label>
+            <div id="dropzone" class="border p-4 text-center">
+                <p>Arrastra y suelta tus imágenes aquí o haz clic para seleccionar archivos.</p>
+                <input type="file" id="images" class="form-control" multiple accept="image/*" style="display: none;">
             </div>
+        </div>
+    </form>
+</div>
 
-            <!-- Botón para agregar número de serie -->
-            
-            <div class="d-flex">
-
-                <div class="mb-3">
-                    <button type="button" id="addSerialButton" class="btn btn-primary mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                            <path fill="white" d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"/>
-                        </svg>
-                    </button>
+    <!-- Modal 1: Selección de Inventario Afectado -->
+    <div class="modal fade" id="inventoryModal" tabindex="-1" aria-labelledby="inventoryModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="inventoryModalLabel">Inventario Afectado</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                    
-
-                <div class="mb-3">
-                    <button type="button" id="removeSerialButton" class="btn btn-danger mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                            <path fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16m-10 4v6m4-6v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2l1-12M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/>
-                        </svg>
-                    </button>
+                <div class="modal-body">
+                    <h6>Seleccione Categorías Afectadas:</h6>
+                    <div class="d-grid gap-2">
+                        <!-- Cambié los botones por checkboxes para permitir múltiples selecciones -->
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="categories[]" value="Sillas" id="checkboxSillas">
+                            <label class="form-check-label" for="checkboxSillas">Sillas</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="categories[]" value="Mesas" id="checkboxMesas">
+                            <label class="form-check-label" for="checkboxMesas">Mesas</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="categories[]" value="Hieleras" id="checkboxHieleras">
+                            <label class="form-check-label" for="checkboxHieleras">Hieleras</label>
+                        </div>
+                    </div>
                 </div>
-
-            </div>
-
-            <div id="serialContainer" class="mb-3"></div>
-
-            <div class="mb-3">
-                <label for="images" class="form-label">Subir Imágenes</label>
-                <div id="dropzone" class="border p-4 text-center">
-                    <p>Arrastra y suelta tus imágenes aquí o haz clic para seleccionar archivos.</p>
-                    <input type="file" name="images[]" id="images" class="form-control" multiple accept="image/*" style="display: none;">
+                <div class="modal-footer">
+                    <button type="button" id="nextModalButton" class="btn btn-primary">Siguiente</button>
                 </div>
             </div>
-
-            <!-- Botón para enviar el formulario -->
-            <button type="submit" class="btn btn-primary w-100">Enviar Incidencia</button>
-        </form>
+        </div>
     </div>
 
-    <!-- Script para manejar el arrastrar y soltar y el límite de números de serie -->
-     
+    <!-- Modal 2: Formulario y Tabla de Números de Serie -->
+    <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="formModalLabel">Rellenar Información del Inventario</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <!-- Columna Izquierda: Formulario -->
+                        <div class="col-md-6">
+                        <div class="mb-3">
+    <label for="serialListBox" class="form-label">Serial</label>
+    <select id="serialListBox" class="form-select" style="max-height: 200px; overflow-y: auto; width: 100%;">
+        
+    </select>
+</div>
+                            <div class="mb-3">
+                                <input type="text" id="serialInput" class="form-control" placeholder="Descripción del Serial" disabled>
+                            </div>
+                            <div class="mb-3">
+                                <select id="statusListBox" class="form-select" style="max-height: 50%; overflow-y: auto">
+                                    <option value="disponible">Disponible</option>
+                                    <option value="no_disponible">No Disponible</option>
+                                </select>
+                            </div>
+                            <button id="addItemButton" class="btn btn-primary">Agregar</button>
+                        </div>
+
+                        <!-- Columna Derecha: Tabla de Números de Serie -->
+                        <div class="col-md-6">
+                            <h6>Números de Serie Ingresados</h6>
+                            <ul id="serialList" class="list-group"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        const dropzone = document.getElementById('dropzone');
-        const fileInput = document.getElementById('images');
-        const addSerialButton = document.getElementById('addSerialButton');
-        const serialContainer = document.getElementById('serialContainer');
-        let serialCount = 0;
-        const maxSerials = 15;
 
-        // Manejar arrastrar y soltar
-        dropzone.addEventListener('click', () => fileInput.click());
-        dropzone.addEventListener('dragover', (event) => {
-            event.preventDefault();
-            dropzone.classList.add('bg-light');
+    //estos jason son para filtrar los valores que saldran en el listbox del segundo modal
+    // Datos que vienen desde el backend
+    const serialNumbers = @json($sn);
+    const categories = @json($categories);
+
+    // Función para obtener las categorías seleccionadas
+    function getSelectedCategories() {
+        const checkboxes = document.querySelectorAll('input[name="categories[]"]:checked');
+        const selectedCategories = Array.from(checkboxes).map(checkbox => checkbox.value);
+        console.log('Selected Categories:', selectedCategories);
+        return selectedCategories;
+    }
+
+    // Evento al presionar el botón "Siguiente"
+    document.getElementById('nextModalButton').addEventListener('click', () => {
+        const selectedCategories = getSelectedCategories();
+
+        // Filtrar los seriales según las categorías seleccionadas
+        const filteredSerials = serialNumbers.filter(serial =>
+            selectedCategories.includes(
+                categories.find(cat => cat.id === serial.category_id)?.name
+            )
+        );
+
+        // Llenar el ListBox con los seriales filtrados
+        const serialListBox = document.getElementById('serialListBox');
+        serialListBox.innerHTML = '<option value="">Seleccione un Serial</option>'; // Resetear opciones
+
+        filteredSerials.forEach(serial => {
+            const option = document.createElement('option');
+            option.value = serial.code;
+            option.text = serial.code;
+            serialListBox.appendChild(option);
         });
-        dropzone.addEventListener('dragleave', () => dropzone.classList.remove('bg-light'));
-        dropzone.addEventListener('drop', (event) => {
-            event.preventDefault();
-            dropzone.classList.remove('bg-light');
-            fileInput.files = event.dataTransfer.files;
+
+        // Mostrar el siguiente modal
+        const formModal = new bootstrap.Modal(document.getElementById('formModal'));
+        formModal.show();
+    });
+    
+    //esto es para la animacion del side bar -------------------------------------------------------------
+    const sidebar = document.getElementById('sidebar');
+    const openSidebarBtn = document.getElementById('openSidebarBtn');
+    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+
+    openSidebarBtn.addEventListener('click', () => {
+        sidebar.classList.add('open');
+    });
+
+    closeSidebarBtn.addEventListener('click', () => {
+        sidebar.classList.remove('open');
+    });
+
+
+        // Abrir primer modal
+        document.getElementById('addSerialButton').addEventListener('click', () => {
+            new bootstrap.Modal(document.getElementById('inventoryModal')).show();
         });
 
-        // Añadir número de serie y descripción
-        addSerialButton.addEventListener('click', () => {
-            if (serialCount < maxSerials) {
-                serialCount++;
+        // Pasar al segundo modal
+        document.getElementById('nextModalButton').addEventListener('click', () => {
+            bootstrap.Modal.getInstance(document.getElementById('inventoryModal')).hide();
+            new bootstrap.Modal(document.getElementById('formModal')).show();
+        });
 
-                const serialGroup = document.createElement('div');
-                serialGroup.classList.add('mb-3');
+        // Manejar el formulario del segundo modal
+        document.getElementById('addItemButton').addEventListener('click', () => {
+            const serialInput = document.getElementById('serialInput').value;
+            const status = document.getElementById('statusListBox').value;
 
-                // Campo para el número de serie
-                const serialInput = document.createElement('input');
-                serialInput.type = 'text';
-                serialInput.name = `serial_${serialCount}`;
-                serialInput.classList.add('form-control', 'mb-2');
-                serialInput.placeholder = `Número de Serie #${serialCount}`;
-                serialInput.maxLength = 10;
+            if (serialInput) {
+                const listItem = document.createElement('li');
+                listItem.classList.add('list-group-item');
+                listItem.textContent = `${serialInput} - ${status}`;
+                document.getElementById('serialList').appendChild(listItem);
 
-                // Campo para la descripción del número de serie
-                const serialDescription = document.createElement('textarea');
-                serialDescription.name = `description_${serialCount}`;
-                serialDescription.classList.add('form-control');
-                serialDescription.placeholder = `Descripción para el Número de Serie #${serialCount}`;
-                serialDescription.style.height = '60px';
-
-                // Agregar los campos al contenedor
-                serialGroup.appendChild(serialInput);
-                serialGroup.appendChild(serialDescription);
-                serialContainer.appendChild(serialGroup);
-            } else {
-                alert(`Solo puedes agregar un máximo de ${maxSerials} números de serie.`);
+                // Limpiar campos
+                document.getElementById('serialInput').value = '';
+                document.getElementById('statusListBox').value = 'disponible';
             }
         });
 
-
-
-        //el btn de eliminar
-        const removeSerialButton = document.getElementById('removeSerialButton');
-
-removeSerialButton.addEventListener('click', () => {
-    if (serialCount > 0) {
-        // Selecciona el último grupo de campos y lo elimina
-        const lastSerialGroup = serialContainer.lastElementChild;
-        serialContainer.removeChild(lastSerialGroup);
-
-        // Decrementa el contador
-        serialCount--;
-
-        // Muestra un mensaje opcional si se ha eliminado un campo
-        console.log(`Número de serie #${serialCount + 1} eliminado.`);
-    } else {
-        alert("No hay campos para eliminar.");
-    }
+        // Habilitar campo de texto cuando se selecciona un serial
+        document.getElementById('serialListBox').addEventListener('change', (e) => {
+            const serialInput = document.getElementById('serialInput');
+            serialInput.disabled = !e.target.value;
         });
 
-    </script>
+        // Mostrar el dropzone cuando se hace clic en el área
+        document.getElementById('dropzone').addEventListener('click', () => {
+            document.getElementById('images').click();
+        });
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        // Seleccionar archivo desde el input file
+        document.getElementById('images').addEventListener('change', (e) => {
+            const files = e.target.files;
+            const fileList = document.getElementById('dropzone');
+            fileList.innerHTML = `<p>Archivos seleccionados:</p>`;
+            for (let file of files) {
+                fileList.innerHTML += `<p>${file.name}</p>`;
+            }
+        });
+    </script>
 </body>
 </html>
