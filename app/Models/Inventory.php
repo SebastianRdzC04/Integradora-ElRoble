@@ -11,9 +11,15 @@ class Inventory extends Model
 
     protected $table = 'inventory';
 
-    public function inventoryCategory()
+    public function SerialType()
     {
-        return $this->belongsTo(InventoryCategory::class);
+        return $this->belongsTo(SerialNumberType::class, 'serial_number_type_id', 'id');
+    }
+    public function incidents()
+    {
+        return $this->belongsToMany(Incident::class, 'incident_inventory')
+                    ->withPivot('description', 'price')
+                    ->withTimestamps();
     }
 
 

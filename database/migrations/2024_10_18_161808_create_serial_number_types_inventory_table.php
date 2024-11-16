@@ -13,9 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('dates', function (Blueprint $table) {
+        Schema::create('serial_number_types_inventory', function (Blueprint $table) {
             $table->id();
-            $table->date('date');
+            $table->string('code', 10)->unique();
+            $table->string('name', 50);
+            $table->foreignId('category_id')->constrained('inventory_categories');
             $table->timestamps();
         });
     }
@@ -27,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dates');
+        Schema::dropIfExists('serial_number_types_inventory');
     }
 };

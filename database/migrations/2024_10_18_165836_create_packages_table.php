@@ -20,6 +20,9 @@ return new class extends Migration
             $table->string('description', 255);
             $table->integer('max_people');
             $table->integer('price');
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->enum('status', ['activo', 'inactivo'])->default('inactivo');
             $table->timestamps();
         });
     }

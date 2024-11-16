@@ -54,5 +54,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Quote::class);
     }
+    public function events()
+    {
+        return $this->hasMany(Event::class, 'user_id', 'id');
+    }
 
 }

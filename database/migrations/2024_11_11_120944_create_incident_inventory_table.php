@@ -13,12 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('incidents', function (Blueprint $table) {
+        Schema::create('incident_inventory', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('event_id')->constrained('events')->onDelete('cascade');
-            $table->string('title', 100);
+            $table->foreignId('incident_id')->nullable()->constrained('incidents')->onDelete('set null');
+            $table->foreignId('inventory_id')->nullable()->constrained('inventory')->onDelete('set null');
             $table->string('description', 100);
-            $table->decimal('price', 8, 2)->default(0);
+            $table->decimal('price', 10,2)->default(0);
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('incidents');
+        Schema::dropIfExists('incident_inventory');
     }
 };
