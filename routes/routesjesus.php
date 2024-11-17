@@ -8,7 +8,6 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\ConsumableController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\IncidentController;
-use App\Http\Controllers\InventoryController;
 
 //Uso de Ajax con JQuery para el filtrado de datos
 Route::get('/filter/select/report', [IncidentController::class,'filterDataIncidentReport'])->name('filterselectedcategories.employee');
@@ -113,6 +112,10 @@ Route::delete('/list/persondestroy/{id}',[RegisterPersonController::class,'destr
 /*aqui ya seria cuando el usuario mande la cotizacion 
 dentro de aqui  
 */
+Route::get('/notverified', function () {
+    return view('welcome');
+})->middleware('auth');
+
 Route::get('/prueba', function () {
     return view('welcome');
 })->middleware('auth','verified');
