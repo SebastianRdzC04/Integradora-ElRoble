@@ -63,10 +63,8 @@ Route::get('dashboard/graphics', function () {
     $places = Place::all();
     // obtener las cotizaciones por lugar
     $events = Event::where('status', 'Pendiente')->orWhere('status', 'Finalizado')->get();
-
     $paquetes = Package::all();
-
-    //Datos grafica 2
+    //Datos Para el grafico de barras
     $eventos_sinPaquete = 0;
     $eventos_conPaquete = 0;
     $datos2 = [
@@ -76,9 +74,7 @@ Route::get('dashboard/graphics', function () {
             'stack' => 'a',
             'name' => 'Sin paquete',
         ],
-        
     ];
-
     foreach ($paquetes as $paquete) {
         $datos2[] = [
             'data' => [0,0,0,0,0,0,0,0,0,0,0,0],
@@ -87,8 +83,6 @@ Route::get('dashboard/graphics', function () {
             'name' => $paquete->name,
         ];
     }
-
-
     foreach ($events as $event) {
         if ($event->quote->package_id == null) {
             $eventos_sinPaquete++;
@@ -101,8 +95,6 @@ Route::get('dashboard/graphics', function () {
             $datos2[$event->quote->package_id]['data'][$mes2 - 1] += 1;
         }
     }
-    
-
     return view('pages.dashboard.graficos', compact('places', 'events', 'paquetes', 'datos2'));
 })->name('dashboard.graphics');
 
@@ -127,6 +119,16 @@ Route::get('dashboard/packages/{id}', function ($id) {
     $package = Package::find($id);
     return view('pages.dashboard.packagesedit', compact('package'));
 })->name('dashboard.package');
+
+Route::get('dashboard/services/{id}', function ($id) {
+    $service = Service::find($id);
+    return view('pages.dashboard.servicesedit', compact('service'));
+})->name('dashboard.service');
+
+Route::get('dashboard/quotes/{id}', function ($id) {
+    $quote = Quote::find($id);
+    return view('pages.dashboard.cotizacionAdmin', compact('quote'));
+})->name('dashboard.quote');
 
 
 
