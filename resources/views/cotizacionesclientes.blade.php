@@ -15,7 +15,7 @@
                 {{ session('success') }}
             </div>
             @elseif(session('error'))
-            <div class="alert alert-success" role="alert" style="background-color: rgb(228, 13, 13); color: white;">
+            <div class="alert alert-success" role="alert" style="background-color: rgb(175, 46, 46); color: white;">
                 {{ session('error') }}
             </div>
             @endif
@@ -104,19 +104,21 @@
                         @enderror
                     </div>                                        
         
-                    <div class="mb-3">
-                        <label for="owner_name" class="form-label">Nombre</label>
-                        <input type="text" name="owner_name" id="owner_name" class="form-control @error('owner_name') is-invalid @enderror" oninput="updatePreview()" value="{{ old('owner_name') }}">
-                        @error('owner_name')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <div class="mb-3">
-                        <label for="owner_phone" class="form-label">Teléfono</label>
-                        <input type="number" name="owner_phone" id="owner_phone" class="form-control @error('owner_phone') is-invalid @enderror" oninput="updatePreview()" value="{{ old('owner_phone') }}">
-                        @error('owner_phone')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
+                    <div class="mb-3 row">
+                        <div class="col-md-6">
+                            <label for="owner_name" class="form-label">Nombre</label>
+                            <input type="text" name="owner_name" id="owner_name" class="form-control @error('owner_name') is-invalid @enderror" oninput="updatePreview()" value="{{ old('owner_name') }}">
+                            @error('owner_name')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="col-md-6">
+                            <label for="owner_phone" class="form-label">Teléfono</label>
+                            <input type="number" name="owner_phone" id="owner_phone" class="form-control @error('owner_phone') is-invalid @enderror" oninput="updatePreview()" value="{{ old('owner_phone') }}">
+                            @error('owner_phone')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
         
                     <!-- Servicios -->
@@ -133,13 +135,14 @@
                             <div id="services-{{ $category->id }}" class="service-item" style="display: none;">
                                 <div class="row">
                                     @foreach($category->services as $service)
-                                        <div class="col-md-4 mb-3">
+                                        <div id="service-details-{{ $service->id }}" class="col-md-4 mb-3">
                                             <div class="card service-card">
                                                 <div class="card-body">
                                                     <h5 class="card-title">{{ $service->name }}</h5>
-                                                    <p class="card-text">Precio: ${{ $service->price }}</p>
+                                                    <p class="card-text" style="font-weight: bold">Precio Aprox: ${{ $service->price }}</p>
+                                                    <p class="card-text">Descripción: {{ $service->description }}</p>
                                                     <input type="checkbox" name="services[{{ $service->id }}]" value="{{ $service->id }}" class="form-check-input" onchange="selectService(this, '{{ $category->id }}')">
-                                                    <input type="number" name="services[{{ $service->id }}][quantity]" placeholder="Cantidad" class="form-control mt-2" style="display:none;">
+                                                    <input type="number" name="services[{{ $service->id }}][description]" placeholder="Descripción" class="form-control mt-2" style="display:none;">
                                                     <button type="button" id="confirm-btn-{{ $service->id }}" class="btn btn-primary mt-2" style="display:none;" disabled onclick="confirmService('{{ $service->id }}')">Confirmar</button>
                                                 </div>
                                             </div>
@@ -147,6 +150,7 @@
                                     @endforeach
                                 </div>
                             </div>
+                            
                         @endforeach
                     </div>
                 </form>
@@ -165,6 +169,9 @@
                     </div>
                 </div>
                 <p id="prevista-servicios">Servicios seleccionados:</p>
+                <div id="vista-previa-servicios" class="vista-previa mt-3">
+                    <!-- Aquí se renderizarán los servicios confirmados -->
+                </div>                             
                 <button type="button" class="btn btn-success mt-3" id="crearPaqueteBoton" onclick="crearPaquete()">Crear Paquete</button>
             </div>
         </div>
@@ -176,39 +183,66 @@
         let selectedServices = {};
     
         function confirmarServicio(serviceId, categoryId) {
-    const cantidad = document.querySelector(`input[name="services[${serviceId}][quantity]"]`).value;
+    const serviceCard = document.getElementById(`service-details-${serviceId}`);
+    const cantidad = document.querySelector(`input[name="services[${serviceId}][quantity]"]`)?.value;
+    const confirmButton = serviceCard.querySelector(`#confirm-btn-${serviceId}`);
 
-    if (cantidad) {
-        // Mover servicio de selectedServices a confirmedServices
+    // Verificar que se haya ingresado una cantidad
+    if (!cantidad || isNaN(cantidad) || cantidad <= 0) {
+        alert('Por favor, ingresa una cantidad válida.');
+        return;
+    }
+
+    // Verificar si se presionó el botón de confirmación
+    if (confirmButton && confirmButton.disabled === false) {
+        // Mover servicio a confirmedServices y marcarlo como confirmado
         confirmedServices[serviceId] = { categoryId, cantidad, isConfirmed: true };
 
-        // Ocultar detalles del servicio confirmado
-        document.getElementById(`service-details-${serviceId}`).style.display = 'none';
+        // Deshabilitar visualmente el servicio confirmado
+        serviceCard.classList.add('service-disabled');
+        const checkbox = serviceCard.querySelector('input[type="checkbox"]');
+        if (checkbox) checkbox.disabled = true;
 
-        // Ocultar otros servicios de la misma categoría
-        document.querySelectorAll(`#services-${categoryId} .service-card`).forEach(card => {
-            card.style.display = 'none';
-        });
+        // Deshabilitar el botón de confirmación y otros elementos interactivos
+        confirmButton.disabled = true;
 
-        // Actualizar vista
+        // Actualizar la vista de servicios confirmados
         actualizarVistaServicios();
-        toggleBotonCrearPaquete();
     } else {
-        alert('Por favor, ingresa una cantidad para confirmar el servicio.');
+        alert('Por favor, presiona el botón de confirmar para añadir el servicio.');
     }
 }
-    
-function actualizarVistaServicios() {
-    const listaServicios = document.getElementById('prevista-servicios');
-    listaServicios.innerHTML = '';
 
-    for (let serviceId in confirmedServices) {
-        const service = confirmedServices[serviceId];
-        const nombreServicio = document.querySelector(`input[value="${serviceId}"]`).closest('.service-card').querySelector('.card-title').innerText;
-        listaServicios.innerHTML += `<p><strong>Servicio:</strong> ${nombreServicio} (Cant. ${service.cantidad})</p>`;
+
+function getServiceName(serviceId) {
+    // Aquí deberíamos tener un mapa o estructura para obtener el nombre del servicio
+    // Asumimos que `services` es un objeto global que contiene los servicios, y cada servicio tiene un 'name'
+    return services[serviceId] ? services[serviceId].name : "Servicio desconocido";
+}
+
+function actualizarVistaServicios() {
+    const vistaPrevia = document.getElementById('vista-previa-servicios');
+    vistaPrevia.innerHTML = ''; // Limpiar la vista previa antes de agregar los nuevos servicios
+
+    if (Object.keys(confirmedServices).length === 0) {
+        vistaPrevia.innerHTML = '<p>No hay servicios confirmados aún.</p>';
+        return;
+    }
+
+    // Iterar sobre los servicios confirmados
+    for (const [serviceId, serviceData] of Object.entries(confirmedServices)) {
+        if (serviceData.isConfirmed) {
+            const serviceElement = document.createElement('div');
+            serviceElement.className = 'service-preview';
+            serviceElement.innerHTML = `
+                <p><strong>Servicio:</strong> ${getServiceName(serviceId)}</p>
+                <p><strong>Cantidad:</strong> ${serviceData.cantidad}</p>
+            `;
+            vistaPrevia.appendChild(serviceElement);
+        }
     }
 }
-    
+
         function toggleServices(categoryId) {
             const servicesDiv = document.getElementById(`services-${categoryId}`);
             servicesDiv.style.display = servicesDiv.style.display === 'block' ? 'none' : 'block';
@@ -235,10 +269,8 @@ function actualizarVistaServicios() {
             confirmButton.disabled = !serviceQuantityInput.value;
         });
 
-        // Ocultar los demás servicios en la misma categoría
-        document.querySelectorAll(`#services-${categoryId} .service-card`).forEach(card => {
-            if (card !== serviceCard) card.style.display = 'none';
-        });
+        // Confirmación del servicio al hacer clic
+        confirmButton.addEventListener('click', () => confirmarServicio(selectedServiceId, categoryId));
     } else {
         // Eliminar el servicio de selectedServices y confirmedServices
         delete selectedServices[selectedServiceId];
@@ -249,26 +281,53 @@ function actualizarVistaServicios() {
         serviceQuantityInput.value = '';
         confirmButton.style.display = 'none';
         confirmButton.disabled = true;
-
-        document.querySelectorAll(`#services-${categoryId} .service-card`).forEach(card => {
-            card.style.display = 'block';
-        });
-
-        actualizarVistaServicios();
     }
 }
 
-
-// Función para confirmar la selección del servicio
 function confirmService(serviceId) {
-    const serviceCard = document.querySelector(`input[name="services[${serviceId}]"]`).closest('.service-card');
+    const serviceCard = document.getElementById(`service-details-${serviceId}`);
     const quantityInput = serviceCard.querySelector(`input[name="services[${serviceId}][quantity]"]`);
+    const confirmButton = document.getElementById(`confirm-btn-${serviceId}`);
 
-    if (quantityInput.value) {
+    // Inicializar el servicio con `isConfirmed: false` si no existe en `confirmedServices`
+    if (!confirmedServices[serviceId]) {
         confirmedServices[serviceId] = {
-            quantity: quantityInput.value
+            isConfirmed: false,
+            cantidad: 0 // Inicializar con cantidad 0
         };
     }
+
+    // Verificar si la cantidad es válida
+    if (!quantityInput.value || quantityInput.value <= 0) {
+        alert("Por favor, ingresa una cantidad válida.");
+        return; // Salir si la cantidad no es válida
+    }
+
+    // Verificar si el botón de confirmación ha sido presionado
+    confirmButton.addEventListener('click', function() {
+        // Verificar que solo se confirme si la cantidad es válida
+        if (quantityInput.value > 0) {
+            // Establecer `isConfirmed` a `true` solo si se presiona el botón
+            confirmedServices[serviceId] = {
+                isConfirmed: true,
+                cantidad: quantityInput.value
+            };
+
+            // Llamar a la función para actualizar la vista de servicios
+            actualizarVistaServicios();
+
+            // Actualizar la UI (opacidad y deshabilitar interacciones)
+            serviceCard.style.opacity = 0.5;
+            serviceCard.style.pointerEvents = "none";
+
+            // Ocultar el botón de confirmación y la cantidad
+            confirmButton.style.display = "none";
+            quantityInput.style.display = "none";
+
+            // Mostrar el servicio en la vista previa
+            alert("Servicio confirmado correctamente.");
+        }
+    });
 }
 
 // Función para habilitar o deshabilitar el botón de confirmación
@@ -276,10 +335,6 @@ function toggleConfirmButton(quantityInput) {
     const confirmButton = quantityInput.closest('.service-card').querySelector(`#confirm-btn-${quantityInput.name.match(/\d+/)[0]}`);
     confirmButton.disabled = !quantityInput.value; // Habilita si hay cantidad, deshabilita si no hay
 }
-    
-        function checkIfAllServicesConfirmed() {
-            return Object.values(confirmedServices).every(service => service.isConfirmed);
-        }
     
         function toggleBotonCrearPaquete() {
     const botonCrearPaquete = document.getElementById('crearPaqueteBoton');
@@ -339,19 +394,36 @@ function toggleConfirmButton(quantityInput) {
     form.appendChild(generarInputOculto('end_time', endDateTime));
     form.appendChild(generarInputOculto('type_event', typeEventValue));
 
+    // Registrar toda la información en la consola
+    console.log("Información del formulario:");
+    console.log({
+        date,
+        startTime,
+        endTime,
+        startDateTime,
+        endDateTime,
+        typeEventValue,
+        dayAfterCheckbox
+    });
+
     // Procesar servicios confirmados
     let anyServiceConfirmed = false;
     for (let serviceId in confirmedServices) {
         const service = confirmedServices[serviceId];
-        if (service.isConfirmed && service.cantidad) {
-            // Agregar cada servicio confirmado como input oculto
+
+        console.log(`Procesando servicio ${serviceId}:`, service);
+
+        // Agregar los datos de cada servicio confirmado
+        if (service.isConfirmed && service.cantidad > 0) {
+            console.log(`Confirmando servicio ${serviceId} con cantidad: ${service.cantidad}`);
+            
+            // Agregar los datos de cantidad y confirmado al formulario
             form.appendChild(generarInputOculto(`services[${serviceId}][quantity]`, service.cantidad));
-
-            // Si hay precio o descripción, agregar también
-            if (service.precio) form.appendChild(generarInputOculto(`services[${serviceId}][price]`, service.precio));
-            if (service.descripcion) form.appendChild(generarInputOculto(`services[${serviceId}][description]`, service.descripcion));
-
+            form.appendChild(generarInputOculto(`services[${serviceId}][confirmed]`, true)); // Aquí se añade el atributo 'confirmed'
+            
             anyServiceConfirmed = true;
+        } else {
+            console.log(`Servicio ${serviceId} no confirmado o sin cantidad válida. Se omite.`);
         }
     }
 
@@ -359,10 +431,15 @@ function toggleConfirmButton(quantityInput) {
         console.log("No se seleccionaron servicios confirmados. Enviando formulario sin información de servicios.");
     }
 
+    // Registrar servicios seleccionados y confirmados
+    console.log("Servicios seleccionados:", selectedServices);
+    console.log("Servicios confirmados:", confirmedServices);
+
     // Enviar el formulario
     form.submit();
 }
-    
+
+
         function generarInputOculto(nombre, valor) {
             const input = document.createElement('input');
             input.type = 'hidden';
@@ -447,10 +524,6 @@ function toggleConfirmButton(quantityInput) {
         }
     });
 
-    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-        checkbox.addEventListener('change', updateServicePreview);
-    });
-
     function updatePreview() {
         const name = document.getElementById('owner_name').value || 'Nombre';
         const date = document.getElementById('date').value || '-';
@@ -466,18 +539,6 @@ function toggleConfirmButton(quantityInput) {
         document.getElementById('prevista-tipo-evento').innerText = `Tipo de Evento: ${typeEvent}`;
     }
 
-    function updateServicePreview() {
-        const listaServicios = document.getElementById('prevista-servicios');
-        listaServicios.innerHTML = '';
-
-        // Mostrar únicamente los servicios confirmados
-        for (let serviceId in confirmedServices) {
-            const service = confirmedServices[serviceId];
-            const nombreServicio = document.querySelector(`input[value="${serviceId}"]`).closest('.service-card').querySelector('.card-title').innerText;
-            listaServicios.innerHTML += `<p><strong>Servicio:</strong> ${nombreServicio} (Cant. ${service.cantidad})</p>`;
-        }
-
-    }
 });
 
     </script>

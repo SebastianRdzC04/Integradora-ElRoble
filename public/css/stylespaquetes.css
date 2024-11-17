@@ -209,3 +209,7 @@ li {
     color: white;
     text-align: left;
 }
+.service-disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
