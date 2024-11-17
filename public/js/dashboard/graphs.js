@@ -105,6 +105,9 @@ for (let i = 0; i < series2[0].data.length; ++i) {
   }
 }
 option2 = {
+  tooltip: {
+    trigger: 'item'
+  },
   xAxis: {
     type: 'category',
     data: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']

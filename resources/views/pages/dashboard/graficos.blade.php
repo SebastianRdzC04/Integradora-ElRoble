@@ -8,12 +8,25 @@
 
 
 @section('content')
-    <div>
-        <h3>Aqui iran los graficos</h3>
-    </div>
-    <div id="grafico1"></div>
 
-    <div id="grafico2"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-6 border">
+                <h2 class="text-center">Rentas por lugar</h2>
+                <div class="justify-content-center align-content-center" id="grafico1"></div>
+            </div>
+            <div class="col-6 border">
+                <h2 class="text-center">Paquetes por Evento</h2>
+                <div id="grafico2"></div>
+            </div>
+            <div class="col-6 border">
+                <h2 class="text-center">Paquetes por lugar</h2>
+                <div id="grafico3"></div>
+            </div>
+        </div>
+    </div>
+
+
 @endsection
 
 @php
@@ -27,19 +40,6 @@
             'value' => $place->quotes->count(),
         ];
     }
-    
-
-    /*
-    {
-    data: [120, 200, 150, 80, 70, 110, 130],
-    type: 'bar',
-    stack: 'a',
-    name: 'a'
-  }, 
-    */
-
-    
-
 @endphp
 
 

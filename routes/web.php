@@ -118,6 +118,11 @@ Route::get('dashboard/inventory', function () {
     return view('pages.dashboard.inventory', compact('inventory', 'consumableRecords', 'inventoryGroup'));
 })->name('dashboard.inventory');
 
+Route::get('dashboard/consumables', function () {
+    $consumables = Consumable::all();
+    return view('pages.dashboard.consumables', compact('consumables'));
+})->name('dashboard.consumables');
+
 Route::get('dashboard/packages/{id}', function ($id) {
     $package = Package::find($id);
     return view('pages.dashboard.packagesedit', compact('package'));

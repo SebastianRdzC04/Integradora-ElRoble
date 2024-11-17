@@ -45,7 +45,7 @@
         }
 
         #barra-lateral {
-            background-image: url('/images/imagen4.jpg');
+            background: radial-gradient(circle,#3a2012, #351a0c, #412415 );
             background-size: cover;
             color: white;
         }
@@ -86,7 +86,8 @@
                             id="menu">
                             <li class="nav-item">
                                 <a href="#" class="nav-link align-middle px-0">
-                                    <i class="fs-4 bi-house text-white"></i> <span class="ms-1 text-white d-none d-sm-inline">Home</span>
+                                    <i class="fs-4 bi-house text-white"></i> <span
+                                        class="ms-1 text-white d-none d-sm-inline">Home</span>
                                 </a>
                             </li>
                             <li>
@@ -140,7 +141,7 @@
                                         class="ms-1 d-none d-sm-inline text-white">Inventario</span> </a>
                                 <ul class="collapse nav flex-column ms-1" id="submenu3" data-bs-parent="#menu">
                                     <li class="w-100">
-                                        <a href="{{ route('dashboard') }}" class="nav-link px-0"> <span
+                                        <a href="{{ route('dashboard.consumables') }}" class="nav-link px-0"> <span
                                                 class="d-none d-sm-inline text-white">Insumos</span> </a>
                                     </li>
                                     <li>
