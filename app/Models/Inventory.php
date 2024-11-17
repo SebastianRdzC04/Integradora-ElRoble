@@ -11,6 +11,10 @@ class Inventory extends Model
 
     protected $table = 'inventory';
 
+    protected $fillable = [
+        'status',
+    ];
+
     public function SerialType()
     {
         return $this->belongsTo(SerialNumberType::class, 'serial_number_type_id', 'id');

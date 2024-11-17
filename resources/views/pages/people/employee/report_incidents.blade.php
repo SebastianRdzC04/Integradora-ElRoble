@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Reportar Incidencia</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         /* Estilos personalizados */
         body {
@@ -71,8 +73,9 @@
 <!-- Menú lateral (sidebar) -->
 <div id="sidebar" class="d-flex flex-column p-3">
     <span id="closeSidebarBtn">&times;</span>
-    <a href="/" class="d-flex align-items-center mb-3 text-white text-decoration-none">
-        <span class="fs-4">Jesus Alberto</span>
+    <a href="/" class="d-flex align-items-center mb-3 text-white text-decoration-none row">
+        <span class="fs-4">{{Auth::user()->person->firstName}}</span>
+        <span class="fs-normal">{{Auth::user()->roles->first()->name}}</span>
     </a>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
@@ -94,17 +97,35 @@
     </ul>
 </div>
 
+<!-- Mensaje de éxito -->
+@if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+<!-- Mensaje de error -->
+@if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+
 <!-- Contenido principal -->
 <div class="container mt-4">
     <h2>Reportar Incidencia</h2>
-    <form id="incidentForm">
+    <form id="incidentForm" method="POST" action="{{Route('incident.store')}}">
+        @csrf
         <div class="form-floating mb-3">
-            <input type="text" id="title" class="form-control" placeholder="Título de la incidencia" maxlength="100">
+            <input name="titleincident" type="text" id="title" class="form-control" placeholder="Título de la incidencia" maxlength="100">
             <label for="title">Título</label>
         </div>
         <div class="d-flex mb-3">
             <div class="form-floating flex-grow-1 me-2">
-                <textarea id="description" class="form-control" placeholder="Descripción" style="height: 100px;"></textarea>
+                <textarea name="incidentdescription" maxlength="100" id="incidentdescription" class="form-control" placeholder="Descripción" style="height: 100px;"></textarea>
                 <label for="description">Descripción</label>
             </div>
             <button type="button" id="addSerialButton" class="btn btn-primary align-self-end">Inventario Afectado</button>
@@ -116,6 +137,7 @@
                 <input type="file" id="images" class="form-control" multiple accept="image/*" style="display: none;">
             </div>
         </div>
+        <button type="submit">Enviar</button>
     </form>
 </div>
 
@@ -154,7 +176,7 @@
 
     <!-- Modal 2: Formulario y Tabla de Números de Serie -->
     <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-lg" style="min-width: 90%;">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="formModalLabel">Rellenar Información del Inventario</h5>
@@ -163,141 +185,242 @@
                 <div class="modal-body">
                     <div class="row">
                         <!-- Columna Izquierda: Formulario -->
-                        <div class="col-md-6">
-                        <div class="mb-3">
-    <label for="serialListBox" class="form-label">Serial</label>
-    <select id="serialListBox" class="form-select" style="max-height: 200px; overflow-y: auto; width: 100%;">
-        
-    </select>
-</div>
+                        <div class="col-md-5">
                             <div class="mb-3">
-                                <input type="text" id="serialInput" class="form-control" placeholder="Descripción del Serial" disabled>
+                                <label for="serialListBox" class="form-label">Serial</label>
+                                    <div class="row">
+                                        <div class="col-6 col-md-4">
+                                            <select id="serialListBox" class="form-select" style="max-height: 200px; overflow-y: auto; width: 100%;">
+                                                <!--aqui voy a rellenar con AJAX este select para que solo aprescan datos filtrados desde el servidor-->
+                                            </select>
+                                        </div>
+                                        <div class="col-6 col-md-8">
+                                            <input type="number" id="numberInput" class="form-control col-md-8" min="0" max="9999999999" value=0 placeholder="N°" required disabled>
+                                        </div>
+                                        
+                                    </div>
+                            </div>
+                            <div class="mb-3">
+                                <textarea id="description" class="form-control" maxlength="100" placeholder="Describe el daño" disabled></textarea>
                             </div>
                             <div class="mb-3">
                                 <select id="statusListBox" class="form-select" style="max-height: 50%; overflow-y: auto">
                                     <option value="disponible">Disponible</option>
-                                    <option value="no_disponible">No Disponible</option>
+                                    <option value="no disponible">No Disponible</option>
                                 </select>
                             </div>
-                            <button id="addItemButton" class="btn btn-primary">Agregar</button>
+                            <div class="row">
+                                <div class="col-6">
+                                    <button id="addItemButton" class="btn btn-primary">Agregar</button>
+                                </div>
+                                <div class="col">
+                                    <button id="updateInventory" class="btn btn-primary">Actualizar</button>
+                                </div>
+                            </div>
                         </div>
-
+                        
                         <!-- Columna Derecha: Tabla de Números de Serie -->
-                        <div class="col-md-6">
+                        <div class="col-md-7" style="overflow-y:scroll;">
                             <h6>Números de Serie Ingresados</h6>
-                            <ul id="serialList" class="list-group"></ul>
+                            <div style="max-height: 250px;overflow-y: auto;overflow-x: hidden;">
+                                <ul id="serialList" class="list-group" style="word-wrap: break-word;"></ul>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
 
-    //estos jason son para filtrar los valores que saldran en el listbox del segundo modal
-    // Datos que vienen desde el backend
-    const serialNumbers = @json($sn);
-    const categories = @json($categories);
+//utilizare AJAX con JQuery para filtrar, entender su sintaxis y el funcionamiento 
+// variables globales
+// para la barra lateral
+const sidebar = document.getElementById('sidebar');
+const openSidebarBtn = document.getElementById('openSidebarBtn');
+const closeSidebarBtn = document.getElementById('closeSidebarBtn');
 
-    // Función para obtener las categorías seleccionadas
-    function getSelectedCategories() {
-        const checkboxes = document.querySelectorAll('input[name="categories[]"]:checked');
-        const selectedCategories = Array.from(checkboxes).map(checkbox => checkbox.value);
-        console.log('Selected Categories:', selectedCategories);
-        return selectedCategories;
+//para el modal 2
+const description = document.getElementById('description');
+const numberInput = document.getElementById('numberInput');
+const selectsn = document.getElementById("serialListBox");
+const statusListBox = document.getElementById('statusListBox');
+const serialList = document.getElementById('serialList');
+
+// para las imagenes
+const imagesInput = document.getElementById('images');
+const dropzone = document.getElementById('dropzone');
+
+// para los button de los modales
+const addSerialButton = document.getElementById('addSerialButton');
+const nextModalButton = document.getElementById('nextModalButton');
+const addItemButton = document.getElementById('addItemButton');
+const updateInventoryButton = document.getElementById('updateInventory');
+
+// Inicializamos el array que almacenará los elementos localmente
+let items = [];
+
+//abre y cierra el modal
+openSidebarBtn.addEventListener('click', () => {
+    sidebar.classList.add('open');
+});
+
+closeSidebarBtn.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+});
+
+// modal 1 es abierto
+addSerialButton.addEventListener('click', () => {
+    new bootstrap.Modal(document.getElementById('inventoryModal')).show();
+});
+
+// para irnos al modal 2
+nextModalButton.addEventListener('click', () => {
+    bootstrap.Modal.getInstance(document.getElementById('inventoryModal')).hide();
+    new bootstrap.Modal(document.getElementById('formModal')).show();
+});
+
+// aqui se llena el serial 2 con ajax
+nextModalButton.addEventListener('click', function () {
+    const selectedCategories = $("input[name='categories[]']:checked")
+        .map(function () {
+            return $(this).val().toUpperCase();
+        }).get();
+
+    if (selectedCategories.length === 0) {
+        alert('Selecciona al menos un elemento de la lista');
+        return;
     }
 
-    // Evento al presionar el botón "Siguiente"
-    document.getElementById('nextModalButton').addEventListener('click', () => {
-        const selectedCategories = getSelectedCategories();
-
-        // Filtrar los seriales según las categorías seleccionadas
-        const filteredSerials = serialNumbers.filter(serial =>
-            selectedCategories.includes(
-                categories.find(cat => cat.id === serial.category_id)?.name
-            )
-        );
-
-        // Llenar el ListBox con los seriales filtrados
-        const serialListBox = document.getElementById('serialListBox');
-        serialListBox.innerHTML = '<option value="">Seleccione un Serial</option>'; // Resetear opciones
-
-        filteredSerials.forEach(serial => {
-            const option = document.createElement('option');
-            option.value = serial.code;
-            option.text = serial.code;
-            serialListBox.appendChild(option);
-        });
-
-        // Mostrar el siguiente modal
-        const formModal = new bootstrap.Modal(document.getElementById('formModal'));
-        formModal.show();
+    $.ajax({
+        url: "{{Route('filterselectedcategories.employee')}}",
+        type: "GET",
+        data: {
+            categories: selectedCategories.join(","),
+        },
+        dataType: "json",
+        success: function (response) {
+            $("#serialListBox").html('<option value="">Seleccione un Serial</option>');
+            $.each(response, function (index, serial) {
+                $("#serialListBox").append(`<option value="${serial.code}">${serial.code}</option>`);
+            });
+        },
+        error: function (xhr, status, error) {
+            console.error("Error al obtener los números de serie", error);
+            alert("Hubo un error. Intenta nuevamente.");
+        },
     });
-    
-    //esto es para la animacion del side bar -------------------------------------------------------------
-    const sidebar = document.getElementById('sidebar');
-    const openSidebarBtn = document.getElementById('openSidebarBtn');
-    const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+});
 
-    openSidebarBtn.addEventListener('click', () => {
-        sidebar.classList.add('open');
-    });
+//agrega item al array
+addItemButton.addEventListener('click', () => {
+    const status = statusListBox.value;
+    const serial = selectsn.value;
+    const number = parseInt(numberInput.value, 10);
+    const descriptionText = description.value;
 
-    closeSidebarBtn.addEventListener('click', () => {
-        sidebar.classList.remove('open');
-    });
+    if (number && descriptionText) {
+        // crea el JSON para almacenar en el front
+        const item = {
+            serial: serial,
+            number: number,
+            description: descriptionText,
+            status: status
+        };
+
+        // lo metemos al arreglo
+        items.push(item);
+
+        // mostramos el item en modal
+        const listItem = document.createElement('li');
+        listItem.classList.add('list-group-item');
+        listItem.textContent = `${serial}-${number}: ${descriptionText} - ${status}`;
+        serialList.appendChild(listItem);
+
+        // se reincian los campos
+        numberInput.value = '';
+        description.value = '';
+        selectsn.selectedIndex = 0;
+        statusListBox.value = 'disponible';
+
+        // desactivamos campos
+        numberInput.disabled = true;
+        description.disabled = true;
+        statusListBox.disabled = true;
+    } else {
+        alert('Por favor, completa el número y la descripción.');
+    }
+});
+
+// para habilitar campos
+selectsn.addEventListener('change', () => {
+    numberInput.disabled = !selectsn.value;
+});
+
+numberInput.addEventListener('input', () => {
+    description.disabled = !numberInput.value;
+    statusListBox.disabled = !numberInput.value;
+});
+
+// Validar que solo números sean aceptados, sin '-' ni '+'
+numberInput.addEventListener('input', (e) => {
+    let value = e.target.value;
+    value = value.replace(/[-+]/g, '');
+    e.target.value = value;
+});
 
 
-        // Abrir primer modal
-        document.getElementById('addSerialButton').addEventListener('click', () => {
-            new bootstrap.Modal(document.getElementById('inventoryModal')).show();
-        });
+// ------------------esta parte es de las imagenes--------------------------
+// para arrastrar el archivo
+dropzone.addEventListener('click', () => {
+    imagesInput.click();
+});
 
-        // Pasar al segundo modal
-        document.getElementById('nextModalButton').addEventListener('click', () => {
-            bootstrap.Modal.getInstance(document.getElementById('inventoryModal')).hide();
-            new bootstrap.Modal(document.getElementById('formModal')).show();
-        });
+// mostramos el archivo del dropeo
+imagesInput.addEventListener('change', (e) => {
+    const files = e.target.files;
+    const fileList = dropzone;
+    fileList.innerHTML = `<p>Archivos seleccionados:</p>`;
+    for (let file of files) {
+        fileList.innerHTML += `<p>${file.name}</p>`;
+    }
+});
 
-        // Manejar el formulario del segundo modal
-        document.getElementById('addItemButton').addEventListener('click', () => {
-            const serialInput = document.getElementById('serialInput').value;
-            const status = document.getElementById('statusListBox').value;
-
-            if (serialInput) {
-                const listItem = document.createElement('li');
-                listItem.classList.add('list-group-item');
-                listItem.textContent = `${serialInput} - ${status}`;
-                document.getElementById('serialList').appendChild(listItem);
-
-                // Limpiar campos
-                document.getElementById('serialInput').value = '';
-                document.getElementById('statusListBox').value = 'disponible';
+// btn de enviar datos al backend para su validacion
+updateInventoryButton.addEventListener('click', () => {
+    // ver si el item tiene datos
+    if (items.length > 0) {
+        // lo enviamos dentro de un objeto 
+        $.ajax({
+            url: "{{ route('saveItems') }}",
+            type: "POST",
+            contentType: "application/json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            data: JSON.stringify({ items: items }),
+            success: function (response) {
+                if (response.success) {
+                    $('#formModal').modal('hide'); 
+                } else {
+                    alert('Error al actualizar los items. ' + response.error);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log("verificar", JSON.stringify({ items: items }));
+                console.error("Error al enviar los datos", error);
+                alert('Hubo un error al intentar actualizar los items.');
             }
         });
+    } else {
+        alert('No hay items para actualizar.');
+    }
+});
 
-        // Habilitar campo de texto cuando se selecciona un serial
-        document.getElementById('serialListBox').addEventListener('change', (e) => {
-            const serialInput = document.getElementById('serialInput');
-            serialInput.disabled = !e.target.value;
-        });
 
-        // Mostrar el dropzone cuando se hace clic en el área
-        document.getElementById('dropzone').addEventListener('click', () => {
-            document.getElementById('images').click();
-        });
+</script>
 
-        // Seleccionar archivo desde el input file
-        document.getElementById('images').addEventListener('change', (e) => {
-            const files = e.target.files;
-            const fileList = document.getElementById('dropzone');
-            fileList.innerHTML = `<p>Archivos seleccionados:</p>`;
-            for (let file of files) {
-                fileList.innerHTML += `<p>${file.name}</p>`;
-            }
-        });
-    </script>
+
 </body>
 </html>

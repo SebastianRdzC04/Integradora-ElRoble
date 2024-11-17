@@ -1,9 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Event;
 use App\Models\Incident;
+use Carbon\Carbon;
 use App\Models\Inventory;
 use App\Models\InventoryCategory;
 use App\Models\SerialNumberType;
@@ -15,74 +15,111 @@ class IncidentController extends Controller
 {
     public function create()
     {
-        $sn = DB::table('serial_number_types_inventory')
-                ->select('id', 'code', 'name', 'category_id')
-                ->get();
-    
-        $categories = DB::table('inventory_categories')
-                        ->select('id', 'name')
-                        ->get();
-    
-        return view('pages.people.employee.report_incidents', compact('sn', 'categories'));
+        return view('pages.people.employee.report_incidents');
+    }
+
+    public function saveItems(Request $request)
+    {
+        // Validar el JSON que contiene los items
+        $request->validate([
+            'items' => 'required|array',
+            'items.*.serial' => 'required|string|max:10',
+            'items.*.number' => 'required|integer|min:0|max:9999999999',
+            'items.*.description' => 'required|string|max:100',
+            'items.*.status' => 'required|in:disponible,no disponible',
+        ]);
+
+        // Guardar los items en la sesión
+        session()->put('validated_items', $request->input('items'));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Items validados y guardados en sesión correctamente.'
+        ]);
     }
 
     public function store(Request $request)
     {
-        // Obtener el usuario autenticado
-        $user = Auth::user();
-    
-        // Validaciones mínimas en el backend
         $request->validate([
-            'title' => 'string|max:100',
-            'description' => 'string|max:100',
+            'titleincident' => 'required|string|max:100',
+            'incidentdescription' => 'required|string|max:100',
         ]);
 
-        $validatedData = $request->validate([
-            'serial.*' => 'required|string|max:10', // Valida cada elemento del array 'serial[]'
-            'detailsy.*' => 'required|string|max:255', // Valida cada elemento del array 'detailsy[]'
-            'status.*' => 'required|in:disponible,no disponible', // Valida que sea una de las opciones
-        ]);
-    
-        // Si la validación pasa, puedes procesar los datos
-        foreach ($validatedData['serial'] as $index => $serial) {
-            $detail = $validatedData['detailsy'][$index];
-            $status = $validatedData['status'][$index];
+        $title = $request->input('titleincident');
+        $description = $request->input('incidentdescription');
+
+        $items = session()->get('validated_items', []);
         
-        // Obtener el evento de hoy
-        $event = Event::whereDate('date', now()->toDateString())->first();
-    
-        if (!$event) {
-            return response()->json(['message' => 'No se encontró ningún evento para la fecha de hoy'], 404);
+        if (empty($items)) {
+            return redirect()->route('incident.create')->withErrors(['error' => 'No se han seleccionado items válidos.']);
         }
-    
-        DB::transaction(function () use ($validatedData,$event,$request) {
+        
+        $currentDate = Carbon::now()->format('Y-m-d');
+        
+        $eventId = Event::whereDate('date', $currentDate)->value('id');
+
+        if (!$eventId) {
+            return redirect()->route('incident.create')->withErrors(['error' => 'No se encontró un evento para la fecha actual.']);
+        }
+
+        $userId = Auth::user()->getAuthIdentifier();
+
+        DB::transaction(function () use ($eventId, $userId, $title, $description, $items) {
+
+            // Crear el incidente
             $incident = Incident::create([
-                'event_id' => $event->id,
-                'user_id' => $user->id,
-                'title' => $request->title,
-                'description' => $request->description,
+                'event_id' => $eventId,
+                'user_id' => $userId,
+                'title' => $title,
+                'description' => $description,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ]);
+        
+            foreach ($items as $item) {
+                $serialType = SerialNumberType::where('code', $item['serial'])->first();
+                
+                if (!$serialType) {
+                    throw new \Exception('El serial "' . $item['serial'] . '" no es válido.');
+                }
 
+                $inventory = Inventory::where('serial_number_type_id', $serialType->id)
+                                      ->where('number', $item['number'])
+                                      ->first();
 
+                if (!$inventory) {
+                    throw new \Exception('El inventario con número "' . $item['number'] . '" no existe.');
+                }
 
-            foreach ($validatedData['serial'] as $index => $serial) {
-                $detail = $validatedData['detailsy'][$index];
-                $status = $validatedData['status'][$index];
-    
-                // Insertar datos en la base de datos
-                Incidencia::create([
-                    'serial' => $serial,
-                    'description' => $detail,
-                    'status' => $status,
+                $inventory->update([
+                    'status' => $item['status']
+                ]);
+        
+                $incident->inventories()->syncWithoutDetaching([
+                    $inventory->id => [
+                        'description' => $item['description'],
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                    ]
                 ]);
             }
         });
-        
+        session()->flush();
 
-
-    
-        return response()->json(['message' => 'Incidente creado exitosamente'], 201);
+        return redirect()->route('incident.create')->with('success', 'El incidente y los items fueron registrados correctamente.');
     }
-    
-}
+
+
+    public function filterDataIncidentReport(Request $request)
+    {
+        $categories = explode(",", $request->query('categories'));
+        
+        $seriales = SerialNumberType::whereIn('category_id', function ($query) use ($categories){
+            $query->select('id')->from('inventory_categories')->whereIn('name', $categories);
+        })->get(['code']);
+
+        
+        // Retornamos los seriales en formato JSON
+        return response()->json($seriales);
+    }
 }

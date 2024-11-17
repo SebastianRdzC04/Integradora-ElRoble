@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Incident extends Model
 {
@@ -17,6 +18,13 @@ class Incident extends Model
         'description',
         'price',
     ];
+
+    public function inventories(): BelongsToMany
+    {
+        return $this->belongsToMany(Inventory::class)
+        ->withPivot('description', 'price')
+        ->withTimestamps();
+    }
 
     public function event()
     {

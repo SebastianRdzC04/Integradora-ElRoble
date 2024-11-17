@@ -8,7 +8,13 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\ConsumableController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\IncidentController;
+use App\Http\Controllers\InventoryController;
 
+//Uso de Ajax con JQuery para el filtrado de datos
+Route::get('/filter/select/report', [IncidentController::class,'filterDataIncidentReport'])->name('filterselectedcategories.employee');
+Route::post('/create/incident',[IncidentController::class,'store'])->name('incident.store');
+Route::post('/validate/incidents/inventory',[IncidentController::class,'saveItems'])->name('saveItems');
+//aqui termina el uso de ajax
 
 Route::get('/incident',[IncidentController::class,'create'])->name('incident.create');
 
