@@ -32,7 +32,7 @@
     <title>@yield('title')</title>
     <style>
         body {
-            background-color: #f0f0f0;
+            background-color: #f8f6f5;
         }
 
         main {
@@ -43,14 +43,20 @@
         .sidebar {
             height: 100%;
         }
+
+        #barra-lateral {
+            background-image: url('/images/imagen4.jpg');
+            background-size: cover;
+            color: white;
+        }
     </style>
 </head>
 
 <body>
     <main>
-        <div class="container-fluid sidebar">
+        <div class="container-fluid sidebar" id="barra-lateral">
             <div class="row flex-nowrap sidebar">
-                <div class="col-12 px-sm-2 px-0 bg-dark">
+                <div class="col-12 px-sm-2 px-0">
                     <div
                         class="sidebar d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white min-vh-100">
                         <a href="/"
@@ -80,66 +86,66 @@
                             id="menu">
                             <li class="nav-item">
                                 <a href="#" class="nav-link align-middle px-0">
-                                    <i class="fs-4 bi-house"></i> <span class="ms-1 d-none d-sm-inline">Home</span>
+                                    <i class="fs-4 bi-house text-white"></i> <span class="ms-1 text-white d-none d-sm-inline">Home</span>
                                 </a>
                             </li>
                             <li>
                                 <a href="#submenu1" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-                                    <i class="fs-4 bi-speedometer2"></i> <span
-                                        class="ms-1 d-none d-sm-inline">Dashboard</span> </a>
+                                    <i class="fs-4 bi-speedometer2 text-white"></i> <span
+                                        class="text-white ms-1 d-none d-sm-inline">Dashboard</span> </a>
                                 <ul class="collapse nav flex-column ms-1" id="submenu1" data-bs-parent="#menu">
                                     <li class="w-100">
                                         <a href="{{ route('dashboard') }}" class="nav-link px-0"> <span
-                                                class="d-none d-sm-inline">Inicio</span> </a>
+                                                class="d-none d-sm-inline text-white">Inicio</span> </a>
                                     </li>
                                     <li>
                                         <a href="{{ route('dashboard.graphics') }}" class="nav-link px-0"> <span
-                                                class="d-none d-sm-inline">Graficos</span> </a>
+                                                class="d-none d-sm-inline text-white">Graficos</span> </a>
                                     </li>
                                     <li>
                                         <a href="{{ route('dashboard.records') }}" class="nav-link px-0"> <span
-                                                class="d-none d-sm-inline">Registro</span> </a>
+                                                class="d-none d-sm-inline text-white">Registro</span> </a>
                                     </li>
 
                                 </ul>
                             </li>
                             <li>
                                 <a href="#submenu2" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-                                    <i class="fs-4 bi bi-table"></i> <span
-                                        class="ms-1 d-none d-sm-inline">Registros</span>
+                                    <i class="fs-4 bi bi-table text-white"></i> <span
+                                        class="ms-1 d-none d-sm-inline text-white">Registros</span>
                                 </a>
                                 <ul class="collapse nav flex-column ms-1" id="submenu2" data-bs-parent="#menu">
                                     <li class="w-100">
                                         <a href="{{ route('dashboard.packages') }}" class="nav-link px-0"> <span
-                                                class="d-none d-sm-inline">Paquetes</span> </a>
+                                                class="d-none d-sm-inline text-white">Paquetes</span> </a>
                                     </li>
                                     <li>
                                         <a href="{{ route('dashboard.services') }}" class="nav-link px-0"> <span
-                                                class="d-none d-sm-inline">Servicios</span> </a>
+                                                class="d-none d-sm-inline text-white">Servicios</span> </a>
                                     </li>
                                     <li>
                                         <a href="{{ route('dashboard.events') }}" class="nav-link px-0"> <span
-                                                class="d-none d-sm-inline">Eventos</span> </a>
+                                                class="d-none d-sm-inline text-white">Eventos</span> </a>
                                     </li>
                                     <li>
                                         <a href="{{ route('dashboard.quotes') }}" class="nav-link px-0"> <span
-                                                class="d-none d-sm-inline">Cotizaciones</span> </a>
+                                                class="d-none d-sm-inline text-white">Cotizaciones</span> </a>
                                     </li>
 
                                 </ul>
                             </li>
                             <li>
                                 <a href="#submenu3" data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-                                    <i class="fs-4 bi bi-archive"></i> <span
-                                        class="ms-1 d-none d-sm-inline">Inventario</span> </a>
+                                    <i class="fs-4 bi bi-archive text-white"></i> <span
+                                        class="ms-1 d-none d-sm-inline text-white">Inventario</span> </a>
                                 <ul class="collapse nav flex-column ms-1" id="submenu3" data-bs-parent="#menu">
                                     <li class="w-100">
                                         <a href="{{ route('dashboard') }}" class="nav-link px-0"> <span
-                                                class="d-none d-sm-inline">Insumos</span> </a>
+                                                class="d-none d-sm-inline text-white">Insumos</span> </a>
                                     </li>
                                     <li>
                                         <a href="{{ route('dashboard.inventory') }}" class="nav-link px-0"> <span
-                                                class="d-none d-sm-inline">Equipamiento</span> </a>
+                                                class="d-none d-sm-inline text-white">Equipamiento</span> </a>
                                     </li>
                                 </ul>
                             </li>

@@ -13,6 +13,7 @@ use App\Models\Quote;
 use App\Models\Service;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use Carbon\Carbon;
 
 // Controladores de AxelV2.0
 use App\Http\Controllers\ServiciosAdminController;
@@ -61,9 +62,48 @@ Route::get('dashboard/quotes', function () {
 Route::get('dashboard/graphics', function () {
     $places = Place::all();
     // obtener las cotizaciones por lugar
+    $events = Event::where('status', 'Pendiente')->orWhere('status', 'Finalizado')->get();
+
+    $paquetes = Package::all();
+
+    //Datos grafica 2
+    $eventos_sinPaquete = 0;
+    $eventos_conPaquete = 0;
+    $datos2 = [
+        [
+            'data' => [0,0,0,0,0,0,0,0,0,0,0,0],
+            'type' => 'bar',
+            'stack' => 'a',
+            'name' => 'Sin paquete',
+        ],
+        
+    ];
+
+    foreach ($paquetes as $paquete) {
+        $datos2[] = [
+            'data' => [0,0,0,0,0,0,0,0,0,0,0,0],
+            'type' => 'bar',
+            'stack' => 'b',
+            'name' => $paquete->name,
+        ];
+    }
 
 
-    return view('pages.dashboard.graficos', compact('places'));
+    foreach ($events as $event) {
+        if ($event->quote->package_id == null) {
+            $eventos_sinPaquete++;
+            //hacer un match por mes 
+            $mes = Carbon::parse($event->date)->format('m');
+            $datos2[0]['data'][$mes - 1] += 1;
+        } else {
+            $eventos_conPaquete++;
+            $mes2 = Carbon::parse($event->date)->format('m');
+            $datos2[$event->quote->package_id]['data'][$mes2 - 1] += 1;
+        }
+    }
+    
+
+    return view('pages.dashboard.graficos', compact('places', 'events', 'paquetes', 'datos2'));
 })->name('dashboard.graphics');
 
 Route::get('dashboard/events', function () {
@@ -71,13 +111,22 @@ Route::get('dashboard/events', function () {
     return view('pages.dashboard.events', compact('events'));
 })->name('dashboard.events');
 
-
 Route::get('dashboard/inventory', function () {
     $inventory = Inventory::all();
     $consumableRecords = ConsumableRecord::all();
     $inventoryGroup = Inventory::select('serial_number_type_id', DB::raw('count(*) as total'))->groupBy('serial_number_type_id')->get();
     return view('pages.dashboard.inventory', compact('inventory', 'consumableRecords', 'inventoryGroup'));
 })->name('dashboard.inventory');
+
+Route::get('dashboard/packages/{id}', function ($id) {
+    $package = Package::find($id);
+    return view('pages.dashboard.packagesedit', compact('package'));
+})->name('dashboard.package');
+
+
+
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

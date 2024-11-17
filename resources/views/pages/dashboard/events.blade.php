@@ -11,9 +11,9 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-10">
-                <div class="table-responsive">
-                    <table class="table" id="event-table">
+            <div class="col-10 ">
+                <div class="table-responsive ">
+                    <table class="table shadow" id="event-table">
                         <thead>
                             <tr>
                                 <th>Cliente</th>

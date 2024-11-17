@@ -12,9 +12,12 @@
         <h3>Aqui iran los graficos</h3>
     </div>
     <div id="grafico1"></div>
+
+    <div id="grafico2"></div>
 @endsection
 
 @php
+    use Carbon\Carbon;
 
     $datos = [];
 
@@ -24,6 +27,19 @@
             'value' => $place->quotes->count(),
         ];
     }
+    
+
+    /*
+    {
+    data: [120, 200, 150, 80, 70, 110, 130],
+    type: 'bar',
+    stack: 'a',
+    name: 'a'
+  }, 
+    */
+
+    
+
 @endphp
 
 
@@ -33,6 +49,8 @@
 
     <script>
         let datos = @json($datos);
+        let datos2 = @json($datos2);
+        console.log(datos2);
     </script>
 
     <script src="{{ asset('js/dashboard/graphs.js') }}"></script>

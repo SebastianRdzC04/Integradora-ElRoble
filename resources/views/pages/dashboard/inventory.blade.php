@@ -15,7 +15,7 @@
         <div class="row justify-content-center">
             <div class="col-10">
                 <div class="table-resposive">
-                    <table class="table" id="inventory-table">
+                    <table class="table shadow" id="inventory-table">
                         <thead>
                             <tr>
                                 <th class="text-center">No.Serie</th>

@@ -33,12 +33,15 @@ class DashboardController extends Controller
         ->having('count', '>=', 3)
         ->pluck('date'); 
 
-
+        // Informacion sobre eventos
         $eventosDelMesPasado = Event::whereBetween('date', [$inicioMesPasado, $finMesPasado])->get();
         $eventosEsteMes = Event::whereBetween('date', [$inicioMesActual, $finMesActual])->get();
         $porcentaje = 0;
         if (count($eventosDelMesPasado) > 0) {
             $porcentaje = round((count($eventosEsteMes) - count($eventosDelMesPasado)) / count($eventosDelMesPasado) * 100, 2);
+        }
+        else if (count($eventosEsteMes) > 0) {
+            $porcentaje = 100;
         }
 
         $gananciasNetas = $eventosEsteMes->where('status', 'Finalizado')->sum('total_price');
