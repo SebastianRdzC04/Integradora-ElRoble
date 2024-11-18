@@ -27,7 +27,7 @@ class CheckEmailOrPhoneRegistered
         {
             if (!User::where($table, $input)->exists()) 
             {
-                return redirect()->route('register', ['phoneoremail' => $input]);
+                return redirect()->route('registeruser.create', ['phoneoremail' => $input]);
             }
         }
         else

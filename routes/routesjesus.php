@@ -15,13 +15,13 @@ use Laravel\Socialite\Facades\Socialite;
  
 Route::get('/login-google', function () {
     return Socialite::driver('google')->redirect();
-});
- 
-Route::get('/google-callback-url', function () {
+})->name('login.google');
+ /*Route::get('/google-callback-url', function () {
     $user = Socialite::driver('google')->user();  // Obtienes los datos del usuario desde Google
 
     redirect()->route('register.google',['user' => $user]);  // O redirige a la página de inicio después de login
-});
+});*/
+
 
 // Html con politicas de uso, privacidad y de servicio
 Route::view('/policy/privacy', 'pages.policy.privacy-policy');
@@ -48,20 +48,28 @@ Route::get('/error',function () {
 
 
 // Ruta para mostrar el formulario de registro
-Route::get('/register/{phoneoremail}', [RegisterUserController::class, 'create'])->name('register');
-Route::get('/register/{user}', [RegisterUserController::class, 'createUserGoogle'])->name('register.google');
+Route::get('/register/{phoneoremail}', [RegisterUserController::class, 'create'])->name('registeruser.create');
+Route::get('/register/google', [RegisterUserController::class, 'handleGoogleCallback'])->name('register.google');
 
 // Ruta para enviar los datos del formulario de registro
 Route::post('/register', [RegisterUserController::class, 'store'])->name('register.store');
-Route::post('/register/{user}', [RegisterUserController::class, 'storeUserGoogle'])->name('registergoogle.store');
+Route::post('/register/google', [RegisterUserController::class, 'storeUserGoogle'])->name('registergoogle.store');
 
 
 
 
+Route::get('/sign/in/google', [RegisterUserController::class, 'handleGoogleCallback'])->name('register.google');
 //rutas de inicio de sesion y creacion de cuenta
 
 Route::middleware('guest')->group(function()
 {
+    // Ruta para mostrar el formulario de registro
+Route::get('/register/{phoneoremail}', [RegisterUserController::class, 'create'])->name('registeruser.create');
+
+// Ruta para enviar los datos del formulario de registro
+Route::post('/register', [RegisterUserController::class, 'store'])->name('register.store');
+Route::post('/register/google', [RegisterUserController::class, 'storeUserGoogle'])->name('registergoogle.store');
+
 
     //muestra el formulario de ingresar email para restablecer
     Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');

@@ -6,7 +6,7 @@
 
 @section('title form')
 
-    Hola {{$user->user["given_name"]}} Completa tus datos para iniciar sesion
+    Hola {{$user->user['given_name']}} Completa tus datos para iniciar sesion
 @endsection
 
 @section('subtitle form')
@@ -14,7 +14,8 @@
 @endsection
 
 @section('form')
-    <form method="POST" action="{{Route('registergoogle.store',['user' => $user])}}">
+    <form method="POST" action="{{route('registergoogle.store')}}">
+        @csrf
         <div class="form-floating mb-3">
             <input type="text" name="phone" id="phone" class="form-control" maxlength="10" pattern="\d{10}" title="Ingresa un número de 10 dígitos" required>
             <label for="phone">Ingresa tu Telefono</label>

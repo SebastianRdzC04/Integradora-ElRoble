@@ -30,6 +30,10 @@
             <button type="submit" class="btn" style="background-color: #af6400b3;">Siguiente</button>
         </div>
     </form>
+
+    <form method="get" action="{{route('login.google')}}">
+        <button type="submit">google</button>
+    </form>
 @endsection
 
 @section('script')

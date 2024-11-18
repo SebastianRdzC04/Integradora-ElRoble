@@ -1,5 +1,5 @@
 <?php
-<?php
+
 
 namespace App\Http\Controllers;
 
@@ -10,6 +10,8 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Rol;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
+use App\Providers\RouteServiceProvider;
 
 class RegisterUserController extends Controller
 {
@@ -54,18 +56,16 @@ class RegisterUserController extends Controller
         });
     }
 
-    public function createUserGoogle($user)
+    public function storeUserGoogle(Request $request)
     {
-        return view('pages.sesion.google.datacomplete', compact('user'));
-    }
-
-    public function storeUserGoogle(Request $request, $user)
-    {
-        $validatedData = $request->validated([
+        $user = session('user');
+        $validatedData = $request->validate([
             'birthdate' => 'required|date',
             'gender' => 'required|in:Masculino,Femenino,Otro',
             'phone' => 'required|string|size:10|regex:/^[0-9]+$/',
         ]);
+        $validatedData['age'] = 18;
+        
 
         $userExist = User::where('external_id', $user->id)
                         ->where('external_auth', 'google')
@@ -75,12 +75,14 @@ class RegisterUserController extends Controller
             Auth::login($userExist);
         } else {
             DB::transaction(function () use ($user, $validatedData) {
+
                 $personNew = Person::create([
                     'firstName' => $user->user['given_name'],
                     'lastName' => $user->user['family_name'],
                     'gender' => $validatedData['gender'],
                     'phone' => $validatedData['phone'],
-                    'birthdate' => $validatedData['birthdate']
+                    'birthdate' => $validatedData['birthdate'],
+                    'age' => $validatedData['age'],
                 ]);
 
                 $userNew = User::create([
@@ -89,11 +91,13 @@ class RegisterUserController extends Controller
                     'external_id' => $user->id,
                     'external_auth' => 'google',
                     'person_id' => $personNew->id,
+                    'email_verified_at' => now(),
                 ]);
 
                         $role = Rol::where('name', 'user')->first();
+
                     if ($role) {
-                        $user->roles()->attach($role->id);
+                        $userNew->roles()->attach($role->id);
                     }
 
                 Auth::login($userNew);
@@ -101,5 +105,24 @@ class RegisterUserController extends Controller
 
             return redirect()->intended(RouteServiceProvider::HOME);
         }
+        
     }
+    public function handleGoogleCallback()
+{
+    // Obtén los datos del usuario desde Google
+    $user = Socialite::driver('google')->user();
+
+    session()->flash('user', $user);
+    // Verifica si el usuario ya existe en tu base de datos
+    $userExist = User::where('external_id', $user->id)->where('external_auth', 'google')->first();
+
+    if ($userExist) {
+        // Si el usuario existe, lo logueas y rediriges al home
+        Auth::login($userExist);
+        return redirect()->intended(RouteServiceProvider::HOME);
+    }
+
+    // Si el usuario no existe, redirige a la vista para completar datos
+    return view('pages.sesion.google.datacomplete', compact('user'));
+}
 }
