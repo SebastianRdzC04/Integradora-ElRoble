@@ -8,6 +8,25 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\ConsumableController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\IncidentController;
+use App\Models\Person;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
+ 
+Route::get('/login-google', function () {
+    return Socialite::driver('google')->redirect();
+});
+ 
+Route::get('/google-callback-url', function () {
+    $user = Socialite::driver('google')->user();  // Obtienes los datos del usuario desde Google
+
+    redirect()->route('register.google',['user' => $user]);  // O redirige a la página de inicio después de login
+});
+
+// Html con politicas de uso, privacidad y de servicio
+Route::view('/policy/privacy', 'pages.policy.privacy-policy');
+Route::view('/policy/terms/service', 'pages.policy.terms-of-service');
+
 
 //Uso de Ajax con JQuery para el filtrado de datos
 Route::get('/filter/select/report', [IncidentController::class,'filterDataIncidentReport'])->name('filterselectedcategories.employee');
@@ -30,9 +49,13 @@ Route::get('/error',function () {
 
 // Ruta para mostrar el formulario de registro
 Route::get('/register/{phoneoremail}', [RegisterUserController::class, 'create'])->name('register');
+Route::get('/register/{user}', [RegisterUserController::class, 'createUserGoogle'])->name('register.google');
 
 // Ruta para enviar los datos del formulario de registro
 Route::post('/register', [RegisterUserController::class, 'store'])->name('register.store');
+Route::post('/register/{user}', [RegisterUserController::class, 'storeUserGoogle'])->name('registergoogle.store');
+
+
 
 
 //rutas de inicio de sesion y creacion de cuenta
