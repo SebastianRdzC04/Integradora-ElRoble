@@ -25,7 +25,7 @@
                     @csrf
                     <div class="mb-3">
                         <label for="place_id" class="form-label">Lugar</label>
-                        <select name="place_id" id="place_id" class="form-control @error('place_id') is-invalid @enderror">
+                        <select name="place_id" id="place_id" class="form-control @error('place_id') is-invalid @enderror" required>
                             <option value="">Selecciona un lugar</option>
                             @foreach($places as $place)
                                 <option value="{{ $place->id }}" {{ old('place_id') == $place->id ? 'selected' : '' }}>{{ $place->name }}</option>
@@ -40,7 +40,7 @@
                     <div class="mb-3 row">
                         <div class="col-md-6">
                             <label for="date" class="form-label">Fecha</label>
-                            <input type="date" name="date" id="date" class="form-control @error('date') is-invalid @enderror" oninput="updatePreview()" value="{{ old('date') }}">
+                            <input type="date" name="date" id="date" class="form-control @error('date') is-invalid @enderror" oninput="updatePreview()" value="{{ old('date') }}" required>
                             @error('date')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -49,7 +49,7 @@
                         <!-- Campos de Hora de Inicio y Fin -->
                         <div class="col-md-3">
                             <label for="start_time" class="form-label">Hora de Inicio</label>
-                            <input type="time" name="start_time" id="start_time" class="form-control @error('start_time') is-invalid @enderror" min="12:00" max="23:59" step="1800" oninput="updatePreview()" value="{{ old('start_time') }}">
+                            <input type="time" name="start_time" id="start_time" class="form-control @error('start_time') is-invalid @enderror" min="12:00" max="23:59" step="1800" oninput="updatePreview()" value="{{ old('start_time') }}" required>
                             @error('start_time')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -57,7 +57,7 @@
 
                         <div class="col-md-3">
                             <label for="end_time" class="form-label">Hora de Final</label>
-                            <input type="time" name="end_time" id="end_time" class="form-control @error('end_time') is-invalid @enderror" min="12:00" max="23:59" step="1800" oninput="updatePreview()" value="{{ old('end_time') }}">
+                            <input type="time" name="end_time" id="end_time" class="form-control @error('end_time') is-invalid @enderror" min="12:00" max="23:59" step="1800" oninput="updatePreview()" value="{{ old('end_time') }}" required>
                             @error('end_time')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -73,14 +73,14 @@
                     <div class="mb-3 row">
                         <div class="col-md-6">
                             <label for="guest_count" class="form-label">Cantidad de Invitados</label>
-                            <input type="number" name="guest_count" id="guest_count" class="form-control @error('guest_count') is-invalid @enderror" oninput="updatePreview()" value="{{ old('guest_count') }}">
+                            <input type="number" name="guest_count" id="guest_count" class="form-control @error('guest_count') is-invalid @enderror" oninput="updatePreview()" value="{{ old('guest_count') }}" required>
                             @error('guest_count')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>                    
                         <div class="col-md-6">
                             <label for="type_event" class="form-label">Tipo de Evento</label>
-                            <select name="type_event" id="type_event" class="form-control @error('type_event') is-invalid @enderror" onchange="toggleOtroTipoEvento()">
+                            <select name="type_event" id="type_event" class="form-control @error('type_event') is-invalid @enderror" onchange="toggleOtroTipoEvento()" required>
                                 <option value="">Selecciona el tipo de evento</option>
                                 <option value="XV's" {{ old('type_event') == "XV's" ? 'selected' : '' }}>XV's</option>
                                 <option value="Cumpleaños" {{ old('type_event') == "Cumpleaños" ? 'selected' : '' }}>Cumpleaños</option>
@@ -107,14 +107,14 @@
                     <div class="mb-3 row">
                         <div class="col-md-6">
                             <label for="owner_name" class="form-label">Nombre</label>
-                            <input type="text" name="owner_name" id="owner_name" class="form-control @error('owner_name') is-invalid @enderror" oninput="updatePreview()" value="{{ old('owner_name') }}">
+                            <input type="text" name="owner_name" id="owner_name" class="form-control @error('owner_name') is-invalid @enderror" oninput="updatePreview()" value="{{ old('owner_name') }}" required>
                             @error('owner_name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                         <div class="col-md-6">
                             <label for="owner_phone" class="form-label">Teléfono</label>
-                            <input type="number" name="owner_phone" id="owner_phone" class="form-control @error('owner_phone') is-invalid @enderror" oninput="updatePreview()" value="{{ old('owner_phone') }}">
+                            <input type="number" name="owner_phone" id="owner_phone" class="form-control @error('owner_phone') is-invalid @enderror" oninput="updatePreview()" value="{{ old('owner_phone') }}"required>
                             @error('owner_phone')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
@@ -137,12 +137,13 @@
                                     @foreach($category->services as $service)
                                         <div id="service-details-{{ $service->id }}" class="col-md-4 mb-3">
                                             <div class="card service-card">
+                                                <img src="{{ asset('images/imagen6.jpg') }}" class="card-img-top" alt="{{ $service->name }}">
                                                 <div class="card-body">
                                                     <h5 class="card-title">{{ $service->name }}</h5>
                                                     <p class="card-text" style="font-weight: bold">Precio Aprox: ${{ $service->price }}</p>
                                                     <p class="card-text">Descripción: {{ $service->description }}</p>
                                                     <input type="checkbox" name="services[{{ $service->id }}]" value="{{ $service->id }}" class="form-check-input" onchange="selectService(this, '{{ $category->id }}')">
-                                                    <input type="number" name="services[{{ $service->id }}][description]" placeholder="Descripción" class="form-control mt-2" style="display:none;">
+                                                    <input type="text" name="services[{{ $service->id }}][description]" placeholder="Descripción" class="form-control mt-2" style="display:none;">
                                                     <button type="button" id="confirm-btn-{{ $service->id }}" class="btn btn-primary mt-2" style="display:none;" disabled onclick="confirmService('{{ $service->id }}')">Confirmar</button>
                                                 </div>
                                             </div>
@@ -150,7 +151,6 @@
                                     @endforeach
                                 </div>
                             </div>
-                            
                         @endforeach
                     </div>
                 </form>
@@ -169,79 +169,72 @@
                     </div>
                 </div>
                 <p id="prevista-servicios">Servicios seleccionados:</p>
-                <div id="vista-previa-servicios" class="vista-previa mt-3">
-                    <!-- Aquí se renderizarán los servicios confirmados -->
-                </div>                             
-                <button type="button" class="btn btn-success mt-3" id="crearPaqueteBoton" onclick="crearPaquete()">Crear Paquete</button>
+                <div id="vista-previa-servicios" class="vista-previa mt-3"></div>
+                <button type="button" class="btn btn-success mt-3" id="crearPaqueteBoton" onclick="crearPaquete()">Enviar Cotización</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Variables Globales
+        // Declaración de Variables de Almacenamiento
         let confirmedServices = {};
         let selectedServices = {};
+
+        // Ejecución de Funciones al Ejecutar Vista
+        window.addEventListener('load', ajustarAlturaCategorias);
+        window.addEventListener('resize', ajustarAlturaCategorias);
     
+        // Funciones Bárbaras
         function confirmarServicio(serviceId, categoryId) {
-    const serviceCard = document.getElementById(`service-details-${serviceId}`);
-    const cantidad = document.querySelector(`input[name="services[${serviceId}][quantity]"]`)?.value;
-    const confirmButton = serviceCard.querySelector(`#confirm-btn-${serviceId}`);
+            const serviceCard = document.getElementById(`service-details-${serviceId}`);
+            const description = document.querySelector(`input[name="services[${serviceId}][description]"]`)?.value;
+            const confirmButton = serviceCard.querySelector(`#confirm-btn-${serviceId}`);
 
-    // Verificar que se haya ingresado una cantidad
-    if (!cantidad || isNaN(cantidad) || cantidad <= 0) {
-        alert('Por favor, ingresa una cantidad válida.');
-        return;
-    }
+            if (!description || description.trim() === "") {
+                alert('Por favor, ingresa una descripción válida.');
+                return;
+            }
 
-    // Verificar si se presionó el botón de confirmación
-    if (confirmButton && confirmButton.disabled === false) {
-        // Mover servicio a confirmedServices y marcarlo como confirmado
-        confirmedServices[serviceId] = { categoryId, cantidad, isConfirmed: true };
+            if (confirmButton && confirmButton.disabled === false) {
+                confirmedServices[serviceId] = { categoryId, description, isConfirmed: true };
 
-        // Deshabilitar visualmente el servicio confirmado
-        serviceCard.classList.add('service-disabled');
-        const checkbox = serviceCard.querySelector('input[type="checkbox"]');
-        if (checkbox) checkbox.disabled = true;
+                serviceCard.classList.add('service-disabled');
+                const checkbox = serviceCard.querySelector('input[type="checkbox"]');
+                if (checkbox) checkbox.disabled = true;
 
-        // Deshabilitar el botón de confirmación y otros elementos interactivos
-        confirmButton.disabled = true;
+                confirmButton.disabled = true;
 
-        // Actualizar la vista de servicios confirmados
-        actualizarVistaServicios();
-    } else {
-        alert('Por favor, presiona el botón de confirmar para añadir el servicio.');
-    }
-}
-
-
-function getServiceName(serviceId) {
-    // Aquí deberíamos tener un mapa o estructura para obtener el nombre del servicio
-    // Asumimos que `services` es un objeto global que contiene los servicios, y cada servicio tiene un 'name'
-    return services[serviceId] ? services[serviceId].name : "Servicio desconocido";
-}
-
-function actualizarVistaServicios() {
-    const vistaPrevia = document.getElementById('vista-previa-servicios');
-    vistaPrevia.innerHTML = ''; // Limpiar la vista previa antes de agregar los nuevos servicios
-
-    if (Object.keys(confirmedServices).length === 0) {
-        vistaPrevia.innerHTML = '<p>No hay servicios confirmados aún.</p>';
-        return;
-    }
-
-    // Iterar sobre los servicios confirmados
-    for (const [serviceId, serviceData] of Object.entries(confirmedServices)) {
-        if (serviceData.isConfirmed) {
-            const serviceElement = document.createElement('div');
-            serviceElement.className = 'service-preview';
-            serviceElement.innerHTML = `
-                <p><strong>Servicio:</strong> ${getServiceName(serviceId)}</p>
-                <p><strong>Cantidad:</strong> ${serviceData.cantidad}</p>
-            `;
-            vistaPrevia.appendChild(serviceElement);
+                actualizarVistaServicios();
+            } else {
+                alert('Por favor, presiona el botón de confirmar para añadir el servicio.');
+            }
         }
-    }
-}
+
+        function getServiceName(serviceId) {
+            return services[serviceId] ? services[serviceId].name : "Servicio desconocido";
+        }
+
+        function actualizarVistaServicios() {
+            const vistaPrevia = document.getElementById('vista-previa-servicios');
+            vistaPrevia.innerHTML = '';
+
+            if (Object.keys(confirmedServices).length === 0) {
+                vistaPrevia.innerHTML = '<p>No hay servicios confirmados aún.</p>';
+                return;
+            }
+
+            for (const [serviceId, serviceData] of Object.entries(confirmedServices)) {
+                if (serviceData.isConfirmed) {
+                    const serviceElement = document.createElement('div');
+                    serviceElement.className = 'service-preview';
+                    serviceElement.innerHTML = `
+                        <p><strong>Servicio:</strong> ${getServiceName(serviceId)}</p>
+                        <p><strong>Descripción:</strong> ${serviceData.description}</p>
+                    `;
+                    vistaPrevia.appendChild(serviceElement);
+                }
+            }
+        }
 
         function toggleServices(categoryId) {
             const servicesDiv = document.getElementById(`services-${categoryId}`);
@@ -249,98 +242,105 @@ function actualizarVistaServicios() {
         } 
     
         function selectService(checkbox, categoryId) {
-    const selectedServiceId = checkbox.value;
-    const isSelected = checkbox.checked;
-    const serviceCard = checkbox.closest('.service-card');
-    const serviceQuantityInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][quantity]"]`);
-    const confirmButton = serviceCard.querySelector(`#confirm-btn-${selectedServiceId}`);
+            const selectedServiceId = checkbox.value;
+            const isSelected = checkbox.checked;
+            const serviceCard = checkbox.closest('.service-card');
+            const serviceDescriptionInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][description]"]`);
+            const confirmButton = serviceCard.querySelector(`#confirm-btn-${selectedServiceId}`);
 
-    if (isSelected) {
-        // Añadir el servicio a selectedServices
-        selectedServices[selectedServiceId] = { categoryId, isSelected: true };
+            if (isSelected) {
+                selectedServices[selectedServiceId] = { categoryId, isSelected: true };
 
-        // Mostrar el campo de cantidad y el botón de confirmación
-        serviceQuantityInput.style.display = 'block';
-        confirmButton.style.display = 'block';
-        serviceQuantityInput.focus();
+                serviceDescriptionInput.style.display = 'block';
+                confirmButton.style.display = 'block';
+                serviceDescriptionInput.focus();
 
-        // Habilitar el botón de confirmación solo si hay cantidad
-        serviceQuantityInput.addEventListener('input', () => {
-            confirmButton.disabled = !serviceQuantityInput.value;
-        });
+                serviceDescriptionInput.addEventListener('input', () => {
+                    confirmButton.disabled = !serviceDescriptionInput.value.trim();
+                });
 
-        // Confirmación del servicio al hacer clic
-        confirmButton.addEventListener('click', () => confirmarServicio(selectedServiceId, categoryId));
-    } else {
-        // Eliminar el servicio de selectedServices y confirmedServices
-        delete selectedServices[selectedServiceId];
-        delete confirmedServices[selectedServiceId];
+                confirmButton.addEventListener('click', () => confirmarServicio(selectedServiceId, categoryId));
+            } else {
+                delete selectedServices[selectedServiceId];
+                delete confirmedServices[selectedServiceId];
 
-        // Restaurar visibilidad de los demás servicios
-        serviceQuantityInput.style.display = 'none';
-        serviceQuantityInput.value = '';
-        confirmButton.style.display = 'none';
-        confirmButton.disabled = true;
-    }
-}
-
-function confirmService(serviceId) {
-    const serviceCard = document.getElementById(`service-details-${serviceId}`);
-    const quantityInput = serviceCard.querySelector(`input[name="services[${serviceId}][quantity]"]`);
-    const confirmButton = document.getElementById(`confirm-btn-${serviceId}`);
-
-    // Inicializar el servicio con `isConfirmed: false` si no existe en `confirmedServices`
-    if (!confirmedServices[serviceId]) {
-        confirmedServices[serviceId] = {
-            isConfirmed: false,
-            cantidad: 0 // Inicializar con cantidad 0
-        };
-    }
-
-    // Verificar si la cantidad es válida
-    if (!quantityInput.value || quantityInput.value <= 0) {
-        alert("Por favor, ingresa una cantidad válida.");
-        return; // Salir si la cantidad no es válida
-    }
-
-    // Verificar si el botón de confirmación ha sido presionado
-    confirmButton.addEventListener('click', function() {
-        // Verificar que solo se confirme si la cantidad es válida
-        if (quantityInput.value > 0) {
-            // Establecer `isConfirmed` a `true` solo si se presiona el botón
-            confirmedServices[serviceId] = {
-                isConfirmed: true,
-                cantidad: quantityInput.value
-            };
-
-            // Llamar a la función para actualizar la vista de servicios
-            actualizarVistaServicios();
-
-            // Actualizar la UI (opacidad y deshabilitar interacciones)
-            serviceCard.style.opacity = 0.5;
-            serviceCard.style.pointerEvents = "none";
-
-            // Ocultar el botón de confirmación y la cantidad
-            confirmButton.style.display = "none";
-            quantityInput.style.display = "none";
-
-            // Mostrar el servicio en la vista previa
-            alert("Servicio confirmado correctamente.");
+                serviceDescriptionInput.style.display = 'none';
+                serviceDescriptionInput.value = '';
+                confirmButton.style.display = 'none';
+                confirmButton.disabled = true;
+            }
         }
-    });
-}
 
-// Función para habilitar o deshabilitar el botón de confirmación
-function toggleConfirmButton(quantityInput) {
-    const confirmButton = quantityInput.closest('.service-card').querySelector(`#confirm-btn-${quantityInput.name.match(/\d+/)[0]}`);
-    confirmButton.disabled = !quantityInput.value; // Habilita si hay cantidad, deshabilita si no hay
-}
+        function confirmService(serviceId) {
+            const serviceCard = document.getElementById(`service-details-${serviceId}`);
+            const descriptionInput = serviceCard.querySelector(`input[name="services[${serviceId}][description]"]`);
+            const confirmButton = document.getElementById(`confirm-btn-${serviceId}`);
+
+            if (!confirmedServices[serviceId]) {
+                confirmedServices[serviceId] = {
+                    isConfirmed: false,
+                    description: ''
+                };
+            }
+
+            if (!descriptionInput.value.trim()) {
+                alert("Por favor, ingresa una descripción válida.");
+                return;
+            }
+
+            confirmButton.addEventListener('click', function () {
+                if (descriptionInput.value.trim()) {
+                    confirmedServices[serviceId] = {
+                        isConfirmed: true,
+                        description: descriptionInput.value.trim()
+                    };
+
+                    actualizarVistaServicios();
+
+                    serviceCard.style.opacity = 0.5;
+                    serviceCard.style.pointerEvents = "none";
+
+                    confirmButton.style.display = "none";
+                    descriptionInput.style.display = "none";
+
+                    alert("Servicio confirmado correctamente.");
+                }
+            });
+        }
+
+        function toggleConfirmButton(quantityInput) {
+            const confirmButton = quantityInput.closest('.service-card').querySelector(`#confirm-btn-${quantityInput.name.match(/\d+/)[0]}`);
+            confirmButton.disabled = !quantityInput.value;
+        }
     
         function toggleBotonCrearPaquete() {
-    const botonCrearPaquete = document.getElementById('crearPaqueteBoton');
-    botonCrearPaquete.disabled = !checkIfAllServicesConfirmed();
-}
+            const botonCrearPaquete = document.getElementById('crearPaqueteBoton');
+            botonCrearPaquete.disabled = !checkIfAllServicesConfirmed();
+        }
     
+        function ajustarAlturaCategorias() {
+            const categoryCards = document.querySelectorAll('.category-card');
+
+            if (categoryCards.length === 0) return;
+
+            let maxAltura = 0;
+
+            categoryCards.forEach(card => {
+                const alturaActual = card.offsetHeight;
+                if (alturaActual > maxAltura) {
+                    maxAltura = alturaActual;
+                }
+            });
+
+            categoryCards.forEach(card => {
+                card.style.height = maxAltura + 'px';
+                card.style.display = 'flex';
+                card.style.justifyContent = 'center';
+                card.style.alignItems = 'center';
+                card.style.textAlign = 'center';
+            });
+        }
+
         function updatePreview() {
             const name = document.getElementById('name').value;
             const description = document.getElementById('description').value;
@@ -355,90 +355,79 @@ function toggleConfirmButton(quantityInput) {
         }
     
         function crearPaquete() {
-    const form = document.getElementById('cotizacionForm');
-    document.querySelectorAll('.service-hidden-input').forEach(input => input.remove());
+            const form = document.getElementById('cotizacionForm');
+            document.querySelectorAll('.service-hidden-input').forEach(input => input.remove());
 
-    // Obtener valores de fecha y hora
-    const date = document.getElementById('date').value;
-    const startTime = document.getElementById('start_time').value;
-    const endTime = document.getElementById('end_time').value;
-    const dayAfterCheckbox = document.getElementById('day_after_checkbox').checked;
+            const date = document.getElementById('date').value;
+            const startTime = document.getElementById('start_time').value;
+            const endTime = document.getElementById('end_time').value;
+            const dayAfterCheckbox = document.getElementById('day_after_checkbox').checked;
 
-    const typeEventElement = document.getElementById('type_event');
-    const typeEventValue = typeEventElement ? String(typeEventElement.value) : '';
+            const typeEventElement = document.getElementById('type_event');
+            const typeEventValue = typeEventElement ? String(typeEventElement.value) : '';
 
-    if (!date || !startTime || !endTime) {
-        alert("Por favor, selecciona la fecha y las horas de inicio y fin del evento.");
-        return;
+            if (!date || !startTime || !endTime) {
+                alert("Por favor, selecciona la fecha y las horas de inicio y fin del evento.");
+                return;
+            }
+
+            const startDateTime = `${date} ${startTime.slice(0, 5)}`;
+            let endDateTime = `${date} ${endTime.slice(0, 5)}`;
+            if (dayAfterCheckbox) {
+                const dateObj = new Date(`${date}T${endTime}:00`);
+                dateObj.setDate(dateObj.getDate() + 1);
+                const endDate = dateObj.toISOString().slice(0, 10);
+                endDateTime = `${endDate} ${endTime.slice(0, 5)}`;
+            }
+
+            const startHour = parseInt(startTime.split(':')[0], 10);
+            const endHour = parseInt(endTime.split(':')[0], 10);
+            const endMinutes = parseInt(endTime.split(':')[1], 10);
+            if (startHour < 12 || (endHour >= 3 && endMinutes > 0)) {
+                alert("El evento debe comenzar después de las 12:00 pm y finalizar antes de las 03:00 am del día siguiente.");
+                return;
+            }
+
+            form.appendChild(generarInputOculto('start_time', startDateTime));
+            form.appendChild(generarInputOculto('end_time', endDateTime));
+            form.appendChild(generarInputOculto('type_event', typeEventValue));
+
+            console.log("Información del formulario:");
+            console.log({
+                date,
+                startTime,
+                endTime,
+                startDateTime,
+                endDateTime,
+                typeEventValue,
+                dayAfterCheckbox
+            });
+
+            let anyServiceConfirmed = false;
+            for (let serviceId in confirmedServices) {
+            const service = confirmedServices[serviceId];
+
+            console.log(`Procesando servicio ${serviceId}:`, service);
+
+            if (service.isConfirmed && service.description.trim() !== "") {
+                console.log(`Confirmando servicio ${serviceId} con descripción: ${service.description}`);
+
+                form.appendChild(generarInputOculto(`services[${serviceId}][description]`, service.description));
+                form.appendChild(generarInputOculto(`services[${serviceId}][confirmed]`, true));
+            } else {
+                console.log(`Servicio ${serviceId} no confirmado o sin descripción válida. Se omite.`);
+            }
+            }
+
+            if (!anyServiceConfirmed) {
+                console.log("No se seleccionaron servicios confirmados. Enviando formulario sin información de servicios.");
+            }
+
+            console.log("Servicios seleccionados:", selectedServices);
+            console.log("Servicios confirmados:", confirmedServices);
+
+            form.submit();
     }
-
-    const startDateTime = `${date} ${startTime.slice(0, 5)}`;
-    let endDateTime = `${date} ${endTime.slice(0, 5)}`;
-    if (dayAfterCheckbox) {
-        const dateObj = new Date(`${date}T${endTime}:00`);
-        dateObj.setDate(dateObj.getDate() + 1);
-        const endDate = dateObj.toISOString().slice(0, 10);
-        endDateTime = `${endDate} ${endTime.slice(0, 5)}`;
-    }
-
-    const startHour = parseInt(startTime.split(':')[0], 10);
-    const endHour = parseInt(endTime.split(':')[0], 10);
-    const endMinutes = parseInt(endTime.split(':')[1], 10);
-    if (startHour < 12 || (endHour >= 3 && endMinutes > 0)) {
-        alert("El evento debe comenzar después de las 12:00 pm y finalizar antes de las 03:00 am del día siguiente.");
-        return;
-    }
-
-    // Agregar inputs ocultos con la fecha, hora y tipo de evento
-    form.appendChild(generarInputOculto('start_time', startDateTime));
-    form.appendChild(generarInputOculto('end_time', endDateTime));
-    form.appendChild(generarInputOculto('type_event', typeEventValue));
-
-    // Registrar toda la información en la consola
-    console.log("Información del formulario:");
-    console.log({
-        date,
-        startTime,
-        endTime,
-        startDateTime,
-        endDateTime,
-        typeEventValue,
-        dayAfterCheckbox
-    });
-
-    // Procesar servicios confirmados
-    let anyServiceConfirmed = false;
-    for (let serviceId in confirmedServices) {
-        const service = confirmedServices[serviceId];
-
-        console.log(`Procesando servicio ${serviceId}:`, service);
-
-        // Agregar los datos de cada servicio confirmado
-        if (service.isConfirmed && service.cantidad > 0) {
-            console.log(`Confirmando servicio ${serviceId} con cantidad: ${service.cantidad}`);
-            
-            // Agregar los datos de cantidad y confirmado al formulario
-            form.appendChild(generarInputOculto(`services[${serviceId}][quantity]`, service.cantidad));
-            form.appendChild(generarInputOculto(`services[${serviceId}][confirmed]`, true)); // Aquí se añade el atributo 'confirmed'
-            
-            anyServiceConfirmed = true;
-        } else {
-            console.log(`Servicio ${serviceId} no confirmado o sin cantidad válida. Se omite.`);
-        }
-    }
-
-    if (!anyServiceConfirmed) {
-        console.log("No se seleccionaron servicios confirmados. Enviando formulario sin información de servicios.");
-    }
-
-    // Registrar servicios seleccionados y confirmados
-    console.log("Servicios seleccionados:", selectedServices);
-    console.log("Servicios confirmados:", confirmedServices);
-
-    // Enviar el formulario
-    form.submit();
-}
-
 
         function generarInputOculto(nombre, valor) {
             const input = document.createElement('input');
@@ -515,31 +504,31 @@ function toggleConfirmButton(quantityInput) {
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-    const fieldsToWatch = ['place_id', 'date', 'start_time', 'end_time', 'guest_count', 'type_event', 'owner_name', 'owner_phone'];
+        const fieldsToWatch = ['place_id', 'date', 'start_time', 'end_time', 'guest_count', 'type_event', 'owner_name', 'owner_phone'];
 
-    fieldsToWatch.forEach(fieldId => {
-        const field = document.getElementById(fieldId);
-        if (field) {
-            field.addEventListener('input', updatePreview);
+        fieldsToWatch.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                field.addEventListener('input', updatePreview);
+            }
+        });
+
+        function updatePreview() {
+            const name = document.getElementById('owner_name').value || 'Nombre';
+            const date = document.getElementById('date').value || '-';
+            const startTime = document.getElementById('start_time').value || '-';
+            const endTime = document.getElementById('end_time').value || '-';
+            const guests = document.getElementById('guest_count').value || '-';
+            const typeEvent = document.getElementById('type_event').value || 'Evento';
+
+            document.getElementById('prevista-nombre').innerText = name;
+            document.getElementById('prevista-fecha').innerText = `Fecha: ${date}`;
+            document.getElementById('prevista-horario').innerText = `Hora: ${startTime} - ${endTime}`;
+            document.getElementById('prevista-invitados').innerText = `Invitados: ${guests}`;
+            document.getElementById('prevista-tipo-evento').innerText = `Tipo de Evento: ${typeEvent}`;
         }
+
     });
-
-    function updatePreview() {
-        const name = document.getElementById('owner_name').value || 'Nombre';
-        const date = document.getElementById('date').value || '-';
-        const startTime = document.getElementById('start_time').value || '-';
-        const endTime = document.getElementById('end_time').value || '-';
-        const guests = document.getElementById('guest_count').value || '-';
-        const typeEvent = document.getElementById('type_event').value || 'Evento';
-
-        document.getElementById('prevista-nombre').innerText = name;
-        document.getElementById('prevista-fecha').innerText = `Fecha: ${date}`;
-        document.getElementById('prevista-horario').innerText = `Hora: ${startTime} - ${endTime}`;
-        document.getElementById('prevista-invitados').innerText = `Invitados: ${guests}`;
-        document.getElementById('prevista-tipo-evento').innerText = `Tipo de Evento: ${typeEvent}`;
-    }
-
-});
 
     </script>
     
