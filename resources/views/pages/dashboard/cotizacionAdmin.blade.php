@@ -59,9 +59,9 @@
                                         @foreach ($quote->package->services as $service)
                                             <tr>
                                                 <td>{{ $service->name }}</td>
-                                                <td>{{ $service->description }}</td>
-                                                <td>{{ $service->price }}</td>
-                                                <td>{{ $service->cost }}</td>
+                                                <td>{{ $service->pivot->description }}</td>
+                                                <td>{{ $service->pivot->price }}</td>
+                                                <td>{{ $service->pivot->cost }}</td>
                                             </tr>
                                             
                                         @endforeach

@@ -4,7 +4,6 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Consumable;
 use App\Models\ConsumableRecord;
-use App\Models\Date;
 use App\Models\Event;
 use App\Models\Inventory;
 use App\Models\Package;
@@ -129,6 +128,24 @@ Route::get('dashboard/quotes/{id}', function ($id) {
     $quote = Quote::find($id);
     return view('pages.dashboard.cotizacionAdmin', compact('quote'));
 })->name('dashboard.quote');
+
+Route::get('dashboard/event/now', function () {
+    $event = Event::find(1);
+    if ($event) {
+        session(['event' => $event]);
+    }
+    return view('pages.dashboard.eventosAdmin', compact('event'));
+})->name('dashboard.eventnow');
+
+Route::post('dashboard/event/consumable/status/{id}', function ($id) {
+    $consumable = Consumable::find($id);
+    $consumableRecord = new ConsumableRecord();
+    $consumableRecord->consumable_id = $consumable->id;
+    $consumableRecord->event_id = session('event')->id;
+    $consumableRecord->quantity = 1;
+    $consumableRecord->save();
+    return redirect()->route('dashboard.records');
+})->name('dashboard.event.consumable');
 
 
 
