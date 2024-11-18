@@ -13,19 +13,25 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
  
+//Aqui esta el login de X
+Route::get('auth/redirect/x', [RegisterUserController::class, 'redirectToX'])->name('login.x');
+Route::get('auth/callback/x', [RegisterUserController::class, 'handleXCallback'])->name('register.x');
+
+//Aqui esta el login de Facebook
+Route::get('auth/facebook', [RegisterUserController::class, 'redirectToFacebook'])->name('login.facebook');
+Route::get('auth/facebook/callback', [RegisterUserController::class, 'handleFacebookCallback'])->name('register.facebook');
+
+//Aqui esta el login de Google
 Route::get('/login-google', function () {
     return Socialite::driver('google')->redirect();
 })->name('login.google');
- /*Route::get('/google-callback-url', function () {
-    $user = Socialite::driver('google')->user();  // Obtienes los datos del usuario desde Google
 
-    redirect()->route('register.google',['user' => $user]);  // O redirige a la página de inicio después de login
-});*/
 
 
 // Html con politicas de uso, privacidad y de servicio
 Route::view('/policy/privacy', 'pages.policy.privacy-policy');
 Route::view('/policy/terms/service', 'pages.policy.terms-of-service');
+Route::view('/policy/delete/data', 'pages.policy.deletedata');
 
 
 //Uso de Ajax con JQuery para el filtrado de datos

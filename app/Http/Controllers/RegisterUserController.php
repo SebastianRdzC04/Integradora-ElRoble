@@ -108,21 +108,82 @@ class RegisterUserController extends Controller
         
     }
     public function handleGoogleCallback()
-{
-    // Obtén los datos del usuario desde Google
-    $user = Socialite::driver('google')->user();
+    {
+        // Obtén los datos del usuario desde Google
+        $user = Socialite::driver('google')->user();
 
-    session()->flash('user', $user);
-    // Verifica si el usuario ya existe en tu base de datos
-    $userExist = User::where('external_id', $user->id)->where('external_auth', 'google')->first();
+        session()->flash('user', $user);
+        // Verifica si el usuario ya existe en tu base de datos
+        $userExist = User::where('external_id', $user->id)->where('external_auth', 'google')->first();
 
-    if ($userExist) {
-        // Si el usuario existe, lo logueas y rediriges al home
-        Auth::login($userExist);
-        return redirect()->intended(RouteServiceProvider::HOME);
+        if ($userExist) {
+            // Si el usuario existe, lo logueas y rediriges al home
+            Auth::login($userExist);
+            return redirect()->intended(RouteServiceProvider::HOME);
+        }
+
+        // Si el usuario no existe, redirige a la vista para completar datos
+        return view('pages.sesion.google.datacomplete', compact('user'));
     }
 
-    // Si el usuario no existe, redirige a la vista para completar datos
-    return view('pages.sesion.google.datacomplete', compact('user'));
-}
+    public function redirectToFacebook()
+    {
+        return Socialite::driver('facebook')->redirect();
+    }
+
+    public function handleFacebookCallback()
+    {
+        $user = Socialite::driver('facebook')->user();
+        dd($user);
+        // Aquí puedes buscar al usuario en tu base de datos o crear uno nuevo
+        $existingUser = User::where('facebook_id', $user->getId())->first();
+
+        if ($existingUser) {
+            Auth::login($existingUser, true);
+        } else {
+            $newUser = User::create([
+                'name' => $user->getName(),
+                'email' => $user->getEmail(),
+                'facebook_id' => $user->getId(),
+                'avatar' => $user->getAvatar(),
+            ]);
+            Auth::login($newUser, true);
+        }
+
+        return redirect()->route('home');  // Redirige a la página principal o donde desees
+    }
+
+    //Aqui esta X o Twitter como lo llamen ---------------------------------------------
+    public function redirectToX()
+    {
+        return Socialite::driver('x')->scopes(['users.read', 'tweet.read', 'email'])->redirect();
+    }
+
+
+    public function handleXCallback()
+    {
+        
+            $user = Socialite::driver('x')->user();
+            dd($user);
+            // Buscar o crear el usuario en la base de datos
+            $existingUser = User::where('x_id', $user->getId())->first();
+
+            if ($existingUser) {
+                // Si el usuario ya existe, iniciar sesión
+                Auth::login($existingUser, true);
+            } else {
+                // Si el usuario no existe, crear uno nuevo
+                $newUser = User::create([
+                    'name' => $user->getName(),
+                    'email' => $user->getEmail(),
+                    'x_id' => $user->getId(),
+                    'avatar' => $user->getAvatar(),
+                ]);
+
+                Auth::login($newUser, true);
+            }
+
+            return redirect()->route('home'); // Redirigir al usuario después de iniciar sesión
+        
+    }
 }

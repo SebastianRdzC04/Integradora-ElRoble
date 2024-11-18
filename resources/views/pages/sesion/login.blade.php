@@ -34,6 +34,14 @@
     <form method="get" action="{{route('login.google')}}">
         <button type="submit">google</button>
     </form>
+    <form method="get" action="{{route('login.facebook')}}">
+        <button type="submit">facebook</button>
+    </form>
+    <form method="get" action="{{route('login.x')}}">
+        <button type="submit">X</button>
+    </form>
+
+
 @endsection
 
 @section('script')
