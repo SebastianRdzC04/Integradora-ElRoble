@@ -36,31 +36,41 @@ Route::get('/', function () {
     return view('pages.inicio');
 });
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+// Rutas que seran protegidas con el middleware del administrador
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard'); // esta
 
 Route::get('dashboard/records', function () {
     $events = Event::orderBy('date', 'asc')->get();
     $consumableRecords = ConsumableRecord::all();
-    
     $inventory = Inventory::select('serial_number_type_id', DB::raw('count(*) as total'))->groupBy('serial_number_type_id')->get();
     return view('pages.dashboard.registro', compact('events', 'consumableRecords', 'inventory'));
 })->name('dashboard.records');
 
-Route::get('dashboard/packages', function () {
 
+
+Route::get('dashboard/packages', function () {
     $packages = Package::all();
     return view('pages.dashboard.packages', compact('packages'));
 })->name('dashboard.packages');
+
+
+
 
 Route::get('dashboard/services', function () {
     $services = Service::all();
     return view('pages.dashboard.services', compact('services'));
 })->name('dashboard.services');
 
+
+
 Route::get('dashboard/quotes', function () {
     $quotes = Quote::all();
     return view('pages.dashboard.quotes', compact('quotes'));
 })->name('dashboard.quotes');
+
+
 
 Route::get('dashboard/graphics', function () {
     $places = Place::all();
@@ -101,10 +111,15 @@ Route::get('dashboard/graphics', function () {
     return view('pages.dashboard.graficos', compact('places', 'events', 'paquetes', 'datos2'));
 })->name('dashboard.graphics');
 
+
+
 Route::get('dashboard/events', function () {
     $events = Event::orderBy('date', 'asc')->get();
     return view('pages.dashboard.events', compact('events'));
 })->name('dashboard.events');
+
+
+
 
 Route::get('dashboard/inventory', function () {
     $inventory = Inventory::all();
@@ -113,20 +128,32 @@ Route::get('dashboard/inventory', function () {
     return view('pages.dashboard.inventory', compact('inventory', 'consumableRecords', 'inventoryGroup'));
 })->name('dashboard.inventory');
 
+
+
+
 Route::get('dashboard/consumables', function () {
     $consumables = Consumable::all();
     return view('pages.dashboard.consumables', compact('consumables'));
 })->name('dashboard.consumables');
+
+
+
 
 Route::get('dashboard/packages/{id}', function ($id) {
     $package = Package::find($id);
     return view('pages.dashboard.packagesedit', compact('package'));
 })->name('dashboard.package');
 
+
+
+
 Route::get('dashboard/services/{id}', function ($id) {
     $service = Service::find($id);
     return view('pages.dashboard.servicesedit', compact('service'));
 })->name('dashboard.service');
+
+
+
 
 Route::get('dashboard/quotes/{id}', function ($id) {
     $quote = Quote::find($id);
@@ -136,6 +163,9 @@ Route::get('dashboard/quotes/{id}', function ($id) {
     return redirect()->route('dashboard');
 })->name('dashboard.quote');
 
+
+
+
 Route::get('dashboard/event/now', function () {
     $event = Event::find(1);
     if ($event) {
@@ -144,17 +174,20 @@ Route::get('dashboard/event/now', function () {
     return view('pages.dashboard.eventosAdmin', compact('event'));
 })->name('dashboard.eventnow');
 
+
+
+
 Route::post('dashboard/event/consumable/status/{id}', function ($id) {
     $consumableEvent = ConsumableEvent::find($id);
-
     if ($consumableEvent) {
         $consumableEvent->ready = !$consumableEvent->ready;
         $consumableEvent->save();
-
     }
-
     return redirect()->back()->with('success', 'El estado del consumible ha sido actualizado')->with('consumible', 'Abrete sesamo');
 })->name('dashboard.event.consumable');
+
+
+
 
 Route::post('dashboard/quote/event/{id}', function ($id, Request $request) {
     $quote = QuoteService::find($id);
@@ -163,9 +196,11 @@ Route::post('dashboard/quote/event/{id}', function ($id, Request $request) {
         'precio' => 'required',
         'costo' => 'required',
     ]);
-
     return redirect()->route('dashboard.quotes');
 })->name('dashboard.quote.status');
+
+
+
 
 
 

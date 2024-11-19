@@ -28,7 +28,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'external_id',
         'external_auth',
     ];
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -38,7 +37,6 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'remember_token',
     ];
-
     /**
      * The attributes that should be cast.
      *
