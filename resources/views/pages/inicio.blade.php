@@ -14,6 +14,17 @@
         <div>
             <a href="{{route('dashboard')}}" class="btn btn-primary">Ir a Dashboard</a>
         </div>
+        @if (Auth::user())
+        <div>
+            <form action="{{route('logout')}}" method="post">
+                @csrf
+                <button type="submit">logoutt</button>
+            </form>
+        <div>
+        @endif
+            <a href="login" class="btn btn-primary">login</a>
+        </div>
+        </div>
     </main>
     <script>
         const dates = []

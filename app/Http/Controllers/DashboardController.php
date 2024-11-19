@@ -26,6 +26,7 @@ class DashboardController extends Controller
         $quotesPendingToPay = Quote::where('status', 'pendiente')->get();
 
         $consumables = Consumable::all();
+        
         $events = Event::orderBy('date', 'asc')->where('status', 'Pendiente')->get();
         // $currentEvent = Event::where('date', date('Y-m-d'))->first();
         $fullQuoteDates = Quote::selectRaw('date, count(*) as count')

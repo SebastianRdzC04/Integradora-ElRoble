@@ -81,6 +81,8 @@
 
 
 @section('scripts')
+
+
     @php
         $eventos = [];
         $daysOcupedQuotes = [];

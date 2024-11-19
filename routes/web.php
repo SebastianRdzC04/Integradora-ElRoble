@@ -21,6 +21,7 @@ use App\Http\Controllers\PaquetesAdminController;
 use App\Models\ConsumableEvent;
 use App\Models\QuoteService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -188,6 +189,6 @@ Route::get('/inicio', [ServiciosAdminController::class, 'provisional'])->name('i
 
 // Si necesitas una vista para listar paquetes
 Route::get('/paquetes', [PaquetesAdminController::class, 'index'])->name('paquetes.index'); // O lo que desees
-/*
-require __DIR__.'/auth.php';
-*/
+
+require __DIR__.'/routesjesus.php';
+
