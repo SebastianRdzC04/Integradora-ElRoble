@@ -11,6 +11,7 @@ use App\Models\SerialNumberType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class IncidentController extends Controller
 {
@@ -125,8 +126,7 @@ class IncidentController extends Controller
             }
         });
     
-        session('validated_items')->flush();
-    
+        Session::forget('validated_items');    
         return redirect()->route('incident.create')->with('success', 'El incidente y los items fueron registrados correctamente.');
     }
     
