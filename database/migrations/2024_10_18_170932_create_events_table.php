@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('quote_id')->constrained('quotes')->onDelete('set null');
-            $table->foreignId('user_id')->constrained('users')->onDelete('set null');
+            $table->foreignId('quote_id')->constrained('quotes')->onDelete('restrict');
+            $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
             $table->date('date');
             $table->enum('status', ['Pendiente', 'En proceso', 'Finalizado', 'Cancelado'])->default('Pendiente');
             $table->time('estimated_start_time');

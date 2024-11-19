@@ -51,9 +51,14 @@ class RegisterUserController extends Controller
             }
         
             Auth::login($user);
-
-            return redirect()->route('verification.send');
+            
+            
+            $user->sendEmailVerificationNotification();
+            
         });
+        
+
+        return redirect()->route('verification.notice');
     }
 
     public function storeUserGoogle(Request $request)
@@ -154,10 +159,6 @@ class RegisterUserController extends Controller
     }
 
     //Aqui esta X o Twitter como lo llamen ---------------------------------------------
-    public function redirectToX()
-    {
-        return Socialite::driver('x')->scopes(['users.read', 'tweet.read', 'email'])->redirect();
-    }
 
 
     public function handleXCallback()
