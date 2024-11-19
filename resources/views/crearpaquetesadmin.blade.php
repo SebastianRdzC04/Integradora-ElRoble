@@ -146,9 +146,13 @@
 
     <script>
 
-        // Declaración de Variables
+        // Declaración de Variables de Almacenamiento
         let confirmedServices = {};
         let selectedServices = {};
+
+        // Ejecución de Funciones al Ejecutar Vista
+        window.addEventListener('load', ajustarAlturaCategorias);
+        window.addEventListener('resize', ajustarAlturaCategorias);
 
         // Funciones Bárbaras
         function confirmarServicio() {
@@ -178,34 +182,34 @@
         }
 
         function confirmService(serviceId, categoryId) {
-    const quantity = document.querySelector(`input[name="services[${serviceId}][quantity]"]`).value;
-    const price = document.querySelector(`input[name="services[${serviceId}][price]"]`).value;
-    const description = document.querySelector(`input[name="services[${serviceId}][description]"]`).value;
+            const quantity = document.querySelector(`input[name="services[${serviceId}][quantity]"]`).value;
+            const price = document.querySelector(`input[name="services[${serviceId}][price]"]`).value;
+            const description = document.querySelector(`input[name="services[${serviceId}][description]"]`).value;
 
-    if (quantity && price && description) {
-        confirmedServices[serviceId] = {
-            categoryId,
-            quantity,
-            price,
-            description,
-            isConfirmed: true
-        };
+            if (quantity && price && description) {
+                confirmedServices[serviceId] = {
+                    categoryId,
+                    quantity,
+                    price,
+                    description,
+                    isConfirmed: true
+                };
 
-        delete selectedServices[serviceId];
+                delete selectedServices[serviceId];
 
-        updateServicePreview();
-        document.getElementById(`service-details-${serviceId}`).style.display = 'none';
+                updateServicePreview();
+                document.getElementById(`service-details-${serviceId}`).style.display = 'none';
 
-        const categoryServices = document.querySelectorAll(`#services-${categoryId} .service-card`);
-        categoryServices.forEach(card => {
-            card.style.display = 'none';
-        });
+                const categoryServices = document.querySelectorAll(`#services-${categoryId} .service-card`);
+                categoryServices.forEach(card => {
+                    card.style.display = 'none';
+                });
 
-        toggleCreatePackageButton();
-    } else {
-        alert('Por favor, completa todos los campos del servicio.');
-    }
-}
+                toggleCreatePackageButton();
+            } else {
+                alert('Por favor, completa todos los campos del servicio.');
+            }
+        }
 
         function updateServicePreview() {
             const serviciosLista = document.getElementById('servicios-lista');
@@ -289,6 +293,29 @@
             updateServicePreview();
         }
 
+        function ajustarAlturaCategorias() {
+            const categoryCards = document.querySelectorAll('.category-card');
+
+            if (categoryCards.length === 0) return;
+
+            let maxAltura = 0;
+
+            categoryCards.forEach(card => {
+                const alturaActual = card.offsetHeight;
+                if (alturaActual > maxAltura) {
+                    maxAltura = alturaActual;
+                }
+            });
+
+            categoryCards.forEach(card => {
+                card.style.height = maxAltura + 'px';
+                card.style.display = 'flex';
+                card.style.justifyContent = 'center';
+                card.style.alignItems = 'center';
+                card.style.textAlign = 'center';
+            });
+        }
+
         function updateServicePreview() {
             const serviciosLista = document.getElementById('servicios-lista');
             serviciosLista.innerHTML = '';
@@ -368,6 +395,7 @@
             const offset = Math.min(scrollY + 280, window.innerHeight - 300);
             prevista.style.top = offset + 'px';
         };
+
     </script>
 
 </body>
