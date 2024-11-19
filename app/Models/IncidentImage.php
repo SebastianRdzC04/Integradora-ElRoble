@@ -9,6 +9,10 @@ class IncidentImage extends Model
 {
     use HasFactory;
     
+    protected $fillable = [
+        'incident_id',
+        'image_path',
+    ];
     public function incident()
     {
         return $this->belongsTo(Incident::class);

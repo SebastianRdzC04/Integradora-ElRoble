@@ -7,9 +7,11 @@ use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\ConsumableController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\EmployeeEventController;
 use App\Http\Controllers\IncidentController;
 use App\Models\Person;
 use App\Models\User;
+use GuzzleHttp\Middleware;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
  
@@ -38,10 +40,10 @@ Route::view('/policy/delete/data', 'pages.policy.deletedata');
 Route::get('/filter/select/report', [IncidentController::class,'filterDataIncidentReport'])->name('filterselectedcategories.employee');
 Route::post('/create/incident',[IncidentController::class,'store'])->name('incident.store');
 Route::post('/validate/incidents/inventory',[IncidentController::class,'saveItems'])->name('saveItems');
+
 //aqui termina el uso de ajax
-
 Route::get('/incident',[IncidentController::class,'create'])->name('incident.create');
-
+Route::get('/event/now', [EmployeeEventController::class, 'showTodayEvent'])->name('event.today');
 
 
 
@@ -69,12 +71,12 @@ Route::get('/sign/in/google', [RegisterUserController::class, 'handleGoogleCallb
 
 Route::middleware('guest')->group(function()
 {
-    // Ruta para mostrar el formulario de registro
+// Ruta para mostrar el formulario de registro
 Route::get('/register/{phoneoremail}', [RegisterUserController::class, 'create'])->name('registeruser.create');
 
-// Ruta para enviar los datos del formulario de registro
-Route::post('/register', [RegisterUserController::class, 'store'])->name('register.store');
-Route::post('/register/google', [RegisterUserController::class, 'storeUserGoogle'])->name('registergoogle.store');
+    // Ruta para enviar los datos del formulario de registro
+    Route::post('/register', [RegisterUserController::class, 'store'])->name('register.store');
+    Route::post('/register/google', [RegisterUserController::class, 'storeUserGoogle'])->name('registergoogle.store');
 
 
     //muestra el formulario de ingresar email para restablecer
@@ -86,12 +88,16 @@ Route::post('/register/google', [RegisterUserController::class, 'storeUserGoogle
     ->name('password.reset')
     ->middleware('signed');
 
+    //este es el que guarda los datos despues de aceptar el email
     Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update');
 
+    //este es la ruta del login
     Route::get('/login', [LoginController::class, 'create'])->name('login');
-
+    
+    //esta ruta es por si se ingresa un telefono en lugar de un email
     Route::get('/login/{phoneoremail?}', [LoginController::class, 'password'])->middleware('checkemailorphoneregistered')->name('login.password');
 
+    //este guarda el login y lo autentifica
     Route::post('/login', [LoginController::class, 'store'])->name('login.store');
 });
 
@@ -112,11 +118,12 @@ Route::middleware('auth')->group(function(){
     Route::get('/email/verify', [VerifyEmailController::class, 'showVerificationView'])
         ->name('verification.notice');
 
+    // Ruta para salir de la sesion
     Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
 });
 
 
-/*
+/* Esto no se si quitarlo o no despues decido no se ni para que servia xd
     Route::get('/registeruser/{phoneoremail}', [RegisterUserController::class, 'create'])->name('registeruser.create');
     Route::post('/registeruser', [RegisterUserController::class, 'store'])->name('registeruser.store');
 
@@ -127,17 +134,18 @@ Route::middleware('auth')->group(function(){
 */
 
 
+//rutas para el crud de consumables --------------------------------------
+Route::get('consumable/create',[ConsumableController::class,'create'])->name('consumables.create');
+Route::post('consumable/store',[ConsumableController::class,'store'])->name('consumables.store');
 
 
 //rutas de restablecimiento de contraseña
 Route::group(['middleware' => 'guest'], function () {
 });
 
+
 Route::get('/list/{id?}',[RegisterPersonController::class, 'index'])->name('tablepeople.index');
 
-//rutas para el crud de consumables ---------------------
-Route::get('consumable/create',[ConsumableController::class,'create'])->name('consumables.create');
-Route::post('consumable/store',[ConsumableController::class,'store'])->name('consumables.store');
 
 
 //ruta para la lista de personas ------------------------
@@ -146,12 +154,16 @@ Route::get('/list/personupdate/{id}',[RegisterPersonController::class,'edit'])->
 Route::patch('/list/personupdate/{id}',[RegisterPersonController::class,'update'])->name('person.update');
 Route::delete('/list/persondestroy/{id}',[RegisterPersonController::class,'destroy'])->name('person.destroy');
 
-/*aqui ya seria cuando el usuario mande la cotizacion 
-dentro de aqui  
-*/
+
+//el usuario que inicie sesion pero no confirme su email solo podra estar aqui y no podra mandar la cotizacion
 Route::get('/notverified', function () {
     return view('welcome');
 })->middleware('auth');
+
+
+/*aqui ya seria cuando el usuario mande la cotizacion 
+dentro de aqui  
+*/
 
 Route::get('/prueba', function () {
     return view('welcome');
