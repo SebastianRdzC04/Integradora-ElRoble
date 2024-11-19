@@ -69,7 +69,7 @@ class PaquetesAdminController extends Controller
         $package->price = $request->price;
         $package->start_date = $request->start_date;
         $package->end_date = $request->end_date;
-        $package->status = 'active';
+        $package->status = 'activo';
         $package->save();
     
         $confirmedServices = collect($request->input('services', []))->filter(function($service) {

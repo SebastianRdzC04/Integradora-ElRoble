@@ -19,9 +19,9 @@ use App\Http\Controllers\InicioClientesController;
 | grupo de middleware "web".
 */
 
-//Route::get('/', function () {
-//    return view('pages.dashboard');
-//});
+Route::get('/', function () {
+   return view('pages.dashboard');
+});
 
 Route::get('/dashboard', function () {
     return view('dashboard');
