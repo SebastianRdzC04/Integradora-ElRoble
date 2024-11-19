@@ -6,46 +6,6 @@
     <title>El Roble - Cotización</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/stylespaquetes.css') }}">
-    <style>
-.lista-servicios-confirmados {
-    list-style-type: none; /* Quita los marcadores predeterminados */
-    padding: 0;
-    margin: 0;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-    max-width: 600px;
-    margin: auto;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.service-item {
-    padding: 5px;
-    border-bottom: 1px solid #ddd;
-}
-
-.service-item:last-child {
-    border-bottom: none;
-}
-
-.service-info {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.service-name {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #333;
-}
-
-.service-description {
-    font-size: 1em;
-    color: #555;
-}
-
-    </style>
 </head>
 <body>
     <div class="container mt-4">
