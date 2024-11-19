@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ServiciosAdminController;
 use App\Http\Controllers\CotizacionesClientesController;
 use App\Http\Controllers\PaquetesAdminController;
+use App\Http\Controllers\InicioClientesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,9 +19,9 @@ use App\Http\Controllers\PaquetesAdminController;
 | grupo de middleware "web".
 */
 
-Route::get('/', function () {
-    return view('pages.dashboard');
-});
+//Route::get('/', function () {
+//    return view('pages.dashboard');
+//});
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -39,7 +40,7 @@ Route::get('/crearservicios', [ServiciosAdminController::class, 'create'])->name
 Route::post('/servicios', [ServiciosAdminController::class, 'store'])->name('servicios.store');
 Route::get('/cotizaciones', [CotizacionesClientesController::class, 'create'])->name('cotizaciones.create');
 Route::post('cotizacionesclientes', [CotizacionesClientesController::class, 'store'])->name('cotizacionesclientes.store');
-Route::get('/inicio', [ServiciosAdminController::class, 'provisional'])->name('inicio');
+Route::get('/inicio', [InicioClientesController::class, 'create'])->name('inicio');
 
 // Si necesitas una vista para listar paquetes
 Route::get('/paquetes', [PaquetesAdminController::class, 'index'])->name('paquetes.index'); // O lo que desees
