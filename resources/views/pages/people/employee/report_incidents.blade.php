@@ -1,3 +1,4 @@
+@extends('layouts.dashboardAdmin')
 
 <!DOCTYPE html>
 <html lang="es">
@@ -26,9 +27,9 @@
         }
     </style>
 </head>
+@section('content')
 <body>
 
-@include('pages.people.employee.layout.sidebar')
 
 <!-- Mensaje de éxito -->
 @if(session('success'))
@@ -48,6 +49,9 @@
 
 
 <!-- Contenido principal -->
+ 
+    
+
 <div class="container mt-4">
     <h2>Reportar Incidencia</h2>
     <form id="incidentForm" method="POST" action="{{Route('incident.store')}}" enctype="multipart/form-data">
@@ -164,6 +168,12 @@
             </div>
         </div>
     </div>
+
+@endsection
+
+    @section('script')
+        
+    
     <script>
 
 //utilizare AJAX con JQuery para filtrar, entender su sintaxis y el funcionamiento 
@@ -338,6 +348,8 @@ updateInventoryButton.addEventListener('click', () => {
 
 
 </script>
+
+@endsection
 
 
 </body>

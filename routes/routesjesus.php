@@ -169,4 +169,6 @@ Route::get('/prueba', function () {
     return view('welcome');
 })->middleware('auth','verified');
 
+Route::view('/prueba2','layouts.dashboardAdmin');
+
 
