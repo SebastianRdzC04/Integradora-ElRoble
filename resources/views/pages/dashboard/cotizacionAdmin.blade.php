@@ -41,7 +41,8 @@
                         <div class="d-flex justify-content-between">
                             <div>
                                 <p>Serivios Interesados:
-                                    {{ $quote->package->services->count() + $quote->services->count() }} </p>
+                                    {{ ($quote->package ? $quote->package->services->count() : 0) + $quote->services->count() }}
+                                </p>
                             </div>
                         </div>
                         <div>
@@ -50,8 +51,10 @@
                                     <tr>
                                         <th>Nombre</th>
                                         <th>Descripcion</th>
+                                        <th>Cantidad</th>
                                         <th>Precio</th>
                                         <th>Costo</th>
+                                        <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -60,19 +63,67 @@
                                             <tr>
                                                 <td>{{ $service->name }}</td>
                                                 <td>{{ $service->pivot->description }}</td>
+                                                <td> {{ $service->pivot->quantity ? $service->pivot->quantity : 'norelevante' }}
+                                                </td>
                                                 <td>{{ $service->pivot->price }}</td>
                                                 <td>{{ $service->pivot->cost }}</td>
+                                                <td>Incluido con paquete</td>
                                             </tr>
-                                            
                                         @endforeach
                                     @endif
                                     @if ($quote->services)
                                         @foreach ($quote->services as $service)
                                             <tr>
                                                 <td>{{ $service->name }}</td>
-                                                <td>{{ $service->description }}</td>
-                                                <td>{{ $service->price }}</td>
-                                                <td>{{ $service->cost }}</td>
+                                                <td>{{ $service->pivot->description }}</td>
+                                                <td> {{ $service->pivot->quantity ? $service->pivot->quantity : 'norelevante' }}
+                                                </td>
+                                                <td>{{ $service->pivot->price }}</td>
+                                                <td>{{ $service->pivot->cost }}</td>
+                                                <td>
+                                                    <div>
+                                                        <button data-bs-toggle="modal"
+                                                            data-bs-target="#modal{{ $service->pivot->id }}">cambiar</button>
+                                                    </div>
+                                                    <div class="modal fade" id="modal{{ $service->pivot->id }}"
+                                                        aria-labelledby="modalLabel{{ $service->pivot->id }}"
+                                                        aria-hidden="true">
+                                                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <h3>Aqui ira el formulario</h3>
+                                                                    <div>
+                                                                        <form action="">
+                                                                            @csrf
+                                                                            <div>
+                                                                                <label for="cantidad" class="form-label">Cantidad</label>
+                                                                                <input type="number" name="cantidad" value="0">
+                                                                            </div>
+                                                                            <div>
+                                                                                <label for="precio">Cuanto Vas a
+                                                                                    cobrar?</label>
+                                                                                <input type="number" name="precio">
+                                                                            </div>
+                                                                            <div>
+                                                                                <label for="costo">Cuanto te cuesta a
+                                                                                    ti? </label>
+                                                                                <input type="number" name="costo">
+                                                                            </div>
+                                                                            <div>
+                                                                                <button>Enviar</button>
+                                                                            </div>
+
+                                                                        </form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </td>
                                             </tr>
                                         @endforeach
                                     @endif
@@ -82,7 +133,12 @@
                     </div>
                 </div>
             </div>
+        </div>
     </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
 
 </body>
 

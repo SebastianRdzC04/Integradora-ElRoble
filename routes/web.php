@@ -19,6 +19,8 @@ use App\Http\Controllers\ServiciosAdminController;
 use App\Http\Controllers\CotizacionesClientesController;
 use App\Http\Controllers\PaquetesAdminController;
 use App\Models\ConsumableEvent;
+use App\Models\QuoteService;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -127,7 +129,10 @@ Route::get('dashboard/services/{id}', function ($id) {
 
 Route::get('dashboard/quotes/{id}', function ($id) {
     $quote = Quote::find($id);
-    return view('pages.dashboard.cotizacionAdmin', compact('quote'));
+    if ($quote->status == 'pendiente cotizacion') {
+        return view('pages.dashboard.cotizacionAdmin', compact('quote'));
+    }
+    return redirect()->route('dashboard');
 })->name('dashboard.quote');
 
 Route::get('dashboard/event/now', function () {
@@ -147,8 +152,19 @@ Route::post('dashboard/event/consumable/status/{id}', function ($id) {
 
     }
 
-    return redirect()->back()->with('success', 'El estado del consumible ha sido actualizado');
+    return redirect()->back()->with('success', 'El estado del consumible ha sido actualizado')->with('consumible', 'Abrete sesamo');
 })->name('dashboard.event.consumable');
+
+Route::post('dashboard/quote/event/{id}', function ($id, Request $request) {
+    $quote = QuoteService::find($id);
+    $request->validate([
+        'cantidad' => 'required', 'integer',
+        'precio' => 'required',
+        'costo' => 'required',
+    ]);
+
+    return redirect()->route('dashboard.quotes');
+})->name('dashboard.quote.status');
 
 
 
