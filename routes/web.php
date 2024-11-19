@@ -22,6 +22,7 @@ use App\Models\ConsumableEvent;
 use App\Models\QuoteService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\InicioClientesController;
 
 /*
 |--------------------------------------------------------------------------
@@ -206,6 +207,12 @@ Route::post('dashboard/quote/event/{id}', function ($id, Request $request) {
 
 
 
+   return view('pages.dashboard');
+});
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -220,7 +227,7 @@ Route::get('/crearservicios', [ServiciosAdminController::class, 'create'])->name
 Route::post('/servicios', [ServiciosAdminController::class, 'store'])->name('servicios.store');
 Route::get('/cotizaciones', [CotizacionesClientesController::class, 'create'])->name('cotizaciones.create');
 Route::post('cotizacionesclientes', [CotizacionesClientesController::class, 'store'])->name('cotizacionesclientes.store');
-Route::get('/inicio', [ServiciosAdminController::class, 'provisional'])->name('inicio');
+Route::get('/inicio', [InicioClientesController::class, 'create'])->name('inicio');
 
 // Si necesitas una vista para listar paquetes
 Route::get('/paquetes', [PaquetesAdminController::class, 'index'])->name('paquetes.index'); // O lo que desees
