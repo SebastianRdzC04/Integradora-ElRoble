@@ -1,0 +1,101 @@
+.dsh-button {
+    right: 5px;
+    transform: translateY(-70%);
+
+}
+.iconos {
+    height: 60px;
+    width: 60px;
+    max-width: 60px;
+    max-height: 60px;
+    min-height: 60px;
+    min-width: 60px;
+    background-color: aquamarine;
+    border-radius: 50%;
+}
+
+
+
+
+/*
+.quotes 
+{
+    background-color: #ffffff;
+    
+}
+.quote-time 
+{
+    font-size: 14px;
+    padding-right: -12px;
+}
+.quote-time-container
+{
+    padding-right: 0px;
+}
+.quotes-pages 
+{
+    height: 100%;
+}
+.quote-card:hover 
+{
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+
+
+.consumibles 
+{
+    background-color: rgb(197, 240, 199);
+    height: 100%;
+}
+.consumibles:hover 
+{
+    background-color: rgb(30, 218, 40);
+    height: 100%;
+    cursor: pointer;
+}
+.consumable-name {
+    font-size: 20px;  
+}
+
+
+.events-container 
+{
+    max-height: 710px;
+    overflow-y: auto;
+}
+.event-services 
+{
+    height: 250px;
+    max-height: 250px;
+    overflow-y: auto;
+}
+.events:hover 
+{
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.pene {
+    border-radius: 0 0 10px 10px;
+}
+
+
+
+.service-list 
+{
+    max-height: 90px;
+    overflow-y: auto;
+}
+.first-row 
+{
+    height: 750px;
+}
+.pagination-row 
+{
+    margin-top: auto;
+}
+
+*/
+

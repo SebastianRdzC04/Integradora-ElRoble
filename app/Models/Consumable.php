@@ -25,7 +25,7 @@ class Consumable extends Model
     public function events()
     {
         return $this->belongsToMany(Event::class, 'consumables_events')
-                    ->withPivot('quantity', 'ready')
+                    ->withPivot('quantity', 'ready', 'id')
                     ->withTimestamps();
     }
 }

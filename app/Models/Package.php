@@ -10,6 +10,14 @@ class Package extends Model
     use HasFactory;
 
     protected $table = 'packages';
+    protected $fillable = [
+        'place_id', 'name', 'description', 'max_people', 'price', 'start_date', 'end_date', 'status'
+    ];    
+
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
+    ];
 
     public function place()
     {
@@ -25,7 +33,7 @@ class Package extends Model
     public function services()
     {
         return $this->belongsToMany(Service::class, 'packages_services')
-                    ->withPivot('quantity', 'price', 'description', 'details_dj')
+                    ->withPivot('quantity', 'price', 'description', 'details_dj', 'id')
                     ->withTimestamps();
     }
 }

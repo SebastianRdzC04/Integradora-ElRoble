@@ -10,31 +10,33 @@ class Service extends Model
     use HasFactory;
 
     protected $table = 'services';
+    
+    protected $fillable = ['name', 'description', 'price', 'service_category_id', 'quantity', 'image_path'];
 
     public function serviceCategory()
     {
         return $this->belongsTo(ServiceCategory::class);
     }
 
-
+    // Comentario Bárbaro en AxelV2.0
 
     // relaciones muchos a muchos
     public function quotes()
     {
         return $this->belongsToMany(Quote::class, 'quotes_services')
-                    ->withPivot('quantity', 'price', 'description', 'details_dj')
+                    ->withPivot('quantity', 'price', 'description', 'details_dj', 'id')
                     ->withTimestamps();
     }
     public function packages()
     {
         return $this->belongsToMany(Package::class, 'packages_services')
-                    ->withPivot('quantity', 'price', 'description', 'details_dj')
+                    ->withPivot('quantity', 'price', 'description', 'details_dj', 'id')
                     ->withTimestamps();
     }
     public function events()
     {
         return $this->belongsToMany(Event::class, 'events_services')
-                    ->withPivot('quantity', 'price', 'description', 'details_dj')
+                    ->withPivot('quantity', 'price', 'description', 'details_dj', 'id')
                     ->withTimestamps();
     }
 }

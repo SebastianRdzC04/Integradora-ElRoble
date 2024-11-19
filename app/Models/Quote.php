@@ -11,6 +11,11 @@ class Quote extends Model
 
     protected $table = 'quotes';
 
+    protected $fillable = [
+        'user_id', 'package_id', 'date', 'place_id', 'status', 'estimated_price',
+        'espected_advance', 'start_time', 'end_time', 'guest_count', 'type_event', 'owner_name', 'owner_phone'
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -18,10 +23,6 @@ class Quote extends Model
     public function package()
     {
         return $this->belongsTo(Package::class);
-    }
-    public function date()
-    {
-        return $this->belongsTo(Date::class);
     }
     public function place()
     {
@@ -37,7 +38,7 @@ class Quote extends Model
     public function services()
     {
         return $this->belongsToMany(Service::class, 'quotes_services')
-                    ->withPivot('quantity', 'price', 'description', 'details_dj')
+                    ->withPivot('quantity', 'price', 'description', 'details_dj', 'id')
                     ->withTimestamps();
     }
 

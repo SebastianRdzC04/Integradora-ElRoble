@@ -1,0 +1,211 @@
+body {
+    background-image: url('/images/imagen4.jpg');
+    background-size: cover;
+    color: white;
+}
+.container {
+    max-width: 80%;
+}
+#solicitudCotizacion {
+    background-color: rgba(34, 52, 34, 0.8);
+    padding: 20px;
+    border-radius: 8px;
+    position: relative;
+}
+#solicitudCotizacion img {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 70px;
+    height: auto;
+}
+#informacionEvento {
+    background-color: rgba(34, 52, 34, 0.8);
+    padding: 20px;
+    border-radius: 8px;
+}
+h2, h3, label {
+    color: #ffffff;
+    text-align: center;
+}
+ul {
+    padding-left: 0;
+}
+li {
+    text-align: left;
+    line-height: 1.2;
+}
+.category-card { 
+    cursor: pointer; 
+    transition: transform 0.2s; 
+    background-color: #2b1a06; 
+    color: white; 
+    border: 2px solid rgb(255, 255, 255);
+}
+.category-card:hover { transform: scale(1.05); }
+#crearPaquete {
+    background-color: rgba(18, 58, 18, 0.76);
+    padding: 20px;
+    border-radius: 8px;
+    color: white;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.904);
+}
+#crearPaqueteBoton {
+    background-color: #2b1a06; 
+    padding: 10px;
+    border-radius: 100px;
+    color: white;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.904);
+}
+#previstaServicio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(18, 58, 18, 0.76);
+    padding: 20px;
+    border-radius: 8px;
+    color: white;
+    position: fixed;
+    right: 20px;
+    top: 40%;
+    z-index: 1000;
+    width: 40%;
+    max-width: 400px;
+    transform: translateY(-50%);
+    transition: top 0.5s ease;
+    margin-bottom: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.904);
+}
+@media (max-width: 770px) {
+    #previstaServicio {
+        position: static;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin-top: 20px;
+        transform: none;
+        margin-left: 40px;
+    }
+}
+.prevista-imagen-container {
+    position: relative;
+    width: 80%;
+    max-width: 320px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.prevista-imagen {
+    width: 100%;
+    border-radius: 3%;
+    max-height: 250px;
+    object-fit: cover;
+}
+.prevista-caption {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 85%;
+    height: 80%;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    color: white;
+    text-align: center;
+}
+
+.service-card {
+    width: 100%;
+    margin-bottom: 15px;
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 8px;
+    background-color: rgba(34, 52, 34, 0.9);
+    color: white;
+    text-align: center;
+    transition: transform 0.3s;
+    margin: 0 auto;
+    width: 90%;
+    transition: visibility 0s, height 0.2s ease;
+    margin-bottom: 20px;
+}
+
+.service-card:hover {
+    transform: scale(1.05);
+}
+
+.service-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.service-card .card-body {
+    padding: 10px;
+}
+
+.service-card h5 {
+    color: #ffffff;
+    margin-bottom: 5px;
+}
+
+.service-card p {
+    margin: 0;
+    font-size: 0.9em;
+}
+
+.selected-service-container {
+    display: none;
+    padding: 15px;
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 8px;
+    background-color: rgba(34, 52, 34, 0.8);
+    color: white;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.service-details {
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 10px;
+    margin-right: 40px;
+}
+.service-item {
+    margin-bottom: 15px;
+}
+.text-danger {
+    font-size: 0.875em;
+}
+.invalid-feedback {
+    display: block;
+    background-color: rgba(255, 0, 0, 0.3);
+    border: 1px solid red;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 5px;
+    color: rgb(218, 189, 189);
+    font-weight: bold;
+    transition: opacity 0.3s, transform 0.3s;
+}
+.disabled-input {
+    background-color: #e9ecef;
+    pointer-events: none;
+}
+.equal-height {
+    height: 100%;
+}
+.servicios-seleccionados {
+    margin-top: 10px;
+    color: white;
+    text-align: left;
+}

@@ -5,14 +5,18 @@
     display: flex;
     flex-direction: column;
     position: static;
-    height: 320px;
+    height: 310px;
 }
+
 
 #calendar {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 0px;
     width: 100%;
+    background-color: #eea1a1;
+    border-radius: 0 0 5px 5px;
+
 }
 #days {
     display: grid;
@@ -36,14 +40,21 @@
     cursor: pointer;
     font-weight: 600;
     border-radius: 15%;
+
 }
+.date:hover {
+    background-color: #d3e4f7;
+    color: rgb(0, 0, 0);
+}
+
 .date.active {
     background-color: #007bff;
     color: white;
 }
 .date.inactive {
     background-color: #8b918c;
-    color: #ffffff;
+    color: #ffffff !important;
+
 }
 .date.aparted {
     background-color: #f7c933;
