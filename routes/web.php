@@ -18,6 +18,7 @@ use Carbon\Carbon;
 use App\Http\Controllers\ServiciosAdminController;
 use App\Http\Controllers\CotizacionesClientesController;
 use App\Http\Controllers\PaquetesAdminController;
+use App\Models\ConsumableEvent;
 
 /*
 |--------------------------------------------------------------------------
@@ -138,13 +139,15 @@ Route::get('dashboard/event/now', function () {
 })->name('dashboard.eventnow');
 
 Route::post('dashboard/event/consumable/status/{id}', function ($id) {
-    $consumable = Consumable::find($id);
-    $consumableRecord = new ConsumableRecord();
-    $consumableRecord->consumable_id = $consumable->id;
-    $consumableRecord->event_id = session('event')->id;
-    $consumableRecord->quantity = 1;
-    $consumableRecord->save();
-    return redirect()->route('dashboard.records');
+    $consumableEvent = ConsumableEvent::find($id);
+
+    if ($consumableEvent) {
+        $consumableEvent->ready = !$consumableEvent->ready;
+        $consumableEvent->save();
+
+    }
+
+    return redirect()->back()->with('success', 'El estado del consumible ha sido actualizado');
 })->name('dashboard.event.consumable');
 
 

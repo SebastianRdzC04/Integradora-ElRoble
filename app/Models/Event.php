@@ -29,7 +29,7 @@ class Event extends Model
     public function consumables()
     {
         return $this->belongsToMany(Consumable::class, 'consumables_events')
-                    ->withPivot('quantity', 'ready')
+                    ->withPivot('quantity', 'ready', 'id')
                     ->withTimestamps();
     }
     public function services()

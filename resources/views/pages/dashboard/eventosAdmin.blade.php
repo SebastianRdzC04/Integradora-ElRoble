@@ -108,19 +108,29 @@
                                     <th>Nombre</th>
                                     <th>Cantidad</th>
                                     <th>Estado</th>
-                                    <th>Acciones</th>
+                                    <th class="text-center">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($event->consumables as $consumable)
                                     <tr>
                                         <td> {{ $consumable->name }} </td>
-                                        <td> {{ $consumable->pivot->quantity }}{{$consumable->unit}} </td>
+                                        <td> {{ $consumable->pivot->quantity }}{{ $consumable->unit }} </td>
                                         <td> {{ $consumable->pivot->ready }} </td>
-                                        <td>
-                                            <form action="" method="POST">
+                                        <td class="text-center">
+                                            <form
+                                                action="{{ route('dashboard.event.consumable', $consumable->pivot->id) }}"
+                                                method="POST">
                                                 @csrf
-                                                <button class="btn" type="submit">Cambiar estado</button>
+                                                <button
+                                                    class="btn btn-outline-{{ $consumable->pivot->ready ? 'danger' : 'success' }} py-0 px-1"
+                                                    type="submit">
+                                                    @if ($consumable->pivot->ready)
+                                                        <i class="fs-4 bi bi-x-circle-fill"></i>
+                                                    @else
+                                                        <i class="fs-4 bi bi-check-circle-fill "></i>
+                                                    @endif
+                                                </button>
                                             </form>
                                         </td>
                                     </tr>
