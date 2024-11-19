@@ -17,19 +17,25 @@ class CotizacionesClientesController extends Controller
         $categories = ServiceCategory::all();
         $places = Place::all();
         $packages = Package::all();
+        $services = Service::all()->keyBy('id');
     
         return view('cotizacionesclientes', [
             'categories' => $categories,
             'places' => $places,
-            'packages' => $packages
+            'packages' => $packages,
+            'services' => $services,
         ]);
     }
+    
     
     public function store(Request $request)
     {
         try {
+        if ($request->has('otro_tipo_evento') && !empty($request->input('otro_tipo_evento'))) {
+            $request->merge(['type_event' => (string) $request->input('otro_tipo_evento')]);
+        } else {
             $request->merge(['type_event' => (string) $request->input('type_event')]);
-    
+        }
             $validated = $request->validate(
                 [
                     'user_id' => 'nullable|exists:users,id',

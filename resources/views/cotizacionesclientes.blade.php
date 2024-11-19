@@ -6,6 +6,46 @@
     <title>El Roble - Cotización</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/stylespaquetes.css') }}">
+    <style>
+.lista-servicios-confirmados {
+    list-style-type: none; /* Quita los marcadores predeterminados */
+    padding: 0;
+    margin: 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    max-width: 600px;
+    margin: auto;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.service-item {
+    padding: 5px;
+    border-bottom: 1px solid #ddd;
+}
+
+.service-item:last-child {
+    border-bottom: none;
+}
+
+.service-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.service-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+}
+
+.service-description {
+    font-size: 1em;
+    color: #555;
+}
+
+    </style>
 </head>
 <body>
     <div class="container mt-4">
@@ -169,7 +209,7 @@
                     </div>
                 </div>
                 <p id="prevista-servicios">Servicios seleccionados:</p>
-                <div id="vista-previa-servicios" class="vista-previa mt-3"></div>
+                <div id="vista-previa-servicios" class="vista-previa mt-3">No hay servicios confirmados aún.</div>
                 <button type="button" class="btn btn-success mt-3" id="crearPaqueteBoton" onclick="crearPaquete()">Enviar Cotización</button>
             </div>
         </div>
@@ -179,6 +219,9 @@
         // Declaración de Variables de Almacenamiento
         let confirmedServices = {};
         let selectedServices = {};
+
+        // Declarando Servicios
+        const services = @json($services);
 
         // Ejecución de Funciones al Ejecutar Vista
         window.addEventListener('load', ajustarAlturaCategorias);
@@ -218,22 +261,31 @@
             const vistaPrevia = document.getElementById('vista-previa-servicios');
             vistaPrevia.innerHTML = '';
 
-            if (Object.keys(confirmedServices).length === 0) {
+            const serviciosConfirmados = Object.entries(confirmedServices).filter(
+                ([, serviceData]) => serviceData.isConfirmed
+            );
+
+            if (serviciosConfirmados.length === 0) {
                 vistaPrevia.innerHTML = '<p>No hay servicios confirmados aún.</p>';
                 return;
             }
 
-            for (const [serviceId, serviceData] of Object.entries(confirmedServices)) {
-                if (serviceData.isConfirmed) {
-                    const serviceElement = document.createElement('div');
-                    serviceElement.className = 'service-preview';
-                    serviceElement.innerHTML = `
-                        <p><strong>Servicio:</strong> ${getServiceName(serviceId)}</p>
-                        <p><strong>Descripción:</strong> ${serviceData.description}</p>
-                    `;
-                    vistaPrevia.appendChild(serviceElement);
-                }
+            const listaServicios = document.createElement('ul');
+            listaServicios.className = 'lista-servicios-confirmados';
+
+            for (const [serviceId, serviceData] of serviciosConfirmados) {
+                const serviceItem = document.createElement('li');
+                serviceItem.className = 'service-item';
+                serviceItem.innerHTML = `
+                    <div class="service-info">
+                        <h4 class="service-name">${getServiceName(serviceId)}</h4>
+                        <p class="service-description">${serviceData.description || 'Sin descripción'}</p>
+                    </div>
+                `;
+                listaServicios.appendChild(serviceItem);
             }
+
+            vistaPrevia.appendChild(listaServicios);
         }
 
         function toggleServices(categoryId) {
@@ -307,11 +359,6 @@
                 }
             });
         }
-
-        function toggleConfirmButton(quantityInput) {
-            const confirmButton = quantityInput.closest('.service-card').querySelector(`#confirm-btn-${quantityInput.name.match(/\d+/)[0]}`);
-            confirmButton.disabled = !quantityInput.value;
-        }
     
         function toggleBotonCrearPaquete() {
             const botonCrearPaquete = document.getElementById('crearPaqueteBoton');
@@ -340,27 +387,16 @@
                 card.style.textAlign = 'center';
             });
         }
-
-        function updatePreview() {
-            const name = document.getElementById('name').value;
-            const description = document.getElementById('description').value;
-            const startDate = document.getElementById('start_date').value;
-            const endDate = document.getElementById('end_date').value;
-            const price = document.getElementById('price').value;
-    
-            document.getElementById('prevista-nombre').innerText = name || "Nombre del Paquete";
-            document.getElementById('prevista-descripcion').innerText = description || "Descripción del paquete";
-            document.getElementById('prevista-fechas').innerText = `Fecha de Inicio: ${startDate} - Fecha de Finalización: ${endDate}`;
-            document.getElementById('prevista-precio').innerText = `Precio: $${price || "0"}`;
-        }
     
         function crearPaquete() {
             const form = document.getElementById('cotizacionForm');
             document.querySelectorAll('.service-hidden-input').forEach(input => input.remove());
 
             const date = document.getElementById('date').value;
-            const startTime = document.getElementById('start_time').value;
-            const endTime = document.getElementById('end_time').value;
+            const startInput = document.getElementById('start_time');
+            const endInput = document.getElementById('end_time');
+            const startTime = startInput.value;
+            const endTime = endInput.value;
             const dayAfterCheckbox = document.getElementById('day_after_checkbox').checked;
 
             const typeEventElement = document.getElementById('type_event');
@@ -371,6 +407,19 @@
                 return;
             }
 
+            if (!esHoraValida(startTime) || !esHoraValida(endTime)) {
+                alert("Las horas deben estar en formato válido (hh:mm) y ser completas o medias (ej. 6:00 o 3:30).");
+                return;
+            }
+
+            validarHoraEnRango(startInput);
+            validarHoraEnRango(endInput);
+
+            if (startInput.validationMessage || endInput.validationMessage) {
+                alert(startInput.validationMessage || endInput.validationMessage);
+                return;
+            }
+
             const startDateTime = `${date} ${startTime.slice(0, 5)}`;
             let endDateTime = `${date} ${endTime.slice(0, 5)}`;
             if (dayAfterCheckbox) {
@@ -378,14 +427,6 @@
                 dateObj.setDate(dateObj.getDate() + 1);
                 const endDate = dateObj.toISOString().slice(0, 10);
                 endDateTime = `${endDate} ${endTime.slice(0, 5)}`;
-            }
-
-            const startHour = parseInt(startTime.split(':')[0], 10);
-            const endHour = parseInt(endTime.split(':')[0], 10);
-            const endMinutes = parseInt(endTime.split(':')[1], 10);
-            if (startHour < 12 || (endHour >= 3 && endMinutes > 0)) {
-                alert("El evento debe comenzar después de las 12:00 pm y finalizar antes de las 03:00 am del día siguiente.");
-                return;
             }
 
             form.appendChild(generarInputOculto('start_time', startDateTime));
@@ -405,18 +446,18 @@
 
             let anyServiceConfirmed = false;
             for (let serviceId in confirmedServices) {
-            const service = confirmedServices[serviceId];
+                const service = confirmedServices[serviceId];
 
-            console.log(`Procesando servicio ${serviceId}:`, service);
+                console.log(`Procesando servicio ${serviceId}:`, service);
 
-            if (service.isConfirmed && service.description.trim() !== "") {
-                console.log(`Confirmando servicio ${serviceId} con descripción: ${service.description}`);
+                if (service.isConfirmed && service.description.trim() !== "") {
+                    console.log(`Confirmando servicio ${serviceId} con descripción: ${service.description}`);
 
-                form.appendChild(generarInputOculto(`services[${serviceId}][description]`, service.description));
-                form.appendChild(generarInputOculto(`services[${serviceId}][confirmed]`, true));
-            } else {
-                console.log(`Servicio ${serviceId} no confirmado o sin descripción válida. Se omite.`);
-            }
+                    form.appendChild(generarInputOculto(`services[${serviceId}][description]`, service.description));
+                    form.appendChild(generarInputOculto(`services[${serviceId}][confirmed]`, true));
+                } else {
+                    console.log(`Servicio ${serviceId} no confirmado o sin descripción válida. Se omite.`);
+                }
             }
 
             if (!anyServiceConfirmed) {
@@ -427,7 +468,12 @@
             console.log("Servicios confirmados:", confirmedServices);
 
             form.submit();
-    }
+        }
+
+        function esHoraValida(hora) {
+            const regex = /^(?:[01]\d|2[0-3]):(00|30)$/;
+            return typeof hora === 'string' && regex.test(hora);
+        }
 
         function generarInputOculto(nombre, valor) {
             const input = document.createElement('input');
@@ -439,26 +485,22 @@
     
         window.onscroll = function() {
             const vistaPrevia = document.getElementById('previstaServicio');
-            const offset = Math.min(window.scrollY + 280, window.innerHeight - 300);
+            const offset = Math.min(window.scrollY + 320, window.innerHeight - 300);
             vistaPrevia.style.top = offset + 'px';
         };
 
-    document.getElementById('start_time').addEventListener('input', function() {
-        validarHora(this);
-    });
+        function validarHoraEnRango(input) {
+            let hora = input.value;
+            let horaObj = new Date('1970-01-01T' + hora + ':00');
+            let horaInicioLimite = new Date('1970-01-01T11:00:00');
+            let horaFinLimite = new Date('1970-01-02T03:00:00');
 
-    function validarHora(input) {
-        let hora = input.value;
-        let horaObj = new Date('1970-01-01T' + hora + ':00');
-        let horaInicioLimite = new Date('1970-01-01T11:00:00');
-        let horaFinLimite = new Date('1970-01-02T03:00:00');
-
-        if (horaObj < horaInicioLimite || horaObj > horaFinLimite) {
-            input.setCustomValidity('La hora debe estar entre las 11:00 AM y las 3:00 AM.');
-        } else {
-            input.setCustomValidity('');
+            if (horaObj < horaInicioLimite || horaObj > horaFinLimite) {
+                input.setCustomValidity('La hora debe estar entre las 11:00 AM y las 3:00 AM.');
+            } else {
+                input.setCustomValidity('');
+            }
         }
-    }
 
     document.getElementById('start_time').setAttribute('step', '1800');
     document.getElementById('end_time').setAttribute('step', '1800');
