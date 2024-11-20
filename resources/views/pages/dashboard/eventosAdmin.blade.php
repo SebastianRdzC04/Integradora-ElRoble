@@ -35,7 +35,7 @@
                     </div>
                     <div class="d-flex justify-content-between">
                         <div>
-                            <p>Lugar: {{ $event->quote->place->name }} </p>
+                            <p>Lugar: {{ $event->quote->place ? $event->quote->place->name : $event->quote->package->place->name }} </p>
                         </div>
                         <!-- Calcula el tiempo que falta para que inicie el evento -->
                         <div>
