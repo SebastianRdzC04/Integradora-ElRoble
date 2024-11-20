@@ -6,10 +6,10 @@
     <title>@yield('title')</title>
     <link rel="stylesheet" href="{{asset('css/bootstrap.css')}}">
     <link rel="stylesheet" href="{{asset('css/globalstyles.css')}}">
+    <link rel="stylesheet" href="{{asset('css/loginstyles.css')}}">
     @yield('link')
+    @yield('style')
     <style>
-        @yield('style')
-
         .background-image {
             position: fixed; 
             top: 0;
@@ -23,19 +23,17 @@
             filter: blur(8px); 
             z-index: -1; 
         }
-
-        
     </style>
 </head>
 <body class="d-flex align-items-center justify-content-center" style="margin: 0;height: 100vh; overflow: hidden; min-height: 100vh;">
     <div class="background-image"></div>
-    <div class="container d-flex justify-content-center content">
-        <div class="card shadow-lg border-0 rounded" style="width: 100%; max-width: 400px; background-color: #3a3822f7;">
-            <div class="card-body">
+    <div id="Container3" class="container d-flex justify-content-center content">
+        <div id="LoginContainer" class="card shadow-lg border-0 rounded">
+            <div id="LoginContainer2" class="card-body">
                 
                 <div class="d-flex justify-content-center mb-3">
                     
-                    <img src="{{asset('js\images\El roble.jpg') }}" class="img-login" alt="Descripción de la imagen">
+                    <img src="{{asset('images/logo sin letras.png') }}" class="img-login" alt="Descripción de la imagen">
                     
                 </div>
 
