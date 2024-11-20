@@ -49,12 +49,20 @@
             background: radial-gradient(circle, #3a2012, #351a0c, #412415);
             background-size: cover;
             color: white;
+            width: 60%;
+            position: fixed;
+            z-index: 10000;
+        }
+        @media (min-width: 960px){
+            #barra-lateral {
+                width: 25%;   
+            }
         }
     </style>
 </head>
 
 <body>
-    <main>
+    <main class="d-flex">
         <div class="container-fluid sidebar" id="barra-lateral">
             <div class="row flex-nowrap sidebar">
                 <div class="col-12 px-sm-2 px-0">
@@ -76,13 +84,13 @@
                                     @endif
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-                                    <li><a class="dropdown-item" href="#">New project...</a></li>
-                                    <li><a class="dropdown-item" href="#">Settings</a></li>
-                                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                                    <li><a class="dropdown-item" href="#">Proyecto Nuevo</a></li>
+                                    <li><a class="dropdown-item" href="#">Configuraciones</a></li>
+                                    <li><a class="dropdown-item" href="#">Perfil</a></li>
                                     <li>
                                         <hr class="dropdown-divider">
                                     </li>
-                                    <li><a class="dropdown-item" href="#">Sign out</a></li>
+                                    <li><a class="dropdown-item" href="#">Cerrar Sesión</a></li>
                                 </ul>
                             </div>
                         </a>
@@ -161,7 +169,7 @@
                 </div>
             </div>
         </div>
-        <div class="contenido">
+        <div class="contenido container-fluid">
             @yield('content')
         </div>
     </main>
@@ -179,6 +187,7 @@
     <script src="https://cdn.datatables.net/2.1.8/js/dataTables.bootstrap5.js"></script>
 
     @yield('scripts')
+    
 </body>
 
 </html>
