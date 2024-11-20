@@ -33,9 +33,7 @@ use App\Http\Controllers\InicioClientesController;
 | grupo de middleware "web".
 */
 
-Route::get('/', function () {
-    return view('pages.inicio');
-});
+Route::get('/', [InicioClientesController::class, 'create'])->name('inicio');
 
 
 // Rutas que seran protegidas con el middleware del administrador
