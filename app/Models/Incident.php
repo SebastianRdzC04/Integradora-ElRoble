@@ -15,10 +15,11 @@ class Incident extends Model
     {
         return $this->belongsTo(Event::class);
     }
-    public function inventory()
+
+    public function images()
     {
-        return $this->belongsToMany(Inventory::class, 'incident_inventory')
-                    ->withPivot('description', 'price')
-                    ->withTimestamps();
+        return $this->hasMany(IncidentImage::class, 'incident_id');
     }
 }
+    
+
