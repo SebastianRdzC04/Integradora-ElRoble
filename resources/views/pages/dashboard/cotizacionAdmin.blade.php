@@ -24,7 +24,7 @@
                         <div class="d-flex justify-content-between">
                             <div>
                                 <p> {{ $quote->type_event }} </p>
-                                <p>Lugar: {{ $quote->place->name }} </p>
+                                <p>Lugar: {{ $quote->package ? $quote->package->place->name : $quote->place->name }} </p>
                                 <p>Invitados: {{ $quote->guest_count }} </p>
                                 <p> {{ $quote->user_id ? $quote->user->person->firstName : $quote->owner_name }} </p>
                             </div>
