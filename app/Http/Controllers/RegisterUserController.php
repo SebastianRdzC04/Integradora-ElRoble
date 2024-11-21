@@ -71,14 +71,22 @@ class RegisterUserController extends Controller
         ]);
         $validatedData['age'] = 18;
         
-
+        dd($user);
         $userExist = User::where('external_id', $user->id)
                         ->where('external_auth', 'google')
                         ->first();
 
+        
+        dd($userExist);
+
         if ($userExist) {
             Auth::login($userExist);
         } else {
+
+            if
+            (
+                
+            )
             DB::transaction(function () use ($user, $validatedData) {
 
                 $personNew = Person::create([
