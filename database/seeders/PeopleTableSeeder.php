@@ -20,8 +20,8 @@ class PeopleTableSeeder extends Seeder
         $faker = Faker::create('es_MX');
         for ($i = 1; $i <= 10; $i++) {
             $person = new Person();
-            $person->firstName = $faker->firstName;
-            $person->lastName = $faker->lastName;
+            $person->first_name = $faker->firstName;
+            $person->last_name = $faker->lastName;
             $person->birthdate = $faker->date;
             $person->gender = $faker->randomElement(['Masculino', 'Femenino', 'Otro']);
             $person->phone = '9814980534';

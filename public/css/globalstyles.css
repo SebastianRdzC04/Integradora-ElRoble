@@ -1,23 +1,22 @@
 body {
-    overflow-x: hidden; /* Evita el desbordamiento horizontal */
+    overflow-x: hidden;
 }
 .sidebar {
-    height: 100vh; /* Ocupa toda la altura de la ventana */
-    position: fixed; /* Fija la barra lateral */
-    top: 0; /* En la parte superior */
-    left: 0; /* A la izquierda */
-    z-index: 1030; /* Asegúrate de que esté encima del contenido */
-    background-color: #343a40; /* Color de fondo */
-    padding-top: 1rem; /* Espaciado superior */
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1030;
+    background-color: #343a40;
+    padding-top: 1rem;
 }
 .sidebar-content {
-     /* Altura total */
-     height: 100%;
-     overflow-y: visible; /* Permitir el desplazamiento vertical */
-     overflow-x: hidden;
-     position: fixed;
-     z-index: 1050;
-     width: 100%;
+    height: 100%;
+    overflow-y: visible;
+    overflow-x: hidden;
+    position: fixed;
+    z-index: 1050;
+    width: 100%;
 }
 
 .sideba
@@ -26,31 +25,26 @@ body {
     padding: .5rem!important;
 }
 
-       /* Estilos para la barra lateral */
-       #sidebar {
-        position: fixed;
-        right: 0; /* Aparece desde la derecha */
-        width: 250px;
-        height: 100%;
-        /* background-color: #343a40; */
-        /* color: white; */
-        display: none; /* Oculta por defecto */
-        z-index: 1050; /* Asegura que esté encima del contenido */
+    #sidebar {
+    position: fixed;
+    right: 0;
+    width: 250px;
+    height: 100%;
+    display: none;
+    z-index: 1050;
     }
 
-    /* Fondo oscuro que aparece detrás de la barra lateral */
-    .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.5);
-        z-index: 1049;
-        display: none;
-    }
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1049;
+    display: none;
+}
 
-    /* El contenido principal debe tener su espacio normal */
     .content {
         padding: 20px;
     }
@@ -67,23 +61,22 @@ body {
     background-color: #8d6b34;
     color: #ffffff;
 }
-/* login --------------------------------------------------------------------------*/
 .circle-image {
-    width: 100%;             /* Adapta la imagen al ancho de su contenedor */
-    max-width: 300px;        /* Tamaño máximo (ajústalo a tus necesidades) */
-    aspect-ratio: 1 / 1;     /* Hace que el contenedor sea cuadrado */
-    object-fit: cover;       /* Ajusta la imagen sin distorsionar */
-    border-radius: 50%;      /* Forma circular */
+    width: 100%;
+    max-width: 300px;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 50%;
     display: block;
-    margin: 0 auto;          /* Centra la imagen horizontalmente */
+    margin: 0 auto;
 }
 
 .content {
-    position: relative; /* Relativo al contenedor padre */
-    z-index: 1; /* Coloca el contenido frente a la imagen de fondo */
-    color: white; /* Cambia el color del texto para que sea visible */
-    text-align: center; /* Centra el texto */
-    padding: 20px; /* Agrega algo de espacio alrededor del contenido */
+    position: relative;
+    z-index: 1;
+    color: white;
+    text-align: center;
+    padding: 20px;
 }
 
 .img-login{
