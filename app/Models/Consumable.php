@@ -28,4 +28,8 @@ class Consumable extends Model
                     ->withPivot('quantity', 'ready', 'id')
                     ->withTimestamps();
     }
+    public function consumableEventDefaults()
+    {
+        return $this->hasMany(ConsumableEventDefault::class);
+    }
 }
