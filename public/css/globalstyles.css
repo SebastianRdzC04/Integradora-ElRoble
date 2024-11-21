@@ -1,14 +1,14 @@
 body {
-    overflow-x: hidden; /* Evita el desbordamiento horizontal */
+    overflow-x: hidden;
 }
 .sidebar {
-    height: 100vh; /* Ocupa toda la altura de la ventana */
-    position: fixed; /* Fija la barra lateral */
-    top: 0; /* En la parte superior */
-    left: 0; /* A la izquierda */
-    z-index: 1030; /* Asegúrate de que esté encima del contenido */
-    background-color: #343a40; /* Color de fondo */
-    padding-top: 1rem; /* Espaciado superior */
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1030;
+    background-color: #343a40;
+    padding-top: 1rem;
 }
 .sidebar-content {
      /* Altura total */
