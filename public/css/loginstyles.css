@@ -23,11 +23,11 @@
     cursor: pointer;
     transition: all 0.3s ease;
     height: 40px;
-    margin: 5px;
+    margin-bottom: 15px;
     min-width: 300px;
 }
 .google-btn:hover {
-    background-color: #6e6e6e;
+    background-color: #292929;
     border-color: #d2e3fc;
     color: white;
 }
@@ -107,4 +107,19 @@
 #textobajo
 {
     font-size: 14px;
+}
+.btn-text
+{
+    display: inline;
+}
+.btn-text.hidden {
+    display: none;
+}
+@media (max-width: 384px) {
+    .facebook-btn{
+        min-width: 162px;
+    }
+    .google-btn{
+        min-width: 162px;
+    }
 }
