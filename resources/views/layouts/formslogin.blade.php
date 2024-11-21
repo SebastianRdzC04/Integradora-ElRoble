@@ -27,8 +27,8 @@
 </head>
 <body class="d-flex align-items-center justify-content-center" style="margin: 0;height: 100vh; overflow: hidden; min-height: 100vh;">
     <div class="background-image"></div>
-    <div id="Container3" class="container d-flex justify-content-center content">
-        <div id="LoginContainer" class="card shadow-lg border-0 rounded">
+    <div id="Container3" class="container d-flex justify-content-center content" style="min-width: 300px">
+        <div id="LoginContainer" class="card shadow-lg border-0 rounded" style="min-width: 300px">
             <div id="LoginContainer2" class="card-body">
                 
                 <div class="d-flex justify-content-center mb-3">
