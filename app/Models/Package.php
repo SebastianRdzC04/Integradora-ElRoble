@@ -33,7 +33,7 @@ class Package extends Model
     public function services()
     {
         return $this->belongsToMany(Service::class, 'packages_services')
-                    ->withPivot('quantity', 'price', 'description', 'details_dj', 'id')
+                    ->withPivot('quantity', 'price', 'description', 'details_dj', 'id' , 'coast')
                     ->withTimestamps();
     }
 }

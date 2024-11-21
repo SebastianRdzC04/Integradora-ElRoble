@@ -38,7 +38,7 @@ class Quote extends Model
     public function services()
     {
         return $this->belongsToMany(Service::class, 'quotes_services')
-                    ->withPivot('quantity', 'price', 'description', 'details_dj', 'id')
+                    ->withPivot('quantity', 'coast', 'description', 'details_dj', 'id' , 'price')
                     ->withTimestamps();
     }
 
