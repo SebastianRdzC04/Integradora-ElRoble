@@ -156,7 +156,7 @@ Route::get('dashboard/services/{id}', function ($id) {
 
 Route::get('dashboard/quotes/{id}', function ($id) {
     $quote = Quote::find($id);
-    if ($quote->status == 'pendiente cotizacion') {
+    if ($quote->status == 'pendiente cotizacion' || $quote->status == 'pendiente') {
         return view('pages.dashboard.cotizacionAdmin', compact('quote'));
     }
     return redirect()->route('dashboard');
@@ -191,12 +191,40 @@ Route::post('dashboard/event/consumable/status/{id}', function ($id) {
 Route::post('dashboard/quote/event/{id}', function ($id, Request $request) {
     $quote = QuoteService::find($id);
     $request->validate([
-        'cantidad' => 'required', 'integer',
-        'precio' => 'required',
-        'costo' => 'required',
+        'cantidad' => 'required|integer|min:0',
+        'precio' => 'required|numeric|min:0',
+        'costo' => 'required|numeric|min:0',
     ]);
-    return redirect()->route('dashboard.quotes');
+    if ($quote) {
+        $quote->quantity = $request->cantidad;
+        $quote->price = $request->precio;
+        $quote->coast = $request->costo;
+        $quote->save();
+    }
+    return redirect()->back()->with('success', 'El servicio ha sido actualizado');
 })->name('dashboard.quote.status');
+
+Route::post('dashboard/quote/payment/{id}', function ($id) {
+    $quote = Quote::find($id);
+    if ($quote->status == 'pendiente') {
+        $quote->status = 'pagada';
+        $quote->save();
+        return redirect()->back()->with('success', 'La cotización ha sido pagada. Termina de configurar el evento');
+    }
+    return redirect()->back()->with('error', 'La cotización no puede ser pagada');
+
+})->name('dashboard.quote.payment');
+
+Route::post('dashboard/quote/pending/{id}', function ($id) {
+    $quote = Quote::find($id);
+    if ($quote->status == 'pendiente cotizacion') {
+        $quote->status = 'pendiente';
+        $quote->save();
+        return redirect()->back()->with('success', 'La cotización ha sido marcada como pendiente');
+    }
+    return redirect()->back()->with('error', 'La cotización no puede ser marcada como pendiente');
+
+})->name('dashboard.quote.pending');
 
 
 
