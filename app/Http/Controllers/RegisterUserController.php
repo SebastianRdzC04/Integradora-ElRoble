@@ -23,8 +23,8 @@ class RegisterUserController extends Controller
     public function store(Request $request)
     {
         $validateperson = $request->validate([
-            'firstName' => 'required|string|max:50',
-            'lastName' => 'required|string|max:50',
+            'first_name' => 'required|string|max:50',
+            'last_name' => 'required|string|max:50',
             'birthdate' => 'required|date',
             'gender' => 'required|in:Masculino,Femenino,Otro',
             'phone' => 'required|string|size:10|regex:/^[0-9]+$/',
@@ -90,8 +90,8 @@ class RegisterUserController extends Controller
             DB::transaction(function () use ($user, $validatedData) {
 
                 $personNew = Person::create([
-                    'firstName' => $user->user['given_name'],
-                    'lastName' => $user->user['family_name'],
+                    'first_name' => $user->user['given_name'],
+                    'last_name' => $user->user['family_name'],
                     'gender' => $validatedData['gender'],
                     'phone' => $validatedData['phone'],
                     'birthdate' => $validatedData['birthdate'],
@@ -167,32 +167,4 @@ class RegisterUserController extends Controller
     }
 
     //Aqui esta X o Twitter como lo llamen ---------------------------------------------
-
-
-    public function handleXCallback()
-    {
-        
-            $user = Socialite::driver('x')->user();
-            dd($user);
-            // Buscar o crear el usuario en la base de datos
-            $existingUser = User::where('x_id', $user->getId())->first();
-
-            if ($existingUser) {
-                // Si el usuario ya existe, iniciar sesión
-                Auth::login($existingUser, true);
-            } else {
-                // Si el usuario no existe, crear uno nuevo
-                $newUser = User::create([
-                    'name' => $user->getName(),
-                    'email' => $user->getEmail(),
-                    'x_id' => $user->getId(),
-                    'avatar' => $user->getAvatar(),
-                ]);
-
-                Auth::login($newUser, true);
-            }
-
-            return redirect()->route('home'); // Redirigir al usuario después de iniciar sesión
-        
-    }
 }
