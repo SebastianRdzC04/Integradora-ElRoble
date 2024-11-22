@@ -1,5 +1,7 @@
 @extends('layouts.formslogin')
 
+<link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+
 @section('title')
     El Roble - Inicio de sesión
 @endsection

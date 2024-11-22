@@ -23,7 +23,7 @@
     cursor: pointer;
     transition: all 0.3s ease;
     height: 40px;
-    margin-bottom: 15px;
+    margin-bottom: 2px;
     min-width: 300px;
 }
 .google-btn:hover {
