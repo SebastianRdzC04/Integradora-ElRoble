@@ -23,6 +23,7 @@ use App\Models\QuoteService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\InicioClientesController;
+use App\Models\ConsumableEventDefault;
 
 /*
 |--------------------------------------------------------------------------
@@ -132,7 +133,8 @@ Route::get('dashboard/inventory', function () {
 
 Route::get('dashboard/consumables', function () {
     $consumables = Consumable::all();
-    return view('pages.dashboard.consumables', compact('consumables'));
+    $consumablesDefault = ConsumableEventDefault::all();
+    return view('pages.dashboard.consumables', compact('consumables', 'consumablesDefault'));
 })->name('dashboard.consumables');
 
 
@@ -253,6 +255,22 @@ Route::post('dashboard/quote/price/{id}', function ($id, Request $request) {
     return redirect()->back()->with('error', 'La cotización no se ha encontrado');
 
 })->name('dashboard.quote.price');
+
+Route::post('dashboard/add/consumable/default', function (Request $request) {
+    $request->validate([
+        'consumable_id' => 'required|integer',
+        'cantidad' => 'required|integer|min:0',
+    ]);
+    $consumable = Consumable::find($request->consumable_id);
+    if ($consumable) {
+        $consumable->consumableEventDefault()->create([
+            'quantity' => $request->cantidad,
+        ]);
+        return redirect()->back()->with('success', 'El consumible ha sido agregado a los eventos por defecto');
+    }
+    return redirect()->back()->with('error', 'El consumible no se ha encontrado');
+
+})->name('dashboard.add.consumable.default');
 
 
 
