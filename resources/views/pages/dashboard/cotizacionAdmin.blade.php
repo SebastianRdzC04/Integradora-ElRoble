@@ -55,11 +55,61 @@
                             </div>
                             <div class="row mb-3">
                                 <div>Precio de la cotizacion:</div>
-                                <div> {{ $quote->estimated_price }} </div>
+                                <div> ${{ $quote->estimated_price }} <i data-bs-toggle="modal"
+                                        data-bs-target="#quoteModal" class="text-end bi bi-pencil"></i></div>
+                                <div class="modal fade" id="quoteModal">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+
+                                            </div>
+                                            <div class="modal-body">
+                                                <div>
+                                                    <form action="{{route('dashboard.quote.price', $quote->id)}}" method="POST">
+                                                        @csrf
+                                                        <div class="row mb-3">
+                                                            <label class="form-label" for="precio">Precio de la cotizacion</label>
+                                                            <input class="form-control" type="number" name="precio"
+                                                                value="{{ $quote->estimated_price }}">
+                                                        </div>
+                                                        <div>
+                                                            <button class="btn btn-primary">Enviar</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row mb-3">
                                 <div>Anticipo:</div>
-                                <div> {{ $quote->espected_advance }} </div>
+                                <div> ${{ $quote->espected_advance }} <i data-bs-toggle="modal"
+                                        data-bs-target="#quoteAdvanceModal" class="text-end bi bi-pencil"></i></div>
+                                <div class="modal fade" id="quoteAdvanceModal">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h3>Anticipo</h3>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div>
+                                                    <form action="{{route('dashboard.quote.advance', $quote->id)}}" method="POST">
+                                                        @csrf
+                                                        <div class="row mb-3">
+                                                            <label class="form-label" for="anticipo">Anticipo</label>
+                                                            <input class="form-control" type="number" name="anticipo"
+                                                                value="{{ $quote->espected_advance }}">
+                                                        </div>
+                                                        <div>
+                                                            <button class="btn btn-primary">Enviar</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row">
                                 <div class="text-end">
@@ -137,7 +187,8 @@
                                                                     <div class="modal-body">
                                                                         <h3>Aqui ira el formulario</h3>
                                                                         <div>
-                                                                            <form method="POST" action="{{route('dashboard.quote.status', $service->pivot->id)}}">
+                                                                            <form method="POST"
+                                                                                action="{{ route('dashboard.quote.status', $service->pivot->id) }}">
                                                                                 @csrf
                                                                                 <div class="row mb-3">
                                                                                     <label for="cantidad"
