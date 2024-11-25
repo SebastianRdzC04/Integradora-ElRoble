@@ -30,7 +30,7 @@ return new class extends Migration
             quantity,
             NOW(),
             NOW()
-            FROM consumables_events_defaults;
+            FROM consumables_events_default;
             END;
         ');
     }
