@@ -226,6 +226,34 @@ Route::post('dashboard/quote/pending/{id}', function ($id) {
 
 })->name('dashboard.quote.pending');
 
+Route::post('dashboard/quote/advance/{id}', function ($id, Request $request) {
+    $quote = Quote::find($id);
+    $request->validate([
+        'anticipo' => 'required|numeric|min:0',
+    ]);
+    if ($quote) {
+        $quote->espected_advance = $request->anticipo;
+        $quote->save();
+        return redirect()->back()->with('success', 'El anticipo ha sido registrado');
+    }
+    return redirect()->back()->with('error', 'La cotización no se ha encontrado');
+
+})->name('dashboard.quote.advance');
+
+Route::post('dashboard/quote/price/{id}', function ($id, Request $request) {
+    $quote = Quote::find($id);
+    $request->validate([
+        'precio' => 'required|numeric|min:0',
+    ]);
+    if ($quote) {
+        $quote->estimated_price = $request->precio;
+        $quote->save();
+        return redirect()->back()->with('success', 'El precio ha sido registrado');
+    }
+    return redirect()->back()->with('error', 'La cotización no se ha encontrado');
+
+})->name('dashboard.quote.price');
+
 
 
 Route::middleware('auth')->group(function () {
