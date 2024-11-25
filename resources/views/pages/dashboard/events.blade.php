@@ -29,7 +29,7 @@
                         <tbody>
                             @foreach ($events as $event)
                                 <tr>
-                                    <td>{{ $event->quote->user ? $event->quote->user->person->firstName : $event->quote->owner_name }}
+                                    <td>{{ $event->quote->user ? $event->quote->user->person->first_name : $event->quote->owner_name }}
                                     </td>
                                     <td>{{ $event->quote->package ? $event->quote->package->place->name : $event->quote->place->name }}
                                     </td>
