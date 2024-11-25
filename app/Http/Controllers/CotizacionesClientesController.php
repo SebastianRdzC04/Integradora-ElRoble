@@ -16,7 +16,7 @@ class CotizacionesClientesController extends Controller
     {
         $categories = ServiceCategory::all();
         $places = Place::all();
-        $packages = Package::all();
+        $packages = Package::with('place', 'services')->get();
         $services = Service::all()->keyBy('id');
     
         return view('cotizacionesclientes', [
@@ -26,7 +26,6 @@ class CotizacionesClientesController extends Controller
             'services' => $services,
         ]);
     }
-    
     
     public function store(Request $request)
     {

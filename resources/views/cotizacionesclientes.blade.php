@@ -18,10 +18,39 @@
             <div class="alert alert-danger" role="alert" style="background-color: rgb(189, 18, 18); color: white;">
                 {{ $errors->first('general') }}
             </div>
-        @endif
-        
+            @endif
             <div class="col-md-7" id="crearPaquete">
                 <h3>Solicitar Cotización</h3>
+                <!-- Carrusel de Paquetes -->
+                <div id="packageCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    @foreach($packages as $index => $package)
+                        <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ $package->name }}</h5>
+                                    <p class="card-text"><strong>Espacio:</strong> {{ $package->place->name }}</p>
+                                    <p class="card-text"><strong>Máximo de personas:</strong> {{ $package->max_people }}</p>
+                                    <p class="card-text"><strong>Servicios incluidos:</strong></p>
+                                    <ul>
+                                        @foreach($package->services as $service)
+                                            <li>{{ $service->name }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#packageCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#packageCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+                </div>
                 <form action="{{ route('cotizacionesclientes.store') }}" method="POST" id="cotizacionForm">
                     @csrf
                     <div class="mb-3">
@@ -36,7 +65,6 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
-        
                     <!-- Campo de Fecha -->
                     <div class="mb-3 row">
                         <div class="col-md-6">
@@ -394,22 +422,9 @@
             form.appendChild(generarInputOculto('end_time', endDateTime));
             form.appendChild(generarInputOculto('type_event', typeEventValue));
 
-            console.log("Información del formulario:");
-            console.log({
-                date,
-                startTime,
-                endTime,
-                startDateTime,
-                endDateTime,
-                typeEventValue,
-                dayAfterCheckbox
-            });
-
             let anyServiceConfirmed = false;
             for (let serviceId in confirmedServices) {
                 const service = confirmedServices[serviceId];
-
-                console.log(`Procesando servicio ${serviceId}:`, service);
 
                 if (service.isConfirmed && service.description.trim() !== "") {
                     console.log(`Confirmando servicio ${serviceId} con descripción: ${service.description}`);
@@ -534,6 +549,8 @@
     });
 
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"></script>
     
 </body>
 </html>
