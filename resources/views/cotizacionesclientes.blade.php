@@ -14,11 +14,12 @@
             <div class="alert alert-success" role="alert" style="background-color: rgb(30, 78, 21); color: white;">
                 {{ session('success') }}
             </div>
-            @elseif(session('error'))
-            <div class="alert alert-success" role="alert" style="background-color: rgb(175, 46, 46); color: white;">
-                {{ session('error') }}
+            @elseif ($errors->has('general'))
+            <div class="alert alert-danger" role="alert" style="background-color: rgb(189, 18, 18); color: white;">
+                {{ $errors->first('general') }}
             </div>
-            @endif
+        @endif
+        
             <div class="col-md-7" id="crearPaquete">
                 <h3>Solicitar Cotización</h3>
                 <form action="{{ route('cotizacionesclientes.store') }}" method="POST" id="cotizacionForm">
