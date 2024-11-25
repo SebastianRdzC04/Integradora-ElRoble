@@ -78,7 +78,8 @@ body {
     min-width: 70px;
     z-index: 1000;
     transition: all .25s ease-in-out;
-    background-color: #0e2238;
+    background-image: url("{{ asset('images/imagen4.jpg') }}");
+    background-size: cover;  
     display: flex;
     flex-direction: column;
 }
@@ -177,100 +178,119 @@ a.sidebar-link:hover {
     transform: rotate(45deg);
     transition: all .2s ease-out;
 }
+
+.avatar-icon {
+    height: 25px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: -3px;
+    margin-right: 10px;
+    border: 2px solid #fff;
+}
+
+.line-separator
+{
+    border-bottom: 1px solid #ccc;
+}
     </style>
 </head>
 
 <body>
     <div class="wrapper">
         <div style="width: 70px; min-width: 70px;"></div>
-        <aside id="sidebar" style="position:fixed" class="min-vh-100">
-            <div class="d-flex">
-                <button class="toggle-btn" type="button">
-                    <i class="lni lni-grid-alt"></i>
-                </button>
-                <div class="sidebar-logo">
-                    <a href="{{ route('dashboard') }}">Inicio</a>
+        <aside id="sidebar" style="position:fixed" class="min-vh-100">    
+                <div class="d-flex line-separator">
+                    <button class="toggle-btn" type="button">
+                        <i class="lni lni-grid-alt"></i>
+                    </button>
+                    <div class="sidebar-logo">
+                        <a href="{{ route('dashboard') }}">Inicio</a>
+                    </div>
                 </div>
-            </div>
-            <ul class="sidebar-nav">
-                <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
-                        <i class="lni lni-user"></i>
-                        <span>Perfil</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a href="{{route('dashboard.graphics')}}" class="sidebar-link">
-                        <i class="lni lni-agenda"></i>
-                        <span>Graficos</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
-                        <i class="lni lni-protection"></i>
-                        <span>Inventario</span>
-                    </a>
-                    <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                <div style="resize: none; width: 100%; max-height: 85vh; overflow-x:hidden; overflow-y: auto;">
+                    <ul class="sidebar-nav line-separator">
                         <li class="sidebar-item">
-                            <a href="{{ route('dashboard.consumables') }}" class="sidebar-link">Insumos</a>
-                        </li>
-                        <li class="sidebar-item">
-                            <a href="{{ route('dashboard.inventory') }}" class="sidebar-link">Equipamiento</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="sidebar-item">
-                    <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
-                        data-bs-target="#multi" aria-expanded="false" aria-controls="multi">
-                        <i class="lni lni-layout"></i>
-                        <span>Formularios</span>
-                    </a>
-                    <ul id="multi" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
-                        <li class="sidebar-item">
-                            <a href="#" class="sidebar-link collapsed" data-bs-toggle="collapse"
-                                data-bs-target="#multi-two" aria-expanded="false" aria-controls="multi-two">
-                                Registros
+                            <a href="#" class="sidebar-link">
+                            <img src="https://lh3.googleusercontent.com/a/ACg8ocL87_YvuvpyJQMCkj8DgnlG9qKUx4z4O0z-uaLGRd8z7eiyqA=s96-c" alt="Avatar" class="avatar-icon">
+                                <span>Perfil</span>
                             </a>
-                            <ul id="multi-two" class="sidebar-dropdown list-unstyled collapse">
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="{{route('dashboard.graphics')}}" class="sidebar-link">
+                                <i class="lni lni-agenda"></i>
+                                <span>Graficos</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                                data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
+                                <i class="lni lni-protection"></i>
+                                <span>Inventario</span>
+                            </a>
+                            <ul id="auth" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
                                 <li class="sidebar-item">
-                                    <a href="{{ route('dashboard.records') }}" class="sidebar-link">Records</a>
+                                    <a href="{{ route('dashboard.consumables') }}" class="sidebar-link">Insumos</a>
                                 </li>
                                 <li class="sidebar-item">
-                                    <a href="{{ route('dashboard.packages') }}" class="sidebar-link">Paquetes</a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a href="{{ route('dashboard.services') }}" class="sidebar-link">Servicios</a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a href="{{ route('dashboard.events') }}" class="sidebar-link">Eventos</a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a href="{{ route('dashboard.quotes') }}" class="sidebar-link">Cotizaciones</a>
+                                    <a href="{{ route('dashboard.inventory') }}" class="sidebar-link">Equipamiento</a>
                                 </li>
                             </ul>
                         </li>
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
+                                data-bs-target="#multi" aria-expanded="false" aria-controls="multi">
+                                <i class="lni lni-layout"></i>
+                                <span>Formularios</span>
+                            </a>
+                            <ul id="multi" class="sidebar-dropdown list-unstyled collapse" data-bs-parent="#sidebar">
+                                <li class="sidebar-item">
+                                    <a href="#" class="sidebar-link collapsed" data-bs-toggle="collapse"
+                                        data-bs-target="#multi-two" aria-expanded="false" aria-controls="multi-two">
+                                        Registros
+                                    </a>
+                                    <ul id="multi-two" class="sidebar-dropdown list-unstyled collapse">
+                                        <li class="sidebar-item">
+                                            <a href="{{ route('dashboard.records') }}" class="sidebar-link">Records</a>
+                                        </li>
+                                        <li class="sidebar-item">
+                                            <a href="{{ route('dashboard.packages') }}" class="sidebar-link">Paquetes</a>
+                                        </li>
+                                        <li class="sidebar-item">
+                                            <a href="{{ route('dashboard.services') }}" class="sidebar-link">Servicios</a>
+                                        </li>
+                                        <li class="sidebar-item">
+                                            <a href="{{ route('dashboard.events') }}" class="sidebar-link">Eventos</a>
+                                        </li>
+                                        <li class="sidebar-item">
+                                            <a href="{{ route('dashboard.quotes') }}" class="sidebar-link">Cotizaciones</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link">
+                                <i class="lni lni-popup"></i>
+                                <span>Notificaciones</span>
+                            </a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link">
+                                <i class="lni lni-cog"></i>
+                                <span>Configuracion</span>
+                            </a>
+                        </li>
                     </ul>
-                </li>
-                <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
-                        <i class="lni lni-popup"></i>
-                        <span>Notificaciones</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a href="#" class="sidebar-link">
-                        <i class="lni lni-cog"></i>
-                        <span>Configuracion</span>
-                    </a>
-                </li>
-            </ul>
-            <div class="sidebar-footer">
-                <a href="#" class="sidebar-link">
-                    <i class="lni lni-exit"></i>
-                    <span>Logout</span>
-                </a>
-            </div>
+                    <div class="sidebar-footer">
+                        <form id="myForm" action="{{route('logout')}}" method="POST">
+                            @csrf
+                            <a href="#" onclick="document.getElementById('myForm').submit(); return false;" class="sidebar-link">
+                                <i class="lni lni-exit"></i>
+                                <span>Logout</span>
+                            </a>
+                        </form>
+                    </div>
+                </div>
         </aside>
         <div class="main p-3">
             <div class="text-center">

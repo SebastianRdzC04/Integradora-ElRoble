@@ -10,11 +10,11 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('consumables_events_defaults', function (Blueprint $table) {
+        Schema::create('consumables_events_default', function (Blueprint $table) {
             $table->id();
             $table->foreignId('consumable_id')->constrained('consumables')->onDelete('cascade');
             $table->integer('quantity');
-            $table->boolean('ready')->default(false);
+            $table->timestamps();
         });
         
         // Trigger para copiar defaults
@@ -23,15 +23,14 @@ return new class extends Migration
             AFTER INSERT ON events
             FOR EACH ROW
             BEGIN
-            INSERT INTO consumables_events (consumable_id, event_id, quantity, ready, created_at, updated_at)
+            INSERT INTO consumables_events (consumable_id, event_id, quantity, created_at, updated_at)
             SELECT 
             consumable_id,
             NEW.id,
             quantity,
-            ready,
             NOW(),
             NOW()
-            FROM consumables_events_defaults;
+            FROM consumables_events_default;
             END;
         ');
     }
@@ -39,6 +38,7 @@ return new class extends Migration
     public function down()
     {
         DB::unprepared('DROP TRIGGER IF EXISTS after_event_created');
-        Schema::dropIfExists('consumables_events_defaults');
+
+        Schema::dropIfExists('consumables_events_default');
     }
 };

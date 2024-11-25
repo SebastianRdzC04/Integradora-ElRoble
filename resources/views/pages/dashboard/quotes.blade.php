@@ -31,7 +31,7 @@
                         <tbody>
                             @foreach ($quotes as $quote)
                                 <tr>
-                                    <td> {{ $quote->user ? $quote->user->person->firstName : $quote->owner_name }} </td>
+                                    <td> {{ $quote->user ? $quote->user->person->first_name : $quote->owner_name }} </td>
                                     <td> {{ $quote->type_event }} </td>
                                     <td> {{ $quote->package ? $quote->package->place->name : $quote->place->name }} </td>
                                     <td> {{ $quote->date }} </td>

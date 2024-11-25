@@ -23,26 +23,15 @@
         <p id="countdownText">Puedes reenviar el enlace en: <span id="countdown"></span></p>
     </div>
 
+    <a href="/">Verificar mas tarde</a>
+    
     <form id="resendForm" action="{{ route('verification.send') }}" method="POST" style="display: none;">
         @csrf
-
-        <a href="/">Verificar mas tarde</a>
         
         <div class="d-grid mb-3">
             <button type="submit" class="btn" id="resendButton" style="background-color: #af6400b3;">Reenviar enlace de verificación</button>
         </div>
     </form>
-
-    <!-- Mensaje de error -->
-    @if ($errors->any())
-        <div class="alert alert-danger" role="alert">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
 @endsection
 
 @section('script')

@@ -9,6 +9,7 @@ class ConsumableEventDefault extends Model
 {
     use HasFactory;
     protected $table = 'consumables_events_default';
+    protected $fillable = ['consumable_id', 'quantity'];
 
     public function consumable()
     {
