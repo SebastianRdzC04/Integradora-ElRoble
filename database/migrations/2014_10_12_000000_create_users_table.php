@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('external_auth')->nullable();
             $table->timestamps();
         });
+
     }
 
     /**
