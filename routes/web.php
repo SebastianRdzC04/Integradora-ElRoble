@@ -272,6 +272,24 @@ Route::post('dashboard/add/consumable/default', function (Request $request) {
 
 })->name('dashboard.add.consumable.default');
 
+Route::post('dashboard/consumable/add/stock/{id}', function ($id, Request $request) {
+    $consumable = Consumable::find($id);
+    $request->validate([
+        'cantidad' => 'required|integer|min:0',
+        'precio' => 'required|numeric|min:0',
+    ]);
+    if ($consumable) {
+        $consumableRecord = new ConsumableRecord();
+        $consumableRecord->consumable_id = $consumable->id;
+        $consumableRecord->quantity = $request->cantidad;
+        $consumableRecord->price = $request->precio;
+        $consumableRecord->save();
+        return redirect()->back()->with('success', 'El stock ha sido agregado correctamente');
+    }
+    return redirect()->back()->with('error', 'El consumible no se ha encontrado');
+
+})->name('dashboard.consumable.add.stock');
+
 
 
 Route::middleware('auth')->group(function () {

@@ -19,10 +19,23 @@ return new class extends Migration
                 END IF;
             END
         ');
+
+
+        DB::unprepared('
+        CREATE TRIGGER update_consumable_stock
+        AFTER INSERT ON consumable_records
+        FOR EACH ROW
+        BEGIN
+            UPDATE consumables 
+            SET stock = stock + NEW.quantity
+            WHERE id = NEW.consumable_id;
+        END
+        ');
     }
 
     public function down()
     {
         DB::unprepared('DROP TRIGGER IF EXISTS update_quote_status');
+        DB::unprepared('DROP TRIGGER IF EXISTS update_consumable_stock');
     }
 };
