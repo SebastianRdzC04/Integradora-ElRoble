@@ -6,12 +6,13 @@ use App\Models\Incident;
 use App\Models\IncidentImage;
 use Carbon\Carbon;
 use App\Models\Inventory;
-use App\Models\InventoryCategory;
 use App\Models\SerialNumberType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
+
 
 class IncidentController extends Controller
 {
@@ -41,96 +42,87 @@ class IncidentController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'titleincident' => 'required|string|max:100',
-            'incidentdescription' => 'required|string|max:100',
-            'images' => 'nullable|array|max:5', 
-            'images.*' => 'image|mimes:jpg,jpeg,png|max:10240', 
-        ]);
-        //dd($request->file('images'));
-        //dd($request);
-        
-        $title = $request->input('titleincident');
-        $description = $request->input('incidentdescription');
+{
+    $request->validate([
+        'titleincident' => 'required|string|max:100',
+        'incidentdescription' => 'required|string|max:100',
+        'images' => 'nullable|array|max:5',
+        'images.*' => 'image|mimes:jpg,jpeg,png|max:10240',
+    ]);
+    //campos del incidente global
+    $title = $request->input('titleincident');
+    $description = $request->input('incidentdescription');
+    //estos son los objetos que afecto ese incidente ya estan validados asi que no deberia haber ningun error
+    $items = session()->get('validated_items', []);
+    //dia actual para ubicar el evento
+    $currentDate = Carbon::now()->format('Y-m-d');
+    $eventId = Event::whereDate('date', $currentDate)->value('id');
     
-        $items = session()->get('validated_items', []);
-        
-        $currentDate = Carbon::now()->format('Y-m-d');
-        
-        $eventId = Event::whereDate('date', $currentDate)->value('id');
-    
-        if (!$eventId) {
-            return redirect()->route('incident.create')->withErrors(['error' => 'No se encontró un evento para la fecha actual.']);
-        }
-    
-        $userId = Auth::user()->getAuthIdentifier();
-    
-        
-        // Crear el incidente
-        $incident = Incident::create([
-            'event_id' => $eventId,
-            'user_id' => $userId,
-            'title' => $title,
-            'description' => $description,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
-        ]);
-        
-        DB::transaction(function () use ($incident , $items, $request) {
-            if (empty($items)) {
-                if ($request->hasFile('images')) {
-                    foreach ($request->file('images') as $image) {
-                        // Guardar las imágenes en la carpeta pública
-                        $path = $image->store('event_images', 'public');
-        
-                        // Guardar la ruta en la base de datos (si es necesario)
-                        IncidentImage::create([
-                            'incident_id' => $incident->id,
-                            'image_path' => $path,
-                            'created_at' => Carbon::now(),
-                            'updated_at' => Carbon::now(),
-                        ]);
-                    }
-                }
-            }
-            else
-            {
-                foreach ($items as $item) {
-                    $serialType = SerialNumberType::where('code', $item['serial'])->first();
-                    
-                    if (!$serialType) {
-                        throw new \Exception('El serial "' . $item['serial'] . '" no es válido.');
-                    }
-        
-                    $inventory = Inventory::where('serial_number_type_id', $serialType->id)
-                                          ->where('number', $item['number'])
-                                          ->first();
-        
-                    if (!$inventory) {
-                        throw new \Exception('El inventario con número "' . $item['number'] . '" no existe.');
-                    }
-        
-                    $inventory->update([
-                        'status' => $item['status']
-                    ]);
-            
-                    $incident->inventories()->syncWithoutDetaching([
-                        $inventory->id => [
-                            'description' => $item['description'],
-                            'created_at' => Carbon::now(),
-                            'updated_at' => Carbon::now(),
-                        ]
-                    ]);
-                }
-            }
-        });
-    
-        Session::forget('validated_items');    
-        return redirect()->route('incident.create')->with('success', 'El incidente y los items fueron registrados correctamente.');
+    if (!$eventId) {
+        return redirect()->route('incident.create')->withErrors(['error' => 'No se encontró un evento para la fecha actual.']);
     }
-    
 
+    $userId = Auth::user()->getAuthIdentifier();
+
+    $incident = Incident::create([
+        'event_id' => $eventId,
+        'user_id' => $userId,
+        'title' => $title,
+        'description' => $description,
+        'created_at' => Carbon::now(),
+        'updated_at' => Carbon::now(),
+    ]);
+
+    DB::transaction(function () use ($incident, $items, $request) {
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('event_images', 's3');
+                
+                Storage::disk('s3')->setVisibility($path, 'public');
+                
+                IncidentImage::create([
+                    'incident_id' => $incident->id,
+                    'image_path' => Storage::disk('s3')->url($path),
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now(),
+                ]);
+            }
+        }
+
+        if (!empty($items)) {
+            foreach ($items as $item) {
+                $serialType = SerialNumberType::where('code', $item['serial'])->first();
+                
+                if (!$serialType) {
+                    throw new \Exception('El serial "' . $item['serial'] . '" no es válido.');
+                }
+
+                $inventory = Inventory::where('serial_number_type_id', $serialType->id)
+                                      ->where('number', $item['number'])
+                                      ->first();
+
+                if (!$inventory) {
+                    throw new \Exception('El inventario con número "' . $item['number'] . '" no existe.');
+                }
+
+                $inventory->update([
+                    'status' => $item['status']
+                ]);
+        
+                $incident->inventories()->syncWithoutDetaching([
+                    $inventory->id => [
+                        'description' => $item['description'],
+                        'created_at' => Carbon::now(),
+                        'updated_at' => Carbon::now(),
+                    ]
+                ]);
+            }
+        }
+    });
+
+    Session::forget('validated_items');
+    return redirect()->route('incident.create')->with('success', 'El incidente y las imágenes fueron registrados correctamente.');
+}
 
     public function filterDataIncidentReport(Request $request)
     {
