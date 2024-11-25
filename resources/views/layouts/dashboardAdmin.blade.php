@@ -266,10 +266,13 @@ a.sidebar-link:hover {
                 </li>
             </ul>
             <div class="sidebar-footer">
-                <a href="#" class="sidebar-link">
-                    <i class="lni lni-exit"></i>
-                    <span>Logout</span>
-                </a>
+                <form id="myForm" action="{{route('logout')}}" method="POST">
+                    @csrf
+                    <a href="#" onclick="document.getElementById('myForm').submit(); return false;" class="sidebar-link">
+                        <i class="lni lni-exit"></i>
+                        <span>Logout</span>
+                    </a>
+                </form>
             </div>
         </aside>
         <div class="main p-3">

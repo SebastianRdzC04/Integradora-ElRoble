@@ -17,11 +17,7 @@
 @section('form')
     <form id="loginForm" class="FormularioLogin" action="{{ route('login.password', ['phoneoremail' => 'PLACEHOLDER']) }}" method="get">
         @csrf
-        @if (session('success'))
-            <div class="alert alert-success" role="alert">
-                {{ session('success') }}
-            </div>
-        @endif
+        <!-- Asegúrate de incluir esto en tu layout o en la vista de inicio de sesión -->
 
         <div id="campoCorreo" class="form-floating mb-3">
             <input type="text" id="email" name="phoneoremail" class="form-control" placeholder="tucorreo@example.com" style="color: black;" required>
@@ -58,6 +54,9 @@
 @endsection
 
 @section('script')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
     <script>
         document.getElementById('loginForm').onsubmit = function(event) {
             const input = document.getElementById('email').value;

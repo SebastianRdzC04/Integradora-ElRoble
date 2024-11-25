@@ -9,15 +9,11 @@ use App\Http\Controllers\ConsumableController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\EmployeeEventController;
 use App\Http\Controllers\IncidentController;
-use App\Models\Person;
-use App\Models\User;
-use GuzzleHttp\Middleware;
-use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
  
 //Aqui esta el login de X
-Route::get('auth/redirect/x', [RegisterUserController::class, 'redirectToX'])->name('login.x');
-Route::get('auth/callback/x', [RegisterUserController::class, 'handleXCallback'])->name('register.x');
+//Route::get('auth/redirect/x', [RegisterUserController::class, 'redirectToX'])->name('login.x');
+//Route::get('auth/callback/x', [RegisterUserController::class, 'handleXCallback'])->name('register.x');
 
 //Aqui esta el login de Facebook
 Route::get('auth/facebook', [RegisterUserController::class, 'redirectToFacebook'])->name('login.facebook');
@@ -30,7 +26,7 @@ Route::get('/login-google', function () {
 
 
 
-// Html con politicas de uso, privacidad y de servicio
+// Html con politicas de uso, privacidad y de servicio publicas :)
 Route::view('/policy/privacy', 'pages.policy.privacy-policy');
 Route::view('/policy/terms/service', 'pages.policy.terms-of-service');
 Route::view('/policy/delete/data', 'pages.policy.deletedata');
@@ -55,30 +51,22 @@ Route::get('/error',function () {
 
 
 
-// Ruta para mostrar el formulario de registro
-Route::get('/register/{phoneoremail}', [RegisterUserController::class, 'create'])->name('registeruser.create');
-Route::get('/register/google', [RegisterUserController::class, 'handleGoogleCallback'])->name('register.google');
 
-// Ruta para enviar los datos del formulario de registro
-Route::post('/register', [RegisterUserController::class, 'store'])->name('register.store');
-Route::post('/register/google', [RegisterUserController::class, 'storeUserGoogle'])->name('registergoogle.store');
-
-
-
-
-Route::get('/sign/in/google', [RegisterUserController::class, 'handleGoogleCallback'])->name('register.google');
 //rutas de inicio de sesion y creacion de cuenta
 
 Route::middleware('guest')->group(function()
 {
-// Ruta para mostrar el formulario de registro
-Route::get('/register/{phoneoremail}', [RegisterUserController::class, 'create'])->name('registeruser.create');
-
+    // Ruta para mostrar el formulario de registro
+    Route::get('/register/{phoneoremail}', [RegisterUserController::class, 'create'])->name('registeruser.create');
+    
     // Ruta para enviar los datos del formulario de registro
     Route::post('/register', [RegisterUserController::class, 'store'])->name('register.store');
+    
+    Route::get('/sign/in/google', [LoginController::class, 'handleGoogleCallback'])->name('register.google');
+    Route::get('/complete/data/google', [LoginController::class, 'createdatacompletegoogle'])->name('datagoogle');
     Route::post('/register/google', [RegisterUserController::class, 'storeUserGoogle'])->name('registergoogle.store');
 
-
+    Route::get('/new-password',[ForgotPasswordController::class, 'showResetForm'])->name('newpassword');
     //muestra el formulario de ingresar email para restablecer
     Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
     //manda email
