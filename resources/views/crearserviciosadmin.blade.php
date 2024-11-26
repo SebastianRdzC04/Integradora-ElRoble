@@ -1,10 +1,9 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear Servicio - El Roble</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- resources/views/crearserviciosadmin.blade.php -->
+@extends('layouts.appaxel')
+
+@section('title', 'Crear Servicio - El Roble')
+
+@section('styles')
     <link rel="stylesheet" href="{{ asset('css/stylescotizacionesclientes.css') }}">
     <style>
         .container {
@@ -93,9 +92,9 @@
             border: 1px solid rgba(255, 255, 255, 0.904);
         }
     </style>
-</head>
-<body>
+@endsection
 
+@section('content')
     <div class="container mt-4">
         <div class="row">
             @if(session('success'))
@@ -185,7 +184,9 @@
             </div>
         </div>
     </div>    
+@endsection
 
+@section('scripts')
     <script>
         const categorySelect = document.getElementById('category');
         const newCategoryInput = document.getElementById('newCategory');
@@ -196,6 +197,8 @@
         const estimatedPriceInput = document.getElementById('estimatedPrice');
         const serviceNameInput = document.getElementById('serviceName');
         const descriptionInput = document.getElementById('description');
+        const imageUploadInput = document.getElementById('imageUpload');
+        const previewImage = document.getElementById('previstaImagen');
     
         function removeInvalidClassOnInput(element) {
             element.addEventListener('input', function() {
@@ -253,7 +256,18 @@
         document.getElementById('crearPaqueteBoton').addEventListener('click', function() {
             formCrearServicio.submit();
         });
-    </script>
 
-</body>
-</html>
+        imageUploadInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            } else {
+                previewImage.src = '/images/imagen6.jpg';
+            }
+        });
+    </script>
+@endsection
