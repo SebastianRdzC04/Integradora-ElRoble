@@ -34,6 +34,7 @@ class PaquetesAdminController extends Controller
             'services.*.quantity' => 'nullable|integer|min:1',
             'services.*.price' => 'nullable|numeric',
             'services.*.description' => 'nullable|string|max:70',
+            'image' => 'nullable|image|max:2048', // Validación de imagen
         ], [
             'place_id.required' => 'El lugar es obligatorio.',
             'place_id.exists' => 'El lugar seleccionado no es válido.',
@@ -59,6 +60,8 @@ class PaquetesAdminController extends Controller
             'services.*.price.numeric' => 'El precio del servicio debe ser un número.',
             'services.*.description.string' => 'La descripción del servicio debe ser una cadena de texto.',
             'services.*.description.max' => 'La descripción del servicio no puede tener más de 70 caracteres.',
+            'image.image' => 'El archivo debe ser una imagen.',
+            'image.max' => 'La imagen no puede exceder 2MB.',
         ]);
     
         $package = new Package();
@@ -70,6 +73,12 @@ class PaquetesAdminController extends Controller
         $package->start_date = $request->start_date;
         $package->end_date = $request->end_date;
         $package->status = 'activo';
+    
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('images', 'public');
+            $package->image_path = $imagePath;
+        }
+    
         $package->save();
     
         $confirmedServices = collect($request->input('services', []))->filter(function($service) {
@@ -85,5 +94,5 @@ class PaquetesAdminController extends Controller
         }
     
         return redirect()->route('crearpaquetes')->with('success', 'Paquete creado exitosamente');
-    }    
+    }
 }

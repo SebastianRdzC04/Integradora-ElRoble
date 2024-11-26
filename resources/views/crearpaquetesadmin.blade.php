@@ -84,8 +84,8 @@
                         </div>
                     </div>                    
                     <div class="mb-3">
-                        <label for="file_upload" class="form-label">Seleccionar Archivo</label>
-                        <input type="file" name="file_upload" id="file_upload" class="form-control">
+                        <label for="image" class="form-label">Subir Imagen del Paquete</label>
+                        <input type="file" name="image" id="image" class="form-control" accept="image/*" onchange="previewImage(event)">
                     </div>
                     <h4 class="mt-4">Categorías de Servicios</h4>
                     <div class="row">
@@ -126,7 +126,7 @@
             </div>
             <div class="col-md-5" id="previstaServicio">
                 <div class="prevista-imagen-container">
-                    <img id="prevista-imagen" class="prevista-imagen" src="{{ asset('images/imagen1.jpg') }}" alt="Vista previa">
+                    <img id="prevista-imagen" class="prevista-imagen" src="{{ asset('images/imagen1.jpg') }}" alt="Vista previa" style="border: 2px solid rgb(255, 255, 255);">
                     <div class="prevista-caption">
                         <h5 id="prevista-nombre">Nombre del Paquete</h5>
                         <p id="prevista-descripcion">Descripción del paquete</p>
@@ -170,6 +170,15 @@
             `;
 
             $('#modalServicio').modal('hide');
+        }
+
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const output = document.getElementById('prevista-imagen');
+                output.src = reader.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
         }
 
         function validateAndShowConfirm(serviceId) {
