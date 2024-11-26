@@ -41,7 +41,7 @@
                                     <td>{{ $event->total_price }}</td>
                                     <td>
                                         <div>
-                                            <a class="btn btn-outline-primary p-1 m-0" href=""><i
+                                            <a class="btn btn-outline-primary p-1 m-0" href="{{route('dashboard.event.view', $event->id)}}"><i
                                                     class="bi bi-pencil-square"></i></a>
                                             <a class="btn btn-outline-danger p-1 m-0" href=""><i
                                                     class="bi bi-trash3"></i></a>

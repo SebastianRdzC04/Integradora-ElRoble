@@ -73,8 +73,7 @@
                     <div id="step2" style="display: none;">
                      
                         <!--fecha de cumpleaños-->
-                        <div class="form-control mb-3">
-                            <label>Ingresa tu Fecha de cumpleaños</label>
+                            <label style="color:aliceblue;">Ingresa tu Fecha de cumpleaños</label>
                             <div class="row">
                                 <div class="col form-control">
                                     <div class="row-12">
@@ -117,7 +116,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        
 
                         <div class="form-floating mb-3">
                             <select name="gender" id="gender" value="{{ old('gender') }}" class="form-control">

@@ -23,6 +23,8 @@ class ConsumableController extends Controller
             'name' => 'required|string|max:50',
             'stock' => 'required|integer|min:0',
             'minimum_stock' => 'required|integer|min:0',
+            'maximum_stock' => 'required|integer|min:0',
+            'unit' => 'required|string|max:10',
             'category_id' => 'required|exists:consumable_categories,id',
             'description' => 'nullable|string|max:100',
         ]);
@@ -31,6 +33,8 @@ class ConsumableController extends Controller
         $consumable->name = $request->input('name');
         $consumable->stock = $request->input('stock');
         $consumable->minimum_stock = $request->input('minimum_stock');
+        $consumable->maximum_stock = $request->input('maximum_stock');
+        $consumable->unit = $request->input('unit');
         $consumable->category_id = $request->input('category_id');
         $consumable->description = $request->input('description');
     

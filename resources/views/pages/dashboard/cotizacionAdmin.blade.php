@@ -65,11 +65,13 @@
                                             </div>
                                             <div class="modal-body">
                                                 <div>
-                                                    <form action="{{route('dashboard.quote.price', $quote->id)}}" method="POST">
+                                                    <form action="{{ route('dashboard.quote.price', $quote->id) }}"
+                                                        method="POST">
                                                         @csrf
                                                         <div class="row mb-3">
-                                                            <label class="form-label" for="precio">Precio de la cotizacion</label>
-                                                            <input class="form-control" type="number" name="precio"
+                                                            <label class="form-label" for="precio">Precio de la
+                                                                cotizacion</label>
+                                                            <input step="0.01" min="0" class="form-control" type="number" name="precio"
                                                                 value="{{ $quote->estimated_price }}">
                                                         </div>
                                                         <div>
@@ -94,11 +96,13 @@
                                             </div>
                                             <div class="modal-body">
                                                 <div>
-                                                    <form action="{{route('dashboard.quote.advance', $quote->id)}}" method="POST">
+                                                    <form action="{{ route('dashboard.quote.advance', $quote->id) }}"
+                                                        method="POST">
                                                         @csrf
                                                         <div class="row mb-3">
-                                                            <label class="form-label" for="anticipo">Anticipo</label>
-                                                            <input class="form-control" type="number" name="anticipo"
+                                                            <label class="form-label" for="precio">Precio de la
+                                                                cotizacion</label>
+                                                            <input step="0.01" min="0" class="form-control" type="number" name="anticipo"
                                                                 value="{{ $quote->espected_advance }}">
                                                         </div>
                                                         <div>

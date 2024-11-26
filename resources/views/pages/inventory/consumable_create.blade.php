@@ -27,6 +27,14 @@
                         <input type="number" class="form-control" id="minimum_stock" name="minimum_stock" required min="0">
                     </div>
                     <div class="mb-3">
+                        <label for="maximum_stock" class="form-label">Stock Maximo</label>
+                        <input type="number" class="form-control" id="maximum_stock" name="maximum_stock" required min="0">
+                    </div>
+                    <div class="mb-3">
+                        <label for="unit" class="form-label">Unidad</label>
+                        <input type="text" class="form-control" id="unit" name="unit" required maxlength="10">
+                    </div>
+                    <div class="mb-3">
                         <label for="category_id" class="form-label">Categoría</label>
                         <select class="form-select" id="category_id" name="category_id" required>
                             <option selected disabled>Selecciona una categoría</option>

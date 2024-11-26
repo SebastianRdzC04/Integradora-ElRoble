@@ -31,11 +31,13 @@
             <div class="row justify-content-center">
                 <div class="col-5 border">
                     <div>
-                        <h4>{{ $event->quote->type_event }} para {{ $event->quote->user->person->firstName }}</h4>
+                        <h4>{{ $event->quote->type_event }} para {{ $event->quote->user->person->first_name }}</h4>
                     </div>
                     <div class="d-flex justify-content-between">
                         <div>
-                            <p>Lugar: {{ $event->quote->place ? $event->quote->place->name : $event->quote->package->place->name }} </p>
+                            <p>Lugar:
+                                {{ $event->quote->place ? $event->quote->place->name : $event->quote->package->place->name }}
+                            </p>
                         </div>
                         <!-- Calcula el tiempo que falta para que inicie el evento -->
                         <div>
@@ -78,6 +80,7 @@
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#modal2">Mostrar
                                 Consumibles</button>
+                            <a href="{{route('incident.create')}}" class="btn btn-primary">Reportar incidencia</a>
                         </div>
                         <div class="modal fade" id="modal1" aria-labelledby="modalLabel1" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -100,22 +103,27 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @foreach ($event->quote->package->services as $service)
-                                                        <tr>
-                                                            <td> {{ $service->name }} </td>
-                                                            <td> {{ $service->pivot->description }} </td>
-                                                            <td> {{ $service->pivot->price }} </td>
-                                                            <td> {{ $service->pivot->cost }} </td>
-                                                        </tr>
-                                                    @endforeach
-                                                    @foreach ($event->quote->services as $service)
-                                                        <tr>
-                                                            <td> {{ $service->name }} </td>
-                                                            <td> {{ $service->description }} </td>
-                                                            <td> {{ $service->price }} </td>
-                                                            <td> {{ $service->cost }} </td>
-                                                        </tr>
-                                                    @endforeach
+                                                    @if ($event->quote->package)
+                                                        @foreach ($event->quote->package->services as $service)
+                                                            <tr>
+                                                                <td> {{ $service->name }} </td>
+                                                                <td> {{ $service->pivot->description }} </td>
+                                                                <td> {{ $service->pivot->price }} </td>
+                                                                <td> {{ $service->pivot->cost }} </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    @endif
+                                                    @if ($event->services)
+                                                        @foreach ($event->quote->services as $service)
+                                                            <tr>
+                                                                <td> {{ $service->name }} </td>
+                                                                <td> {{ $service->description }} </td>
+                                                                <td> {{ $service->price }} </td>
+                                                                <td> {{ $service->cost }} </td>
+                                                            </tr>
+                                                        @endforeach
+
+                                                    @endif
                                                 </tbody>
                                             </table>
                                         </div>

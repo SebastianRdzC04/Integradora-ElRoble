@@ -8,6 +8,10 @@
     <title>Reportar Incidencia</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
     <style>
         /* Estilos personalizados */
         body {
@@ -25,6 +29,26 @@
             }
         }
     </style>
+    <script>
+    // Configuración de Toastr
+    toastr.options = {
+        "closeButton": true,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right", // Cambia la posición si lo necesitas
+        "preventDuplicates": true,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000", // Duración de la notificación
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "slideDown",
+        "hideMethod": "fadeOut"
+    };
+    </script>
 </head>
 <body>
 
@@ -37,16 +61,29 @@
     </div>
 @endif
 
-<!-- Mensaje de error -->
+<script>
+        // Verifica si hay errores de validación
+        @if ($errors->any())
+            // Itera sobre todos los errores y muestra un mensaje de Toastr
+            @foreach ($errors->all() as $error)
+                toastr.error("{{ $error }}", "Error", {
+                    "closeButton": true,
+                    "progressBar": true,
+                    "positionClass": "toast-top-center",
+                    "timeOut": "5000",
+                });
+            @endforeach
+        @endif
+</script>
+
 @if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+    <script>
+        toastr.error("{{ session('error') }}");
+    </script>
 @endif
 
 
-<!-- Contenido principal -->
+<!-- formulario incidente globlal -->
  
     
 
@@ -63,20 +100,21 @@
                 <textarea name="incidentdescription" maxlength="100" id="incidentdescription" class="form-control" placeholder="Descripción" style="height: 100px;"></textarea>
                 <label for="description">Descripción</label>
             </div>
-            <button type="button" id="addSerialButton" class="btn btn-primary align-self-end">Inventario Afectado</button>
+            <button type="button" id="addSerialButton" style="background-color: brown;" class="btn btn-primary align-self-end">Inventario Afectado</button>
         </div>
-        <input type="file" name="images[]" multiple accept="image/*">
         <div class="mb-3">
             <label for="images" class="form-label">Subir Imágenes</label>
             <div id="dropzone" class="border p-4 text-center">
                 <p>Arrastra y suelta tus imágenes aquí o haz clic para seleccionar archivos.</p>
+                <input type="file" name="images[]" id="images" multiple accept="image/*" style="display:none;">
             </div>
+            <div id="preview" class="mt-3 d-flex flex-wrap"></div>
         </div>
-        <button type="submit">Enviar</button>
+        <button type="submit" class="form-control" style="background-color: brown;">Enviar</button>
     </form>
 </div>
 
-    <!-- Modal 1: Selección de Inventario Afectado -->
+    <!-- modal 1 -->
     <div class="modal fade" id="inventoryModal" tabindex="-1" aria-labelledby="inventoryModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
@@ -86,20 +124,9 @@
                 </div>
                 <div class="modal-body">
                     <h6>Seleccione Categorías Afectadas:</h6>
-                    <div class="d-grid gap-2">
+                    <div class="d-grid gap-2" style="overflow-y: auto; resize: none; height: 124px;">
                         <!-- Cambié los botones por checkboxes para permitir múltiples selecciones -->
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="categories[]" value="Sillas" id="checkboxSillas">
-                            <label class="form-check-label" for="checkboxSillas">Sillas</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="categories[]" value="Mesas" id="checkboxMesas">
-                            <label class="form-check-label" for="checkboxMesas">Mesas</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="categories[]" value="Hieleras" id="checkboxHieleras">
-                            <label class="form-check-label" for="checkboxHieleras">Hieleras</label>
-                        </div>
+                         <!-- Esto se rellana con ajax -->
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -109,7 +136,7 @@
         </div>
     </div>
 
-    <!-- Modal 2: Formulario y Tabla de Números de Serie -->
+    <!-- modal 2 -->
     <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" style="min-width: 90%;">
             <div class="modal-content">
@@ -119,7 +146,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="row">
-                        <!-- Columna Izquierda: Formulario -->
+                        <!-- izquierda -->
                         <div class="col-md-5">
                             <div class="mb-3">
                                 <label for="serialListBox" class="form-label">Serial</label>
@@ -149,12 +176,12 @@
                                     <button id="addItemButton" class="btn btn-primary">Agregar</button>
                                 </div>
                                 <div class="col">
-                                    <button id="updateInventory" class="btn btn-primary">Actualizar</button>
+                                    <button id="updateInventory" class="btn btn-primary" disabled>Actualizar</button>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Columna Derecha: Tabla de Números de Serie -->
+                        <!-- derecha -->
                         <div class="col-md-7" style="overflow-y:scroll;">
                             <h6>Números de Serie Ingresados</h6>
                             <div style="max-height: 250px;overflow-y: auto;overflow-x: hidden;">
@@ -167,6 +194,62 @@
         </div>
     </div>        
     
+
+    <script>
+    const fileInput = document.getElementById('images');
+
+    const dropzone = document.getElementById('dropzone');
+
+
+    const preview = document.getElementById('preview');
+
+    
+    dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.style.backgroundColor = '#f0f0f0';
+    });
+
+    dropzone.addEventListener('dragleave', () => {
+        dropzone.style.backgroundColor = '#fff';
+    });
+
+    dropzone.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        const files = e.target.files;
+        //limpiar imagenes cache
+        preview.innerHTML = ''; 
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                const image = document.createElement('img');
+                image.src = event.target.result;
+                image.style.width = '100px';
+                image.style.height = '100px';
+                image.style.objectFit = 'cover';
+                image.style.margin = '5px';
+                preview.appendChild(image);
+            };
+
+            reader.readAsDataURL(file);
+        }
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.style.backgroundColor = '#fff';
+        const files = e.dataTransfer.files;
+        fileInput.files = files; 
+        const event = new Event('change');
+        fileInput.dispatchEvent(event);
+    });
+    </script>
+
     <script>
 
 //utilizare AJAX con JQuery para filtrar, entender su sintaxis y el funcionamiento 
@@ -178,28 +261,18 @@ const selectsn = document.getElementById("serialListBox");
 const statusListBox = document.getElementById('statusListBox');
 const serialList = document.getElementById('serialList');
 
-// para las imagenes
-const imagesInput = document.getElementById('images');
-const dropzone = document.getElementById('dropzone');
-
 // para los button de los modales
 const addSerialButton = document.getElementById('addSerialButton');
 const nextModalButton = document.getElementById('nextModalButton');
 const addItemButton = document.getElementById('addItemButton');
 const updateInventoryButton = document.getElementById('updateInventory');
 
-// Inicializamos el array que almacenará los elementos localmente
+// arreglo que almacena los items
 let items = [];
 
 // modal 1 es abierto
 addSerialButton.addEventListener('click', () => {
     new bootstrap.Modal(document.getElementById('inventoryModal')).show();
-});
-
-// para irnos al modal 2
-nextModalButton.addEventListener('click', () => {
-    bootstrap.Modal.getInstance(document.getElementById('inventoryModal')).hide();
-    new bootstrap.Modal(document.getElementById('formModal')).show();
 });
 
 // aqui se llena el serial 2 con ajax
@@ -210,7 +283,7 @@ nextModalButton.addEventListener('click', function () {
         }).get();
 
     if (selectedCategories.length === 0) {
-        alert('Selecciona al menos un elemento de la lista');
+        toastr.error('Selecciona al menos un elemento de la lista');
         return;
     }
 
@@ -226,10 +299,13 @@ nextModalButton.addEventListener('click', function () {
             $.each(response, function (index, serial) {
                 $("#serialListBox").append(`<option value="${serial.code}">${serial.code}</option>`);
             });
+            bootstrap.Modal.getInstance(document.getElementById('inventoryModal')).hide();
+            new bootstrap.Modal(document.getElementById('formModal')).show();
+
         },
         error: function (xhr, status, error) {
             console.error("Error al obtener los números de serie", error);
-            alert("Hubo un error. Intenta nuevamente.");
+            toastr.error("Hubo un error. Intenta nuevamente.");
         },
     });
 });
@@ -242,6 +318,7 @@ addItemButton.addEventListener('click', () => {
     const descriptionText = description.value;
 
     if (number && descriptionText) {
+
         // crea el JSON para almacenar en el front
         const item = {
             serial: serial,
@@ -249,6 +326,8 @@ addItemButton.addEventListener('click', () => {
             description: descriptionText,
             status: status
         };
+
+        updateInventoryButton.disabled = false;
 
         // lo metemos al arreglo
         items.push(item);
@@ -270,7 +349,7 @@ addItemButton.addEventListener('click', () => {
         description.disabled = true;
         statusListBox.disabled = true;
     } else {
-        alert('Por favor, completa el número y la descripción.');
+        toastr.error('Por favor, completa el número y la descripción.');
     }
 });
 
@@ -284,28 +363,11 @@ numberInput.addEventListener('input', () => {
     statusListBox.disabled = !numberInput.value;
 });
 
-// Validar que solo números sean aceptados, sin '-' ni '+'
+//solo números sean aceptados, sin - ni +
 numberInput.addEventListener('input', (e) => {
     let value = e.target.value;
     value = value.replace(/[-+]/g, '');
     e.target.value = value;
-});
-
-
-// ------------------esta parte es de las imagenes--------------------------
-// para arrastrar el archivo
-dropzone.addEventListener('click', () => {
-    imagesInput.click();
-});
-
-// mostramos el archivo del dropeo
-imagesInput.addEventListener('change', (e) => {
-    const files = e.target.files;
-    const fileList = dropzone;
-    fileList.innerHTML = `<p>Archivos seleccionados:</p>`;
-    for (let file of files) {
-        fileList.innerHTML += `<p>${file.name}</p>`;
-    }
 });
 
 // btn de enviar datos al backend para su validacion
@@ -325,20 +387,63 @@ updateInventoryButton.addEventListener('click', () => {
                 if (response.success) {
                     $('#formModal').modal('hide'); 
                 } else {
-                    alert('Error al actualizar los items. ' + response.error);
+                    console.log('Error al actualizar los items. ' + response.error);
+                    toastr.error('Error al actualizar los items. Intente nuevamente');
                 }
             },
             error: function (xhr, status, error) {
                 console.log("verificar", JSON.stringify({ items: items }));
                 console.error("Error al enviar los datos", error);
-                alert('Hubo un error al intentar actualizar los items.');
+                toastr.error('Hubo un error al intentar actualizar los items.');
             }
         });
     } else {
-        alert('No hay items para actualizar.');
+        toastr.error('No hay items para actualizar.');
     }
 });
 
+
+</script>
+
+<script>
+    let categoriesCached = null; 
+
+$('#addSerialButton').on('click', function () {
+    if (categoriesCached) {
+        populateCategories(categoriesCached); 
+        return;
+    }
+
+    $.ajax({
+        url: "{{route('getCategories')}}", 
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            categoriesCached = data; 
+            console.log(data);
+            populateCategories(data); 
+        },
+        error: function (xhr, status, error) {
+            console.error('Error al obtener las categorías:', error);
+            toastr.error('No se pudieron cargar las categorías. Intenta nuevamente.');
+        }
+    });
+});
+
+function populateCategories(categories) {
+    const container = $('.modal-body .d-grid');
+    container.empty(); // Limpia el contenido actual.
+
+    categories.forEach(category => {
+        const formCheck = `
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="categories[]" value="${category.name}" id="checkbox${category.id}">
+                <label class="form-check-label" for="checkbox${category.id}">${category.name}</label>
+            </div>
+        `;
+        container.append(formCheck); // Añade cada categoría.
+    });
+}
 
 </script>
 

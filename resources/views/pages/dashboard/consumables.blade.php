@@ -1,9 +1,8 @@
 @extends('layouts.dashboardAdmin')
 
 @section('styles')
-
     <link rel="stylesheet" href="{{ asset('css/dashboard/consumables.css') }}">
-
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css">
 @endsection
 
 @section('title', 'Consumables')
@@ -28,7 +27,7 @@
                             @foreach ($consumablesDefault as $item)
                                 <tr>
                                     <td>{{ $item->consumable->name }}</td>
-                                    <td>{{ $item->quantity }}{{$item->consumable->unit}}</td>
+                                    <td>{{ $item->quantity }}{{ $item->consumable->unit }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -60,6 +59,40 @@
                                     <td class="text-center"> {{ $item->maximum_stock }}{{ $item->unit }} </td>
                                     <td class="text-center">
                                         <div>
+                                            <button class="btn btn-outline-primary p-1 m-0" data-bs-toggle="modal"
+                                                data-bs-target="#agregarModal{{ $item->id }}">
+                                                <i class="bi bi-plus-circle-fill"></i>
+                                            </button>
+                                            <div class="modal fade" id="agregarModal{{ $item->id }}">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h3>Agregar stock</h3>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form
+                                                                action="{{ route('dashboard.consumable.add.stock', $item->id) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                <div class="mb-3">
+                                                                    <label class="form-label"
+                                                                        for="cantidad">Cantidad</label>
+                                                                    <input class="form-control" type="number"
+                                                                        name="cantidad" id="cantidad">
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="precio">Precio</label>
+                                                                    <input class="form-control" type="number"
+                                                                        name="precio" id="precio">
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <button class="btn btn-primary">Enviar</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             <a class="btn btn-outline-primary p-1 m-0" href=""><i
                                                     class="bi bi-pencil-square"></i></a>
                                             <a class="btn btn-outline-danger p-1 m-0" href=""><i
@@ -78,7 +111,8 @@
                                                             <h3>Agregar a predeterminados</h3>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <form action="{{route('dashboard.add.consumable.default')}}" method="POST">
+                                                            <form action="{{ route('dashboard.add.consumable.default') }}"
+                                                                method="POST">
                                                                 @csrf
                                                                 <input type="hidden" name="consumable_id"
                                                                     value="{{ $item->id }}">
@@ -111,6 +145,6 @@
 @endsection
 
 @section('scripts')
-    <script src="{{ asset('js/dashboard/consumables.js') }}"></script>
 
+    <script src="{{ asset('js/dashboard/consumables.js') }}"></script>
 @endsection

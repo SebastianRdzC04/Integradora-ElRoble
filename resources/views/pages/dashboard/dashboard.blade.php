@@ -39,10 +39,10 @@
                             </div>
                             <div>
                                 <h5>Cotizaciones</h5>
-                                <p class="small">{{ $porcentaje }}% del mes pasado </p>
+                                <p class="small text-start">{{$quotesPendingToPay->count()}} a pagar </p>
                             </div>
                             <div class="ms-auto">
-                                <h4 class="text-center mb-0">{{ $events->count() }}</h4>
+                                <h4 class="text-center mb-0">{{ $quotes->count() }}</h4>
                                 <p class="small">pendientes</p>
                             </div>
                         </div>
@@ -58,10 +58,10 @@
                             </div>
                             <div class="align-content-center">
                                 <h5>Ingresos</h5>
-                                <p class="small">{{ $porcentaje }}% del mes pasado </p>
+                                <p class="small">{{$porcentajeGanancias}}% en comparacion al mes pasado </p>
                             </div>
                             <div class="ms-auto">
-                                <h4 class="text-center mb-0">{{ $events->count() }}</h4>
+                                <h4 class="text-center mb-0">${{ $gananciasNetas }}</h4>
                                 <p class="small">pendientes</p>
                             </div>
                         </div>

@@ -73,6 +73,7 @@
         toastr.error("{{ session('error') }}");
     </script>
 @endif
+
     <div class="background-image"></div>
     <div id="Container3" class="container d-flex justify-content-center content" style="min-width: 300px">
         <div id="LoginContainer" class="card shadow-lg border-0 rounded" style="min-width: 300px">
@@ -86,8 +87,8 @@
 
 
                 <div class="text-center mb-4">
-                    <h5>@yield('title form')</h5>
-                    <h7>@yield('subtitle form')</h7>
+                    <h5 style="color: aliceblue;">@yield('title form')</h5>
+                    <h7 style="color: aliceblue;">@yield('subtitle form')</h7>
                 </div>
 
                 @yield('form')
@@ -98,10 +99,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <!--esto es para configurar lo la notificacion que salta con cualquier error o mensaje de regreso como notificaion-->
-
-
-
-
     <script src="{{asset('js/bootstrap.min.js')}}"></script>
     @yield('script')
 </body>
