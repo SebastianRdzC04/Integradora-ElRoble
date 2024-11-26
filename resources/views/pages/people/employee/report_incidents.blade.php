@@ -124,20 +124,9 @@
                 </div>
                 <div class="modal-body">
                     <h6>Seleccione Categorías Afectadas:</h6>
-                    <div class="d-grid gap-2">
+                    <div class="d-grid gap-2" style="overflow-y: auto; resize: none; height: 124px;">
                         <!-- Cambié los botones por checkboxes para permitir múltiples selecciones -->
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="categories[]" value="Sillas" id="checkboxSillas">
-                            <label class="form-check-label" for="checkboxSillas">Sillas</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="categories[]" value="Mesas" id="checkboxMesas">
-                            <label class="form-check-label" for="checkboxMesas">Mesas</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="categories[]" value="Hieleras" id="checkboxHieleras">
-                            <label class="form-check-label" for="checkboxHieleras">Hieleras</label>
-                        </div>
+                         <!-- Esto se rellana con ajax -->
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -413,6 +402,48 @@ updateInventoryButton.addEventListener('click', () => {
     }
 });
 
+
+</script>
+
+<script>
+    let categoriesCached = null; 
+
+$('#addSerialButton').on('click', function () {
+    if (categoriesCached) {
+        populateCategories(categoriesCached); 
+        return;
+    }
+
+    $.ajax({
+        url: "{{route('getCategories')}}", 
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            categoriesCached = data; 
+            console.log(data);
+            populateCategories(data); 
+        },
+        error: function (xhr, status, error) {
+            console.error('Error al obtener las categorías:', error);
+            toastr.error('No se pudieron cargar las categorías. Intenta nuevamente.');
+        }
+    });
+});
+
+function populateCategories(categories) {
+    const container = $('.modal-body .d-grid');
+    container.empty(); // Limpia el contenido actual.
+
+    categories.forEach(category => {
+        const formCheck = `
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="categories[]" value="${category.name}" id="checkbox${category.id}">
+                <label class="form-check-label" for="checkbox${category.id}">${category.name}</label>
+            </div>
+        `;
+        container.append(formCheck); // Añade cada categoría.
+    });
+}
 
 </script>
 

@@ -36,6 +36,7 @@ Route::view('/policy/delete/data', 'pages.policy.deletedata');
 Route::get('/filter/select/report', [IncidentController::class,'filterDataIncidentReport'])->name('filterselectedcategories.employee');
 Route::post('/create/incident',[IncidentController::class,'store'])->name('incident.store');
 Route::post('/validate/incidents/inventory',[IncidentController::class,'saveItems'])->name('saveItems');
+Route::get('/categories/index',[IncidentController::class,'getCategories'])->name('getCategories');
 
 //aqui termina el uso de ajax
 Route::get('/incident',[IncidentController::class,'create'])->name('incident.create');
