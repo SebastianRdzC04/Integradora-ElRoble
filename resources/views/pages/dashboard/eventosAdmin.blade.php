@@ -31,7 +31,7 @@
             <div class="row justify-content-center">
                 <div class="col-5 border">
                     <div>
-                        <h4>{{ $event->quote->type_event }} para {{ $event->quote->user->person->firstName }}</h4>
+                        <h4>{{ $event->quote->type_event }} para {{ $event->quote->user->person->first_name }}</h4>
                     </div>
                     <div class="d-flex justify-content-between">
                         <div>

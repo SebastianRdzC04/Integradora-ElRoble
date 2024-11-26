@@ -167,13 +167,14 @@ Route::get('dashboard/quotes/{id}', function ($id) {
 
 
 
-Route::get('dashboard/event/now', function () {
-    $event = Event::find(1);
+Route::get('dashboard/event/{id}', function ($id) {
+    $event = Event::find($id);
     if ($event) {
         session(['event' => $event]);
+        return view('pages.dashboard.eventosAdmin', compact('event'));
     }
-    return view('pages.dashboard.eventosAdmin', compact('event'));
-})->name('dashboard.eventnow');
+    return redirect()->route('dashboard');
+})->name('dashboard.event.view');
 
 
 
