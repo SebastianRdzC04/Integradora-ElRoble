@@ -66,58 +66,45 @@
                             <label for="last_name">Apellido(s):</label>
                         </div>
 
-                        <button type="button" class="btn btn-primary w-100" onclick="nextStep()">Siguiente</button>
+                        <button type="button" id="SiguienteBoton" class="btn btn-primary w-100" onclick="nextStep()">Siguiente</button>
                     </div>
 
                     <!-- paso 2 ----------------------------------------------------------- -->
                     <div id="step2" style="display: none;">
-                     
                         <!--fecha de cumpleaños-->
-                            <label style="color:aliceblue;">Ingresa tu Fecha de cumpleaños</label>
-                            <div class="row">
-                                <div class="col form-control">
-                                    <div class="row-12">
-                                        <label>Dia</label>
-                                    </div>
-                                    <div class="row-12">
-                                        <select name="day" value="{{ old('day') }}" id="day" class="form-control-sm" required>
-                                            @for ($i = 1; $i <= 31; $i++)
-                                            <option value="{{ $i }}">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
-                                            @endfor
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <!-- Mes -->
-                                <div class="col form-control">
-                                    <div class="row-12">
-                                        <label>Mes</label>
-                                    </div>
-                                    <div class="row-12">
-                                        <select name="month" value="{{ old('month') }}" id="month" class="form-control-sm" required>
-                                            @for ($i = 1; $i <= 12; $i++)
-                                                <option value="{{ $i }}">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
-                                            @endfor
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <!-- Año -->
-                                <div class="col form-control">
-                                    <div class="row-12">
-                                        <label>Año</label>
-                                    </div>
-                                    <div class="row-12">
-                                        <select name="year" value="{{ old('year') }}" id="year" class="form-control-sm" required>
-                                            @for ($i = date('Y'); $i >= 1900; $i--)
-                                            <option value="{{ $i }}">{{ $i }}</option>
-                                            @endfor
-                                        </select>
-                                    </div>
-                                </div>
+                        <label style="color:aliceblue;">Ingresa tu Fecha de cumpleaños</label>
+                        <div class="row">
+                            <!-- Día -->
+                            <div class="col-4 mb-3">
+                                <label style="color: white">Día</label>
+                                <select name="day" value="{{ old('day') }}" id="day" class="form-control" required>
+                                    @for ($i = 1; $i <= 31; $i++)
+                                        <option value="{{ $i }}">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
+                                    @endfor
+                                </select>
                             </div>
-                        
 
+                            <!-- Mes -->
+                            <div class="col-4 mb-3">
+                                <label style="color: white">Mes</label>
+                                <select name="month" value="{{ old('month') }}" id="month" class="form-control" required>
+                                    @for ($i = 1; $i <= 12; $i++)
+                                        <option value="{{ $i }}">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                    
+                            <!-- Año -->
+                            <div class="col-4 mb-3">
+                                <label style="color: white">Año</label>
+                                <select name="year" value="{{ old('year') }}" id="year" class="form-control" required>
+                                    @for ($i = date('Y'); $i >= 1900; $i--)
+                                        <option value="{{ $i }}">{{ $i }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                        </div>
+                    
                         <div class="form-floating mb-3">
                             <select name="gender" id="gender" value="{{ old('gender') }}" class="form-control">
                                 <option value="Otro">Otro</option>
@@ -136,8 +123,8 @@
                             <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" required autocomplete="off">
                             <label for="password_confirmation">Confirmar Contraseña</label>
                         </div>
-
-                        <button type="submit" class="btn btn-success w-100">Registrar</button>
+                    
+                        <button type="submit" id="SiguienteBoton" class="btn btn-success w-100">Registrar</button>
                     </div>
                 </form>
 
