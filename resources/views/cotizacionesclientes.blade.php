@@ -20,187 +20,198 @@
             </div>
             @endif
             <div class="col-md-7" id="crearPaquete">
-                <h3>Solicitar Cotización</h3>
-                <!-- Carrusel de Paquetes -->
-                <div id="packageCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
-                <div class="carousel-inner">
-                    @foreach($packages as $index => $package)
-                        <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ $package->name }}</h5>
-                                    <p class="card-text"><strong>Espacio:</strong> {{ $package->place->name }}</p>
-                                    <p class="card-text"><strong>Máximo de personas:</strong> {{ $package->max_people }}</p>
-                                    <p class="card-text"><strong>Servicios incluidos:</strong></p>
-                                    <ul>
-                                        @foreach($package->services as $service)
-                                            <li>{{ $service->name }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#packageCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#packageCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Next</span>
-                </button>
-                </div>
-                <form action="{{ route('cotizacionesclientes.store') }}" method="POST" id="cotizacionForm">
-                    @csrf
-                    <div class="mb-3">
-                        <label for="place_id" class="form-label">Lugar</label>
-                        <select name="place_id" id="place_id" class="form-control @error('place_id') is-invalid @enderror" required>
-                            <option value="">Selecciona un lugar</option>
-                            @foreach($places as $place)
-                                <option value="{{ $place->id }}" {{ old('place_id') == $place->id ? 'selected' : '' }}>{{ $place->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('place_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <!-- Campo de Fecha -->
-                    <div class="mb-3 row">
+                <h3> <strong>Solicitar Cotización</strong> </h3>
+                <div class="row">
+                    <!-- Carrusel de Paquetes y Campo de Lugar en una fila -->
+                    <div class="row mb-4">
                         <div class="col-md-6">
-                            <label for="date" class="form-label">Fecha</label>
-                            <input type="date" name="date" id="date" class="form-control @error('date') is-invalid @enderror" oninput="updatePreview()" value="{{ old('date') }}" required>
-                            @error('date')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <!-- Campos de Hora de Inicio y Fin -->
-                        <div class="col-md-3">
-                            <label for="start_time" class="form-label">Hora de Inicio</label>
-                            <input type="time" name="start_time" id="start_time" class="form-control @error('start_time') is-invalid @enderror" min="12:00" max="23:59" step="1800" oninput="updatePreview()" value="{{ old('start_time') }}" required>
-                            @error('start_time')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-3">
-                            <label for="end_time" class="form-label">Hora de Final</label>
-                            <input type="time" name="end_time" id="end_time" class="form-control @error('end_time') is-invalid @enderror" min="12:00" max="23:59" step="1800" oninput="updatePreview()" value="{{ old('end_time') }}" required>
-                            @error('end_time')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" id="day_after_checkbox" class="form-check-input" onchange="toggleEndTimeRange()">
-                        <label for="day_after_checkbox" class="form-check-label">¿El evento finalizará al día siguiente?</label>
-                    </div>
-    
-        
-                    <div class="mb-3 row">
-                        <div class="col-md-6">
-                            <label for="guest_count" class="form-label">Cantidad de Invitados</label>
-                            <input type="number" name="guest_count" id="guest_count" class="form-control @error('guest_count') is-invalid @enderror" oninput="updatePreview()" value="{{ old('guest_count') }}" required>
-                            @error('guest_count')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>                    
-                        <div class="col-md-6">
-                            <label for="type_event" class="form-label">Tipo de Evento</label>
-                            <select name="type_event" id="type_event" class="form-control @error('type_event') is-invalid @enderror" onchange="toggleOtroTipoEvento()" required>
-                                <option value="">Selecciona el tipo de evento</option>
-                                <option value="XV's" {{ old('type_event') == "XV's" ? 'selected' : '' }}>XV's</option>
-                                <option value="Cumpleaños" {{ old('type_event') == "Cumpleaños" ? 'selected' : '' }}>Cumpleaños</option>
-                                <option value="Graduación" {{ old('type_event') == "Graduación" ? 'selected' : '' }}>Graduación</option>
-                                <option value="Posada" {{ old('type_event') == "Posada" ? 'selected' : '' }}>Posada</option>
-                                <option value="Boda" {{ old('type_event') == "Boda" ? 'selected' : '' }}>Boda</option>
-                                <option value="Baby Shower" {{ old('type_event') == "Baby Shower" ? 'selected' : '' }}>Baby Shower</option>
-                                <option value="Otro" {{ old('type_event') == "Otro" ? 'selected' : '' }}>Otro</option>
-                            </select>
-                            @error('type_event')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-        
-                    <div class="mb-3" id="otro_tipo_evento_div" style="display: none;">
-                        <label for="otro_tipo_evento" class="form-label">Especificar Tipo de Evento</label>
-                        <input type="text" name="otro_tipo_evento" id="otro_tipo_evento" class="form-control @error('otro_tipo_evento') is-invalid @enderror" value="{{ old('otro_tipo_evento') }}">
-                        @error('otro_tipo_evento')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>                                        
-        
-                    <div class="mb-3 row">
-                        <div class="col-md-6">
-                            <label for="owner_name" class="form-label">Nombre</label>
-                            <input type="text" name="owner_name" id="owner_name" class="form-control @error('owner_name') is-invalid @enderror" oninput="updatePreview()" value="{{ old('owner_name') }}" required>
-                            @error('owner_name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                        <div class="col-md-6">
-                            <label for="owner_phone" class="form-label">Teléfono</label>
-                            <input type="number" name="owner_phone" id="owner_phone" class="form-control @error('owner_phone') is-invalid @enderror" oninput="updatePreview()" value="{{ old('owner_phone') }}"required>
-                            @error('owner_phone')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-                    </div>
-        
-                    <!-- Servicios -->
-                    <h4 class="mt-4">Seleccionar Servicios</h4>
-                    <div class="row">
-                        @foreach($categories as $category)
-                            <div class="col-md-4 mb-3 equal-height">
-                                <div class="card category-card" onclick="toggleServices('{{ $category->id }}')">
-                                    <div class="card-body text-center">
-                                        <h6 class="card-title">{{ $category->name }}</h6>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="services-{{ $category->id }}" class="service-item" style="display: none;">
-                                <div class="row">
-                                    @foreach($category->services as $service)
-                                        <div id="service-details-{{ $service->id }}" class="col-md-4 mb-3">
-                                            <div class="card service-card">
-                                                <img src="{{ asset('images/imagen6.jpg') }}" class="card-img-top" alt="{{ $service->name }}">
+                            <div id="packageCarousel" class="carousel slide" data-bs-ride="carousel">
+                                <div class="carousel-inner">
+                                    @foreach($packages as $index => $package)
+                                        <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                                            <div id="card-carousel" class="card">
                                                 <div class="card-body">
-                                                    <h5 class="card-title">{{ $service->name }}</h5>
-                                                    <p class="card-text" style="font-weight: bold">Precio Aprox: ${{ $service->price }}</p>
-                                                    <p class="card-text">Descripción: {{ $service->description }}</p>
-                                                    <input type="checkbox" name="services[{{ $service->id }}]" value="{{ $service->id }}" class="form-check-input" onchange="selectService(this, '{{ $category->id }}')">
-                                                    <input type="text" name="services[{{ $service->id }}][description]" placeholder="Descripción" class="form-control mt-2" style="display:none;">
-                                                    <button type="button" id="confirm-btn-{{ $service->id }}" class="btn btn-primary mt-2" style="display:none;" disabled onclick="confirmService('{{ $service->id }}')">Confirmar</button>
+                                                    <h5 style="color:white;" class="card-title">{{ $package->name }}</h5>
+                                                    <p style="color:white;" class="card-text"><strong>Espacio:</strong> {{ $package->place->name }}</p>
+                                                    <p style="color:white;" class="card-text"><strong>Máximo de personas:</strong> {{ $package->max_people }}</p>
+                                                    <p style="color:white;" class="card-text"><strong>Costo:</strong> ${{ $package->price }}</p>
+                                                    <p style="color:white;" class="card-text"><strong>Servicios incluidos:</strong></p>
+                                                    <ul>
+                                                        @foreach($package->services as $service)
+                                                            <li style="color:white;">{{ $service->name }}</li>
+                                                        @endforeach
+                                                    </ul>
                                                 </div>
                                             </div>
                                         </div>
                                     @endforeach
                                 </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#packageCarousel" data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Previous</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#packageCarousel" data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Next</span>
+                                </button>
                             </div>
-                        @endforeach
+                        </div>
+                        <!-- Campo de Lugar con Radio Buttons -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="place_id" class="form-label">Lugar</label>
+                                <div>
+                                    @foreach($places as $place)
+                                        <div class="form-check">
+                                            <input class="form-check-input @error('place_id') is-invalid @enderror" type="radio" name="place_id" id="place_{{ $place->id }}" value="{{ $place->id }}" {{ old('place_id') == $place->id ? 'checked' : '' }} required>
+                                            <label class="form-check-label" for="place_{{ $place->id }}">
+                                                {{ $place->name }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                    @error('place_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </form>
-            </div>            
+                    <!-- Resto del formulario -->
+                    <form action="{{ route('cotizacionesclientes.store') }}" method="POST" id="cotizacionForm">
+                        @csrf
+                        <div class="mb-3 row">
+                            <div class="col-md-6">
+                                <label for="date" class="form-label">Fecha</label>
+                                <input type="date" name="date" id="date" class="form-control @error('date') is-invalid @enderror" oninput="updatePreview()" value="{{ old('date') }}" required>
+                                @error('date')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="start_time" class="form-label">Hora de Inicio</label>
+                                <input type="time" name="start_time" id="start_time" class="form-control @error('start_time') is-invalid @enderror" min="12:00" max="23:59" step="1800" oninput="updatePreview()" value="{{ old('start_time') }}" required>
+                                @error('start_time')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="end_time" class="form-label">Hora de Final</label>
+                                <input type="time" name="end_time" id="end_time" class="form-control @error('end_time') is-invalid @enderror" min="12:00" max="23:59" step="1800" oninput="updatePreview()" value="{{ old('end_time') }}" required>
+                                @error('end_time')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" id="day_after_checkbox" class="form-check-input" onchange="toggleEndTimeRange()">
+                            <label for="day_after_checkbox" class="form-check-label">¿El evento finalizará al día siguiente?</label>
+                        </div>
+
+                        <div class="mb-3 row">
+                            <div class="col-md-6">
+                                <label for="guest_count" class="form-label">Cantidad de Invitados</label>
+                                <input type="number" name="guest_count" id="guest_count" class="form-control @error('guest_count') is-invalid @enderror" oninput="updatePreview()" value="{{ old('guest_count') }}" required>
+                                @error('guest_count')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label for="type_event" class="form-label">Tipo de Evento</label>
+                                <select name="type_event" id="type_event" class="form-control @error('type_event') is-invalid @enderror" onchange="toggleOtroTipoEvento()" required>
+                                    <option value="">Selecciona el tipo de evento</option>
+                                    <option value="XV's" {{ old('type_event') == "XV's" ? 'selected' : '' }}>XV's</option>
+                                    <option value="Cumpleaños" {{ old('type_event') == "Cumpleaños" ? 'selected' : '' }}>Cumpleaños</option>
+                                    <option value="Graduación" {{ old('type_event') == "Graduación" ? 'selected' : '' }}>Graduación</option>
+                                    <option value="Posada" {{ old('type_event') == "Posada" ? 'selected' : '' }}>Posada</option>
+                                    <option value="Boda" {{ old('type_event') == "Boda" ? 'selected' : '' }}>Boda</option>
+                                    <option value="Baby Shower" {{ old('type_event') == "Baby Shower" ? 'selected' : '' }}>Baby Shower</option>
+                                    <option value="Otro" {{ old('type_event') == "Otro" ? 'selected' : '' }}>Otro</option>
+                                </select>
+                                @error('type_event')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div class="mb-3" id="otro_tipo_evento_div" style="display: none;">
+                            <label for="otro_tipo_evento" class="form-label">Especificar Tipo de Evento</label>
+                            <input type="text" name="otro_tipo_evento" id="otro_tipo_evento" class="form-control @error('otro_tipo_evento') is-invalid @enderror" value="{{ old('otro_tipo_evento') }}">
+                            @error('otro_tipo_evento')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3 row">
+                            <div class="col-md-6">
+                                <label for="owner_name" class="form-label">Nombre</label>
+                                <input type="text" name="owner_name" id="owner_name" class="form-control @error('owner_name') is-invalid @enderror" oninput="updatePreview()" value="{{ old('owner_name') }}" required>
+                                @error('owner_name')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label for="owner_phone" class="form-label">Teléfono</label>
+                                <input type="number" name="owner_phone" id="owner_phone" class="form-control @error('owner_phone') is-invalid @enderror" oninput="updatePreview()" value="{{ old('owner_phone') }}" required>
+                                @error('owner_phone')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <!-- Servicios -->
+                        <h4 class="mt-4">Seleccionar Servicios</h4>
+                        <div class="row">
+                            @foreach($categories as $category)
+                                <div class="col-md-4 mb-3 equal-height">
+                                    <div class="card category-card" onclick="toggleServices('{{ $category->id }}')">
+                                        <div class="card-body text-center">
+                                            <h6 class="card-title">{{ $category->name }}</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div id="services-{{ $category->id }}" class="service-item" style="display: none;">
+                                    <div class="row">
+                                        @foreach($category->services as $service)
+                                            <div id="service-details-{{ $service->id }}" class="col-md-4 mb-3">
+                                                <div class="card service-card">
+                                                    <img src="{{ asset('images/imagen6.jpg') }}" class="card-img-top" alt="{{ $service->name }}">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">{{ $service->name }}</h5>
+                                                        <p class="card-text" style="font-weight: bold">Precio Aprox: ${{ $service->price }}</p>
+                                                        <p class="card-text">Descripción: {{ $service->description }}</p>
+                                                        <input type="checkbox" name="services[{{ $service->id }}]" value="{{ $service->id }}" class="form-check-input" onchange="selectService(this, '{{ $category->id }}')">
+                                                        <input type="text" name="services[{{ $service->id }}][description]" placeholder="Descripción" class="form-control mt-2" style="display:none;">
+                                                        <button type="button" id="confirm-btn-{{ $service->id }}" class="btn btn-primary mt-2" style="display:none;" disabled onclick="confirmService('{{ $service->id }}')">Confirmar</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
 
-            <!-- Vista Previa -->
-            <div class="col-md-5" id="previstaServicio">
-                <div class="prevista-imagen-container">
-                    <img id="prevista-imagen" class="prevista-imagen" src="{{ asset('images/imagen1.jpg') }}" alt="Vista previa">
-                    <div class="prevista-caption">
-                        <h5 id="prevista-nombre">Nombre</h5>
-                        <p id="prevista-fecha">Fecha: -</p>
-                        <p id="prevista-horario">Hora: -</p>
-                        <p id="prevista-invitados">Invitados: -</p>
-                    </div>
+        <!-- Vista Previa -->
+        <div class="col-md-5" id="previstaServicio">
+            <div class="prevista-imagen-container">
+                <img id="prevista-imagen" class="prevista-imagen" src="{{ asset('images/imagen1.jpg') }}" alt="Vista previa">
+                <div class="prevista-caption">
+                    <h5 id="prevista-nombre">Nombre</h5>
+                    <p id="prevista-fecha">Fecha: -</p>
+                    <p id="prevista-horario">Hora: -</p>
+                    <p id="prevista-invitados">Invitados: -</p>
                 </div>
-                <p id="prevista-servicios">Servicios seleccionados:</p>
-                <div id="vista-previa-servicios" class="vista-previa mt-3">No hay servicios confirmados aún.</div>
-                <button type="button" class="btn btn-success mt-3" id="crearPaqueteBoton" onclick="crearPaquete()">Enviar Cotización</button>
             </div>
+            <p id="prevista-servicios">Servicios seleccionados:</p>
+            <div id="vista-previa-servicios" class="vista-previa mt-3">No hay servicios confirmados aún.</div>
+            <button type="button" class="btn btn-success mt-3" id="crearPaqueteBoton" onclick="crearPaquete()">Enviar Cotización</button>
         </div>
     </div>
 
@@ -378,73 +389,80 @@
         }
     
         function crearPaquete() {
-            const form = document.getElementById('cotizacionForm');
-            document.querySelectorAll('.service-hidden-input').forEach(input => input.remove());
+    const form = document.getElementById('cotizacionForm');
+    document.querySelectorAll('.service-hidden-input').forEach(input => input.remove());
 
-            const date = document.getElementById('date').value;
-            const startInput = document.getElementById('start_time');
-            const endInput = document.getElementById('end_time');
-            const startTime = startInput.value;
-            const endTime = endInput.value;
-            const dayAfterCheckbox = document.getElementById('day_after_checkbox').checked;
+    const date = document.getElementById('date').value;
+    const startInput = document.getElementById('start_time');
+    const endInput = document.getElementById('end_time');
+    const startTime = startInput.value;
+    const endTime = endInput.value;
+    const dayAfterCheckbox = document.getElementById('day_after_checkbox').checked;
 
-            const typeEventElement = document.getElementById('type_event');
-            const typeEventValue = typeEventElement ? String(typeEventElement.value) : '';
+    const typeEventElement = document.getElementById('type_event');
+    const typeEventValue = typeEventElement ? String(typeEventElement.value) : '';
 
-            if (!date || !startTime || !endTime) {
-                alert("Por favor, selecciona la fecha y las horas de inicio y fin del evento.");
-                return;
-            }
+    const placeId = document.querySelector('input[name="place_id"]:checked');
+    if (!placeId) {
+        alert("Por favor, selecciona un lugar.");
+        return;
+    }
 
-            if (!esHoraValida(startTime) || !esHoraValida(endTime)) {
-                alert("Las horas deben estar en formato válido (hh:mm) y ser completas o medias (ej. 6:00 o 3:30).");
-                return;
-            }
+    if (!date || !startTime || !endTime) {
+        alert("Por favor, selecciona la fecha y las horas de inicio y fin del evento.");
+        return;
+    }
 
-            validarHoraEnRango(startInput);
-            validarHoraEnRango(endInput);
+    if (!esHoraValida(startTime) || !esHoraValida(endTime)) {
+        alert("Las horas deben estar en formato válido (hh:mm) y ser completas o medias (ej. 6:00 o 3:30).");
+        return;
+    }
 
-            if (startInput.validationMessage || endInput.validationMessage) {
-                alert(startInput.validationMessage || endInput.validationMessage);
-                return;
-            }
+    validarHoraEnRango(startInput);
+    validarHoraEnRango(endInput);
 
-            const startDateTime = `${date} ${startTime.slice(0, 5)}`;
-            let endDateTime = `${date} ${endTime.slice(0, 5)}`;
-            if (dayAfterCheckbox) {
-                const dateObj = new Date(`${date}T${endTime}:00`);
-                dateObj.setDate(dateObj.getDate() + 1);
-                const endDate = dateObj.toISOString().slice(0, 10);
-                endDateTime = `${endDate} ${endTime.slice(0, 5)}`;
-            }
+    if (startInput.validationMessage || endInput.validationMessage) {
+        alert(startInput.validationMessage || endInput.validationMessage);
+        return;
+    }
 
-            form.appendChild(generarInputOculto('start_time', startDateTime));
-            form.appendChild(generarInputOculto('end_time', endDateTime));
-            form.appendChild(generarInputOculto('type_event', typeEventValue));
+    const startDateTime = `${date} ${startTime.slice(0, 5)}`;
+    let endDateTime = `${date} ${endTime.slice(0, 5)}`;
+    if (dayAfterCheckbox) {
+        const dateObj = new Date(`${date}T${endTime}:00`);
+        dateObj.setDate(dateObj.getDate() + 1);
+        const endDate = dateObj.toISOString().slice(0, 10);
+        endDateTime = `${endDate} ${endTime.slice(0, 5)}`;
+    }
 
-            let anyServiceConfirmed = false;
-            for (let serviceId in confirmedServices) {
-                const service = confirmedServices[serviceId];
+    form.appendChild(generarInputOculto('start_time', startDateTime));
+    form.appendChild(generarInputOculto('end_time', endDateTime));
+    form.appendChild(generarInputOculto('type_event', typeEventValue));
+    form.appendChild(generarInputOculto('place_id', placeId.value));
 
-                if (service.isConfirmed && service.description.trim() !== "") {
-                    console.log(`Confirmando servicio ${serviceId} con descripción: ${service.description}`);
+    let anyServiceConfirmed = false;
+    for (let serviceId in confirmedServices) {
+        const service = confirmedServices[serviceId];
 
-                    form.appendChild(generarInputOculto(`services[${serviceId}][description]`, service.description));
-                    form.appendChild(generarInputOculto(`services[${serviceId}][confirmed]`, true));
-                } else {
-                    console.log(`Servicio ${serviceId} no confirmado o sin descripción válida. Se omite.`);
-                }
-            }
+        if (service.isConfirmed && service.description.trim() !== "") {
+            console.log(`Confirmando servicio ${serviceId} con descripción: ${service.description}`);
 
-            if (!anyServiceConfirmed) {
-                console.log("No se seleccionaron servicios confirmados. Enviando formulario sin información de servicios.");
-            }
-
-            console.log("Servicios seleccionados:", selectedServices);
-            console.log("Servicios confirmados:", confirmedServices);
-
-            form.submit();
+            form.appendChild(generarInputOculto(`services[${serviceId}][description]`, service.description));
+            form.appendChild(generarInputOculto(`services[${serviceId}][confirmed]`, true));
+        } else {
+            console.log(`Servicio ${serviceId} no confirmado o sin descripción válida. Se omite.`);
         }
+    }
+
+    if (!anyServiceConfirmed) {
+        console.log("No se seleccionaron servicios confirmados. Enviando formulario sin información de servicios.");
+    }
+
+    console.log("Servicios seleccionados:", selectedServices);
+    console.log("Servicios confirmados:", confirmedServices);
+
+    form.submit();
+}
 
         function esHoraValida(hora) {
             const regex = /^(?:[01]\d|2[0-3]):(00|30)$/;
