@@ -80,6 +80,7 @@
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#modal2">Mostrar
                                 Consumibles</button>
+                            <a href="{{route('incident.create')}}" class="btn btn-primary">Reportar incidencia</a>
                         </div>
                         <div class="modal fade" id="modal1" aria-labelledby="modalLabel1" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">

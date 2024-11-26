@@ -165,6 +165,16 @@ Route::get('dashboard/quotes/{id}', function ($id) {
 })->name('dashboard.quote');
 
 
+Route::get('dashboard/current/event', function () {
+    $event = Event::where('date', Carbon::now()->format('Y-m-d'))->first();
+    if ($event) {
+        session(['event' => $event]);
+        return view('pages.dashboard.eventosAdmin', compact('event'));
+    }
+    return redirect()->route('dashboard');
+})->name('dashboard.event.now');
+
+
 
 
 Route::get('dashboard/event/{id}', function ($id) {
@@ -175,6 +185,8 @@ Route::get('dashboard/event/{id}', function ($id) {
     }
     return redirect()->route('dashboard');
 })->name('dashboard.event.view');
+
+
 
 
 
