@@ -196,6 +196,8 @@
         const estimatedPriceInput = document.getElementById('estimatedPrice');
         const serviceNameInput = document.getElementById('serviceName');
         const descriptionInput = document.getElementById('description');
+        const imageUploadInput = document.getElementById('imageUpload');
+        const previewImage = document.getElementById('previstaImagen');
     
         function removeInvalidClassOnInput(element) {
             element.addEventListener('input', function() {
@@ -252,6 +254,19 @@
     
         document.getElementById('crearPaqueteBoton').addEventListener('click', function() {
             formCrearServicio.submit();
+        });
+
+        imageUploadInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            } else {
+                previewImage.src = '/images/imagen6.jpg';
+            }
         });
     </script>
 

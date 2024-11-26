@@ -21,9 +21,9 @@ class ServiciosAdminController extends Controller
             'new_category' => 'nullable|string|required_if:category,Otro',
             'name' => 'required|string|max:50',
             'description' => 'required|string|max:255',
-            'price_estimate' => 'required|numeric',
-            'quantity' => 'integer|min:1',
-            'image' => 'nullable|image|max:2048', // Validación de imagen
+            'price_estimate' => 'required|numeric|min:0|max:99999.99',
+            'quantity' => 'integer|min:0',
+            'image' => 'nullable|image|max:1024',
         ], [
             'category.required' => 'El campo categoría es obligatorio.',
             'new_category.required_if' => 'El campo nueva categoría es obligatorio si seleccionas "Otro".',
@@ -33,10 +33,12 @@ class ServiciosAdminController extends Controller
             'description.max' => 'La descripción no puede exceder 255 caracteres.',
             'price_estimate.required' => 'El precio estimado es obligatorio.',
             'price_estimate.numeric' => 'El precio estimado debe ser un número.',
+            'price_estimate.min' => 'El precio más bajo es 0, es decir gratuito.',
+            'price_estimate.max' => 'El precio no puede exceder 99999.99.',
             'quantity.integer' => 'La cantidad debe ser un número entero.',
             'quantity.min' => 'La cantidad debe ser al menos 1.',
             'image.image' => 'El archivo debe ser una imagen.',
-            'image.max' => 'La imagen no puede exceder 2MB.',
+            'image.max' => 'La imagen no puede exceder 1MB.',
         ]);
     
         if ($validated['category'] === 'Otro' && empty($validated['new_category'])) {
