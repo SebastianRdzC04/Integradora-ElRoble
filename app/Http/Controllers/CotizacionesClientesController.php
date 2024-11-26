@@ -154,10 +154,10 @@ class CotizacionesClientesController extends Controller
     
             foreach ($services as $serviceId => $serviceData) {
                 if (isset($serviceData['confirmed']) && filter_var($serviceData['confirmed'], FILTER_VALIDATE_BOOLEAN)) {
-                    $description = $serviceData['description'];
-                    if (!empty($description)) {
+                    $quantity = $serviceData['quantity'];
+                    if (!empty($quantity) && is_numeric($quantity) && $quantity > 0) {
                         $servicesData[$serviceId] = [
-                            'description' => $description,
+                            'quantity' => $quantity,
                             'created_at' => now(),
                             'updated_at' => now(),
                         ];

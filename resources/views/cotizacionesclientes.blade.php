@@ -183,7 +183,7 @@
                                                         <p class="card-text" style="font-weight: bold">Precio Aprox: ${{ $service->price }}</p>
                                                         <p class="card-text">Descripción: {{ $service->description }}</p>
                                                         <input type="checkbox" name="services[{{ $service->id }}]" value="{{ $service->id }}" class="form-check-input" onchange="selectService(this, '{{ $category->id }}')">
-                                                        <input type="text" name="services[{{ $service->id }}][description]" placeholder="Descripción" class="form-control mt-2" style="display:none;">
+                                                        <input type="number" name="services[{{ $service->id }}][quantity]" placeholder="Cantidad" class="form-control mt-2" min="1" style="display:none;">
                                                         <button type="button" id="confirm-btn-{{ $service->id }}" class="btn btn-primary mt-2" style="display:none;" disabled onclick="confirmService('{{ $service->id }}')">Confirmar</button>
                                                     </div>
                                                 </div>
@@ -279,7 +279,7 @@
                 serviceItem.innerHTML = `
                     <div class="service-info">
                         <h4 class="service-name">${getServiceName(serviceId)}</h4>
-                        <p class="service-description">${serviceData.description || 'Sin descripción'}</p>
+                        <p class="service-quantity">Cantidad: ${serviceData.quantity || 'No especificada'}</p>
                     </div>
                 `;
                 listaServicios.appendChild(serviceItem);
@@ -297,7 +297,7 @@
             const selectedServiceId = checkbox.value;
             const isSelected = checkbox.checked;
             const serviceCard = checkbox.closest('.service-card');
-            const serviceDescriptionInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][description]"]`);
+            const serviceQuantityInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][quantity]"]`);
             const confirmButton = serviceCard.querySelector(`#confirm-btn-${selectedServiceId}`);
 
             if (isSelected) {
@@ -325,23 +325,23 @@
 
         function confirmService(serviceId) {
             const serviceCard = document.getElementById(`service-details-${serviceId}`);
-            const descriptionInput = serviceCard.querySelector(`input[name="services[${serviceId}][description]"]`);
+            const quantityInput = serviceCard.querySelector(`input[name="services[${serviceId}][quantity]"]`);
             const confirmButton = document.getElementById(`confirm-btn-${serviceId}`);
 
             if (!confirmedServices[serviceId]) {
                 confirmedServices[serviceId] = {
                     isConfirmed: false,
-                    description: ''
+                    quantity: ''
                 };
             }
 
-            if (!descriptionInput.value.trim()) {
-                alert("Por favor, ingresa una descripción válida.");
-                return;
+            if (!quantityInput.value || quantityInput.value < 1) {
+                alert("Por favor, ingresa una cantidad válida.");
+            return;
             }
 
             confirmButton.addEventListener('click', function () {
-                if (descriptionInput.value.trim()) {
+                if (quantityInput.value >= 1) {
                     confirmedServices[serviceId] = {
                         isConfirmed: true,
                         description: descriptionInput.value.trim()
