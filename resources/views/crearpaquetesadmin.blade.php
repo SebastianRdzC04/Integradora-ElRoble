@@ -102,7 +102,7 @@
                                     @foreach($category->services as $service)
                                         <div class="col-md-4 mb-3">
                                             <div class="card service-card">
-                                                <img src="{{ asset('images/imagen6.jpg') }}" class="card-img-top" alt="{{ $service->name }}">
+                                                <img src="{{ $service->image_path ? asset('storage/' . $service->image_path) : asset('images/imagen6.jpg') }}" class="card-img-top" alt="{{ $service->name }}">
                                                 <div class="card-body">
                                                     <h5 class="card-title">{{ $service->name }}</h5>
                                                     <p class="card-text">{{ $service->description }}</p>
