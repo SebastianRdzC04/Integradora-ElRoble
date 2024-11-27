@@ -100,21 +100,20 @@
                             <div id="services-{{ $category->id }}" class="service-item" style="display: none;">
                                 <div class="row">
                                     @foreach($category->services as $service)
-                                        <div class="col-md-4 mb-3">
+                                        <div id="service-details-{{ $service->id }}" class="col-md-4 mb-3">
                                             <div class="card service-card">
                                                 <img src="{{ $service->image_path ? asset('storage/' . $service->image_path) : asset('images/imagen6.jpg') }}" class="card-img-top" alt="{{ $service->name }}">
                                                 <div class="card-body">
                                                     <h5 class="card-title">{{ $service->name }}</h5>
-                                                    <p class="card-text">{{ $service->description }}</p>
-                                                    <p class="card-text">Precio: ${{ $service->price }}</p>
-                                                    <input type="checkbox" name="services[{{ $category->id }}][id]" value="{{ $service->id }}" class="form-check-input" onchange="selectService(this, '{{ $category->id }}')">
+                                                    <p class="card-text" style="font-weight: bold">Precio Aprox: ${{ $service->price }}</p>
+                                                    <p class="card-text">Descripción: {{ $service->description }}</p>
+                                                    <input type="checkbox" name="services[{{ $service->id }}]" value="{{ $service->id }}" class="form-check-input" onchange="selectService(this, '{{ $category->id }}')">
+                                                    <input type="number" name="services[{{ $service->id }}][quantity]" placeholder="Cantidad" class="form-control mt-2" min="1" style="display:none;">
+                                                    <input type="number" name="services[{{ $service->id }}][price]" placeholder="Precio" class="form-control mt-2" style="display:none;">
+                                                    <input type="text" name="services[{{ $service->id }}][description]" placeholder="Descripción" class="form-control mt-2" style="display:none;">
+                                                    <button type="button" id="confirm-btn-{{ $service->id }}" class="btn btn-primary mt-2" style="display:none;" disabled onclick="confirmService('{{ $service->id }}', '{{ $category->id }}')">Confirmar</button>
+                                                    <button type="button" id="delete-btn-{{ $service->id }}" class="btn btn-danger mt-2" style="display:none;" onclick="confirmarEliminacionServicio('{{ $service->id }}')">Eliminar</button>
                                                 </div>
-                                            </div>
-                                            <div id="service-details-{{ $service->id }}" class="service-input-details" style="display: none;">
-                                                <input type="number" name="services[{{ $service->id }}][quantity]" placeholder="Cantidad" class="form-control mb-2" oninput="validateAndShowConfirm('{{ $service->id }}')">
-                                                <input type="number" name="services[{{ $service->id }}][price]" placeholder="Precio" class="form-control mb-2" oninput="validateAndShowConfirm('{{ $service->id }}')">
-                                                <input type="text" name="services[{{ $service->id }}][description]" placeholder="Descripción" class="form-control mb-2" oninput="validateAndShowConfirm('{{ $service->id }}')">
-                                                <button type="button" class="btn btn-primary mb-2" id="confirmButton-{{ $service->id }}" onclick="confirmService('{{ $service->id }}', '{{ $category->id }}')" disabled>Confirmar</button>
                                             </div>
                                         </div>
                                     @endforeach
@@ -195,7 +194,7 @@
             const quantityInput = serviceCard.querySelector(`input[name="services[${serviceId}][quantity]"]`);
             const priceInput = serviceCard.querySelector(`input[name="services[${serviceId}][price]"]`);
             const descriptionInput = serviceCard.querySelector(`input[name="services[${serviceId}][description]"]`);
-            const confirmButton = document.getElementById(`confirmButton-${serviceId}`);
+            const confirmButton = document.getElementById(`confirm-btn-${serviceId}`);
 
             if (quantityInput.value && priceInput.value && descriptionInput.value) {
                 confirmedServices[serviceId] = {
@@ -237,7 +236,7 @@
                 checkbox.checked = false;
             }
 
-            const confirmButton = serviceCard.querySelector(`#confirmButton-${serviceId}`);
+            const confirmButton = serviceCard.querySelector(`#confirm-btn-${serviceId}`);
             if (confirmButton) {
                 confirmButton.style.display = 'none';
                 confirmButton.disabled = true;
@@ -303,10 +302,12 @@
                 const service = confirmedServices[serviceId];
                 const serviceName = document.querySelector(`input[value="${serviceId}"]`).closest('.service-card').querySelector('.card-title').innerText;
                 serviciosLista.innerHTML += `
-                    <p>
-                        <strong>Servicio:</strong> ${serviceName} (Cant. ${service.quantity}, $${service.price}, ${service.description})
-                        <button class="btn btn-danger btn-sm" onclick="confirmarEliminacionServicio('${serviceId}')">Eliminar</button>
-                    </p>
+                    <div class="service-preview-item">
+                        <p>
+                            <strong>Servicio:</strong> ${serviceName} (Cant. ${service.quantity}, $${service.price}, ${service.description})
+                            <button class="btn btn-danger btn-sm" onclick="confirmarEliminacionServicio('${serviceId}')">Eliminar</button>
+                        </p>
+                    </div>
                 `;
             }
         }
@@ -334,39 +335,46 @@
             const selectedServiceId = checkbox.value;
             const isSelected = checkbox.checked;
             const serviceCard = checkbox.closest('.service-card');
-            const serviceName = serviceCard.querySelector('.card-title').innerText;
-
             const serviceQuantityInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][quantity]"]`);
             const servicePriceInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][price]"]`);
             const serviceDescriptionInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][description]"]`);
+            const confirmButton = serviceCard.querySelector(`#confirm-btn-${selectedServiceId}`);
 
             if (isSelected) {
-                const detailsContainer = document.getElementById(`service-details-${selectedServiceId}`);
-                if (detailsContainer) {
-                    detailsContainer.style.display = 'block';
-                }
+                selectedServices[selectedServiceId] = { categoryId, isSelected: true };
 
-                if (serviceQuantityInput.value && servicePriceInput.value && serviceDescriptionInput.value) {
-                    selectedServices[selectedServiceId] = {
-                        categoryId,
-                        serviceName,
-                        quantity: serviceQuantityInput.value,
-                        price: servicePriceInput.value,
-                        description: serviceDescriptionInput.value
-                    };
-                }
+                serviceQuantityInput.style.display = 'block';
+                servicePriceInput.style.display = 'block';
+                serviceDescriptionInput.style.display = 'block';
+                confirmButton.style.display = 'block';
+                serviceQuantityInput.focus();
+
+                serviceQuantityInput.addEventListener('input', () => {
+                    confirmButton.disabled = !(serviceQuantityInput.value.trim() && servicePriceInput.value.trim() && serviceDescriptionInput.value.trim());
+                });
+
+                servicePriceInput.addEventListener('input', () => {
+                    confirmButton.disabled = !(serviceQuantityInput.value.trim() && servicePriceInput.value.trim() && serviceDescriptionInput.value.trim());
+                });
+
+                serviceDescriptionInput.addEventListener('input', () => {
+                    confirmButton.disabled = !(serviceQuantityInput.value.trim() && servicePriceInput.value.trim() && serviceDescriptionInput.value.trim());
+                });
+
+                confirmButton.addEventListener('click', () => confirmService(selectedServiceId, categoryId));
             } else {
                 delete selectedServices[selectedServiceId];
                 delete confirmedServices[selectedServiceId];
 
-                updateServicePreview();
-
-                const detailsContainer = document.getElementById(`service-details-${selectedServiceId}`);
-                if (detailsContainer) {
-                    detailsContainer.style.display = 'none';
-                }
+                serviceQuantityInput.style.display = 'none';
+                serviceQuantityInput.value = '';
+                servicePriceInput.style.display = 'none';
+                servicePriceInput.value = '';
+                serviceDescriptionInput.style.display = 'none';
+                serviceDescriptionInput.value = '';
+                confirmButton.style.display = 'none';
+                confirmButton.disabled = true;
             }
-            updateServicePreview();
         }
 
         function ajustarAlturaCategorias() {
