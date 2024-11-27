@@ -11,8 +11,8 @@
 
 @section('content')
     <!-- Carrusel -->
-    <div id="carouselExample" class="carousel slide mb-7" data-bs-ride="carousel">
-        <div class="carousel-inner">
+    <div id="carouselExample" style="border-radius: 5%" class="carousel slide mb-7" data-bs-ride="carousel">
+        <div style="border-radius: 1.2%; box-sizing: border-box; box-shadow: 0 0 10px 4px rgb(0, 0, 0);" class="carousel-inner">
             <div class="carousel-item active">
                 <img src="images/imagen1.jpg" alt="Imagen 1" class="d-block w-100">
                 <div class="carousel-caption text-center">
@@ -35,7 +35,7 @@
                 </div>
             </div>
         </div>
-        <img src="/images/logo.png" alt="Logo El Roble" class="carousel-logo">
+        <img src="/images/logo sin letras.png" alt="Logo El Roble" class="carousel-logo">
         <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
             <span class="carousel-control-prev-icon"></span>
         </button>

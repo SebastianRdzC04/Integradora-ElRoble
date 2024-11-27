@@ -17,15 +17,15 @@ class PeopleTableSeeder extends Seeder
     public function run()
     {
         $persona = new Person();
-        $persona->first_name = 'Sebastian';
-        $persona->last_name = 'Rodriguez';
+        $persona->first_name = 'Sebastián';
+        $persona->last_name = 'Rodríguez';
         $persona->birthdate = '2001-05-04';
         $persona->gender = 'Masculino';
         $persona->phone = '8714980534';
         $persona->save();
 
         $persona = new Person();
-        $persona->first_name = 'Jesus';
+        $persona->first_name = 'Jesús';
         $persona->last_name = 'Villareal';
         $persona->birthdate = '2001-05-04';
         $persona->gender = 'Masculino';
@@ -34,10 +34,10 @@ class PeopleTableSeeder extends Seeder
 
         $persona = new Person();
         $persona->first_name = 'Axel';
-        $persona->last_name = 'Come Caca';
-        $persona->birthdate = '2001-05-04';
-        $persona->gender = 'Femenino';
-        $persona->phone = '8712050403';
+        $persona->last_name = 'Espinoza';
+        $persona->birthdate = '2004-12-16';
+        $persona->gender = 'Masculino';
+        $persona->phone = '8714017089';
         $persona->save();
         //
         $faker = Faker::create('es_MX');
