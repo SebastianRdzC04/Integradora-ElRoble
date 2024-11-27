@@ -1,7 +1,7 @@
 <!-- resources/views/layouts/navbar.blade.php -->
 <style>
     #IniciarSesionBoton {
-        background-color: #2b1a06; 
+        background-color: #2b1a06;
         padding: 10px;
         border-radius: 100px;
         color: white;
@@ -16,7 +16,8 @@
         background-color: #000000a1 !important;
     }
 
-    .navbar-brand, .nav-link {
+    .navbar-brand,
+    .nav-link {
         color: white !important;
     }
 
@@ -25,14 +26,15 @@
     }
 
     .navbar-toggler {
-        border-color: rgba(255,255,255,0.5) !important;
+        border-color: rgba(255, 255, 255, 0.5) !important;
     }
 </style>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">
-            <img src="{{ asset('images/logobranding.png') }}" width="170" height="45" class="d-inline-block align-top" style="margin-right: 10px" alt="">
+            <img src="{{ asset('images/logobranding.png') }}" width="170" height="45"
+                class="d-inline-block align-top" style="margin-right: 10px" alt="">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
@@ -51,6 +53,14 @@
                 <li>
                     <a class="nav-link" href=""></a>
                 </li>
+                @if (auth()->check())
+                    @if (auth()->user()->roles->contains('id', 3))
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{route('dashboard')}}">Dashboard</a>
+                        </li>
+                    @endif
+
+                @endif
             </ul>
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
