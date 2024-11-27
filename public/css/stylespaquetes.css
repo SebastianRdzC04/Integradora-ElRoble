@@ -1,6 +1,8 @@
 body {
     background-image: url('/images/imagen4.jpg');
-    background-size: cover;
+    background-repeat: repeat;
+    background-size: contain;
+    background-position: center;
     color: white;
 }
 .container {
@@ -213,6 +215,10 @@ li {
 .service-disabled {
     opacity: 0.5;
     pointer-events: none;
+}
+.service-enabled {
+    opacity: 1;
+    pointer-events: auto;
 }
 .category-card {
     display: flex;
