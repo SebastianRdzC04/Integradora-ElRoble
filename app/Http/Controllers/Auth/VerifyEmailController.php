@@ -32,26 +32,25 @@ class VerifyEmailController extends Controller
     {
         $user = $request->user();
     
-        // Verificar si el usuario ya está verificado
         if ($user->hasVerifiedEmail()) {
             return redirect()->route('home')->with('info', 'Tu correo ya ha sido verificado.');
         }
     
-        // Reenviar el correo de verificación
         $user->sendEmailVerificationNotification();
     
-        // Mensaje de éxito
         session()->flash('success', 'Enlace de verificación reenviado.');
-        return redirect()->route('verification.notice');
+        return redirect()->url('/prueba3');
     }
-    
-    
 
-    /**
-     * Mostrar la vista de verificación de correo electrónico.
-     */
-    public function showVerificationView()
+    public function showVerificationEmailView()
     {
         return view('pages.sesion.notification.verify_email');
     }
+
+    public function showVerificationPhoneView()
+    {
+        return view('pages.sesion.notification.verify_phone');
+    }    
+
+    
 }

@@ -14,6 +14,7 @@ use Laravel\Socialite\Facades\Socialite;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Carbon;
+use ReCaptcha\ReCaptcha;
 
 class RegisterUserController extends Controller
 {
@@ -61,7 +62,16 @@ class RegisterUserController extends Controller
             'gender' => 'required|in:Masculino,Femenino,Otro',
             'phone' => 'required|string|size:10|regex:/^[0-9]+$/',
             'email' => 'required|string|max:70',
+            'recaptcha_token' => 'required',
         ]);
+
+        $recaptcha = new ReCaptcha(config('services.recaptcha.secret_key'));
+
+        $response = $recaptcha->verify($request->input('recaptcha_token'), $request->ip());
+
+        if (!$response->isSuccess()) {
+            return back()->withErrors(['recaptcha' => 'La verificación de reCAPTCHA falló.']);
+        }
 
         $validateperson = $this->validateAndProcessBirthdate($validateperson);
 

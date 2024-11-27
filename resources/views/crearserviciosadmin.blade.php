@@ -188,6 +188,10 @@
 
 @section('scripts')
     <script>
+
+    showLoader(); // Para mostrar
+    hideLoader(); // Para ocultar
+    
         const categorySelect = document.getElementById('category');
         const newCategoryInput = document.getElementById('newCategory');
         const categoryLabel = document.getElementById('category-label');
