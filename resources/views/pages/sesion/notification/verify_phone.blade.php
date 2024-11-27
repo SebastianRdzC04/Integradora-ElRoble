@@ -43,19 +43,19 @@
                 <input type="text" name="code1" id="code1" placeholder="#" pattern="\d*" class="form-control code-input" maxlength="1" required autocomplete="off" oninput="moveFocus(1)">
                 
                 <!-- Campo para el segundo dígito -->
-                <input type="text" name="code2" id="code2" pattern="\d*" class="form-control code-input" maxlength="1" required autocomplete="off" oninput="moveFocus(2)">
+                <input type="text" name="code2" id="code2" placeholder="#" pattern="\d*" class="form-control code-input" maxlength="1" required autocomplete="off" oninput="moveFocus(2)">
                 
                 <!-- Campo para el tercer dígito -->
-                <input type="text" name="code3" id="code3" pattern="\d*" class="form-control code-input" maxlength="1" required autocomplete="off" oninput="moveFocus(3)">
+                <input type="text" name="code3" id="code3" placeholder="#" pattern="\d*" class="form-control code-input" maxlength="1" required autocomplete="off" oninput="moveFocus(3)">
                 
                 <!-- Campo para el cuarto dígito -->
-                <input type="text" name="code4" id="code4" pattern="\d*" class="form-control code-input" maxlength="1" required autocomplete="off" oninput="moveFocus(4)">
+                <input type="text" name="code4" id="code4" placeholder="#" pattern="\d*" class="form-control code-input" maxlength="1" required autocomplete="off" oninput="moveFocus(4)">
 
                 <!-- Campo para el quinto dígito -->
-                <input type="text" name="code5" id="code5" pattern="\d*" class="form-control code-input" maxlength="1" required autocomplete="off" oninput="moveFocus(5)">
+                <input type="text" name="code5" id="code5" placeholder="#" pattern="\d*" class="form-control code-input" maxlength="1" required autocomplete="off" oninput="moveFocus(5)">
 
                 <!-- Campo para el sexto dígito -->
-                <input type="text" name="code6" id="code6" pattern="\d*" class="form-control code-input" maxlength="1" required autocomplete="off" oninput="moveFocus(6)">
+                <input type="text" name="code6" id="code6" placeholder="#" pattern="\d*" class="form-control code-input" maxlength="1" required autocomplete="off" oninput="moveFocus(6)">
 
             </div>
         </div>
