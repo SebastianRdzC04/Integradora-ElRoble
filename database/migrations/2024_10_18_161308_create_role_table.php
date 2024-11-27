@@ -19,11 +19,12 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        DB::table('role')->insert([
-            ['name' => 'admin'],
-            ['name' => 'user'],
-            ['name' => 'empleado'],
-        ]);
+        $roles = ['superadmin','admin', 'worker', 'user', 'guest', ];
+        foreach ($roles as $rol){
+            DB::table('role')->insert([
+                'name' => $rol
+            ]);
+        }
     }
 
     /**

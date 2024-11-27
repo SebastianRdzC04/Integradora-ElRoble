@@ -21,6 +21,7 @@
                             <tr>
                                 <th>Nombre</th>
                                 <th>Cantidad</th>
+                                <th>Acciones</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -28,6 +29,13 @@
                                 <tr>
                                     <td>{{ $item->consumable->name }}</td>
                                     <td>{{ $item->quantity }}{{ $item->consumable->unit }}</td>
+                                    <td>
+                                        <form action="{{route('dashboard.delete.consumable.default', $item->id)}}" method="POST">
+                                            @csrf
+                                            <button class="btn btn-outline-danger p-1 m-0" type="submit"><i
+                                                    class="bi bi-trash3"></i></button>
+                                        </form>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>

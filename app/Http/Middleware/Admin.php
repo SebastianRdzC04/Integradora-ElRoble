@@ -4,8 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
-class SuperAdmin
+class Admin
 {
     /**
      * Handle an incoming request.
@@ -16,11 +17,10 @@ class SuperAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        if(!auth()->check() || !auth()->user()->roles->contains('name','superadmin'))
+        if(!auth()->check() || !auth()->user()->roles->contains('name','admin'))
         {
             return redirect()->route('inicio')->withErrors('error', 'Solo personal authorizado');
         }
-        
         return $next($request);
     }
 }
