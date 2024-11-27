@@ -191,33 +191,108 @@
         }
 
         function confirmService(serviceId, categoryId) {
-            const quantity = document.querySelector(`input[name="services[${serviceId}][quantity]"]`).value;
-            const price = document.querySelector(`input[name="services[${serviceId}][price]"]`).value;
-            const description = document.querySelector(`input[name="services[${serviceId}][description]"]`).value;
+            const serviceCard = document.getElementById(`service-details-${serviceId}`);
+            const quantityInput = serviceCard.querySelector(`input[name="services[${serviceId}][quantity]"]`);
+            const priceInput = serviceCard.querySelector(`input[name="services[${serviceId}][price]"]`);
+            const descriptionInput = serviceCard.querySelector(`input[name="services[${serviceId}][description]"]`);
+            const confirmButton = document.getElementById(`confirmButton-${serviceId}`);
 
-            if (quantity && price && description) {
+            if (quantityInput.value && priceInput.value && descriptionInput.value) {
                 confirmedServices[serviceId] = {
                     categoryId,
-                    quantity,
-                    price,
-                    description,
+                    quantity: quantityInput.value,
+                    price: priceInput.value,
+                    description: descriptionInput.value,
                     isConfirmed: true
                 };
 
                 delete selectedServices[serviceId];
 
+                serviceCard.classList.add('service-disabled');
+                serviceCard.classList.remove('service-enabled');
+                const checkbox = serviceCard.querySelector('input[type="checkbox"]');
+                if (checkbox) checkbox.disabled = true;
+
+                confirmButton.disabled = true;
+
                 updateServicePreview();
-                document.getElementById(`service-details-${serviceId}`).style.display = 'none';
-
-                const categoryServices = document.querySelectorAll(`#services-${categoryId} .service-card`);
-                categoryServices.forEach(card => {
-                    card.style.display = 'none';
-                });
-
-                toggleCreatePackageButton();
             } else {
                 alert('Por favor, completa todos los campos del servicio.');
             }
+        }
+
+        function eliminarServicio(serviceId) {
+            delete confirmedServices[serviceId];
+            updateServicePreview();
+
+            const serviceCard = document.getElementById(`service-details-${serviceId}`);
+            serviceCard.classList.remove('service-disabled');
+            serviceCard.classList.add('service-enabled');
+            serviceCard.style.opacity = 1;
+            serviceCard.style.pointerEvents = "auto";
+
+            const checkbox = serviceCard.querySelector('input[type="checkbox"]');
+            if (checkbox) {
+                checkbox.disabled = false;
+                checkbox.checked = false;
+            }
+
+            const confirmButton = serviceCard.querySelector(`#confirmButton-${serviceId}`);
+            if (confirmButton) {
+                confirmButton.style.display = 'none';
+                confirmButton.disabled = true;
+            }
+
+            const quantityInput = serviceCard.querySelector(`input[name="services[${serviceId}][quantity]"]`);
+            if (quantityInput) {
+                quantityInput.style.display = 'none';
+                quantityInput.value = '';
+            }
+
+            const priceInput = serviceCard.querySelector(`input[name="services[${serviceId}][price]"]`);
+            if (priceInput) {
+                priceInput.style.display = 'none';
+                priceInput.value = '';
+            }
+
+            const descriptionInput = serviceCard.querySelector(`input[name="services[${serviceId}][description]"]`);
+            if (descriptionInput) {
+                descriptionInput.style.display = 'none';
+                descriptionInput.value = '';
+            }
+
+            const confirmDeleteModal = bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal'));
+            confirmDeleteModal.hide();
+        }
+
+        function confirmarEliminacionServicio(serviceId) {
+            const modalHtml = `
+                <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                ¿Estás seguro de que deseas eliminar este servicio?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-danger" onclick="eliminarServicio('${serviceId}')">Eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const confirmDeleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+            confirmDeleteModal.show();
+
+            confirmDeleteModal._element.addEventListener('hidden.bs.modal', function () {
+                document.getElementById('confirmDeleteModal').remove();
+            });
         }
 
         function updateServicePreview() {
@@ -227,8 +302,12 @@
             for (let serviceId in confirmedServices) {
                 const service = confirmedServices[serviceId];
                 const serviceName = document.querySelector(`input[value="${serviceId}"]`).closest('.service-card').querySelector('.card-title').innerText;
-                const confirmationText = service.isConfirmed ? "" : " <span style='color: red;'>(Sin confirmar)</span>";
-                serviciosLista.innerHTML += `<p><strong>Servicio:</strong> ${serviceName} (Cant. ${service.quantity}, $${service.price}, ${service.description})${confirmationText}</p>`;
+                serviciosLista.innerHTML += `
+                    <p>
+                        <strong>Servicio:</strong> ${serviceName} (Cant. ${service.quantity}, $${service.price}, ${service.description})
+                        <button class="btn btn-danger btn-sm" onclick="confirmarEliminacionServicio('${serviceId}')">Eliminar</button>
+                    </p>
+                `;
             }
         }
 
@@ -267,13 +346,6 @@
                     detailsContainer.style.display = 'block';
                 }
 
-                const categoryServices = document.querySelectorAll(`#services-${categoryId} .service-card`);
-                categoryServices.forEach(card => {
-                    if (card !== serviceCard) {
-                        card.style.display = 'none';
-                    }
-                });
-
                 if (serviceQuantityInput.value && servicePriceInput.value && serviceDescriptionInput.value) {
                     selectedServices[selectedServiceId] = {
                         categoryId,
@@ -293,11 +365,6 @@
                 if (detailsContainer) {
                     detailsContainer.style.display = 'none';
                 }
-
-                const categoryServices = document.querySelectorAll(`#services-${categoryId} .service-card`);
-                categoryServices.forEach(card => {
-                    card.style.display = 'block';
-                });
             }
             updateServicePreview();
         }
