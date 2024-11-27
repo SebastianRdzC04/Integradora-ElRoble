@@ -105,11 +105,6 @@
                             </div>
                         </div>
 
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" id="day_after_checkbox" class="form-check-input" onchange="toggleEndTimeRange()">
-                            <label for="day_after_checkbox" class="form-check-label">¿El evento finalizará al día siguiente?</label>
-                        </div>
-
                         <div class="mb-3 row">
                             <div class="col-md-6">
                                 <label for="guest_count" class="form-label">Cantidad de Invitados</label>
@@ -453,76 +448,67 @@
         function crearPaquete() {
             const form = document.getElementById('cotizacionForm');
             document.querySelectorAll('.service-hidden-input').forEach(input => input.remove());
-    
+
             const date = document.getElementById('date').value;
             const startInput = document.getElementById('start_time');
             const endInput = document.getElementById('end_time');
             const startTime = startInput.value;
             const endTime = endInput.value;
-            const dayAfterCheckbox = document.getElementById('day_after_checkbox').checked;
-    
+
             const typeEventElement = document.getElementById('type_event');
             const typeEventValue = typeEventElement ? String(typeEventElement.value) : '';
-    
+
             const placeId = document.querySelector('input[name="place_id"]:checked');
             if (!placeId) {
                 alert("Por favor, selecciona un lugar.");
                 return;
             }
-    
+
             if (!date || !startTime || !endTime) {
                 alert("Por favor, selecciona la fecha y las horas de inicio y fin del evento.");
                 return;
             }
-    
-            if (!esHoraValida(startTime) || !esHoraValida(endTime)) {
-                alert("Las horas deben estar en formato válido (hh:mm) y ser completas o medias (ej. 6:00 o 3:30).");
+
+            if (!validarHoraEnRango()) {
                 return;
             }
-    
-            validarHoraEnRango(startInput);
-            validarHoraEnRango(endInput);
-    
-            if (startInput.validationMessage || endInput.validationMessage) {
-                alert(startInput.validationMessage || endInput.validationMessage);
-                return;
-            }
-    
+
             const startDateTime = `${date} ${startTime.slice(0, 5)}`;
             let endDateTime = `${date} ${endTime.slice(0, 5)}`;
-            if (dayAfterCheckbox) {
+            const endHour = parseInt(endTime.split(':')[0], 10);
+            if (endHour >= 0 && endHour <= 3) {
                 const dateObj = new Date(`${date}T${endTime}:00`);
                 dateObj.setDate(dateObj.getDate() + 1);
                 const endDate = dateObj.toISOString().slice(0, 10);
                 endDateTime = `${endDate} ${endTime.slice(0, 5)}`;
             }
-    
+
             form.appendChild(generarInputOculto('start_time', startDateTime));
             form.appendChild(generarInputOculto('end_time', endDateTime));
             form.appendChild(generarInputOculto('type_event', typeEventValue));
             form.appendChild(generarInputOculto('place_id', placeId.value));
-    
+
             let anyServiceConfirmed = false;
             for (let serviceId in confirmedServices) {
                 const service = confirmedServices[serviceId];
-    
+
                 if (service.isConfirmed && service.quantity.trim() !== "") {
                     console.log(`Confirmando servicio ${serviceId} con cantidad: ${service.quantity}`);
-    
+
                     form.appendChild(generarInputOculto(`services[${serviceId}][quantity]`, service.quantity));
                     form.appendChild(generarInputOculto(`services[${serviceId}][confirmed]`, true));
                 } else {
                     console.log(`Servicio ${serviceId} no confirmado o sin cantidad válida. Se omite.`);
                 }
             }
-    
+
             if (!anyServiceConfirmed) {
                 console.log("No se seleccionaron servicios confirmados. Enviando formulario sin información de servicios.");
             }
-    
+
             console.log("Servicios seleccionados:", selectedServices);
             console.log("Servicios confirmados:", confirmedServices);
-    
+
             form.submit();
         }
     
@@ -545,17 +531,35 @@
             vistaPrevia.style.top = offset + 'px';
         };
     
-        function validarHoraEnRango(input) {
-            let hora = input.value;
-            let horaObj = new Date('1970-01-01T' + hora + ':00');
-            let horaInicioLimite = new Date('1970-01-01T11:00:00');
-            let horaFinLimite = new Date('1970-01-02T03:00:00');
-    
-            if (horaObj < horaInicioLimite || horaObj > horaFinLimite) {
-                input.setCustomValidity('La hora debe estar entre las 11:00 AM y las 3:00 AM.');
-            } else {
-                input.setCustomValidity('');
+        function validarHoraEnRango() {
+            const startInput = document.getElementById('start_time');
+            const endInput = document.getElementById('end_time');
+            const startTime = startInput.value;
+            const endTime = endInput.value;
+
+            const startHour = parseInt(startTime.split(':')[0], 10);
+            const endHour = parseInt(endTime.split(':')[0], 10);
+
+            const startValid = startHour >= 12 && startHour <= 23;
+            const endValid = (endHour >= 0 && endHour <= 3) || (endHour >= 12 && endHour <= 23);
+
+            if (!startValid || !endValid) {
+                alert('Las horas deben estar entre las 12:00 PM y las 3:00 AM del día siguiente.');
+                return false;
             }
+
+            const startDateTime = new Date(`1970-01-01T${startTime}:00`);
+            let endDateTime = new Date(`1970-01-01T${endTime}:00`);
+            if (endHour >= 0 && endHour <= 3) {
+                endDateTime.setDate(endDateTime.getDate() + 1);
+            }
+
+            if (endDateTime <= startDateTime) {
+                alert('La hora de finalización debe ser posterior a la hora de inicio.');
+                return false;
+            }
+
+            return true;
         }
     
         document.getElementById('start_time').setAttribute('step', '1800');
