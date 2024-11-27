@@ -285,6 +285,17 @@ Route::post('dashboard/add/consumable/default', function (Request $request) {
 
 })->name('dashboard.add.consumable.default');
 
+
+Route::post('dashboard/delete/consumable/default/{id}', function ($id) {
+    $consumable = ConsumableEventDefault::find($id);
+    if ($consumable) {
+        $consumable->delete();
+        return redirect()->back()->with('success', 'El consumible ha sido eliminado de los eventos por defecto');
+    }
+    return redirect()->back()->with('error', 'El consumible no se ha encontrado');
+
+})->name('dashboard.delete.consumable.default');
+
 Route::post('dashboard/consumable/add/stock/{id}', function ($id, Request $request) {
     $consumable = Consumable::find($id);
     $request->validate([

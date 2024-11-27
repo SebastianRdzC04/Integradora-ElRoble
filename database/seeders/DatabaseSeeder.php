@@ -29,14 +29,47 @@ class DatabaseSeeder extends Seeder
         $this->call(ServiceCategoriesTable::class);
         $this->call(InventoryCategoriesTable::class);
         $this->call(PlacesTable::class);
-        $this->call(RolesSeeder::class);
+        //$this->call(RolesSeeder::class);
         $this->call(SerialNumberSeeder::class);
         $this->call(InventoryTable::class);
         $this->call(ServiceSeeder::class);
         $this->call(PackageSeeder::class);
 
+        $usuario = new User();
+        $usuario->nickname = 'SebasRdz';
+        $usuario->email = 'sebas@superadmin.com';
+        $usuario->email_verified_at = now();
+        $usuario->password = Hash::make('1234567890');
+        $usuario->person_id = 1;
+        $usuario->save();
+        $usuario->roles()->attach(1);
+        $usuario->roles()->attach(2);
+        $usuario->roles()->attach(3);
 
-        for ($i = 1; $i <= 10; $i++) {
+        $usuario = new User();
+        $usuario->nickname = 'JesusElpro';
+        $usuario->email = 'jesus@admin.com';
+        $usuario->email_verified_at = now();
+        $usuario->password = Hash::make('1234567890');
+        $usuario->person_id = 2;
+        $usuario->save();
+        $usuario->roles()->attach(2);
+        $usuario->roles()->attach(3);
+
+        $usuario = new User();
+        $usuario->nickname = 'axelcacas';
+        $usuario->email = 'axelcome@caca.com';
+        $usuario->email_verified_at = now();
+        $usuario->password = Hash::make('1234567890');
+        $usuario->person_id = 3;
+        $usuario->save();
+        $usuario->roles()->attach(3);
+
+
+
+
+
+        for ($i = 4; $i <= 14; $i++) {
             $faker = Faker::create('es_MX');
             $user = new User();
             $user->email = $faker->email;
