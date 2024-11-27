@@ -23,6 +23,7 @@ use App\Models\QuoteService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\InicioClientesController;
+use App\Models\ConsumableCategory;
 use App\Models\ConsumableEventDefault;
 
 /*
@@ -35,6 +36,14 @@ use App\Models\ConsumableEventDefault;
 */
 
 Route::get('/', [InicioClientesController::class, 'create'])->name('inicio');
+
+Route::get('inventory/create', function() {
+    return view('pages.inventory.inventory_create');
+})->name('inventory.create');
+
+Route::get('calendario', function() {
+    return view('pages.calendario');
+})->name('calendario');
 
 
 // Rutas que seran protegidas con el middleware del administrador
@@ -313,6 +322,16 @@ Route::post('dashboard/consumable/add/stock/{id}', function ($id, Request $reque
     return redirect()->back()->with('error', 'El consumible no se ha encontrado');
 
 })->name('dashboard.consumable.add.stock');
+
+Route::post('dashboard/consumable/category/create', function (Request $request) {
+    $request->validate([
+        'nombre' => 'required|string',
+    ]);
+    $consumable = new ConsumableCategory();
+    $consumable->name = $request->nombre;
+    $consumable->save();
+    return redirect()->back()->with('success', 'La categoria ha sido creada correctamente');
+})->name('dashboard.consumable.category.create');
 
 
 

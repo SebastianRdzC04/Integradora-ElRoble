@@ -12,29 +12,6 @@
     <title>Document</title>
 </head>
 
-<div class="alert alert-danger">{{ session('logout') }}</div>
-
-<form action="{{ route('logout') }}" method="post">
-    @csrf
-    <button type="submit">Cerrar sesión</button>
-</form>
-
-<form action="{{ route('login') }}" method="get">
-    @csrf
-    <button type="submit">Iniciar sesion</button>
-</form>
-
-@if (auth()->check() && auth()->user()->email_verified_at)
-    <p>Tu cuenta ya está verificada.</p>
-@elseif (auth()->check())
-    <form action="{{ route('verification.send') }}" method="post">
-        @csrf
-        <button type="submit">Verificar cuenta</button>
-    </form>
-@else
-    <p>Por favor, inicia sesión para verificar tu cuenta.</p>
-@endif
-
 
 
 
@@ -87,7 +64,7 @@
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
     <script>
-        const fechas = []
+        const fechas = ['2024-05-05']
     </script>
     <script src="{{ asset('js/calendar.js') }}"></script>
 </body>
