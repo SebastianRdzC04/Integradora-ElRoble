@@ -25,21 +25,16 @@ class LoginController extends Controller
 
     public function password(Request $request)
     {
-        // Obtiene el valor ingresado por el usuario
         $input = $request->input('phoneoremail');
 
-        // Verifica si es un correo electrónico
         if (filter_var($input, FILTER_VALIDATE_EMAIL)) {
             $isEmail = true;
         } else {
-            // Verifica si es un número de teléfono
             $isEmail = false;
 
-            // Validación para un número de teléfono con 10 dígitos
-            $isPhone = preg_match('/^[0-9]{10}$/', $input); // Ajusta la longitud según sea necesario
+            $isPhone = preg_match('/^[0-9]{10}$/', $input); 
 
             if (!$isPhone) {
-                // Si no es un número de teléfono ni un correo, puedes retornar un error con Toastr
                 return redirect()->back()->with('error', 'Por favor ingrese un correo electrónico o un número de teléfono válido.');
             }
         }

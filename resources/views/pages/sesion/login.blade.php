@@ -46,7 +46,9 @@
             </svg>
             <span id="botonFacebook" class="btn-text">Iniciar sesión con Facebook</span>
         </button>
-        <div id="textobajo">© 2024 El Roble. Todos los derechos reservados.</div>
+        <div id="textobajo">© 2024 El Roble. Todos los derechos reservados. <br>
+        <p>Este sitio está protegido por reCAPTCHA y se aplican la <a href="https://policies.google.com/privacy" target="_blank">Política de privacidad</a> y los <a href="https://policies.google.com/terms" target="_blank">Términos de servicio</a> de Google.</p>
+        </div>
     </form>
 
 
@@ -54,6 +56,7 @@
 @endsection
 
 @section('script')
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 

@@ -132,6 +132,23 @@
         
 
 @section('script')
+            <!--para el recaptcha-->
+<script>
+    grecaptcha.ready(function() {
+        
+        grecaptcha.execute('{{ config('services.recaptcha.site_key') }}', {action: 'submit'}).then(function(token) {
+            
+            var form = document.getElementById('registrationForm'); 
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'recaptcha_token'; 
+            input.value = token;  
+            form.appendChild(input);
+        });
+    });
+</script>
+
+
 <script>
     // revisar el dia correcto dado el año y el mes
     function getDaysInMonth(month, year) {

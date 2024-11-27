@@ -96,6 +96,7 @@
         </div>
     </div>
     <!--para la libreria de toastr es para sus animaciones de entrada-->
+    <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <!--esto es para configurar lo la notificacion que salta con cualquier error o mensaje de regreso como notificaion-->

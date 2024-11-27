@@ -11,10 +11,6 @@ use App\Http\Controllers\EmployeeEventController;
 use App\Http\Controllers\IncidentController;
 use Laravel\Socialite\Facades\Socialite;
  
-//Aqui esta el login de X
-//Route::get('auth/redirect/x', [RegisterUserController::class, 'redirectToX'])->name('login.x');
-//Route::get('auth/callback/x', [RegisterUserController::class, 'handleXCallback'])->name('register.x');
-
 //Aqui esta el login de Facebook
 Route::get('auth/facebook', [RegisterUserController::class, 'redirectToFacebook'])->name('login.facebook');
 Route::get('auth/facebook/callback', [RegisterUserController::class, 'handleFacebookCallback'])->name('register.facebook');
@@ -90,8 +86,11 @@ Route::middleware('guest')->group(function()
     Route::post('/login', [LoginController::class, 'store'])->name('login.store');
 });
 
+Route::post('/email/verification-notification', [VerifyEmailController::class, 'resendVerificationEmail'])
+->middleware('custom.throttle:1,2,verification.notice')->name('verification.send');
 
-
+Route::get('/email/verify/phone', [VerifyEmailController::class, 'showVerificationPhoneView'])
+        ->name('phoneverify.create');
 
 Route::middleware('auth')->group(function(){
     // Ruta para el enlace de verificación del email
@@ -100,11 +99,9 @@ Route::middleware('auth')->group(function(){
         ->name('verification.verify');     
 
     // Ruta para reenviar el enlace de verificación con control de tiempo
-    Route::post('/email/verification-notification', [VerifyEmailController::class, 'resendVerificationEmail'])
-    ->middleware('custom.throttle:1,2,verification.notice')->name('verification.send');
 
     // Ruta para mostrar la vista de verificación de correo
-    Route::get('/email/verify', [VerifyEmailController::class, 'showVerificationView'])
+    Route::get('/email/verify', [VerifyEmailController::class, 'showVerificationEmailView'])
         ->name('verification.notice');
 
     // Ruta para salir de la sesion

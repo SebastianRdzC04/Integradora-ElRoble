@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('birthdate');
             $table->enum('gender', ['Masculino', 'Femenino', 'Otro']);
             $table->string('phone', 10);
+            $table->timestamp('phone_verified_at')->nullable();
             $table->integer('age')->nullable();
             $table->timestamps();
         });
@@ -30,7 +31,6 @@ return new class extends Migration
             BEFORE INSERT ON people
             FOR EACH ROW
             BEGIN
-                -- Calcular la edad basándose en la fecha de nacimiento
                 SET NEW.age = TIMESTAMPDIFF(YEAR, NEW.birthdate, CURDATE());
             END;
         ");
