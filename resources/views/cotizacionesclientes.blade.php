@@ -219,10 +219,10 @@
         // Declaración de Variables de Almacenamiento
         let confirmedServices = {};
         let selectedServices = {};
-
+    
         // Declarando Servicios
         const services = @json($services);
-
+    
         // Ejecución de Funciones al Ejecutar Vista
         window.addEventListener('load', ajustarAlturaCategorias);
         window.addEventListener('resize', ajustarAlturaCategorias);
@@ -230,64 +230,128 @@
         // Funciones Bárbaras
         function confirmarServicio(serviceId, categoryId) {
             const serviceCard = document.getElementById(`service-details-${serviceId}`);
-            const description = document.querySelector(`input[name="services[${serviceId}][description]"]`)?.value;
+            const quantityInput = serviceCard.querySelector(`input[name="services[${serviceId}][quantity]"]`);
             const confirmButton = serviceCard.querySelector(`#confirm-btn-${serviceId}`);
-
-            if (!description || description.trim() === "") {
-                alert('Por favor, ingresa una descripción válida.');
+    
+            if (!quantityInput || quantityInput.value.trim() === "") {
+                alert('Por favor, ingresa una cantidad válida.');
                 return;
             }
-
+    
             if (confirmButton && confirmButton.disabled === false) {
-                confirmedServices[serviceId] = { categoryId, description, isConfirmed: true };
-
+                confirmedServices[serviceId] = { categoryId, quantity: quantityInput.value.trim(), isConfirmed: true };
+    
                 serviceCard.classList.add('service-disabled');
+                serviceCard.classList.remove('service-enabled');
                 const checkbox = serviceCard.querySelector('input[type="checkbox"]');
                 if (checkbox) checkbox.disabled = true;
-
+    
                 confirmButton.disabled = true;
-
+    
                 actualizarVistaServicios();
             } else {
-                alert('Por favor, presiona el botón de confirmar para añadir el servicio.');
+                console.log('No se puede confirmar el servicio aún.');
             }
         }
-
+    
         function getServiceName(serviceId) {
             return services[serviceId] ? services[serviceId].name : "Servicio desconocido";
         }
-
+    
         function actualizarVistaServicios() {
             const vistaPrevia = document.getElementById('vista-previa-servicios');
             vistaPrevia.innerHTML = '';
-
+    
             const serviciosConfirmados = Object.entries(confirmedServices).filter(
                 ([, serviceData]) => serviceData.isConfirmed
             );
-
+    
             if (serviciosConfirmados.length === 0) {
                 vistaPrevia.innerHTML = '<p>No hay servicios confirmados aún.</p>';
                 return;
             }
-
+    
             const listaServicios = document.createElement('ul');
             listaServicios.className = 'lista-servicios-confirmados';
-
+    
             for (const [serviceId, serviceData] of serviciosConfirmados) {
                 const serviceItem = document.createElement('li');
                 serviceItem.className = 'service-item';
                 serviceItem.innerHTML = `
                     <div class="service-info">
                         <h4 class="service-name">${getServiceName(serviceId)}</h4>
-                        <p class="service-quantity">Cantidad: ${serviceData.quantity || 'No especificada'}</p>
+                        <p style="color: black;" class="service-quantity">Cantidad: ${serviceData.quantity || 'No especificada'}</p>
+                        <button class="btn btn-danger btn-sm" onclick="confirmarEliminacionServicio('${serviceId}')">Eliminar</button>
                     </div>
                 `;
                 listaServicios.appendChild(serviceItem);
             }
-
+    
             vistaPrevia.appendChild(listaServicios);
         }
+    
+        function confirmarEliminacionServicio(serviceId) {
+            const modalHtml = `
+                <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 style="color: black;" class="modal-title" id="confirmDeleteModalLabel">Confirmar Eliminación</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div style="color: black;" class="modal-body">
+                                ¿Estás seguro de que deseas eliminar este servicio?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-danger" onclick="eliminarServicio('${serviceId}')">Eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+    
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const confirmDeleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+            confirmDeleteModal.show();
+    
+            confirmDeleteModal._element.addEventListener('hidden.bs.modal', function () {
+                document.getElementById('confirmDeleteModal').remove();
+            });
+        }
+    
+    function eliminarServicio(serviceId) {
+        delete confirmedServices[serviceId];
+        actualizarVistaServicios();
 
+        const serviceCard = document.getElementById(`service-details-${serviceId}`);
+        serviceCard.classList.remove('service-disabled');
+        serviceCard.classList.add('service-enabled');
+        serviceCard.style.opacity = 1;
+        serviceCard.style.pointerEvents = "auto";
+
+        const checkbox = serviceCard.querySelector('input[type="checkbox"]');
+        if (checkbox) {
+            checkbox.disabled = false;
+            checkbox.checked = false;
+        }
+
+        const confirmButton = serviceCard.querySelector(`#confirm-btn-${serviceId}`);
+        if (confirmButton) {
+            confirmButton.style.display = 'none';
+            confirmButton.disabled = true;
+        }
+
+        const quantityInput = serviceCard.querySelector(`input[name="services[${serviceId}][quantity]"]`);
+        if (quantityInput) {
+            quantityInput.style.display = 'none';
+            quantityInput.value = '';
+        }
+
+        const confirmDeleteModal = bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal'));
+        confirmDeleteModal.hide();
+    }
+    
         function toggleServices(categoryId) {
             const servicesDiv = document.getElementById(`services-${categoryId}`);
             servicesDiv.style.display = servicesDiv.style.display === 'block' ? 'none' : 'block';
@@ -299,63 +363,61 @@
             const serviceCard = checkbox.closest('.service-card');
             const serviceQuantityInput = serviceCard.querySelector(`input[name="services[${selectedServiceId}][quantity]"]`);
             const confirmButton = serviceCard.querySelector(`#confirm-btn-${selectedServiceId}`);
-
+    
             if (isSelected) {
                 selectedServices[selectedServiceId] = { categoryId, isSelected: true };
-
-                serviceDescriptionInput.style.display = 'block';
+    
+                serviceQuantityInput.style.display = 'block';
                 confirmButton.style.display = 'block';
-                serviceDescriptionInput.focus();
-
-                serviceDescriptionInput.addEventListener('input', () => {
-                    confirmButton.disabled = !serviceDescriptionInput.value.trim();
+                serviceQuantityInput.focus();
+    
+                serviceQuantityInput.addEventListener('input', () => {
+                    confirmButton.disabled = !serviceQuantityInput.value.trim();
                 });
-
+    
                 confirmButton.addEventListener('click', () => confirmarServicio(selectedServiceId, categoryId));
             } else {
                 delete selectedServices[selectedServiceId];
                 delete confirmedServices[selectedServiceId];
-
-                serviceDescriptionInput.style.display = 'none';
-                serviceDescriptionInput.value = '';
+    
+                serviceQuantityInput.style.display = 'none';
+                serviceQuantityInput.value = '';
                 confirmButton.style.display = 'none';
                 confirmButton.disabled = true;
             }
         }
-
+    
         function confirmService(serviceId) {
             const serviceCard = document.getElementById(`service-details-${serviceId}`);
             const quantityInput = serviceCard.querySelector(`input[name="services[${serviceId}][quantity]"]`);
             const confirmButton = document.getElementById(`confirm-btn-${serviceId}`);
-
+    
             if (!confirmedServices[serviceId]) {
                 confirmedServices[serviceId] = {
                     isConfirmed: false,
                     quantity: ''
                 };
             }
-
+    
             if (!quantityInput.value || quantityInput.value < 1) {
                 alert("Por favor, ingresa una cantidad válida.");
             return;
             }
-
+    
             confirmButton.addEventListener('click', function () {
                 if (quantityInput.value >= 1) {
                     confirmedServices[serviceId] = {
                         isConfirmed: true,
-                        description: descriptionInput.value.trim()
+                        quantity: quantityInput.value.trim()
                     };
-
+    
                     actualizarVistaServicios();
-
+    
                     serviceCard.style.opacity = 0.5;
                     serviceCard.style.pointerEvents = "none";
-
+    
                     confirmButton.style.display = "none";
-                    descriptionInput.style.display = "none";
-
-                    alert("Servicio confirmado correctamente.");
+                    quantityInput.style.display = "none";
                 }
             });
         }
@@ -367,18 +429,18 @@
     
         function ajustarAlturaCategorias() {
             const categoryCards = document.querySelectorAll('.category-card');
-
+    
             if (categoryCards.length === 0) return;
-
+    
             let maxAltura = 0;
-
+    
             categoryCards.forEach(card => {
                 const alturaActual = card.offsetHeight;
                 if (alturaActual > maxAltura) {
                     maxAltura = alturaActual;
                 }
             });
-
+    
             categoryCards.forEach(card => {
                 card.style.height = maxAltura + 'px';
                 card.style.display = 'flex';
@@ -389,86 +451,86 @@
         }
     
         function crearPaquete() {
-    const form = document.getElementById('cotizacionForm');
-    document.querySelectorAll('.service-hidden-input').forEach(input => input.remove());
-
-    const date = document.getElementById('date').value;
-    const startInput = document.getElementById('start_time');
-    const endInput = document.getElementById('end_time');
-    const startTime = startInput.value;
-    const endTime = endInput.value;
-    const dayAfterCheckbox = document.getElementById('day_after_checkbox').checked;
-
-    const typeEventElement = document.getElementById('type_event');
-    const typeEventValue = typeEventElement ? String(typeEventElement.value) : '';
-
-    const placeId = document.querySelector('input[name="place_id"]:checked');
-    if (!placeId) {
-        alert("Por favor, selecciona un lugar.");
-        return;
-    }
-
-    if (!date || !startTime || !endTime) {
-        alert("Por favor, selecciona la fecha y las horas de inicio y fin del evento.");
-        return;
-    }
-
-    if (!esHoraValida(startTime) || !esHoraValida(endTime)) {
-        alert("Las horas deben estar en formato válido (hh:mm) y ser completas o medias (ej. 6:00 o 3:30).");
-        return;
-    }
-
-    validarHoraEnRango(startInput);
-    validarHoraEnRango(endInput);
-
-    if (startInput.validationMessage || endInput.validationMessage) {
-        alert(startInput.validationMessage || endInput.validationMessage);
-        return;
-    }
-
-    const startDateTime = `${date} ${startTime.slice(0, 5)}`;
-    let endDateTime = `${date} ${endTime.slice(0, 5)}`;
-    if (dayAfterCheckbox) {
-        const dateObj = new Date(`${date}T${endTime}:00`);
-        dateObj.setDate(dateObj.getDate() + 1);
-        const endDate = dateObj.toISOString().slice(0, 10);
-        endDateTime = `${endDate} ${endTime.slice(0, 5)}`;
-    }
-
-    form.appendChild(generarInputOculto('start_time', startDateTime));
-    form.appendChild(generarInputOculto('end_time', endDateTime));
-    form.appendChild(generarInputOculto('type_event', typeEventValue));
-    form.appendChild(generarInputOculto('place_id', placeId.value));
-
-    let anyServiceConfirmed = false;
-    for (let serviceId in confirmedServices) {
-        const service = confirmedServices[serviceId];
-
-        if (service.isConfirmed && service.description.trim() !== "") {
-            console.log(`Confirmando servicio ${serviceId} con descripción: ${service.description}`);
-
-            form.appendChild(generarInputOculto(`services[${serviceId}][description]`, service.description));
-            form.appendChild(generarInputOculto(`services[${serviceId}][confirmed]`, true));
-        } else {
-            console.log(`Servicio ${serviceId} no confirmado o sin descripción válida. Se omite.`);
+            const form = document.getElementById('cotizacionForm');
+            document.querySelectorAll('.service-hidden-input').forEach(input => input.remove());
+    
+            const date = document.getElementById('date').value;
+            const startInput = document.getElementById('start_time');
+            const endInput = document.getElementById('end_time');
+            const startTime = startInput.value;
+            const endTime = endInput.value;
+            const dayAfterCheckbox = document.getElementById('day_after_checkbox').checked;
+    
+            const typeEventElement = document.getElementById('type_event');
+            const typeEventValue = typeEventElement ? String(typeEventElement.value) : '';
+    
+            const placeId = document.querySelector('input[name="place_id"]:checked');
+            if (!placeId) {
+                alert("Por favor, selecciona un lugar.");
+                return;
+            }
+    
+            if (!date || !startTime || !endTime) {
+                alert("Por favor, selecciona la fecha y las horas de inicio y fin del evento.");
+                return;
+            }
+    
+            if (!esHoraValida(startTime) || !esHoraValida(endTime)) {
+                alert("Las horas deben estar en formato válido (hh:mm) y ser completas o medias (ej. 6:00 o 3:30).");
+                return;
+            }
+    
+            validarHoraEnRango(startInput);
+            validarHoraEnRango(endInput);
+    
+            if (startInput.validationMessage || endInput.validationMessage) {
+                alert(startInput.validationMessage || endInput.validationMessage);
+                return;
+            }
+    
+            const startDateTime = `${date} ${startTime.slice(0, 5)}`;
+            let endDateTime = `${date} ${endTime.slice(0, 5)}`;
+            if (dayAfterCheckbox) {
+                const dateObj = new Date(`${date}T${endTime}:00`);
+                dateObj.setDate(dateObj.getDate() + 1);
+                const endDate = dateObj.toISOString().slice(0, 10);
+                endDateTime = `${endDate} ${endTime.slice(0, 5)}`;
+            }
+    
+            form.appendChild(generarInputOculto('start_time', startDateTime));
+            form.appendChild(generarInputOculto('end_time', endDateTime));
+            form.appendChild(generarInputOculto('type_event', typeEventValue));
+            form.appendChild(generarInputOculto('place_id', placeId.value));
+    
+            let anyServiceConfirmed = false;
+            for (let serviceId in confirmedServices) {
+                const service = confirmedServices[serviceId];
+    
+                if (service.isConfirmed && service.quantity.trim() !== "") {
+                    console.log(`Confirmando servicio ${serviceId} con cantidad: ${service.quantity}`);
+    
+                    form.appendChild(generarInputOculto(`services[${serviceId}][quantity]`, service.quantity));
+                    form.appendChild(generarInputOculto(`services[${serviceId}][confirmed]`, true));
+                } else {
+                    console.log(`Servicio ${serviceId} no confirmado o sin cantidad válida. Se omite.`);
+                }
+            }
+    
+            if (!anyServiceConfirmed) {
+                console.log("No se seleccionaron servicios confirmados. Enviando formulario sin información de servicios.");
+            }
+    
+            console.log("Servicios seleccionados:", selectedServices);
+            console.log("Servicios confirmados:", confirmedServices);
+    
+            form.submit();
         }
-    }
-
-    if (!anyServiceConfirmed) {
-        console.log("No se seleccionaron servicios confirmados. Enviando formulario sin información de servicios.");
-    }
-
-    console.log("Servicios seleccionados:", selectedServices);
-    console.log("Servicios confirmados:", confirmedServices);
-
-    form.submit();
-}
-
+    
         function esHoraValida(hora) {
             const regex = /^(?:[01]\d|2[0-3]):(00|30)$/;
             return typeof hora === 'string' && regex.test(hora);
         }
-
+    
         function generarInputOculto(nombre, valor) {
             const input = document.createElement('input');
             input.type = 'hidden';
@@ -482,90 +544,99 @@
             const offset = Math.min(window.scrollY + 320, window.innerHeight - 300);
             vistaPrevia.style.top = offset + 'px';
         };
-
+    
         function validarHoraEnRango(input) {
             let hora = input.value;
             let horaObj = new Date('1970-01-01T' + hora + ':00');
             let horaInicioLimite = new Date('1970-01-01T11:00:00');
             let horaFinLimite = new Date('1970-01-02T03:00:00');
-
+    
             if (horaObj < horaInicioLimite || horaObj > horaFinLimite) {
                 input.setCustomValidity('La hora debe estar entre las 11:00 AM y las 3:00 AM.');
             } else {
                 input.setCustomValidity('');
             }
         }
-
-    document.getElementById('start_time').setAttribute('step', '1800');
-    document.getElementById('end_time').setAttribute('step', '1800');
     
-    function establecerHorasDisponibles() {
-        let horaInicioSelect = document.getElementById('start_time');
-        let horaFinSelect = document.getElementById('end_time');
-        
-        for (let i = 0; i < 24; i++) {
-            for (let j = 0; j < 60; j += 30) {
-                let hora = (i < 10 ? '0' : '') + i + ':' + (j === 0 ? '00' : '30');
-                
-                let horaObj = new Date('1970-01-01T' + hora + ':00');
-                let horaInicioLimite = new Date('1970-01-01T11:00:00');
-                let horaFinLimite = new Date('1970-01-02T03:00:00');
-                
-                if (horaObj >= horaInicioLimite && horaObj <= horaFinLimite) {
-                    let optionInicio = new Option(hora, hora);
-                    let optionFin = new Option(hora, hora);
-                    horaInicioSelect.append(optionInicio);
-                    horaFinSelect.append(optionFin);
+        document.getElementById('start_time').setAttribute('step', '1800');
+        document.getElementById('end_time').setAttribute('step', '1800');
+    
+        function establecerHorasDisponibles() {
+            let horaInicioSelect = document.getElementById('start_time');
+            let horaFinSelect = document.getElementById('end_time');
+    
+            for (let i = 0; i < 24; i++) {
+                for (let j = 0; j < 60; j += 30) {
+                    let hora = (i < 10 ? '0' : '') + i + ':' + (j === 0 ? '00' : '30');
+    
+                    let horaObj = new Date('1970-01-01T' + hora + ':00');
+                    let horaInicioLimite = new Date('1970-01-01T11:00:00');
+                    let horaFinLimite = new Date('1970-01-02T03:00:00');
+    
+                    if (horaObj >= horaInicioLimite && horaObj <= horaFinLimite) {
+                        let optionInicio = new Option(hora, hora);
+                        let optionFin = new Option(hora, hora);
+                        horaInicioSelect.append(optionInicio);
+                        horaFinSelect.append(optionFin);
+                    }
                 }
             }
         }
-    }
     
-    window.onload = function() {
-        establecerHorasDisponibles();
-    };
-
-    function toggleOtroTipoEvento() {
-        const tipoEvento = document.getElementById('type_event').value;
-        const otroTipoDiv = document.getElementById('otro_tipo_evento_div');
-        const otroTipoInput = document.getElementById('otro_tipo_evento');
-
-        if (tipoEvento === 'Otro') {
-            otroTipoDiv.style.display = 'block';
-            otroTipoInput.required = true;
-        } else {
-            otroTipoDiv.style.display = 'none';
-            otroTipoInput.required = false;
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const fieldsToWatch = ['place_id', 'date', 'start_time', 'end_time', 'guest_count', 'type_event', 'owner_name', 'owner_phone'];
-
-        fieldsToWatch.forEach(fieldId => {
-            const field = document.getElementById(fieldId);
-            if (field) {
-                field.addEventListener('input', updatePreview);
+        window.onload = function() {
+            establecerHorasDisponibles();
+        };
+    
+        function toggleOtroTipoEvento() {
+            const tipoEvento = document.getElementById('type_event').value;
+            const otroTipoDiv = document.getElementById('otro_tipo_evento_div');
+            const otroTipoInput = document.getElementById('otro_tipo_evento');
+    
+            if (tipoEvento === 'Otro') {
+                otroTipoDiv.style.display = 'block';
+                otroTipoInput.required = true;
+            } else {
+                otroTipoDiv.style.display = 'none';
+                otroTipoInput.required = false;
             }
-        });
-
-        function updatePreview() {
-            const name = document.getElementById('owner_name').value || 'Nombre';
-            const date = document.getElementById('date').value || '-';
-            const startTime = document.getElementById('start_time').value || '-';
-            const endTime = document.getElementById('end_time').value || '-';
-            const guests = document.getElementById('guest_count').value || '-';
-            const typeEvent = document.getElementById('type_event').value || 'Evento';
-
-            document.getElementById('prevista-nombre').innerText = name;
-            document.getElementById('prevista-fecha').innerText = `Fecha: ${date}`;
-            document.getElementById('prevista-horario').innerText = `Hora: ${startTime} - ${endTime}`;
-            document.getElementById('prevista-invitados').innerText = `Invitados: ${guests}`;
-            document.getElementById('prevista-tipo-evento').innerText = `Tipo de Evento: ${typeEvent}`;
         }
+    
+        document.addEventListener('DOMContentLoaded', function() {
+            const fieldsToWatch = ['place_id', 'date', 'start_time', 'end_time', 'guest_count', 'type_event', 'owner_name', 'owner_phone'];
+    
+            fieldsToWatch.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', updatePreview);
+                }
+            });
+    
+            function updatePreview() {
+                const name = document.getElementById('owner_name').value || 'Nombre';
+                const date = document.getElementById('date').value || '-';
+                const startTime = document.getElementById('start_time').value || '-';
+                const endTime = document.getElementById('end_time').value || '-';
+                const guests = document.getElementById('guest_count').value || '-';
+                const typeEvent = document.getElementById('type_event').value || 'Evento';
+    
+                document.getElementById('prevista-nombre').innerText = name;
+                document.getElementById('prevista-fecha').innerText = `Fecha: ${date}`;
+                document.getElementById('prevista-horario').innerText = `Hora: ${startTime} - ${endTime}`;
+                document.getElementById('prevista-invitados').innerText = `Invitados: ${guests}`;
+                document.getElementById('prevista-tipo-evento').innerText = `Tipo de Evento: ${typeEvent}`;
+            }
 
-    });
+        const phoneInput = document.getElementById('owner_phone');
+        phoneInput.addEventListener('input', limitPhoneNumberLength);
 
+        function limitPhoneNumberLength() {
+            if (this.value.length > 10) {
+                this.value = this.value.slice(0, 10);
+            }
+        }
+    
+        });
+    
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"></script>
