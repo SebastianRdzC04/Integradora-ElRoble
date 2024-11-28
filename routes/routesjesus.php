@@ -15,10 +15,7 @@ use Laravel\Socialite\Facades\Socialite;
 Route::get('auth/facebook', [RegisterUserController::class, 'redirectToFacebook'])->name('login.facebook');
 Route::get('auth/facebook/callback', [RegisterUserController::class, 'handleFacebookCallback'])->name('register.facebook');
 
-//Aqui esta el login de Google
-Route::get('/login-google', function () {
-    return Socialite::driver('google')->redirect();
-})->name('login.google');
+
 
 
 
