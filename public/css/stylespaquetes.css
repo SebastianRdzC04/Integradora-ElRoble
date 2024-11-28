@@ -264,3 +264,6 @@ li {
     border: 2px solid rgb(255, 255, 255);
     min-height: 350px;
 }
+.modal-custom-bg {
+    background-color: rgb(46, 155, 32);
+}

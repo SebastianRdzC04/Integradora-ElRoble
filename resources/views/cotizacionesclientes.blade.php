@@ -28,23 +28,24 @@
                             <div id="packageCarousel" class="carousel slide" data-bs-ride="carousel">
                                 <div class="carousel-inner">
                                     @foreach($packages as $index => $package)
-                                        <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
-                                            <div id="card-carousel" class="card">
-                                                <div class="card-body">
-                                                    <h5 style="color:white;" class="card-title">{{ $package->name }}</h5>
-                                                    <p style="color:white;" class="card-text"><strong>Espacio:</strong> {{ $package->place->name }}</p>
-                                                    <p style="color:white;" class="card-text"><strong>Máximo de personas:</strong> {{ $package->max_people }}</p>
-                                                    <p style="color:white;" class="card-text"><strong>Costo:</strong> ${{ $package->price }}</p>
-                                                    <p style="color:white;" class="card-text"><strong>Servicios incluidos:</strong></p>
-                                                    <ul>
-                                                        @foreach($package->services as $service)
-                                                            <li style="color:white;">{{ $service->name }}</li>
-                                                        @endforeach
-                                                    </ul>
-                                                </div>
+                                    <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
+                                        <div id="card-carousel" class="card">
+                                            <div class="card-body">
+                                                <h5 style="color:white;" class="card-title">{{ $package->name }}</h5>
+                                                <p style="color:white;" class="card-text"><strong>Espacio:</strong> {{ $package->place->name }}</p>
+                                                <p style="color:white;" class="card-text"><strong>Máximo de personas:</strong> {{ $package->max_people }}</p>
+                                                <p style="color:white;" class="card-text"><strong>Costo:</strong> ${{ $package->price }}</p>
+                                                <p style="color:white;" class="card-text"><strong>Servicios incluidos:</strong></p>
+                                                <ul>
+                                                    @foreach($package->services as $service)
+                                                        <li style="color:white;">{{ $service->name }}</li>
+                                                    @endforeach
+                                                </ul>
+                                                <button class="btn btn-primary" onclick="openPackageModal({{ $package->id }})">Solicitar Paquete</button>
                                             </div>
                                         </div>
-                                    @endforeach
+                                    </div>
+                                @endforeach
                                 </div>
                                 <button class="carousel-control-prev" type="button" data-bs-target="#packageCarousel" data-bs-slide="prev">
                                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -210,6 +211,79 @@
         </div>
     </div>
 
+    <!-- Package Modal -->
+    <div class="modal fade" id="packageModal" tabindex="-1" aria-labelledby="packageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" style="background-color: rgb(27, 59, 23); border: 3px solid rgb(255, 255, 255);">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="packageModalLabel">Solicitar Paquete</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="prevista-imagen-container">
+                        <img id="packageImage" class="prevista-imagen" src="/images/imagen1.jpg" alt="Vista previa">
+                        <div class="prevista-caption">
+                            <h5 id="packageName">Nombre</h5>
+                            <p id="packageDescription">Descripción: -</p>
+                            <p id="packagePrice">Precio: -</p>
+                            <p id="packageDates">Fechas: -</p>
+                        </div>
+                    </div>
+                    <p id="packageServices">Servicios incluidos:</p>
+                    <ul id="packageServicesList"></ul>
+                    <form id="packageForm" action="{{ route('cotizacionesclientes.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="package_id" id="packageId">
+                        <div class="mb-3 row">
+                            <div class="col-md-6">
+                                <label for="date" class="form-label">Fecha</label>
+                                <input type="date" name="date" id="date" class="form-control" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="start_time" class="form-label">Hora de Inicio</label>
+                                <input type="time" name="start_time" id="start_time" class="form-control" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="end_time" class="form-label">Hora de Final</label>
+                                <input type="time" name="end_time" id="end_time" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <div class="col-md-6">
+                                <label for="guest_count" class="form-label">Cantidad de Invitados</label>
+                                <input type="number" name="guest_count" id="guest_count" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="type_event" class="form-label">Tipo de Evento</label>
+                                <select name="type_event" id="type_event" class="form-control" required>
+                                    <option value="">Selecciona el tipo de evento</option>
+                                    <option value="XV's">XV's</option>
+                                    <option value="Cumpleaños">Cumpleaños</option>
+                                    <option value="Graduación">Graduación</option>
+                                    <option value="Posada">Posada</option>
+                                    <option value="Boda">Boda</option>
+                                    <option value="Baby Shower">Baby Shower</option>
+                                    <option value="Otro">Otro</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3 row">
+                            <div class="col-md-6">
+                                <label for="owner_name" class="form-label">Nombre</label>
+                                <input type="text" name="owner_name" id="owner_name" class="form-control" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="owner_phone" class="form-label">Teléfono</label>
+                                <input type="text" name="owner_phone" id="owner_phone" class="form-control" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">Enviar Cotización</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Declaración de Variables de Almacenamiento
         let confirmedServices = {};
@@ -253,6 +327,32 @@
             return services[serviceId] ? services[serviceId].name : "Servicio desconocido";
         }
     
+        function openPackageModal(packageId) {
+            const package = @json($packages).find(pkg => pkg.id === packageId);
+            if (!package) return;
+
+            document.getElementById('packageId').value = package.id;
+            document.getElementById('packageName').innerText = package.name;
+            document.getElementById('packageDescription').innerText = `Descripción: ${package.description}`;
+            document.getElementById('packagePrice').innerText = `Precio: $${package.price}`;
+            document.getElementById('packageDates').innerText = `Fechas: ${package.start_date} - ${package.end_date}`;
+            document.getElementById('guest_count').value = package.max_people;
+
+            const packageImage = package.image_path ? `/storage/${package.image_path}` : '/images/imagen1.jpg';
+            document.getElementById('packageImage').src = packageImage;
+
+            const servicesList = document.getElementById('packageServicesList');
+            servicesList.innerHTML = '';
+            package.services.forEach(service => {
+                const li = document.createElement('li');
+                li.innerText = service.name;
+                servicesList.appendChild(li);
+            });
+
+            const packageModal = new bootstrap.Modal(document.getElementById('packageModal'));
+            packageModal.show();
+        }
+
         function actualizarVistaServicios() {
             const vistaPrevia = document.getElementById('vista-previa-servicios');
             vistaPrevia.innerHTML = '';
