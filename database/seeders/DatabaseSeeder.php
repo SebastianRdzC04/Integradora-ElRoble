@@ -57,8 +57,8 @@ class DatabaseSeeder extends Seeder
         $usuario->roles()->attach(3);
 
         $usuario = new User();
-        $usuario->nickname = 'axelcacas';
-        $usuario->email = 'axelcome@caca.com';
+        $usuario->nickname = 'AxelYYa';
+        $usuario->email = 'axelyya@worker.com';
         $usuario->email_verified_at = now();
         $usuario->password = Hash::make('1234567890');
         $usuario->person_id = 3;
