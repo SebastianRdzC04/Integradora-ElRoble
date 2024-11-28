@@ -16,7 +16,7 @@ class Empleado
      */
     public function handle(Request $request, Closure $next)
     {
-        if(!auth()->check() || auth()->user()->roles->contains('name','empleado'))
+        if(!auth()->check() || !auth()->user()->roles->contains('id', 3))
         {
             return redirect()->route('inicio')->withErrors('error', 'Solo personal authorizado');
         }

@@ -12,9 +12,14 @@
 </head>
 
 <body>
-    <header>
-        <h3>Aqui iran las cotizaciones</h3>
-    </header>
+    <aside>
+        @if (auth()->user()->roles->contains('id', 3))
+            <a href="{{ route('dashboard') }}">Ir a Dashboard</a>
+        @endif
+        @if (auth()->user()->roles->contains('id', 1))
+            <a href="{{ route('dashboard.quotes') }}">Volver</a>
+        @endif
+    </aside>
     <main>
         <div class="container">
             <div class="row">
@@ -71,7 +76,8 @@
                                                         <div class="row mb-3">
                                                             <label class="form-label" for="precio">Precio de la
                                                                 cotizacion</label>
-                                                            <input step="0.01" min="0" class="form-control" type="number" name="precio"
+                                                            <input step="0.01" min="0" class="form-control"
+                                                                type="number" name="precio"
                                                                 value="{{ $quote->estimated_price }}">
                                                         </div>
                                                         <div>
@@ -102,7 +108,8 @@
                                                         <div class="row mb-3">
                                                             <label class="form-label" for="precio">Precio de la
                                                                 cotizacion</label>
-                                                            <input step="0.01" min="0" class="form-control" type="number" name="anticipo"
+                                                            <input step="0.01" min="0" class="form-control"
+                                                                type="number" name="anticipo"
                                                                 value="{{ $quote->espected_advance }}">
                                                         </div>
                                                         <div>
@@ -198,7 +205,8 @@
                                                                                     <label for="cantidad"
                                                                                         class="form-label">Cantidad</label>
                                                                                     <input type="number"
-                                                                                        name="cantidad" value="0">
+                                                                                        name="cantidad"
+                                                                                        value="0">
                                                                                 </div>
                                                                                 <div class="row mb-3">
                                                                                     <label for="precio">Cuanto Vas

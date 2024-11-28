@@ -5,7 +5,13 @@
 
     $timeToStart = '00:00:00';
 
-    $event = Event::whereDate('date', Carbon::now()->format('Y-m-d'))->first();
+    $event = Event::whereDate('date', Carbon::now()->format('Y-m-d'))->where('status', '!=', 'Finalizado')->first();
+    if ($event) {
+        if ($event->status == 'Pendiente') {
+            $event->status = 'En espera';
+            $event->save();
+        }
+    }
 
 @endphp
 <!DOCTYPE html>

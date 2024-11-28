@@ -17,10 +17,11 @@ class Admin
      */
     public function handle(Request $request, Closure $next)
     {
-        if(!auth()->check() || !auth()->user()->roles->contains('name','admin'))
+        if(!auth()->check() || !auth()->user()->roles->contains('id', 2))
         {
             return redirect()->route('inicio')->withErrors('error', 'Solo personal authorizado');
         }
+        
         return $next($request);
     }
 }

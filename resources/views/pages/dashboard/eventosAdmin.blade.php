@@ -8,6 +8,8 @@
 
     $data = session('consumible');
 
+    $data2 = session('stock');
+
 @endphp
 
 <!DOCTYPE html>
@@ -25,6 +27,14 @@
 
 <body>
     <header>
+        <aside>
+            @if (auth()->user()->roles->contains('id', 3))
+                <a href="{{ route('dashboard') }}">Ir a Dashboard</a>
+            @endif
+            @if (auth()->user()->roles->contains('id', 1))
+                <a href="{{ route('dashboard.events') }}">Volver</a>
+            @endif
+        </aside>
     </header>
     <main>
         <div class="container mt-5">
@@ -40,47 +50,89 @@
                             </p>
                         </div>
                         <!-- Calcula el tiempo que falta para que inicie el evento -->
-                        <div>
-                            @if (Carbon::now()->lessThan(Carbon::parse($event->estimated_start_time)))
-                                @if ($timeToStart->h > 1)
-                                    <p class="text-end"> Faltan {{ $timeToStart->h }} horas </p>
-                                @elseif ($timeToStart->h == 1)
-                                    <p class="text-end"> Falta {{ $timeToStart->h }} hora y
-                                        {{ $timeToStart->i }}
-                                        minutos </p>
-                                @else
-                                    <p class="text-end"> Faltan {{ $timeToStart->i }} minutos </p>
-                                @endif
-                            @else
-                                <p class="text-end"> ya paso la hora carnal</p>
+                        @if ($event->status == 'En espera')
 
-                            @endif
-                        </div>
+                            <div>
+                                @if (Carbon::now()->lessThan(Carbon::parse($event->estimated_start_time)))
+                                    @if ($timeToStart->h > 1)
+                                        <p class="text-end"> Faltan {{ $timeToStart->h }} horas </p>
+                                    @elseif ($timeToStart->h == 1)
+                                        <p class="text-end"> Falta {{ $timeToStart->h }} hora y
+                                            {{ $timeToStart->i }}
+                                            minutos </p>
+                                    @else
+                                        <p class="text-end"> Faltan {{ $timeToStart->i }} minutos </p>
+                                    @endif
+                                @else
+                                    <p class="text-end"> ya paso la hora carnal</p>
+
+                                @endif
+                            </div>
+
+                        @endif
                         <!-- Aqui termina esa seccion -->
                     </div>
                     <div>
                         <p> Sillas: {{ $event->chair_count }} </p>
                         <p> Mesas: {{ $event->table_count }} </p>
                         <p> Manteles: {{ $event->table_cloth_count }} </p>
-                        <p>Se espera que termine a las {{ Carbon::parse($event->estimated_end_time)->format('h:i A') }}
-                        </p>
+                        @if ($event->status == 'Pendiente')
+                            <p>Se espera que empiece a las
+                                {{ Carbon::parse($event->estimated_start_time)->format('h:i A') }} </p>
+                            <p>Se espera que termine a las
+                                {{ Carbon::parse($event->estimated_end_time)->format('h:i A') }}
+                            </p>
+                        @endif
+                        @if ($event->status == 'Finalizado')
+                            <p>Empezo a las {{ Carbon::parse($event->start_time)->format('h:i A') }} </p>
+                            <p>Termino a las {{ Carbon::parse($event->end_time)->format('h:i A') }} </p>
+                        @endif
+                        @if ($event->status == 'En espera')
+                            <p>Se espera que empiece a las
+                                {{ Carbon::parse($event->estimated_start_time)->format('h:i A') }} </p>
+                            <p>Se espera que termine a las
+                                {{ Carbon::parse($event->estimated_end_time)->format('h:i A') }}
+                            </p>
+                        @endif
+                        @if ($event->status == 'En proceso')
+                            <p>Empezo a las {{ Carbon::parse($event->start_time)->format('h:i A') }} </p>
+                            <p>Se espera que termine a las
+                                {{ Carbon::parse($event->estimated_end_time)->format('h:i A') }}
+                            </p>
+                        @endif
+
 
                     </div>
                     <div>
                         <p>Precio del evento: {{ $event->total_price }} </p>
                         <p>Anticipo: {{ $event->advance_payment }} </p>
-                        <p>Monto Faltante: {{ $event->remaining_payment }} </p>
-                        <p>Precio por hora extra:
-                            {{ $event->extra_hour_price == 0 ? 'Sin definir' : $event->extra_hour_price }} </p>
+                        @if ($event->status != 'Finalizado')
+                            <p>Monto Faltante: {{ $event->remaining_payment }} </p>
+
+                            <p>Precio por hora extra:
+                                {{ $event->extra_hour_price == 0 ? 'Sin definir' : $event->extra_hour_price }} </p>
+                        @endif
 
                         <div class="mb-3 d-flex justify-content-between">
+                            @if ($event->status == 'En espera')
+                                <form action="{{ route('dashboard.start.event', $event->id) }}" method="POST">
+                                    @csrf
+                                    <button class="btn btn-primary">Marcar como que ya empezo</button>
+                                </form>
+                            @endif
+                            @if ($event->status == 'En proceso')
+                                <form action="{{ route('dashboard.end.event', $event->id) }}" method="POST">
+                                    @csrf
+                                    <button class="btn btn-primary">Marcar como que ya termino</button>
+                                </form>
+                            @endif
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#modal1">Mostrar
                                 Servicios</button>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                 data-bs-target="#modal2">Mostrar
                                 Consumibles</button>
-                            <a href="{{route('incident.create')}}" class="btn btn-primary">Reportar incidencia</a>
+                            <a href="{{ route('incident.create') }}" class="btn btn-primary">Reportar incidencia</a>
                         </div>
                         <div class="modal fade" id="modal1" aria-labelledby="modalLabel1" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -147,7 +199,10 @@
                                                     <th>Nombre</th>
                                                     <th>Cantidad</th>
                                                     <th>Estado</th>
-                                                    <th class="text-center">Acciones</th>
+
+                                                    @if ($event->status == 'Pendiente' || $event->status == 'En espera' || $event->status == 'En proceso')
+                                                        <th class="text-center">Acciones</th>
+                                                    @endif
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -157,22 +212,28 @@
                                                         <td> {{ $consumable->pivot->quantity }}{{ $consumable->unit }}
                                                         </td>
                                                         <td> {{ $consumable->pivot->ready }} </td>
-                                                        <td class="text-center">
-                                                            <form
-                                                                action="{{ route('dashboard.event.consumable', $consumable->pivot->id) }}"
-                                                                method="POST">
-                                                                @csrf
-                                                                <button
-                                                                    class="btn btn-outline-{{ $consumable->pivot->ready ? 'danger' : 'success' }} py-0 px-1"
-                                                                    type="submit">
-                                                                    @if ($consumable->pivot->ready)
-                                                                        <i class="fs-4 bi bi-x-circle-fill"></i>
-                                                                    @else
-                                                                        <i class="fs-4 bi bi-check-circle-fill "></i>
-                                                                    @endif
-                                                                </button>
-                                                            </form>
-                                                        </td>
+                                                        @if ($event->status == 'Pendiente' || $event->status == 'En espera' || $event->status == 'En proceso')
+                                                            <td class="text-center">
+                                                                @if ($event->status == 'Pendiente' || $event->status == 'En espera')
+                                                                    <form
+                                                                        action="{{ route('dashboard.event.consumable', $consumable->pivot->id) }}"
+                                                                        method="POST">
+                                                                        @csrf
+                                                                        <button
+                                                                            class="btn btn-outline-{{ $consumable->pivot->ready ? 'danger' : 'success' }} py-0 px-1"
+                                                                            type="submit">
+                                                                            @if ($consumable->pivot->ready)
+                                                                                <i class="fs-4 bi bi-x-circle-fill"></i>
+                                                                            @else
+                                                                                <i
+                                                                                    class="fs-4 bi bi-check-circle-fill "></i>
+                                                                            @endif
+                                                                        </button>
+                                                                    </form>
+                                                                @endif
+                                                                <button>otro boton</button>
+                                                            </td>
+                                                        @endif
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -192,7 +253,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
-    @if ($data)
+    @if ($data || $data2)
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 var modal = new bootstrap.Modal(document.getElementById('modal2'));

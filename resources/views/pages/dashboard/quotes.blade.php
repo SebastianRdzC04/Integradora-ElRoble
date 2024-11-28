@@ -20,11 +20,11 @@
                                 <th>Cliente</th>
                                 <th>Tipo de Evento</th>
                                 <th>Lugar</th>
-                                <th>Fecha</th>
+                                <th>__Fecha__</th>
+                                <th>Horario</th>
                                 <th>Paquete</th>
                                 <th>Estado</th>
                                 <th>No.Personas</th>
-                                <th>Servicios</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -34,15 +34,19 @@
                                     <td> {{ $quote->user ? $quote->user->person->first_name : $quote->owner_name }} </td>
                                     <td> {{ $quote->type_event }} </td>
                                     <td> {{ $quote->package ? $quote->package->place->name : $quote->place->name }} </td>
-                                    <td> {{ $quote->date }} </td>
+                                    <td class="text-start"> {{ $quote->date }} </td>
+                                    <td> {{ date('h:ia', strtotime($quote->start_time)) }} {{date('h:ia', strtotime($quote->end_time))}} </td>
                                     <td> {{ $quote->package ? $quote->package->name : 'Sin paquete' }} </td>
                                     <td> {{ $quote->status }} </td>
                                     <td> {{ $quote->guest_count }} </td>
-                                    <td> {{$quote->services->count() + ($quote->package ? $quote->package->services->count() : 0)}} </td>
+                                    </td>
                                     <td>
-                                        <div>
-                                            <a class="btn btn-outline-primary p-1 m-0" href="{{route('dashboard.quote', $quote->id)}}"><i
-                                                    class="bi bi-pencil-square"></i></a>
+                                        <div class="">
+                                            @if ($quote->status == 'pendiente' || $quote->status == 'pendiente cotizacion')
+                                                <a class="btn btn-outline-primary p-1 m-0"
+                                                    href="{{ route('dashboard.quote', $quote->id) }}"><i
+                                                        class="bi bi-pencil-square"></i></a>
+                                            @endif
                                             <a class="btn btn-outline-danger p-1 m-0" href=""><i
                                                     class="bi bi-trash3"></i></a>
                                             <button type="button" class="btn btn-outline-primary p-1 m-0"
@@ -87,7 +91,6 @@
                                                                                 <td>
                                                                                     <div>
                                                                                         <a class="btn btn-outline-primary p-1 m-0"
-
                                                                                             href=""><i
                                                                                                 class="bi bi-pencil-square"></i></a>
                                                                                         <a class="btn btn-outline-danger p-1 m-0"
