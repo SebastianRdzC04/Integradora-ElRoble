@@ -61,7 +61,7 @@
         </div>
         
         <div class="d-flex col mb-3">
-            <div class="col-6">
+            <div class="col-6 form-control">
                 <button class="btn">Verificar con email</button>
             </div>
             <div class="col-6">

@@ -15,7 +15,10 @@ use Laravel\Socialite\Facades\Socialite;
 Route::get('auth/facebook', [RegisterUserController::class, 'redirectToFacebook'])->name('login.facebook');
 Route::get('auth/facebook/callback', [RegisterUserController::class, 'handleFacebookCallback'])->name('register.facebook');
 
-
+//Aqui esta el login de Google
+Route::get('/login-google', function () {
+    return Socialite::driver('google')->redirect();
+})->name('login.google');
 
 
 
@@ -153,7 +156,7 @@ Route::get('/prueba', function () {
 })->middleware('auth','verified');
 
 
-Route::view('/prueba3','layouts.solopacopia');
+Route::view('/prueba3','pages.inventory.inventory_create');
 Route::view('/prueba2','layouts.dashboardAdmin');
 
 

@@ -13,7 +13,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
     <style>
-        /* Estilos personalizados */
         body {
             min-height: 100dvh;
             overflow-x: hidden;
@@ -30,7 +29,6 @@
         }
     </style>
     <script>
-    // Configuración de Toastr
     toastr.options = {
         "closeButton": true,
         "debug": false,
@@ -49,6 +47,7 @@
         "hideMethod": "fadeOut"
     };
     </script>
+
 </head>
 <body>
 
@@ -62,9 +61,7 @@
 @endif
 
 <script>
-        // Verifica si hay errores de validación
         @if ($errors->any())
-            // Itera sobre todos los errores y muestra un mensaje de Toastr
             @foreach ($errors->all() as $error)
                 toastr.error("{{ $error }}", "Error", {
                     "closeButton": true,
