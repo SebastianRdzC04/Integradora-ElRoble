@@ -16,8 +16,11 @@ class SuperAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        if(!auth()->check() || !auth()->user()->roles->contains('name','superadmin'))
+        if(!auth()->check() || !auth()->user()->roles->contains('id', 1))
         {
+            if (auth()->user()->roles->contains('id', 2) || auth()->user()->roles->contains('id', 3)) {
+                return redirect()->route('dashboard');
+            }
             return redirect()->route('inicio')->withErrors('error', 'Solo personal authorizado');
         }
         

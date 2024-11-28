@@ -23,7 +23,7 @@
                                 <p class="small">{{ $porcentaje }}% del mes pasado </p>
                             </div>
                             <div class="ms-auto">
-                                <h4 class="text-center mb-0">{{ $events->count() }}</h4>
+                                <h4 class="text-center mb-0">{{ $eventsPending->count() }}</h4>
                                 <p class="small">pendientes</p>
                             </div>
                         </div>
@@ -39,7 +39,7 @@
                             </div>
                             <div>
                                 <h5>Cotizaciones</h5>
-                                <p class="small text-start">{{$quotesPendingToPay->count()}} a pagar </p>
+                                <p class="small text-start">{{ $quotesPendingToPay->count() }} a pagar </p>
                             </div>
                             <div class="ms-auto">
                                 <h4 class="text-center mb-0">{{ $quotes->count() }}</h4>
@@ -58,11 +58,11 @@
                             </div>
                             <div class="align-content-center">
                                 <h5>Ingresos</h5>
-                                <p class="small">{{$porcentajeGanancias}}% en comparacion al mes pasado </p>
+                                <p class="small">{{ $porcentajeGanancias }}% en comparacion al mes pasado </p>
                             </div>
                             <div class="ms-auto">
                                 <h4 class="text-center mb-0">${{ $gananciasNetas }}</h4>
-                                <p class="small">pendientes</p>
+                                <p class="small">Total</p>
                             </div>
                         </div>
                     </div>
@@ -86,18 +86,36 @@
     @php
         $eventos = [];
         $daysOcupedQuotes = [];
-        foreach ($events as $event) {
+        foreach ($eventsPending as $event) {
             $eventos[] = [
-                'title' => $event->quote->type_event . ' de ' . $event->quote->user->person->firstName,
+                'title' => $event->quote->type_event . ' de ' . $event->quote->user->person->first_name,
                 'start' => $event->date,
                 'color' => 'blue',
+                'url' => route('dashboard.event.view', $event->id),
+            ];
+        }
+        foreach ($eventsFinalized as $event) {
+            $eventos[] = [
+                'title' => $event->quote->type_event . ' de ' . $event->quote->user->person->first_name,
+                'start' => $event->date,
+                'color' => 'green',
+                'url' => route('dashboard.event.view', $event->id),
+            ];
+        }
+        if ($currentEvent) {
+            $eventos[] = [
+                'title' => $currentEvent->quote->type_event . ' de ' . $currentEvent->quote->user->person->first_name,
+                'start' => $currentEvent->date,
+                'color' => 'red',
+                'url' => route('dashboard.event.now'),
             ];
         }
         foreach ($fullQuoteDates as $date) {
             $daysOcupedQuotes[] = [
                 'title' => 'Limite de cotizaciones',
                 'start' => $date,
-                'color' => 'red',
+                'color' => 'yellow',
+                'url' => route('dashboard.quotes'),
             ];
         }
 
@@ -112,7 +130,13 @@
             let calendar = new FullCalendar.Calendar(calendarEl, {
                 initialView: 'dayGridMonth',
                 locale: 'es',
-                events: [...events, ...daysOcupedQuotes]
+                events: [...events, ...daysOcupedQuotes],
+                eventClick: function(pene) {
+                    pene.jsEvent.preventDefault();
+                    if (pene.event.url) {
+                        window.location = pene.event.url;
+                    }
+                }
             });
             calendar.render();
         });

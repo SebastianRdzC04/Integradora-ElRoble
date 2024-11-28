@@ -33,6 +33,9 @@
         </div>
     </div>
     <div class="container mt-5">
+        <aside>
+            <a href="{{route('dashboard.consumables')}}">Volver</a>
+        </aside>
         <h2 class="text-center mb-4">Agregar Consumible</h2>
         <div class="row justify-content-center">
             <div class="col-md-8">

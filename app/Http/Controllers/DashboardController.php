@@ -27,7 +27,9 @@ class DashboardController extends Controller
 
         $consumables = Consumable::all();
         
-        $events = Event::orderBy('date', 'asc')->where('status', 'Pendiente')->get();
+        $eventsPending = Event::orderBy('date', 'asc')->where('status', 'Pendiente')->get();
+        $eventsFinalized = Event::orderBy('date', 'asc')->where('status', 'Finalizado')->get();
+        $currentEvent = Event::where('date', date('Y-m-d'))->first();
         // $currentEvent = Event::where('date', date('Y-m-d'))->first();
         $fullQuoteDates = Quote::selectRaw('date, count(*) as count')
         ->groupBy('date')
@@ -58,6 +60,6 @@ class DashboardController extends Controller
 
 
 
-        return view('pages.dashboard.dashboard', compact('quotes', 'consumables', 'events', 'fullQuoteDates', 'porcentaje', 'quotesPendingToPay', 'gananciasNetas', 'porcentajeGanancias'));
+        return view('pages.dashboard.dashboard', compact('quotes', 'consumables', 'eventsPending', 'fullQuoteDates', 'porcentaje', 'quotesPendingToPay', 'gananciasNetas', 'porcentajeGanancias', 'eventsFinalized', 'currentEvent'));
     }
 }

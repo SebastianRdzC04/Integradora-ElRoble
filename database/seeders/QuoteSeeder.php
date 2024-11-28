@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Quote;
+use DateTime;
 use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
 
@@ -20,13 +21,23 @@ class QuoteSeeder extends Seeder
 
         // Helper function para generar horarios coherentes
         $getEventTimes = function() use ($faker) {
-            $startHour = $faker->numberBetween(13, 19);
-            $endHour = $startHour + $faker->numberBetween(5, 8);
-            return [
-                'start' => str_pad($startHour, 2, '0', STR_PAD_LEFT) . ':00:00',
-                'end' => str_pad($endHour, 2, '0', STR_PAD_LEFT) . ':00:00'
-            ];
-        };
+        $startHour = $faker->numberBetween(13, 19);
+        $duration = $faker->numberBetween(5, 8);
+    
+        $start = new DateTime($startHour . ':00');
+        $end = clone $start;
+        $end->modify("+{$duration} hours");
+    
+        // Si la hora final pasa de medianoche, ajustar a 23:59
+        if ($end->format('H') > 23) {
+            $end->setTime(23, 59);
+        }
+    
+        return [
+            'start' => $start->format('H:i:s'),
+            'end' => $end->format('H:i:s')
+        ];
+};
 
         // Quotes with packages
         for ($i = 1; $i <= 15; $i++) {

@@ -11,7 +11,7 @@
     <div class="container">
         <div class="row">
             <div class="col-6">
-
+                <a href="{{route('consumables.create')}}" class="btn btn-primary">Agregar</a>
             </div>
             <div class="col-6">
                 <h4>Predeterminados por evento</h4>
