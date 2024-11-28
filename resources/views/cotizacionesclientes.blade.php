@@ -234,28 +234,33 @@
                     <form id="packageForm" action="{{ route('cotizacionesclientes.store') }}" method="POST">
                         @csrf
                         <input type="hidden" name="package_id" id="packageId">
+                        <input type="hidden" name="place_id" id="modal_place_id">
+                        <input type="hidden" id="modal_max_people">
+                        <input type="hidden" name="start_time" id="modal_start_time">
+                        <input type="hidden" name="end_time" id="modal_end_time">
+                        <input type="hidden" name="services" id="modal_services_input">
                         <div class="mb-3 row">
                             <div class="col-md-6">
-                                <label for="date" class="form-label">Fecha</label>
-                                <input type="date" name="date" id="date" class="form-control" required>
+                                <label for="modal_date" class="form-label">Fecha</label>
+                                <input type="date" name="date" id="modal_date" class="form-control" required>
                             </div>
                             <div class="col-md-3">
-                                <label for="start_time" class="form-label">Hora de Inicio</label>
-                                <input type="time" name="start_time" id="start_time" class="form-control" required>
+                                <label for="modal_start_time_input" class="form-label">Hora de Inicio</label>
+                                <input type="time" id="modal_start_time_input" class="form-control" required>
                             </div>
                             <div class="col-md-3">
-                                <label for="end_time" class="form-label">Hora de Final</label>
-                                <input type="time" name="end_time" id="end_time" class="form-control" required>
+                                <label for="modal_end_time_input" class="form-label">Hora de Final</label>
+                                <input type="time" id="modal_end_time_input" class="form-control" required>
                             </div>
                         </div>
                         <div class="mb-3 row">
                             <div class="col-md-6">
-                                <label for="guest_count" class="form-label">Cantidad de Invitados</label>
-                                <input type="number" name="guest_count" id="guest_count" class="form-control" required>
+                                <label for="modal_guest_count" class="form-label">Cantidad de Invitados</label>
+                                <input type="number" name="guest_count" id="modal_guest_count" class="form-control" required>
                             </div>
                             <div class="col-md-6">
-                                <label for="type_event" class="form-label">Tipo de Evento</label>
-                                <select name="type_event" id="type_event" class="form-control" required>
+                                <label for="modal_type_event" class="form-label">Tipo de Evento</label>
+                                <select name="type_event" id="modal_type_event" class="form-control" onchange="toggleModalOtroTipoEvento()" required>
                                     <option value="">Selecciona el tipo de evento</option>
                                     <option value="XV's">XV's</option>
                                     <option value="Cumpleaños">Cumpleaños</option>
@@ -266,6 +271,10 @@
                                     <option value="Otro">Otro</option>
                                 </select>
                             </div>
+                        </div>
+                        <div class="mb-3" id="modal_otro_tipo_evento_div" style="display: none;">
+                            <label for="modal_otro_tipo_evento" class="form-label">Especificar Tipo de Evento</label>
+                            <input type="text" name="otro_tipo_evento" id="modal_otro_tipo_evento" class="form-control">
                         </div>
                         <div class="mb-3 row">
                             <div class="col-md-6">
@@ -332,11 +341,12 @@
             if (!package) return;
 
             document.getElementById('packageId').value = package.id;
+            document.getElementById('modal_place_id').value = package.place.id;
+            document.getElementById('modal_max_people').value = package.max_people;
             document.getElementById('packageName').innerText = package.name;
             document.getElementById('packageDescription').innerText = `Descripción: ${package.description}`;
             document.getElementById('packagePrice').innerText = `Precio: $${package.price}`;
             document.getElementById('packageDates').innerText = `Fechas: ${package.start_date} - ${package.end_date}`;
-            document.getElementById('guest_count').value = package.max_people;
 
             const packageImage = package.image_path ? `/storage/${package.image_path}` : '/images/imagen1.jpg';
             document.getElementById('packageImage').src = packageImage;
@@ -349,8 +359,111 @@
                 servicesList.appendChild(li);
             });
 
+            console.log('Abriendo modal para paquete:', package);
+            
             const packageModal = new bootstrap.Modal(document.getElementById('packageModal'));
             packageModal.show();
+        }
+
+        function validateGuestCount() {
+            const maxPeopleInput = document.getElementById('modal_max_people');
+            const guestCountInput = document.getElementById('modal_guest_count'); // ID corregido
+
+            if (!maxPeopleInput || !guestCountInput) {
+                console.error('Elementos no encontrados:', {
+                    maxPeopleInput: !!maxPeopleInput,
+                    guestCountInput: !!guestCountInput
+                });
+                return false;
+            }
+
+            const maxPeople = parseInt(maxPeopleInput.value);
+            const guestCount = parseInt(guestCountInput.value);
+
+            console.log('Validando invitados:', { maxPeople, guestCount });
+
+            if (isNaN(maxPeople) || isNaN(guestCount)) {
+                alert('Por favor ingrese números válidos');
+                return false;
+            }
+
+            if (guestCount > maxPeople) {
+                alert(`La cantidad de invitados no puede ser mayor a ${maxPeople} personas.`);
+                guestCountInput.value = maxPeople;
+                return false;
+            }
+            return true;
+        }
+
+        document.getElementById('packageForm').onsubmit = function(e) {
+    e.preventDefault();
+    console.log('Formulario enviado');
+
+    if (!validateGuestCount()) {
+        return false;
+    }
+
+    // Formatear fechas
+    const date = document.getElementById('modal_date').value;
+    const startTime = document.getElementById('modal_start_time_input').value;
+    const endTime = document.getElementById('modal_end_time_input').value;
+
+    const startDateTime = `${date} ${startTime}`;
+    let endDateTime = `${date} ${endTime}`;
+
+    // Ajustar para horas después de medianoche
+    const endHour = parseInt(endTime.split(':')[0], 10);
+    if (endHour >= 0 && endHour <= 3) {
+        const dateObj = new Date(`${date}T${endTime}`);
+        dateObj.setDate(dateObj.getDate() + 1);
+        const endDate = dateObj.toISOString().slice(0, 10);
+        endDateTime = `${endDate} ${endTime}`;
+    }
+
+    document.getElementById('modal_start_time').value = startDateTime;
+    document.getElementById('modal_end_time').value = endDateTime;
+
+    // Crear el array de servicios del paquete
+    const package = @json($packages).find(pkg => pkg.id === document.getElementById('packageId').value);
+    if (package && package.services) {
+        const servicesData = {};
+        package.services.forEach(service => {
+            servicesData[service.id] = {
+                quantity: null
+            };
+        });
+
+        document.getElementById('modal_services_input').value = JSON.stringify(servicesData);
+    }
+
+    console.log('Datos a enviar:', {
+        package_id: document.getElementById('packageId').value,
+        place_id: document.getElementById('modal_place_id').value,
+        start_time: startDateTime,
+        end_time: endDateTime,
+        date: date,
+        guest_count: document.getElementById('modal_guest_count').value,
+        type_event: document.getElementById('modal_type_event').value,
+        services: document.getElementById('modal_services_input').value ? 
+            JSON.parse(document.getElementById('modal_services_input').value) : {}
+    });
+
+    this.submit();
+};
+
+        function toggleModalOtroTipoEvento() {
+            const tipoEvento = document.getElementById('modal_type_event').value;
+            const otroTipoDiv = document.getElementById('modal_otro_tipo_evento_div');
+            const otroTipoInput = document.getElementById('modal_otro_tipo_evento');
+
+            if (tipoEvento === 'Otro') {
+                otroTipoDiv.style.display = 'block';
+                otroTipoInput.required = true;
+            } else {
+                otroTipoDiv.style.display = 'none';
+                otroTipoInput.value = ''; // Limpiar el valor
+                otroTipoInput.required = false;
+            }
         }
 
         function actualizarVistaServicios() {
