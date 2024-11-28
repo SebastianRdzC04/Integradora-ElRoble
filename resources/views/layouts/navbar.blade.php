@@ -56,17 +56,30 @@
                 @if (auth()->check())
                     @if (auth()->user()->roles->contains('id', 3))
                         <li class="nav-item">
-                            <a class="nav-link" href="{{route('dashboard')}}">Dashboard</a>
+                            <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
                         </li>
                     @endif
 
                 @endif
             </ul>
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a href="/login" id="IniciarSesionBoton">Iniciar Sesión / Registrarse</a>
-                </li>
-            </ul>
+            @if (auth()->check())
+                <form class="ms-auto" action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <button class="nav-link" href="{{ route('logout') }}">Cerrar Sesión</button>
+                        </li>
+                    </ul>
+                </form>
+            @endif
+            @if (!auth()->check())
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a href="/login" id="IniciarSesionBoton">Iniciar Sesión / Registrarse</a>
+                    </li>
+                </ul>
+            @endif
+
         </div>
     </div>
 </nav>
