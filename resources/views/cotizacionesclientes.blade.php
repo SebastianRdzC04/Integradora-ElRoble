@@ -6,6 +6,7 @@
     <title>El Roble - Cotización</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/stylespaquetes.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body>
     <div class="container mt-4">
@@ -22,30 +23,51 @@
             <div class="col-md-7" id="crearPaquete">
                 <h3> <strong>Solicitar Cotización</strong> </h3>
                 <div class="row">
-                    <!-- Carrusel de Paquetes y Campo de Lugar en una fila -->
+                    <!-- Carrusel de Paquetes -->
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <div id="packageCarousel" class="carousel slide" data-bs-ride="carousel">
                                 <div class="carousel-inner">
                                     @foreach($packages as $index => $package)
+                                    @php
+                                        $imageUrl = '';
+                                        switch ($package->place->id) {
+                                            case 1:
+                                                $imageUrl = '/images/imagen2.jpg';
+                                                break;
+                                            case 2:
+                                                $imageUrl = '/images/imagen7.jpg';
+                                                break;
+                                            case 3:
+                                                $imageUrl = '/images/imagen8.jpg';
+                                                break;
+                                            default:
+                                                $imageUrl = '/images/imagen1.jpg';
+                                        }
+                                    @endphp
                                     <div class="carousel-item {{ $index == 0 ? 'active' : '' }}">
                                         <div id="card-carousel" class="card">
                                             <div class="card-body">
-                                                <h5 style="color:white;" class="card-title">{{ $package->name }}</h5>
-                                                <p style="color:white;" class="card-text"><strong>Espacio:</strong> {{ $package->place->name }}</p>
-                                                <p style="color:white;" class="card-text"><strong>Máximo de personas:</strong> {{ $package->max_people }}</p>
-                                                <p style="color:white;" class="card-text"><strong>Costo:</strong> ${{ $package->price }}</p>
-                                                <p style="color:white;" class="card-text"><strong>Servicios incluidos:</strong></p>
-                                                <ul>
+                                                <div class="prevista-imagen-container">
+                                                    <img src="{{ $imageUrl }}" class="prevista-imagen" alt="Imagen del paquete">
+                                                    <div class="carousel-caption">
+                                                        <h5 class="card-title">{{ $package->name }}</h5>
+                                                        <p class="card-text"><i class="bi bi-geo-alt-fill"></i> {{ $package->place->name }}</p>
+                                                        <p class="card-text"> Máx de <i class="bi bi-people-fill"></i>: {{ $package->max_people }}</p>
+                                                        <p class="card-text"><i class="bi bi-currency-dollar"></i>{{ $package->price }}</p>
+                                                    </div>
+                                                </div>
+                                                <p style="color: white;" class="card-text text-center"><strong>Servicios incluidos:</strong></p>
+                                                <ul class="text-center">
                                                     @foreach($package->services as $service)
-                                                        <li style="color:white;">{{ $service->name }}</li>
+                                                        <li>{{ $service->name }}</li>
                                                     @endforeach
                                                 </ul>
                                                 <button class="btn btn-primary" onclick="openPackageModal({{ $package->id }})">Solicitar Paquete</button>
                                             </div>
                                         </div>
                                     </div>
-                                @endforeach
+                                    @endforeach
                                 </div>
                                 <button class="carousel-control-prev" type="button" data-bs-target="#packageCarousel" data-bs-slide="prev">
                                     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -57,7 +79,6 @@
                                 </button>
                             </div>
                         </div>
-                        <!-- Campo de Lugar con Radio Buttons -->
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label for="place_id" class="form-label">Lugar</label>
@@ -77,7 +98,6 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Resto del formulario -->
                     <form action="{{ route('cotizacionesclientes.store') }}" method="POST" id="cotizacionForm">
                         @csrf
                         <div class="mb-3 row">
@@ -197,8 +217,8 @@
         <!-- Vista Previa -->
         <div class="col-md-5" id="previstaServicio">
             <div class="prevista-imagen-container">
-                <img id="prevista-imagen" class="prevista-imagen" src="{{ asset('images/imagen1.jpg') }}" alt="Vista previa">
-                <div class="prevista-caption">
+                <img id="prevista-imagen" class="prevista-imagen" src="{{ asset('images/imagen1.jpg') }}" alt="Vista previa" style="border: 2px solid rgba(255, 255, 255, 0.904)">
+                <div class="prevista-caption-previa">
                     <h5 id="prevista-nombre">Nombre</h5>
                     <p id="prevista-fecha">Fecha: -</p>
                     <p id="prevista-horario">Hora: -</p>
@@ -211,18 +231,18 @@
         </div>
     </div>
 
-    <!-- Package Modal -->
+    <!-- Modal de Paquetes -->
     <div class="modal fade" id="packageModal" tabindex="-1" aria-labelledby="packageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content" style="background-color: rgb(27, 59, 23); border: 3px solid rgb(255, 255, 255);">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="packageModalLabel">Solicitar Paquete</h5>
+                    <h5 class="modal-title" id="packageModalLabel">Solicitar Cotización de Paquete</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="prevista-imagen-container">
                         <img id="packageImage" class="prevista-imagen" src="/images/imagen1.jpg" alt="Vista previa">
-                        <div class="prevista-caption">
+                        <div class="prevista-caption-previa">
                             <h5 id="packageName">Nombre</h5>
                             <p id="packageDescription">Descripción: -</p>
                             <p id="packagePrice">Precio: -</p>
@@ -331,6 +351,19 @@
                 console.log('No se puede confirmar el servicio aún.');
             }
         }
+
+        function getPackageImageUrl(placeId) {
+            switch (placeId) {
+                case 1:
+                    return '/images/imagen2.jpg';
+                case 2:
+                    return '/images/imagen7.jpg';
+                case 3:
+                    return '/images/imagen8.jpg';
+                default:
+                    return '/images/imagen1.jpg';
+            }
+        }
     
         function getServiceName(serviceId) {
             return services[serviceId] ? services[serviceId].name : "Servicio desconocido";
@@ -348,7 +381,20 @@
             document.getElementById('packagePrice').innerText = `Precio: $${package.price}`;
             document.getElementById('packageDates').innerText = `Fechas: ${package.start_date} - ${package.end_date}`;
 
-            const packageImage = package.image_path ? `/storage/${package.image_path}` : '/images/imagen1.jpg';
+            let packageImage;
+            switch (package.place.id) {
+                case 1:
+                    packageImage = '/images/imagen2.jpg';
+                    break;
+                case 2:
+                    packageImage = '/images/imagen7.jpg';
+                    break;
+                case 3:
+                    packageImage = '/images/imagen8.jpg';
+                    break;
+                default:
+                    packageImage = '/images/imagen1.jpg';
+            }
             document.getElementById('packageImage').src = packageImage;
 
             const servicesList = document.getElementById('packageServicesList');
@@ -359,15 +405,13 @@
                 servicesList.appendChild(li);
             });
 
-            console.log('Abriendo modal para paquete:', package);
-            
             const packageModal = new bootstrap.Modal(document.getElementById('packageModal'));
             packageModal.show();
         }
 
         function validateGuestCount() {
             const maxPeopleInput = document.getElementById('modal_max_people');
-            const guestCountInput = document.getElementById('modal_guest_count'); // ID corregido
+            const guestCountInput = document.getElementById('modal_guest_count');
 
             if (!maxPeopleInput || !guestCountInput) {
                 console.error('Elementos no encontrados:', {
@@ -396,60 +440,57 @@
         }
 
         document.getElementById('packageForm').onsubmit = function(e) {
-    e.preventDefault();
-    console.log('Formulario enviado');
+            e.preventDefault();
+            console.log('Formulario enviado');
 
-    if (!validateGuestCount()) {
-        return false;
-    }
+            if (!validateGuestCount()) {
+                return false;
+            }
 
-    // Formatear fechas
-    const date = document.getElementById('modal_date').value;
-    const startTime = document.getElementById('modal_start_time_input').value;
-    const endTime = document.getElementById('modal_end_time_input').value;
+            const date = document.getElementById('modal_date').value;
+            const startTime = document.getElementById('modal_start_time_input').value;
+            const endTime = document.getElementById('modal_end_time_input').value;
 
-    const startDateTime = `${date} ${startTime}`;
-    let endDateTime = `${date} ${endTime}`;
+            const startDateTime = `${date} ${startTime}`;
+            let endDateTime = `${date} ${endTime}`;
 
-    // Ajustar para horas después de medianoche
-    const endHour = parseInt(endTime.split(':')[0], 10);
-    if (endHour >= 0 && endHour <= 3) {
-        const dateObj = new Date(`${date}T${endTime}`);
-        dateObj.setDate(dateObj.getDate() + 1);
-        const endDate = dateObj.toISOString().slice(0, 10);
-        endDateTime = `${endDate} ${endTime}`;
-    }
+            const endHour = parseInt(endTime.split(':')[0], 10);
+            if (endHour >= 0 && endHour <= 3) {
+                const dateObj = new Date(`${date}T${endTime}`);
+                dateObj.setDate(dateObj.getDate() + 1);
+                const endDate = dateObj.toISOString().slice(0, 10);
+                endDateTime = `${endDate} ${endTime}`;
+            }
 
-    document.getElementById('modal_start_time').value = startDateTime;
-    document.getElementById('modal_end_time').value = endDateTime;
+            document.getElementById('modal_start_time').value = startDateTime;
+            document.getElementById('modal_end_time').value = endDateTime;
 
-    // Crear el array de servicios del paquete
-    const package = @json($packages).find(pkg => pkg.id === document.getElementById('packageId').value);
-    if (package && package.services) {
-        const servicesData = {};
-        package.services.forEach(service => {
-            servicesData[service.id] = {
-                quantity: null
-            };
-        });
+            const package = @json($packages).find(pkg => pkg.id === document.getElementById('packageId').value);
+            if (package && package.services) {
+                const servicesData = {};
+                package.services.forEach(service => {
+                    servicesData[service.id] = {
+                        quantity: null
+                    };
+                });
 
-        document.getElementById('modal_services_input').value = JSON.stringify(servicesData);
-    }
+                document.getElementById('modal_services_input').value = JSON.stringify(servicesData);
+            }
 
-    console.log('Datos a enviar:', {
-        package_id: document.getElementById('packageId').value,
-        place_id: document.getElementById('modal_place_id').value,
-        start_time: startDateTime,
-        end_time: endDateTime,
-        date: date,
-        guest_count: document.getElementById('modal_guest_count').value,
-        type_event: document.getElementById('modal_type_event').value,
-        services: document.getElementById('modal_services_input').value ? 
-            JSON.parse(document.getElementById('modal_services_input').value) : {}
-    });
+            console.log('Datos a enviar:', {
+                package_id: document.getElementById('packageId').value,
+                place_id: document.getElementById('modal_place_id').value,
+                start_time: startDateTime,
+                end_time: endDateTime,
+                date: date,
+                guest_count: document.getElementById('modal_guest_count').value,
+                type_event: document.getElementById('modal_type_event').value,
+                services: document.getElementById('modal_services_input').value ? 
+                JSON.parse(document.getElementById('modal_services_input').value) : {}
+            });
 
-    this.submit();
-};
+            this.submit();
+        };
 
         function toggleModalOtroTipoEvento() {
             const tipoEvento = document.getElementById('modal_type_event').value;
@@ -461,7 +502,7 @@
                 otroTipoInput.required = true;
             } else {
                 otroTipoDiv.style.display = 'none';
-                otroTipoInput.value = ''; // Limpiar el valor
+                otroTipoInput.value = '';
                 otroTipoInput.required = false;
             }
         }
@@ -528,37 +569,37 @@
             });
         }
     
-    function eliminarServicio(serviceId) {
-        delete confirmedServices[serviceId];
-        actualizarVistaServicios();
+        function eliminarServicio(serviceId) {
+            delete confirmedServices[serviceId];
+            actualizarVistaServicios();
 
-        const serviceCard = document.getElementById(`service-details-${serviceId}`);
-        serviceCard.classList.remove('service-disabled');
-        serviceCard.classList.add('service-enabled');
-        serviceCard.style.opacity = 1;
-        serviceCard.style.pointerEvents = "auto";
+            const serviceCard = document.getElementById(`service-details-${serviceId}`);
+            serviceCard.classList.remove('service-disabled');
+            serviceCard.classList.add('service-enabled');
+            serviceCard.style.opacity = 1;
+            serviceCard.style.pointerEvents = "auto";
 
-        const checkbox = serviceCard.querySelector('input[type="checkbox"]');
-        if (checkbox) {
-            checkbox.disabled = false;
-            checkbox.checked = false;
+            const checkbox = serviceCard.querySelector('input[type="checkbox"]');
+            if (checkbox) {
+                checkbox.disabled = false;
+                checkbox.checked = false;
+            }
+
+            const confirmButton = serviceCard.querySelector(`#confirm-btn-${serviceId}`);
+            if (confirmButton) {
+                confirmButton.style.display = 'none';
+                confirmButton.disabled = true;
+            }
+
+            const quantityInput = serviceCard.querySelector(`input[name="services[${serviceId}][quantity]"]`);
+            if (quantityInput) {
+                quantityInput.style.display = 'none';
+                quantityInput.value = '';
+            }
+
+            const confirmDeleteModal = bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal'));
+            confirmDeleteModal.hide();
         }
-
-        const confirmButton = serviceCard.querySelector(`#confirm-btn-${serviceId}`);
-        if (confirmButton) {
-            confirmButton.style.display = 'none';
-            confirmButton.disabled = true;
-        }
-
-        const quantityInput = serviceCard.querySelector(`input[name="services[${serviceId}][quantity]"]`);
-        if (quantityInput) {
-            quantityInput.style.display = 'none';
-            quantityInput.value = '';
-        }
-
-        const confirmDeleteModal = bootstrap.Modal.getInstance(document.getElementById('confirmDeleteModal'));
-        confirmDeleteModal.hide();
-    }
     
         function toggleServices(categoryId) {
             const servicesDiv = document.getElementById(`services-${categoryId}`);

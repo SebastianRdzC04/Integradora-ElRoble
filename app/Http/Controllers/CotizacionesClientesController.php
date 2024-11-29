@@ -29,14 +29,12 @@ class CotizacionesClientesController extends Controller
     
     public function store(Request $request)
     {
-        // Si se proporciona 'otro_tipo_evento', se usa como 'type_event'
         if ($request->has('otro_tipo_evento') && !empty($request->input('otro_tipo_evento'))) {
             $request->merge(['type_event' => (string) $request->input('otro_tipo_evento')]);
         } else {
             $request->merge(['type_event' => (string) $request->input('type_event')]);
         }
 
-        // Validación de los datos del formulario
         $validated = $request->validate(
             [
                 'user_id' => 'nullable|exists:users,id',
@@ -92,7 +90,6 @@ class CotizacionesClientesController extends Controller
             ]
         );
     
-        // Validaciones adicionales
         $startTime = \Carbon\Carbon::parse($request->input('start_time'));
         $endTime = \Carbon\Carbon::parse($request->input('end_time'));
         $hoursDifference = $startTime->diffInHours($endTime);
@@ -130,7 +127,6 @@ class CotizacionesClientesController extends Controller
         DB::beginTransaction();
     
         try {
-            // Creación de la cotización
             $quote = Quote::create([
                 'user_id' => $request->input('user_id'),
                 'package_id' => $request->input('package_id'),
@@ -148,7 +144,6 @@ class CotizacionesClientesController extends Controller
                 'guest_count' => $request->input('guest_count'),
             ]);
     
-            // Solo procesar servicios si no es una cotización de paquete
             if (!$request->input('package_id')) {
                 $services = $request->input('services', []);
                 $servicesData = [];
@@ -173,7 +168,7 @@ class CotizacionesClientesController extends Controller
     
             DB::commit();
     
-            return redirect()->route('cotizaciones.create')->with('success', 'Cotización y servicios creados exitosamente.');
+            return redirect()->route('cotizaciones.create')->with('success', 'Cotización enviada exitosamente.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()
