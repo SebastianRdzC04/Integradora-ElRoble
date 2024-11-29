@@ -84,7 +84,7 @@ li {
     transform: translateY(-50%);
     transition: top 0.5s ease;
     margin-bottom: 30px;
-    border: 1px solid rgba(255, 255, 255, 0.904);
+    border: 2px solid rgba(255, 255, 255, 0.904);
 }
 @media (max-width: 770px) {
     #previstaServicio {
@@ -100,20 +100,20 @@ li {
 }
 .prevista-imagen-container {
     position: relative;
-    width: 80%;
-    max-width: 320px;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 20px;
 }
+
 .prevista-imagen {
     width: 100%;
     border-radius: 3%;
     max-height: 250px;
     object-fit: cover;
 }
-.prevista-caption {
+.prevista-caption-previa {
     position: absolute;
     display: flex;
     flex-direction: column;
@@ -125,6 +125,39 @@ li {
     border-radius: 5px;
     color: white;
     text-align: center;
+}
+
+.prevista-caption {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 5px;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    position: static; /* Ensure it occupies its own space */
+}
+
+.carousel-caption {
+    position: absolute;
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Center both vertically and horizontally */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 80%; /* Adjust width as needed */
+    height: 80%; /* Adjust height as needed */
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 5px;
+    color: white;
+    text-align: center;
+    padding: 10px;
 }
 
 .service-card {
@@ -263,4 +296,29 @@ li {
     background-color: #2b1a06;
     border: 2px solid rgb(255, 255, 255);
     min-height: 350px;
+}
+.modal-custom-bg {
+    background-color: rgb(46, 155, 32);
+}
+
+.carousel-item .card-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.carousel-item .card-body ul {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+    width: 100%;
+}
+
+.carousel-item .card-body ul li {
+    color: white;
+    margin-bottom: 5px;
+}
+
+.carousel-item .card-body button {
+    margin-top: 10px;
 }

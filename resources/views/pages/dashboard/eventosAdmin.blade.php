@@ -12,30 +12,11 @@
 
 @endphp
 
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.dashboardAdmin')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <title>Document</title>
-</head>
+@section('title', 'Evento')
 
-<body>
-    <header>
-        <aside>
-            @if (auth()->user()->roles->contains('id', 3))
-                <a href="{{ route('dashboard') }}">Ir a Dashboard</a>
-            @endif
-            @if (auth()->user()->roles->contains('id', 1))
-                <a href="{{ route('dashboard.events') }}">Volver</a>
-            @endif
-        </aside>
-    </header>
+@section('content')
     <main>
         <div class="container mt-5">
             <div class="row justify-content-center">
@@ -69,6 +50,11 @@
                                 @endif
                             </div>
 
+                        @endif
+                        @if ($event->status == 'Pendiente')
+                            <div>
+                                <p>Fecha: {{ Carbon::parse($event->date)->format('d/m/Y') }} </p>
+                            </div>
                         @endif
                         <!-- Aqui termina esa seccion -->
                     </div>
@@ -211,27 +197,34 @@
                                                         <td> {{ $consumable->name }} </td>
                                                         <td> {{ $consumable->pivot->quantity }}{{ $consumable->unit }}
                                                         </td>
-                                                        <td> {{ $consumable->pivot->ready }} </td>
+                                                        <td>
+                                                            <p style="display: {{ $consumable->pivot->ready ? 'block' : 'none' }}"
+                                                                class="estadoL">Listo</p>
+                                                            <p style="display: {{ !$consumable->pivot->ready ? 'block' : 'none' }}"
+                                                                class="estadoNL">No listo</p>
+                                                        </td>
                                                         @if ($event->status == 'Pendiente' || $event->status == 'En espera' || $event->status == 'En proceso')
                                                             <td class="text-center">
-                                                                @if ($event->status == 'Pendiente' || $event->status == 'En espera')
-                                                                    <form
-                                                                        action="{{ route('dashboard.event.consumable', $consumable->pivot->id) }}"
-                                                                        method="POST">
-                                                                        @csrf
-                                                                        <button
-                                                                            class="btn btn-outline-{{ $consumable->pivot->ready ? 'danger' : 'success' }} py-0 px-1"
-                                                                            type="submit">
-                                                                            @if ($consumable->pivot->ready)
-                                                                                <i class="fs-4 bi bi-x-circle-fill"></i>
-                                                                            @else
-                                                                                <i
-                                                                                    class="fs-4 bi bi-check-circle-fill "></i>
-                                                                            @endif
-                                                                        </button>
-                                                                    </form>
-                                                                @endif
-                                                                <button>otro boton</button>
+                                                                <div class="d-flex justify-content-center">
+                                                                    @if ($event->status == 'Pendiente' || $event->status == 'En espera')
+                                                                        <form
+                                                                            action="{{ route('dashboard.event.consumable', $consumable->pivot->id) }}"
+                                                                            method="POST"
+                                                                            onsubmit="updateStatus(this); return false;">
+                                                                            @csrf
+                                                                            <button
+                                                                                class="btn btn-outline-{{ $consumable->pivot->ready ? 'danger' : 'success' }} py-0 px-1"
+                                                                                type="submit">
+                                                                                <i style="display: {{ $consumable->pivot->ready ? 'block' : 'none' }}"
+                                                                                    class="fs-4 bi bi-x-circle-fill listo seleccionado"></i>
+                                                                                <i style="display: {{ !$consumable->pivot->ready ? 'block' : 'none' }}"
+                                                                                    class="fs-4 bi bi-check-circle-fill no-listo no-seleccionado"></i>
+                                                                            </button>
+                                                                        </form>
+                                                                    @endif
+                                                                    <button class="btn btn-outline-danger py-0 px-2"><i
+                                                                            class="bi bi-trash3"></i></button>
+                                                                </div>
                                                             </td>
                                                         @endif
                                                     </tr>
@@ -247,9 +240,10 @@
             </div>
         </div>
     </main>
-    <footer>
 
-    </footer>
+@endsection
+
+@section('scripts')
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
@@ -261,6 +255,41 @@
             });
         </script>
     @endif
-</body>
+    <script>
+        function updateStatus(form) {
+            event.preventDefault();
 
-</html>
+            let currentRow = form.closest('tr');
+            let estadoListo = currentRow.querySelector('.estadoL');
+            let estadoNoListo = currentRow.querySelector('.estadoNL');
+            let botonForm = currentRow.querySelector('button[type="submit"]');
+            let iconoListo = botonForm.querySelector('.listo');
+            let iconoNoListo = botonForm.querySelector('.no-listo');
+
+            if (iconoListo.style.display === 'none') { 
+                iconoListo.style.display = 'block';
+                iconoNoListo.style.display = 'none';
+                botonForm.classList.remove('btn-outline-success');
+                botonForm.classList.add('btn-outline-danger')    
+            } else {
+                botonForm.classList.remove('btn-outline-danger');
+                botonForm.classList.add('btn-outline-success')    
+                iconoListo.style.display = 'none';
+                iconoNoListo.style.display = 'block';
+            }
+
+            if (estadoListo.style.display === 'none') {
+                estadoListo.style.display = 'block';
+                estadoNoListo.style.display = 'none';
+            } else {
+                estadoListo.style.display = 'none';
+                estadoNoListo.style.display = 'block';
+            }
+
+            $.post($(form).attr('action'), $(form).serialize(), function(respuesta) {
+                if (respuesta.ready) {
+                }
+            });
+        }
+    </script>
+@endsection

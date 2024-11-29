@@ -293,6 +293,10 @@ Route::middleware('superadmin')->group(function () {
         }
         return redirect()->back()->with('success', 'El estado del consumible ha sido actualizado')->with('consumible', 'Abrete sesamo');
         })->name('dashboard.event.consumable');
+
+
+
+        
         Route::get('dashboard/consumables', function () {
         $consumables = Consumable::all();
         $consumablesDefault = ConsumableEventDefault::all();

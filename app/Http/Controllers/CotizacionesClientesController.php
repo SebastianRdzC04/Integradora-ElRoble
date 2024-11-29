@@ -29,14 +29,12 @@ class CotizacionesClientesController extends Controller
     
     public function store(Request $request)
     {
-        // Si se proporciona 'otro_tipo_evento', se usa como 'type_event'
         if ($request->has('otro_tipo_evento') && !empty($request->input('otro_tipo_evento'))) {
             $request->merge(['type_event' => (string) $request->input('otro_tipo_evento')]);
         } else {
             $request->merge(['type_event' => (string) $request->input('type_event')]);
         }
-    
-        // Validación de los datos del formulario
+
         $validated = $request->validate(
             [
                 'user_id' => 'nullable|exists:users,id',
@@ -92,7 +90,6 @@ class CotizacionesClientesController extends Controller
             ]
         );
     
-        // Validaciones adicionales
         $startTime = \Carbon\Carbon::parse($request->input('start_time'));
         $endTime = \Carbon\Carbon::parse($request->input('end_time'));
         $hoursDifference = $startTime->diffInHours($endTime);
@@ -130,48 +127,48 @@ class CotizacionesClientesController extends Controller
         DB::beginTransaction();
     
         try {
-            // Creación de la cotización
             $quote = Quote::create([
                 'user_id' => $request->input('user_id'),
                 'package_id' => $request->input('package_id'),
                 'date' => $request->input('date'),
                 'place_id' => $request->input('place_id'),
                 'status' => $request->input('status', 'pendiente'),
-                'estimated_price' => $request->input('estimated_price'),
-                'espected_advance' => $request->input('espected_advance'),
+                'estimated_price' => $request->input('estimated_price', '0'),
+                'espected_advance' => $request->input('espected_advance', '0'),
                 'start_time' => $request->input('start_time'),
                 'end_time' => $request->input('end_time'),
                 'type_event' => $request->input('type_event'),
-                'otro_tipo_evento' => $request->input('otro_tipo_evento', null),
+                'otro_tipo_evento' => $request->input('otro_tipo_evento'),
                 'owner_name' => $request->input('owner_name'),
                 'owner_phone' => $request->input('owner_phone'),
                 'guest_count' => $request->input('guest_count'),
             ]);
     
-            // Manejo de servicios
-            $services = $request->input('services', []);
-            $servicesData = [];
+            if (!$request->input('package_id')) {
+                $services = $request->input('services', []);
+                $servicesData = [];
     
-            foreach ($services as $serviceId => $serviceData) {
-                if (isset($serviceData['confirmed']) && filter_var($serviceData['confirmed'], FILTER_VALIDATE_BOOLEAN)) {
-                    $quantity = $serviceData['quantity'];
-                    if (!empty($quantity) && is_numeric($quantity) && $quantity > 0) {
-                        $servicesData[$serviceId] = [
-                            'quantity' => $quantity,
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ];
+                foreach ($services as $serviceId => $serviceData) {
+                    if (isset($serviceData['confirmed']) && filter_var($serviceData['confirmed'], FILTER_VALIDATE_BOOLEAN)) {
+                        $quantity = $serviceData['quantity'];
+                        if (!empty($quantity) && is_numeric($quantity) && $quantity > 0) {
+                            $servicesData[$serviceId] = [
+                                'quantity' => $quantity,
+                                'created_at' => now(),
+                                'updated_at' => now(),
+                            ];
+                        }
                     }
                 }
-            }
     
-            if (!empty($servicesData)) {
-                $quote->services()->sync($servicesData);
+                if (!empty($servicesData)) {
+                    $quote->services()->sync($servicesData);
+                }
             }
     
             DB::commit();
     
-            return redirect()->route('cotizaciones.create')->with('success', 'Cotización y servicios creados exitosamente.');
+            return redirect()->route('cotizaciones.create')->with('success', 'Cotización enviada exitosamente.');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()
