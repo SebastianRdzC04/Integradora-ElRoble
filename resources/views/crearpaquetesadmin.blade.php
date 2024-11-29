@@ -22,7 +22,7 @@
             </div>
             @endif
             <div class="col-md-7" id="crearPaquete">
-                <h3>Crear Nuevo Paquete</h3>
+                <h3><strong>Crear Nuevo Paquete</strong></h3>
                 <form action="{{ route('paquetes.store') }}" method="POST" enctype="multipart/form-data" id="paqueteForm">
                     @csrf
                     <div class="mb-3">
