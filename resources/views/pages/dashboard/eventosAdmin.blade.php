@@ -30,9 +30,7 @@
                                 {{ $event->quote->place ? $event->quote->place->name : $event->quote->package->place->name }}
                             </p>
                         </div>
-                        <!-- Calcula el tiempo que falta para que inicie el evento -->
                         @if ($event->status == 'En espera')
-
                             <div>
                                 @if (Carbon::now()->lessThan(Carbon::parse($event->estimated_start_time)))
                                     @if ($timeToStart->h > 1)
@@ -46,17 +44,14 @@
                                     @endif
                                 @else
                                     <p class="text-end"> ya paso la hora carnal</p>
-
                                 @endif
                             </div>
-
                         @endif
                         @if ($event->status == 'Pendiente')
                             <div>
                                 <p>Fecha: {{ Carbon::parse($event->date)->format('d/m/Y') }} </p>
                             </div>
                         @endif
-                        <!-- Aqui termina esa seccion -->
                     </div>
                     <div>
                         <div style="width: 140px">
@@ -114,7 +109,8 @@
                             </div>
                             <div class="d-flex">
                                 <p> Manteles:</p>
-                                <p class="ms-auto">{{ $event->table_cloth_count }} <i data-bs-toggle="modal" data-bs-target="#modalMantel" class="bi bi-pencil-fill"></i> </p>
+                                <p class="ms-auto">{{ $event->table_cloth_count }} <i data-bs-toggle="modal"
+                                        data-bs-target="#modalMantel" class="bi bi-pencil-fill"></i> </p>
                             </div>
                             <div class="modal fade" id="modalMantel">
                                 <div class="modal-dialog">
@@ -136,7 +132,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                         @if ($event->status == 'Pendiente')
@@ -163,19 +158,37 @@
                                 {{ Carbon::parse($event->estimated_end_time)->format('h:i A') }}
                             </p>
                         @endif
-
-
                     </div>
                     <div>
                         <p>Precio del evento: {{ $event->total_price }} </p>
                         <p>Anticipo: {{ $event->advance_payment }} </p>
                         @if ($event->status != 'Finalizado')
                             <p>Monto Faltante: {{ $event->remaining_payment }} </p>
-
                             <p>Precio por hora extra:
-                                {{ $event->extra_hour_price == 0 ? 'Sin definir' : $event->extra_hour_price }} </p>
+                                {{ $event->extra_hour_price == 0 ? 'Sin definir' : '$' . $event->extra_hour_price }} <i
+                                    data-bs-toggle="modal" data-bs-target="#modalHx" class="bi bi-pencil-fill"></i> </p>
+                            <div class="modal fade" id="modalHx">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3>Precio por hora extra</h3>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{{ route('dashboard.event.extra.hour.price', $event->id) }}"
+                                                method="POST">
+                                                @csrf
+                                                <div class="mb-3">
+                                                    <label for="hx" class="form-label">Precio por hora extra</label>
+                                                    <input type="number" class="form-control" id="precio" name="precio"
+                                                        value="{{ $event->extra_hour_price }}">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endif
-
                         <div class="mb-3 d-flex justify-content-between gap-1">
                             @if ($event->status == 'En espera')
                                 <form action="{{ route('dashboard.start.event', $event->id) }}" method="POST">
@@ -235,7 +248,6 @@
                                                                 <td> {{ $service->cost }} </td>
                                                             </tr>
                                                         @endforeach
-
                                                     @endif
                                                 </tbody>
                                             </table>
@@ -260,7 +272,6 @@
                                                     <th>Nombre</th>
                                                     <th>Cantidad</th>
                                                     <th>Estado</th>
-
                                                     @if ($event->status == 'Pendiente' || $event->status == 'En espera' || $event->status == 'En proceso')
                                                         <th class="text-center">Acciones</th>
                                                     @endif
@@ -319,9 +330,6 @@
 @endsection
 
 @section('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-    </script>
     @if ($data || $data2)
         <script>
             document.addEventListener('DOMContentLoaded', function() {
@@ -333,14 +341,13 @@
     <script>
         function updateStatus(form) {
             event.preventDefault();
-
             let currentRow = form.closest('tr');
             let estadoListo = currentRow.querySelector('.estadoL');
             let estadoNoListo = currentRow.querySelector('.estadoNL');
             let botonForm = currentRow.querySelector('button[type="submit"]');
             let iconoListo = botonForm.querySelector('.listo');
             let iconoNoListo = botonForm.querySelector('.no-listo');
-
+            /*
             if (iconoListo.style.display === 'none') {
                 iconoListo.style.display = 'block';
                 iconoNoListo.style.display = 'none';
@@ -360,9 +367,16 @@
                 estadoListo.style.display = 'none';
                 estadoNoListo.style.display = 'block';
             }
-
+            */
             $.post($(form).attr('action'), $(form).serialize(), function(respuesta) {
-                if (respuesta.ready) {}
+                if (respuesta.status === 'success') {
+                    estadoListo.style.display = estadoListo.style.display === 'none' ? 'block' : 'none';
+                    estadoNoListo.style.display = estadoNoListo.style.display === 'block' ? 'none' : 'block';
+                    iconoListo.style.display = iconoListo.style.display === 'none' ? 'block' : 'none';
+                    iconoNoListo.style.display = iconoNoListo.style.display === 'block' ? 'none' : 'block';
+                    botonForm.classList.toggle('btn-outline-danger');
+                    botonForm.classList.toggle('btn-outline-success');
+                }
             });
         }
     </script>

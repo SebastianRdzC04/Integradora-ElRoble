@@ -34,6 +34,8 @@ class DatabaseSeeder extends Seeder
         $this->call(InventoryTable::class);
         $this->call(ServiceSeeder::class);
         $this->call(PackageSeeder::class);
+        $this->call(ConsumableSeeder::class);
+        $this->call(ConsumableDefaultSeeder::class);
 
         $usuario = new User();
         $usuario->nickname = 'SebasRdz';
@@ -80,6 +82,7 @@ class DatabaseSeeder extends Seeder
 
 
         $this->call(QuoteSeeder::class);
+        $this->call(EventSeeder::class);
         
 
 

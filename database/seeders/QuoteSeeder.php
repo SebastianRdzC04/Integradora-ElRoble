@@ -82,7 +82,7 @@ class QuoteSeeder extends Seeder
         }
 
         // Special events
-        for ($i = 1; $i <= 5; $i++) {
+        for ($i = 1; $i <= 60; $i++) {
             $times = $getEventTimes();
             $estimated_price = $faker->numberBetween(45000, 70000);
             Quote::create([
@@ -97,6 +97,25 @@ class QuoteSeeder extends Seeder
                 'end_time' => $times['end'],
                 'type_event' => $faker->randomElement(['Boda', 'XV años']),
                 'guest_count' => $faker->numberBetween(60, 80),
+                'created_at' => $faker->dateTimeBetween('-6 months', 'now'),
+                'updated_at' => $faker->dateTimeBetween('-6 months', 'now')
+            ]);
+        }
+        for ($i = 1; $i <= 40; $i++) {
+            $times = $getEventTimes();
+            $estimated_price = $faker->numberBetween(10000, 40000);
+            Quote::create([
+                'user_id' => rand(1, 10),
+                'package_id' => null,
+                'place_id' => rand(1, 3),
+                'date' => $faker->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d'),
+                'status' => 'pendiente',
+                'estimated_price' => $estimated_price,
+                'espected_advance' => $estimated_price * 0.30,
+                'start_time' => $times['start'],
+                'end_time' => $times['end'],
+                'type_event' => $faker->randomElement($eventTypes),
+                'guest_count' => $faker->numberBetween(50, 80),
                 'created_at' => $faker->dateTimeBetween('-6 months', 'now'),
                 'updated_at' => $faker->dateTimeBetween('-6 months', 'now')
             ]);

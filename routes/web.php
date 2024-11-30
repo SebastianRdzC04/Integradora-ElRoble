@@ -94,13 +94,35 @@ Route::middleware('admin')->group(function () {
 
 Route::middleware('superadmin')->group(function () {
 
+    Route::get('dashboard/graphics/profits', function(Request $request){
+        $request->validate([
+            'year' => 'required|integer|min:2000',
+        ]);
+        $year = $request->year;
+        $ingresosPorMes = array_fill(0, 12, 0);
+        Event::where('status', 'Pendiente')
+            ->whereYear('date', $year)
+            ->get()
+            ->each(function($event) use (&$ingresosPorMes) {
+                $mes = Carbon::parse($event->date)->format('m');
+                $ingresosPorMes[$mes - 1] += $event->total_price;
+            });
+        return response()->json($ingresosPorMes);
+    })->name('dashboard.graphics.profits');
 
     Route::get('dashboard/graphics', function () {
         $places = Place::all();
-        // obtener las cotizaciones por lugar
         $events = Event::where('status', 'Pendiente')->orWhere('status', 'Finalizado')->get();
         $paquetes = Package::all();
-        //Datos Para el grafico de barras
+        $ingresosPorMes = array_fill(0, 12, 0);
+        Event::where('status', 'Pendiente')
+            ->whereYear('date', Carbon::now()->year)
+            ->get()
+            ->each(function($event) use (&$ingresosPorMes) {
+                $mes = Carbon::parse($event->date)->format('m');
+                $ingresosPorMes[$mes - 1] += $event->total_price;
+            });
+
         $eventos_sinPaquete = 0;
         $eventos_conPaquete = 0;
         $datos2 = [
@@ -119,7 +141,9 @@ Route::middleware('superadmin')->group(function () {
                 'name' => $paquete->name,
             ];
         }
-        foreach ($events as $event) {
+        $yearActual = Carbon::now()->year;
+        $eventsThisYear = Event::whereYear('date', $yearActual)->get();
+        foreach ($eventsThisYear as $event) {
             if ($event->quote->package_id == null) {
                 $eventos_sinPaquete++;
                 //hacer un match por mes 
@@ -131,7 +155,7 @@ Route::middleware('superadmin')->group(function () {
                 $datos2[$event->quote->package_id]['data'][$mes2 - 1] += 1;
             }
         }
-        return view('pages.dashboard.graficos', compact('places', 'events', 'paquetes', 'datos2'));
+        return view('pages.dashboard.graficos', compact('places', 'events', 'paquetes', 'datos2', 'ingresosPorMes'));
     })->name('dashboard.graphics');
 
 
@@ -312,6 +336,20 @@ Route::middleware('superadmin')->group(function () {
 
     })->name('dashboard.event.tablecloths');
 
+    Route::post('dashboard/event/extra/hour/price/{id}', function ($id, Request $request) {
+        $event = Event::find($id);
+        $request->validate([
+            'precio' => 'required|numeric|min:0',
+        ]);
+        if ($event) {
+            $event->extra_hour_price = $request->precio;
+            $event->save();
+            return redirect()->back()->with('success', 'El precio de la hora extra ha sido actualizado');
+        }
+        return redirect()->back()->with('error', 'El evento no se ha encontrado');
+
+    })->name('dashboard.event.extra.hour.price');
+
 
     Route::post('dashboard/event/consumable/status/{id}', function ($id) {
         $consumableEvent = ConsumableEvent::find($id);
@@ -319,7 +357,9 @@ Route::middleware('superadmin')->group(function () {
         if ($consumableEvent) {
             if (!$consumableEvent->ready) {
                 if ($consumable->stock < $consumableEvent->quantity) {
-                    return redirect()->back()->with('error', 'No hay suficiente stock para el consumible')->with('stock', 'No alcanzas carnal');
+                    return response()->json([
+                        'status' => 'error',
+                    ]);
                 }
                 else {
                     $consumableEvent->ready = !$consumableEvent->ready;
@@ -333,7 +373,9 @@ Route::middleware('superadmin')->group(function () {
 
             }
         }
-        return redirect()->back()->with('success', 'El estado del consumible ha sido actualizado')->with('consumible', 'Abrete sesamo');
+        return response()->json([
+            'status' => 'success',
+        ]);
         })->name('dashboard.event.consumable');
 
 
