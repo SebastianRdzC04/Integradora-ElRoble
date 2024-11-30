@@ -270,6 +270,48 @@ Route::middleware('superadmin')->group(function () {
 
     })->name('dashboard.end.event');
 
+    Route::post('dashboard/event/chair/{id}', function ($id, Request $request) {
+        $event = Event::find($id);
+        $request->validate([
+            'sillas' => 'required|integer|min:0',
+        ]);
+        if ($event) {
+            $event->chair_count = $request->sillas;
+            $event->save();
+            return redirect()->back()->with('success', 'El numero de sillas ha sido actualizado');
+        }
+        return redirect()->back()->with('error', 'El evento no se ha encontrado');
+
+    })->name('dashboard.event.chairs');
+
+    Route::post('dashboard/event/table/{id}', function ($id, Request $request) {
+        $event = Event::find($id);
+        $request->validate([
+            'mesas' => 'required|integer|min:0',
+        ]);
+        if ($event) {
+            $event->table_count = $request->mesas;
+            $event->save();
+            return redirect()->back()->with('success', 'El numero de mesas ha sido actualizado');
+        }
+        return redirect()->back()->with('error', 'El evento no se ha encontrado');
+
+    })->name('dashboard.event.tables');
+
+    Route::post('dashboard/event/table/cloth/{id}', function ($id, Request $request) {
+        $event = Event::find($id);
+        $request->validate([
+            'manteles' => 'required|integer|min:0',
+        ]);
+        if ($event) {
+            $event->table_cloth_count = $request->manteles;
+            $event->save();
+            return redirect()->back()->with('success', 'El numero de manteles ha sido actualizado');
+        }
+        return redirect()->back()->with('error', 'El evento no se ha encontrado');
+
+    })->name('dashboard.event.tablecloths');
+
 
     Route::post('dashboard/event/consumable/status/{id}', function ($id) {
         $consumableEvent = ConsumableEvent::find($id);
@@ -360,8 +402,36 @@ Route::middleware('superadmin')->group(function () {
         return redirect()->back()->with('error', 'El consumible no se ha encontrado');
 
     })->name('dashboard.consumable.add.stock');
-    
 
+    Route::post('dashboard/consumable/delete/{id}', function ($id){
+        $consumable = Consumable::find($id);
+        if ($consumable){
+            $consumable->delete();
+            return redirect()->back()->with('success', 'si se elimino banda');
+        }
+        return redirect()->back()->with('error', 'No se encontro banda');
+    })->name('dashboard.consumable.delete');
+
+    Route::post('dashboard/consumable/edit/{id}', function ($id, Request $request){
+        $consumable = Consumable::find($id);
+        $request->validate([
+            'nombre_edit' => 'required|string',
+            'descripcion_edit' => 'required|string',
+            'unidad_edit' => 'required|string',
+            'stock_min_edit' => 'required|integer|min:0',
+            'stock_max_edit' => 'required|integer|min:0',
+        ]);
+        if ($consumable){
+            $consumable->name = $request->nombre_edit;
+            $consumable->description = $request->descripcion_edit;
+            $consumable->unit = $request->unidad_edit;
+            $consumable->minimum_stock = $request->stock_min_edit;
+            $consumable->maximum_stock = $request->stock_max_edit;
+            $consumable->save();
+            return redirect()->back()->with('success', 'si se edito banda');
+        }
+        return redirect()->back()->with('error', 'No se encontro banda');
+    })->name('dashboard.consumable.edit');
 });
 
 

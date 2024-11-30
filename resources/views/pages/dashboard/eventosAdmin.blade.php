@@ -59,9 +59,86 @@
                         <!-- Aqui termina esa seccion -->
                     </div>
                     <div>
-                        <p> Sillas: {{ $event->chair_count }} </p>
-                        <p> Mesas: {{ $event->table_count }} </p>
-                        <p> Manteles: {{ $event->table_cloth_count }} </p>
+                        <div style="width: 140px">
+                            <div class="d-flex">
+                                <p> Sillas:</p>
+                                <p class="ms-auto"> {{ $event->chair_count }} <a data-bs-toggle="modal"
+                                        data-bs-target="#modalSillas" href=""><i class="bi bi-pencil-fill"></i></a>
+                                </p>
+                            </div>
+                            <div class="modal fade" id="modalSillas">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3>Sillas</h3>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{{ route('dashboard.event.chairs', $event->id) }}" method="POST">
+                                                @csrf
+                                                <div class="mb-3">
+                                                    <label for="sillas" class="form-label">Cantidad de sillas</label>
+                                                    <input type="number" class="form-control" id="sillas" name="sillas"
+                                                        value="{{ $event->chair_count }}">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <p> Mesas:</p>
+                                <p class="ms-auto"> {{ $event->table_count }} <i data-bs-toggle="modal"
+                                        data-bs-target="#modalMesas" class="bi bi-pencil-fill"></i> </p>
+                            </div>
+                            <div class="modal fade" id="modalMesas">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3>Mesas</h3>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{{ route('dashboard.event.tables', $event->id) }}"
+                                                method="POST">
+                                                @csrf
+                                                <div class="mb-3">
+                                                    <label for="mesas" class="form-label">Cantidad de mesas</label>
+                                                    <input type="number" class="form-control" id="mesas" name="mesas"
+                                                        value="{{ $event->table_count }}">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <p> Manteles:</p>
+                                <p class="ms-auto">{{ $event->table_cloth_count }} <i data-bs-toggle="modal" data-bs-target="#modalMantel" class="bi bi-pencil-fill"></i> </p>
+                            </div>
+                            <div class="modal fade" id="modalMantel">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3>Manteles</h3>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{{ route('dashboard.event.tablecloths', $event->id) }}"
+                                                method="POST">
+                                                @csrf
+                                                <div class="mb-3">
+                                                    <label for="manteles" class="form-label">Cantidad de manteles</label>
+                                                    <input type="number" class="form-control" id="manteles"
+                                                        name="manteles" value="{{ $event->table_cloth_count }}">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
                         @if ($event->status == 'Pendiente')
                             <p>Se espera que empiece a las
                                 {{ Carbon::parse($event->estimated_start_time)->format('h:i A') }} </p>
@@ -99,26 +176,24 @@
                                 {{ $event->extra_hour_price == 0 ? 'Sin definir' : $event->extra_hour_price }} </p>
                         @endif
 
-                        <div class="mb-3 d-flex justify-content-between">
+                        <div class="mb-3 d-flex justify-content-between gap-1">
                             @if ($event->status == 'En espera')
                                 <form action="{{ route('dashboard.start.event', $event->id) }}" method="POST">
                                     @csrf
-                                    <button class="btn btn-primary">Marcar como que ya empezo</button>
+                                    <button class="btn btn-primary">Empezar</button>
                                 </form>
                             @endif
                             @if ($event->status == 'En proceso')
                                 <form action="{{ route('dashboard.end.event', $event->id) }}" method="POST">
                                     @csrf
-                                    <button class="btn btn-primary">Marcar como que ya termino</button>
+                                    <button class="btn btn-primary">Terminar</button>
                                 </form>
                             @endif
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#modal1">Mostrar
-                                Servicios</button>
+                                data-bs-target="#modal1">Servicios</button>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#modal2">Mostrar
-                                Consumibles</button>
-                            <a href="{{ route('incident.create') }}" class="btn btn-primary">Reportar incidencia</a>
+                                data-bs-target="#modal2">Consumibles</button>
+                            <a href="{{ route('incident.create') }}" class="btn btn-primary">Incidencia</a>
                         </div>
                         <div class="modal fade" id="modal1" aria-labelledby="modalLabel1" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -266,14 +341,14 @@
             let iconoListo = botonForm.querySelector('.listo');
             let iconoNoListo = botonForm.querySelector('.no-listo');
 
-            if (iconoListo.style.display === 'none') { 
+            if (iconoListo.style.display === 'none') {
                 iconoListo.style.display = 'block';
                 iconoNoListo.style.display = 'none';
                 botonForm.classList.remove('btn-outline-success');
-                botonForm.classList.add('btn-outline-danger')    
+                botonForm.classList.add('btn-outline-danger')
             } else {
                 botonForm.classList.remove('btn-outline-danger');
-                botonForm.classList.add('btn-outline-success')    
+                botonForm.classList.add('btn-outline-success')
                 iconoListo.style.display = 'none';
                 iconoNoListo.style.display = 'block';
             }
@@ -287,8 +362,7 @@
             }
 
             $.post($(form).attr('action'), $(form).serialize(), function(respuesta) {
-                if (respuesta.ready) {
-                }
+                if (respuesta.ready) {}
             });
         }
     </script>
