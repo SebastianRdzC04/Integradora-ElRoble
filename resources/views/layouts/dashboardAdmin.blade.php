@@ -5,7 +5,7 @@
 
     $timeToStart = '00:00:00';
 
-    $event = Event::whereDate('date', Carbon::now()->format('Y-m-d'))->where('status', '!=', 'Finalizado')->first();
+    $event = Event::whereDate('date', Carbon::now()->format('Y-m-d'))->whereNotIn('status', ['Finalizado', 'Cancelado'])->first();
     if ($event) {
         if ($event->status == 'Pendiente') {
             $event->status = 'En espera';
@@ -232,14 +232,14 @@
                         @if (auth()->user()->roles->contains('id', 1))
                             <li class="sidebar-item">
                                 <a href="{{ route('dashboard.graphics') }}" class="sidebar-link">
-                                    <i class="lni lni-agenda"></i>
+                                    <i class="bi bi-graph-up-arrow"></i>
                                     <span>Graficos</span>
                                 </a>
                             </li>
                             <li class="sidebar-item">
                                 <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                                     data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
-                                    <i class="lni lni-protection"></i>
+                                    <i class="bi bi-archive"></i>
                                     <span>Inventario</span>
                                 </a>
                                 <ul id="auth" class="sidebar-dropdown list-unstyled collapse"
@@ -257,7 +257,7 @@
                         <li class="sidebar-item">
                             <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                                 data-bs-target="#multi" aria-expanded="false" aria-controls="multi">
-                                <i class="lni lni-layout"></i>
+                                <i class="bi bi-table"></i>
                                 <span>Formularios</span>
                             </a>
                             <ul id="multi" class="sidebar-dropdown list-unstyled collapse"
@@ -284,7 +284,7 @@
                         @if ($event)
                             <li class="sidebar-item">
                                 <a href="{{ route('dashboard.event.now') }}" class="sidebar-link">
-                                    <i class="lni lni-popup"></i>
+                                    <i class="bi bi-bell-fill"></i>
                                     <span>Evento ahora</span>
                                 </a>
                             </li>

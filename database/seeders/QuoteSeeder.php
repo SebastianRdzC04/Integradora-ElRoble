@@ -120,5 +120,11 @@ class QuoteSeeder extends Seeder
                 'updated_at' => $faker->dateTimeBetween('-6 months', 'now')
             ]);
         }
+        $quotes = Quote::all();
+        foreach ($quotes as $quote){
+            $quote->services()->attach(1);
+            $quote->services()->attach(2);
+            $quote->services()->attach(3);
+        };
     }
 }

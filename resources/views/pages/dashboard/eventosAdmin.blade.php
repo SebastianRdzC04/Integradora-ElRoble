@@ -57,8 +57,12 @@
                         <div style="width: 140px">
                             <div class="d-flex">
                                 <p> Sillas:</p>
-                                <p class="ms-auto"> {{ $event->chair_count }} <a data-bs-toggle="modal"
-                                        data-bs-target="#modalSillas" href=""><i class="bi bi-pencil-fill"></i></a>
+                                <p class="ms-auto"> {{ $event->chair_count }}
+                                    @if ($event->status == 'Pendiente' || $event->status == 'En espera')
+                                        <a data-bs-toggle="modal" data-bs-target="#modalSillas" href=""><i
+                                                class="bi bi-pencil-fill"></i>
+                                        </a>
+                                    @endif
                                 </p>
                             </div>
                             <div class="modal fade" id="modalSillas">
@@ -83,8 +87,12 @@
                             </div>
                             <div class="d-flex">
                                 <p> Mesas:</p>
-                                <p class="ms-auto"> {{ $event->table_count }} <i data-bs-toggle="modal"
-                                        data-bs-target="#modalMesas" class="bi bi-pencil-fill"></i> </p>
+                                <p class="ms-auto"> {{ $event->table_count }}
+                                    @if ($event->status == 'Pendiente' || $event->status == 'En espera')
+                                        <i data-bs-toggle="modal" data-bs-target="#modalMesas"
+                                            class="bi bi-pencil-fill"></i>
+                                    @endif
+                                </p>
                             </div>
                             <div class="modal fade" id="modalMesas">
                                 <div class="modal-dialog">
@@ -109,8 +117,12 @@
                             </div>
                             <div class="d-flex">
                                 <p> Manteles:</p>
-                                <p class="ms-auto">{{ $event->table_cloth_count }} <i data-bs-toggle="modal"
-                                        data-bs-target="#modalMantel" class="bi bi-pencil-fill"></i> </p>
+                                <p class="ms-auto">{{ $event->table_cloth_count }}
+                                    @if ($event->status == 'Pendiente' || $event->status == 'En espera')
+                                        <i data-bs-toggle="modal" data-bs-target="#modalMantel"
+                                            class="bi bi-pencil-fill"></i>
+                                    @endif
+                                </p>
                             </div>
                             <div class="modal fade" id="modalMantel">
                                 <div class="modal-dialog">
@@ -165,8 +177,11 @@
                         @if ($event->status != 'Finalizado')
                             <p>Monto Faltante: {{ $event->remaining_payment }} </p>
                             <p>Precio por hora extra:
-                                {{ $event->extra_hour_price == 0 ? 'Sin definir' : '$' . $event->extra_hour_price }} <i
-                                    data-bs-toggle="modal" data-bs-target="#modalHx" class="bi bi-pencil-fill"></i> </p>
+                                {{ $event->extra_hour_price == 0 ? 'Sin definir' : '$' . $event->extra_hour_price }}
+                                @if ($event->status == 'Pendiente' || $event->status == 'En espera' || $event->status == 'En proceso')
+                                    <i data-bs-toggle="modal" data-bs-target="#modalHx" class="bi bi-pencil-fill"></i>
+                                @endif
+                            </p>
                             <div class="modal fade" id="modalHx">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -243,9 +258,9 @@
                                                         @foreach ($event->quote->services as $service)
                                                             <tr>
                                                                 <td> {{ $service->name }} </td>
-                                                                <td> {{ $service->description }} </td>
-                                                                <td> {{ $service->price }} </td>
-                                                                <td> {{ $service->cost }} </td>
+                                                                <td> {{ $service->pivot->description }} </td>
+                                                                <td> {{ $service->pivot->price }} </td>
+                                                                <td> {{ $service->pivot->cost }} </td>
                                                             </tr>
                                                         @endforeach
                                                     @endif
