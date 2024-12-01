@@ -126,7 +126,7 @@
             <div class="col-md-5" id="previstaServicio">
                 <div class="prevista-imagen-container">
                     <img id="prevista-imagen" class="prevista-imagen" src="{{ asset('images/imagen1.jpg') }}" alt="Vista previa" style="border: 2px solid rgb(255, 255, 255);">
-                    <div class="prevista-caption">
+                    <div class="prevista-caption-previa">
                         <h5 id="prevista-nombre">Nombre del Paquete</h5>
                         <p id="prevista-descripcion">Descripción del paquete</p>
                         <p id="prevista-fechas">Fecha de Inicio - Fecha de Finalización</p>

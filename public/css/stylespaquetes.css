@@ -85,8 +85,10 @@ li {
     transition: top 0.5s ease;
     margin-bottom: 30px;
     border: 2px solid rgba(255, 255, 255, 0.904);
+    margin-left: auto;
+    margin-right: auto;
 }
-@media (max-width: 770px) {
+@media (max-width: 768px) {
     #previstaServicio {
         position: static;
         display: flex;
@@ -95,7 +97,8 @@ li {
         width: 100%;
         margin-top: 20px;
         transform: none;
-        margin-left: 40px;
+        margin-left: auto;
+        margin-right: auto;
     }
 }
 .prevista-imagen-container {
@@ -295,7 +298,7 @@ li {
 #card-carousel {
     background-color: #2b1a06;
     border: 2px solid rgb(255, 255, 255);
-    min-height: 350px;
+    min-height: 500px;
 }
 .modal-custom-bg {
     background-color: rgb(46, 155, 32);
@@ -321,4 +324,55 @@ li {
 
 .carousel-item .card-body button {
     margin-top: 10px;
+}
+
+#SolicitarPaqueteBoton {
+    background-color: #155715; 
+    padding: 10px;
+    border-radius: 100px;
+    color: white;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.904);
+}
+#crearCotizacionModalBoton {
+    background-color: #2b1a06; 
+    padding: 10px;
+    border-radius: 100px;
+    color: white;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.904);
+}
+.lugar-card {
+    cursor: pointer;
+    transition: transform 0.2s;
+    margin-bottom: 15px;
+    max-width: 100%;
+    color: white;
+    background-color: #2b1a06;
+    border: 2px white solid;
+}
+
+.lugar-card:hover {
+    transform: scale(1.05);
+}
+
+.lugar-card.selected {
+    border-color: #007bff;
+}
+
+@media (max-width: 576px) {
+    .lugar-card {
+        max-width: 100%;
+    }
+    .lugar-card .card-title {
+        font-size: 0.9rem;
+    }
+    .lugar-card .card-body {
+        padding: 10px;
+    }
+}
+#quitabottom {
+    margin-bottom: 0 !important;
 }

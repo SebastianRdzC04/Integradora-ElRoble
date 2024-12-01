@@ -26,6 +26,7 @@
                     <!-- Carrusel de Paquetes -->
                     <div class="row mb-4">
                         <div class="col-md-6">
+                            <h6>Paquetes Disponibles:</h6>
                             <div id="packageCarousel" class="carousel slide" data-bs-ride="carousel">
                                 <div class="carousel-inner">
                                     @foreach($packages as $index => $package)
@@ -53,7 +54,7 @@
                                                     <div class="carousel-caption">
                                                         <h5 class="card-title">{{ $package->name }}</h5>
                                                         <p class="card-text"><i class="bi bi-geo-alt-fill"></i> {{ $package->place->name }}</p>
-                                                        <p class="card-text"> Máx de <i class="bi bi-people-fill"></i>: {{ $package->max_people }}</p>
+                                                        <p class="card-text"> Máx. de <i class="bi bi-people-fill"></i>: {{ $package->max_people }}</p>
                                                         <p class="card-text"><i class="bi bi-currency-dollar"></i>{{ $package->price }}</p>
                                                     </div>
                                                 </div>
@@ -63,7 +64,7 @@
                                                         <li>{{ $service->name }}</li>
                                                     @endforeach
                                                 </ul>
-                                                <button class="btn btn-primary" onclick="openPackageModal({{ $package->id }})">Solicitar Paquete</button>
+                                                <button class="btn btn-primary" id="SolicitarPaqueteBoton" onclick="openPackageModal({{ $package->id }})">Solicitar Paquete</button>
                                             </div>
                                         </div>
                                     </div>
@@ -80,22 +81,41 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="place_id" class="form-label">Lugar</label>
-                                <div>
-                                    @foreach($places as $place)
-                                        <div class="form-check">
-                                            <input class="form-check-input @error('place_id') is-invalid @enderror" type="radio" name="place_id" id="place_{{ $place->id }}" value="{{ $place->id }}" {{ old('place_id') == $place->id ? 'checked' : '' }} required>
-                                            <label class="form-check-label" for="place_{{ $place->id }}">
-                                                {{ $place->name }}
-                                            </label>
+                            <h6>Selecciona un Espacio</h6>
+                            <!-- Cards de Lugar -->
+                            <div class="row mb-4">
+                                <div class="col-4 col-sm-4 col-md-12 col-lg-6">
+                                    <div class="card lugar-card" onclick="selectPlace(1)">
+                                        <img src="/images/imagen2.jpg" class="card-img-top" alt="Lugar 1">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">Quinta</h5>
                                         </div>
-                                    @endforeach
-                                    @error('place_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    </div>
+                                </div>
+                                <div class="col-4 col-sm-4 col-md-12 col-lg-6">
+                                    <div class="card lugar-card" onclick="selectPlace(2)">
+                                        <img src="/images/imagen7.jpg" class="card-img-top" alt="Lugar 2">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">Salón</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-sm-4 col-md-12 col-lg-6">
+                                    <div class="card lugar-card" onclick="selectPlace(3)">
+                                        <img src="/images/imagen8.jpg" class="card-img-top" alt="Lugar 3">
+                                        <div class="card-body text-center">
+                                            <h5 class="card-title">Quinta y Salón</h5>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            <input type="hidden" name="place_id" id="place_id" value="{{ old('place_id') }}" required>
+                            <div class="alert alert-danger d-none" id="placeError" role="alert" style="background-color:rgb(189, 18, 18); color: white;">
+                                Por favor, selecciona un lugar.
+                            </div>
+                            @error('place_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                     <form action="{{ route('cotizacionesclientes.store') }}" method="POST" id="cotizacionForm">
@@ -209,6 +229,7 @@
                                 </div>
                             @endforeach
                         </div>
+                        <button type="submit" class="d-none" id="hiddenSubmitButton" onclick="crearPaquete()">Enviar Cotización</button>
                     </form>
                 </div>
             </div>
@@ -227,91 +248,97 @@
             </div>
             <p id="prevista-servicios">Servicios seleccionados:</p>
             <div id="vista-previa-servicios" class="vista-previa mt-3">No hay servicios confirmados aún.</div>
-            <button type="button" class="btn btn-success mt-3" id="crearPaqueteBoton" onclick="crearPaquete()">Enviar Cotización</button>
+            <button type="button" class="btn btn-success mt-3" id="crearPaqueteBoton" onclick="document.getElementById('hiddenSubmitButton').click()"><strong>Enviar Cotización</strong></button>
         </div>
     </div>
 
-    <!-- Modal de Paquetes -->
-    <div class="modal fade" id="packageModal" tabindex="-1" aria-labelledby="packageModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content" style="background-color: rgb(27, 59, 23); border: 3px solid rgb(255, 255, 255);">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="packageModalLabel">Solicitar Cotización de Paquete</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="prevista-imagen-container">
-                        <img id="packageImage" class="prevista-imagen" src="/images/imagen1.jpg" alt="Vista previa">
-                        <div class="prevista-caption-previa">
-                            <h5 id="packageName">Nombre</h5>
-                            <p id="packageDescription">Descripción: -</p>
-                            <p id="packagePrice">Precio: -</p>
-                            <p id="packageDates">Fechas: -</p>
+<!-- Modal de Paquetes -->
+<div class="modal fade" id="packageModal" tabindex="-1" aria-labelledby="packageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background-color: rgb(27, 59, 23); border: 3px solid rgb(255, 255, 255);">
+            <div class="modal-header">
+                <h5 class="modal-title" id="packageModalLabel">Solicitar Cotización de Paquete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: white;"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12 col-lg-6">
+                        <div class="prevista-imagen-container">
+                            <img id="packageImage" class="prevista-imagen w-100" src="/images/imagen1.jpg" alt="Vista previa">
+                            <div class="prevista-caption-previa">
+                                <h5 id="packageName">Nombre</h5>
+                                <p id="packageDescription">Descripción: -</p>
+                                <p id="packagePrice">Precio: -</p>
+                                <p id="packageDates">Fechas: -</p>
+                            </div>
                         </div>
                     </div>
-                    <p id="packageServices">Servicios incluidos:</p>
-                    <ul id="packageServicesList"></ul>
-                    <form id="packageForm" action="{{ route('cotizacionesclientes.store') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="package_id" id="packageId">
-                        <input type="hidden" name="place_id" id="modal_place_id">
-                        <input type="hidden" id="modal_max_people">
-                        <input type="hidden" name="start_time" id="modal_start_time">
-                        <input type="hidden" name="end_time" id="modal_end_time">
-                        <input type="hidden" name="services" id="modal_services_input">
-                        <div class="mb-3 row">
-                            <div class="col-md-6">
-                                <label for="modal_date" class="form-label">Fecha</label>
-                                <input type="date" name="date" id="modal_date" class="form-control" required>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="modal_start_time_input" class="form-label">Hora de Inicio</label>
-                                <input type="time" id="modal_start_time_input" class="form-control" required>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="modal_end_time_input" class="form-label">Hora de Final</label>
-                                <input type="time" id="modal_end_time_input" class="form-control" required>
-                            </div>
-                        </div>
-                        <div class="mb-3 row">
-                            <div class="col-md-6">
-                                <label for="modal_guest_count" class="form-label">Cantidad de Invitados</label>
-                                <input type="number" name="guest_count" id="modal_guest_count" class="form-control" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="modal_type_event" class="form-label">Tipo de Evento</label>
-                                <select name="type_event" id="modal_type_event" class="form-control" onchange="toggleModalOtroTipoEvento()" required>
-                                    <option value="">Selecciona el tipo de evento</option>
-                                    <option value="XV's">XV's</option>
-                                    <option value="Cumpleaños">Cumpleaños</option>
-                                    <option value="Graduación">Graduación</option>
-                                    <option value="Posada">Posada</option>
-                                    <option value="Boda">Boda</option>
-                                    <option value="Baby Shower">Baby Shower</option>
-                                    <option value="Otro">Otro</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="mb-3" id="modal_otro_tipo_evento_div" style="display: none;">
-                            <label for="modal_otro_tipo_evento" class="form-label">Especificar Tipo de Evento</label>
-                            <input type="text" name="otro_tipo_evento" id="modal_otro_tipo_evento" class="form-control">
-                        </div>
-                        <div class="mb-3 row">
-                            <div class="col-md-6">
-                                <label for="owner_name" class="form-label">Nombre</label>
-                                <input type="text" name="owner_name" id="owner_name" class="form-control" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="owner_phone" class="form-label">Teléfono</label>
-                                <input type="text" name="owner_phone" id="owner_phone" class="form-control" required>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-success">Enviar Cotización</button>
-                    </form>
+                    <div class="col-12 col-lg-6 d-flex flex-column align-items-center">
+                        <p id="packageServices"><strong>Servicios incluidos:</strong></p>
+                        <ul id="packageServicesList" class="text-center"></ul>
+                    </div>
                 </div>
+                <form id="packageForm" action="{{ route('cotizacionesclientes.store') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="package_id" id="packageId">
+                    <input type="hidden" name="place_id" id="modal_place_id">
+                    <input type="hidden" id="modal_max_people">
+                    <input type="hidden" name="start_time" id="modal_start_time">
+                    <input type="hidden" name="end_time" id="modal_end_time">
+                    <input type="hidden" name="services" id="modal_services_input">
+                    <div class="mb-3 row">
+                        <div class="col-md-6">
+                            <label for="modal_date" class="form-label">Fecha</label>
+                            <input type="date" name="date" id="modal_date" class="form-control" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="modal_start_time_input" class="form-label">Hora de Inicio</label>
+                            <input type="time" id="modal_start_time_input" class="form-control" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="modal_end_time_input" class="form-label">Hora de Final</label>
+                            <input type="time" id="modal_end_time_input" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="col-md-6">
+                            <label for="modal_guest_count" class="form-label">Cantidad de Invitados</label>
+                            <input type="number" name="guest_count" id="modal_guest_count" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="modal_type_event" class="form-label">Tipo de Evento</label>
+                            <select name="type_event" id="modal_type_event" class="form-control" onchange="toggleModalOtroTipoEvento()" required>
+                                <option value="">Selecciona el tipo de evento</option>
+                                <option value="XV's">XV's</option>
+                                <option value="Cumpleaños">Cumpleaños</option>
+                                <option value="Graduación">Graduación</option>
+                                <option value="Posada">Posada</option>
+                                <option value="Boda">Boda</option>
+                                <option value="Baby Shower">Baby Shower</option>
+                                <option value="Otro">Otro</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3" id="modal_otro_tipo_evento_div" style="display: none;">
+                        <label for="modal_otro_tipo_evento" class="form-label">Especificar Tipo de Evento</label>
+                        <input type="text" name="otro_tipo_evento" id="modal_otro_tipo_evento" class="form-control">
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="col-md-6">
+                            <label for="owner_name" class="form-label">Nombre</label>
+                            <input type="text" name="owner_name" id="owner_name" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="owner_phone" class="form-label">Teléfono</label>
+                            <input type="text" name="owner_phone" id="owner_phone" class="form-control" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-success" id="crearCotizacionModalBoton"><strong>Enviar Cotización</strong></button>
+                </form>
             </div>
         </div>
     </div>
+</div>
 
     <script>
         // Declaración de Variables de Almacenamiento
@@ -368,6 +395,32 @@
         function getServiceName(serviceId) {
             return services[serviceId] ? services[serviceId].name : "Servicio desconocido";
         }
+
+        function selectPlace(placeId) {
+            document.querySelectorAll('.lugar-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            const selectedCard = document.querySelector(`.lugar-card[onclick="selectPlace(${placeId})"]`);
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+            }
+
+            document.getElementById('place_id').value = placeId;
+        }
+
+        document.getElementById('cotizacionForm').addEventListener('submit', function(event) {
+            const placeId = document.getElementById('place_id').value;
+            const placeError = document.getElementById('placeError');
+
+            if (!placeId) {
+                event.preventDefault();
+                placeError.classList.remove('d-none');
+                placeError.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                placeError.classList.add('d-none');
+            }
+        });
     
         function openPackageModal(packageId) {
             const package = @json($packages).find(pkg => pkg.id === packageId);
@@ -712,7 +765,7 @@
             const typeEventElement = document.getElementById('type_event');
             const typeEventValue = typeEventElement ? String(typeEventElement.value) : '';
 
-            const placeId = document.querySelector('input[name="place_id"]:checked');
+            const placeId = document.getElementById('place_id').value;
             if (!placeId) {
                 alert("Por favor, selecciona un lugar.");
                 return;
@@ -740,7 +793,7 @@
             form.appendChild(generarInputOculto('start_time', startDateTime));
             form.appendChild(generarInputOculto('end_time', endDateTime));
             form.appendChild(generarInputOculto('type_event', typeEventValue));
-            form.appendChild(generarInputOculto('place_id', placeId.value));
+            form.appendChild(generarInputOculto('place_id', placeId));
 
             let anyServiceConfirmed = false;
             for (let serviceId in confirmedServices) {
@@ -751,6 +804,7 @@
 
                     form.appendChild(generarInputOculto(`services[${serviceId}][quantity]`, service.quantity));
                     form.appendChild(generarInputOculto(`services[${serviceId}][confirmed]`, true));
+                    anyServiceConfirmed = true;
                 } else {
                     console.log(`Servicio ${serviceId} no confirmado o sin cantidad válida. Se omite.`);
                 }
