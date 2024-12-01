@@ -40,7 +40,7 @@ return [
     'google' => [
     'client_id' => env('GOOGLE_OAUTH_ID'),
     'client_secret' => env('GOOGLE_OAUTH_KEY'),
-    'redirect' => 'http://127.0.0.1:8000/sign/in/google',
+    'redirect' => 'https://elroble.store/sign/in/google',
     ],
 
     'facebook' => [
@@ -49,9 +49,4 @@ return [
     'redirect' => env('FACEBOOK_REDIRECT_URI'),
     ],
 
-    'x' => [
-    'client_id' => env('X_CLIENT_ID'),
-    'client_secret' => env('X_CLIENT_SECRET'),
-    'redirect' => env('X_REDIRECT_URI'),
-    ],
 ];

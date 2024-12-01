@@ -156,7 +156,7 @@ Route::get('/prueba', function () {
 })->middleware('auth','verified');
 
 
-Route::view('/prueba3','layouts.solopacopia');
+Route::view('/prueba3','pages.inventory.inventory_create');
 Route::view('/prueba2','layouts.dashboardAdmin');
 
 

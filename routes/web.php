@@ -94,13 +94,35 @@ Route::middleware('admin')->group(function () {
 
 Route::middleware('superadmin')->group(function () {
 
+    Route::get('dashboard/graphics/profits', function(Request $request){
+        $request->validate([
+            'year' => 'required|integer|min:2000',
+        ]);
+        $year = $request->year;
+        $ingresosPorMes = array_fill(0, 12, 0);
+        Event::where('status', 'Pendiente')
+            ->whereYear('date', $year)
+            ->get()
+            ->each(function($event) use (&$ingresosPorMes) {
+                $mes = Carbon::parse($event->date)->format('m');
+                $ingresosPorMes[$mes - 1] += $event->total_price;
+            });
+        return response()->json($ingresosPorMes);
+    })->name('dashboard.graphics.profits');
 
     Route::get('dashboard/graphics', function () {
         $places = Place::all();
-        // obtener las cotizaciones por lugar
         $events = Event::where('status', 'Pendiente')->orWhere('status', 'Finalizado')->get();
         $paquetes = Package::all();
-        //Datos Para el grafico de barras
+        $ingresosPorMes = array_fill(0, 12, 0);
+        Event::where('status', 'Pendiente')
+            ->whereYear('date', Carbon::now()->year)
+            ->get()
+            ->each(function($event) use (&$ingresosPorMes) {
+                $mes = Carbon::parse($event->date)->format('m');
+                $ingresosPorMes[$mes - 1] += $event->total_price;
+            });
+
         $eventos_sinPaquete = 0;
         $eventos_conPaquete = 0;
         $datos2 = [
@@ -119,7 +141,9 @@ Route::middleware('superadmin')->group(function () {
                 'name' => $paquete->name,
             ];
         }
-        foreach ($events as $event) {
+        $yearActual = Carbon::now()->year;
+        $eventsThisYear = Event::whereYear('date', $yearActual)->get();
+        foreach ($eventsThisYear as $event) {
             if ($event->quote->package_id == null) {
                 $eventos_sinPaquete++;
                 //hacer un match por mes 
@@ -131,7 +155,7 @@ Route::middleware('superadmin')->group(function () {
                 $datos2[$event->quote->package_id]['data'][$mes2 - 1] += 1;
             }
         }
-        return view('pages.dashboard.graficos', compact('places', 'events', 'paquetes', 'datos2'));
+        return view('pages.dashboard.graficos', compact('places', 'events', 'paquetes', 'datos2', 'ingresosPorMes'));
     })->name('dashboard.graphics');
 
 
@@ -270,6 +294,62 @@ Route::middleware('superadmin')->group(function () {
 
     })->name('dashboard.end.event');
 
+    Route::post('dashboard/event/chair/{id}', function ($id, Request $request) {
+        $event = Event::find($id);
+        $request->validate([
+            'sillas' => 'required|integer|min:0',
+        ]);
+        if ($event) {
+            $event->chair_count = $request->sillas;
+            $event->save();
+            return redirect()->back()->with('success', 'El numero de sillas ha sido actualizado');
+        }
+        return redirect()->back()->with('error', 'El evento no se ha encontrado');
+
+    })->name('dashboard.event.chairs');
+
+    Route::post('dashboard/event/table/{id}', function ($id, Request $request) {
+        $event = Event::find($id);
+        $request->validate([
+            'mesas' => 'required|integer|min:0',
+        ]);
+        if ($event) {
+            $event->table_count = $request->mesas;
+            $event->save();
+            return redirect()->back()->with('success', 'El numero de mesas ha sido actualizado');
+        }
+        return redirect()->back()->with('error', 'El evento no se ha encontrado');
+
+    })->name('dashboard.event.tables');
+
+    Route::post('dashboard/event/table/cloth/{id}', function ($id, Request $request) {
+        $event = Event::find($id);
+        $request->validate([
+            'manteles' => 'required|integer|min:0',
+        ]);
+        if ($event) {
+            $event->table_cloth_count = $request->manteles;
+            $event->save();
+            return redirect()->back()->with('success', 'El numero de manteles ha sido actualizado');
+        }
+        return redirect()->back()->with('error', 'El evento no se ha encontrado');
+
+    })->name('dashboard.event.tablecloths');
+
+    Route::post('dashboard/event/extra/hour/price/{id}', function ($id, Request $request) {
+        $event = Event::find($id);
+        $request->validate([
+            'precio' => 'required|numeric|min:0',
+        ]);
+        if ($event) {
+            $event->extra_hour_price = $request->precio;
+            $event->save();
+            return redirect()->back()->with('success', 'El precio de la hora extra ha sido actualizado');
+        }
+        return redirect()->back()->with('error', 'El evento no se ha encontrado');
+
+    })->name('dashboard.event.extra.hour.price');
+
 
     Route::post('dashboard/event/consumable/status/{id}', function ($id) {
         $consumableEvent = ConsumableEvent::find($id);
@@ -277,7 +357,9 @@ Route::middleware('superadmin')->group(function () {
         if ($consumableEvent) {
             if (!$consumableEvent->ready) {
                 if ($consumable->stock < $consumableEvent->quantity) {
-                    return redirect()->back()->with('error', 'No hay suficiente stock para el consumible')->with('stock', 'No alcanzas carnal');
+                    return response()->json([
+                        'status' => 'error',
+                    ]);
                 }
                 else {
                     $consumableEvent->ready = !$consumableEvent->ready;
@@ -291,8 +373,14 @@ Route::middleware('superadmin')->group(function () {
 
             }
         }
-        return redirect()->back()->with('success', 'El estado del consumible ha sido actualizado')->with('consumible', 'Abrete sesamo');
+        return response()->json([
+            'status' => 'success',
+        ]);
         })->name('dashboard.event.consumable');
+
+
+
+        
         Route::get('dashboard/consumables', function () {
         $consumables = Consumable::all();
         $consumablesDefault = ConsumableEventDefault::all();
@@ -356,8 +444,36 @@ Route::middleware('superadmin')->group(function () {
         return redirect()->back()->with('error', 'El consumible no se ha encontrado');
 
     })->name('dashboard.consumable.add.stock');
-    
 
+    Route::post('dashboard/consumable/delete/{id}', function ($id){
+        $consumable = Consumable::find($id);
+        if ($consumable){
+            $consumable->delete();
+            return redirect()->back()->with('success', 'si se elimino banda');
+        }
+        return redirect()->back()->with('error', 'No se encontro banda');
+    })->name('dashboard.consumable.delete');
+
+    Route::post('dashboard/consumable/edit/{id}', function ($id, Request $request){
+        $consumable = Consumable::find($id);
+        $request->validate([
+            'nombre_edit' => 'required|string',
+            'descripcion_edit' => 'required|string',
+            'unidad_edit' => 'required|string',
+            'stock_min_edit' => 'required|integer|min:0',
+            'stock_max_edit' => 'required|integer|min:0',
+        ]);
+        if ($consumable){
+            $consumable->name = $request->nombre_edit;
+            $consumable->description = $request->descripcion_edit;
+            $consumable->unit = $request->unidad_edit;
+            $consumable->minimum_stock = $request->stock_min_edit;
+            $consumable->maximum_stock = $request->stock_max_edit;
+            $consumable->save();
+            return redirect()->back()->with('success', 'si se edito banda');
+        }
+        return redirect()->back()->with('error', 'No se encontro banda');
+    })->name('dashboard.consumable.edit');
 });
 
 

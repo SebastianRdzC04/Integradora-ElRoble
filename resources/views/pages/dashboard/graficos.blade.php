@@ -1,3 +1,7 @@
+@php
+    use Carbon\Carbon;
+@endphp
+
 @extends('layouts.dashboardAdmin')
 
 @section('styles')
@@ -11,17 +15,38 @@
 
     <div class="container">
         <div class="row">
+            <div class="col-12 border">
+                <div class="d-flex align-items-center">
+                    <h1 class="ms-auto">Ingresos Mensuales</h1>
+                    <div class="ms-auto">
+                        <form id="profitsYear" action="{{route('dashboard.graphics.profits')}}" method="GET" onsubmit="updateGraph3Form(this); return false;">
+                            <select name="year" id="year" class="form-select">
+                                <option value="{{ Carbon::now()->year + 1 }}">{{ Carbon::now()->year + 1 }}</option>
+                                @for ($i = Carbon::now()->year; $i >= Carbon::now()->year - 5; $i--)
+                                    <option value="{{ $i }}" {{ Carbon::now()->year == $i ? 'selected' : '' }}>
+                                        {{ $i }}</option>
+                                @endfor
+                            </select>
+                        </form>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-center">
+                    <div id="grafico1"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-6 border">
-                <h2 class="text-center">Rentas por lugar</h2>
-                <div class="justify-content-center align-content-center" id="grafico1"></div>
+                <h1 class="text-center">Lugar por cotizacion</h1>
+                <div class="d-flex justify-content-center">
+                    <div id="grafico2"></div>
+                </div>
             </div>
             <div class="col-6 border">
-                <h2 class="text-center">Paquetes por Evento</h2>
-                <div id="grafico2"></div>
-            </div>
-            <div class="col-6 border">
-                <h2 class="text-center">Paquetes por lugar</h2>
-                <div id="grafico3"></div>
+                <h1 class="text-center">Renta de paquetes</h1>
+                <div class="d-flex justify-content-center">
+                    <div id="grafico3"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -30,7 +55,6 @@
 @endsection
 
 @php
-    use Carbon\Carbon;
 
     $datos = [];
 
@@ -50,7 +74,8 @@
     <script>
         let datos = @json($datos);
         let datos2 = @json($datos2);
-        console.log(datos2);
+        let datos3 = @json($ingresosPorMes);
+        console.log(datos3);
     </script>
 
     <script src="{{ asset('js/dashboard/graphs.js') }}"></script>

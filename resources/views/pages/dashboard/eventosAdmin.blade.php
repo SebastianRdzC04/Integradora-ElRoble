@@ -12,30 +12,11 @@
 
 @endphp
 
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.dashboardAdmin')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <title>Document</title>
-</head>
+@section('title', 'Evento')
 
-<body>
-    <header>
-        <aside>
-            @if (auth()->user()->roles->contains('id', 3))
-                <a href="{{ route('dashboard') }}">Ir a Dashboard</a>
-            @endif
-            @if (auth()->user()->roles->contains('id', 1))
-                <a href="{{ route('dashboard.events') }}">Volver</a>
-            @endif
-        </aside>
-    </header>
+@section('content')
     <main>
         <div class="container mt-5">
             <div class="row justify-content-center">
@@ -49,9 +30,7 @@
                                 {{ $event->quote->place ? $event->quote->place->name : $event->quote->package->place->name }}
                             </p>
                         </div>
-                        <!-- Calcula el tiempo que falta para que inicie el evento -->
                         @if ($event->status == 'En espera')
-
                             <div>
                                 @if (Carbon::now()->lessThan(Carbon::parse($event->estimated_start_time)))
                                     @if ($timeToStart->h > 1)
@@ -65,17 +44,96 @@
                                     @endif
                                 @else
                                     <p class="text-end"> ya paso la hora carnal</p>
-
                                 @endif
                             </div>
-
                         @endif
-                        <!-- Aqui termina esa seccion -->
+                        @if ($event->status == 'Pendiente')
+                            <div>
+                                <p>Fecha: {{ Carbon::parse($event->date)->format('d/m/Y') }} </p>
+                            </div>
+                        @endif
                     </div>
                     <div>
-                        <p> Sillas: {{ $event->chair_count }} </p>
-                        <p> Mesas: {{ $event->table_count }} </p>
-                        <p> Manteles: {{ $event->table_cloth_count }} </p>
+                        <div style="width: 140px">
+                            <div class="d-flex">
+                                <p> Sillas:</p>
+                                <p class="ms-auto"> {{ $event->chair_count }} <a data-bs-toggle="modal"
+                                        data-bs-target="#modalSillas" href=""><i class="bi bi-pencil-fill"></i></a>
+                                </p>
+                            </div>
+                            <div class="modal fade" id="modalSillas">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3>Sillas</h3>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{{ route('dashboard.event.chairs', $event->id) }}" method="POST">
+                                                @csrf
+                                                <div class="mb-3">
+                                                    <label for="sillas" class="form-label">Cantidad de sillas</label>
+                                                    <input type="number" class="form-control" id="sillas" name="sillas"
+                                                        value="{{ $event->chair_count }}">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <p> Mesas:</p>
+                                <p class="ms-auto"> {{ $event->table_count }} <i data-bs-toggle="modal"
+                                        data-bs-target="#modalMesas" class="bi bi-pencil-fill"></i> </p>
+                            </div>
+                            <div class="modal fade" id="modalMesas">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3>Mesas</h3>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{{ route('dashboard.event.tables', $event->id) }}"
+                                                method="POST">
+                                                @csrf
+                                                <div class="mb-3">
+                                                    <label for="mesas" class="form-label">Cantidad de mesas</label>
+                                                    <input type="number" class="form-control" id="mesas" name="mesas"
+                                                        value="{{ $event->table_count }}">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <p> Manteles:</p>
+                                <p class="ms-auto">{{ $event->table_cloth_count }} <i data-bs-toggle="modal"
+                                        data-bs-target="#modalMantel" class="bi bi-pencil-fill"></i> </p>
+                            </div>
+                            <div class="modal fade" id="modalMantel">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3>Manteles</h3>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{{ route('dashboard.event.tablecloths', $event->id) }}"
+                                                method="POST">
+                                                @csrf
+                                                <div class="mb-3">
+                                                    <label for="manteles" class="form-label">Cantidad de manteles</label>
+                                                    <input type="number" class="form-control" id="manteles"
+                                                        name="manteles" value="{{ $event->table_cloth_count }}">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         @if ($event->status == 'Pendiente')
                             <p>Se espera que empiece a las
                                 {{ Carbon::parse($event->estimated_start_time)->format('h:i A') }} </p>
@@ -100,39 +158,55 @@
                                 {{ Carbon::parse($event->estimated_end_time)->format('h:i A') }}
                             </p>
                         @endif
-
-
                     </div>
                     <div>
                         <p>Precio del evento: {{ $event->total_price }} </p>
                         <p>Anticipo: {{ $event->advance_payment }} </p>
                         @if ($event->status != 'Finalizado')
                             <p>Monto Faltante: {{ $event->remaining_payment }} </p>
-
                             <p>Precio por hora extra:
-                                {{ $event->extra_hour_price == 0 ? 'Sin definir' : $event->extra_hour_price }} </p>
+                                {{ $event->extra_hour_price == 0 ? 'Sin definir' : '$' . $event->extra_hour_price }} <i
+                                    data-bs-toggle="modal" data-bs-target="#modalHx" class="bi bi-pencil-fill"></i> </p>
+                            <div class="modal fade" id="modalHx">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3>Precio por hora extra</h3>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{{ route('dashboard.event.extra.hour.price', $event->id) }}"
+                                                method="POST">
+                                                @csrf
+                                                <div class="mb-3">
+                                                    <label for="hx" class="form-label">Precio por hora extra</label>
+                                                    <input type="number" class="form-control" id="precio" name="precio"
+                                                        value="{{ $event->extra_hour_price }}">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endif
-
-                        <div class="mb-3 d-flex justify-content-between">
+                        <div class="mb-3 d-flex justify-content-between gap-1">
                             @if ($event->status == 'En espera')
                                 <form action="{{ route('dashboard.start.event', $event->id) }}" method="POST">
                                     @csrf
-                                    <button class="btn btn-primary">Marcar como que ya empezo</button>
+                                    <button class="btn btn-primary">Empezar</button>
                                 </form>
                             @endif
                             @if ($event->status == 'En proceso')
                                 <form action="{{ route('dashboard.end.event', $event->id) }}" method="POST">
                                     @csrf
-                                    <button class="btn btn-primary">Marcar como que ya termino</button>
+                                    <button class="btn btn-primary">Terminar</button>
                                 </form>
                             @endif
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#modal1">Mostrar
-                                Servicios</button>
+                                data-bs-target="#modal1">Servicios</button>
                             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#modal2">Mostrar
-                                Consumibles</button>
-                            <a href="{{ route('incident.create') }}" class="btn btn-primary">Reportar incidencia</a>
+                                data-bs-target="#modal2">Consumibles</button>
+                            <a href="{{ route('incident.create') }}" class="btn btn-primary">Incidencia</a>
                         </div>
                         <div class="modal fade" id="modal1" aria-labelledby="modalLabel1" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -174,7 +248,6 @@
                                                                 <td> {{ $service->cost }} </td>
                                                             </tr>
                                                         @endforeach
-
                                                     @endif
                                                 </tbody>
                                             </table>
@@ -199,7 +272,6 @@
                                                     <th>Nombre</th>
                                                     <th>Cantidad</th>
                                                     <th>Estado</th>
-
                                                     @if ($event->status == 'Pendiente' || $event->status == 'En espera' || $event->status == 'En proceso')
                                                         <th class="text-center">Acciones</th>
                                                     @endif
@@ -211,27 +283,34 @@
                                                         <td> {{ $consumable->name }} </td>
                                                         <td> {{ $consumable->pivot->quantity }}{{ $consumable->unit }}
                                                         </td>
-                                                        <td> {{ $consumable->pivot->ready }} </td>
+                                                        <td>
+                                                            <p style="display: {{ $consumable->pivot->ready ? 'block' : 'none' }}"
+                                                                class="estadoL">Listo</p>
+                                                            <p style="display: {{ !$consumable->pivot->ready ? 'block' : 'none' }}"
+                                                                class="estadoNL">No listo</p>
+                                                        </td>
                                                         @if ($event->status == 'Pendiente' || $event->status == 'En espera' || $event->status == 'En proceso')
                                                             <td class="text-center">
-                                                                @if ($event->status == 'Pendiente' || $event->status == 'En espera')
-                                                                    <form
-                                                                        action="{{ route('dashboard.event.consumable', $consumable->pivot->id) }}"
-                                                                        method="POST">
-                                                                        @csrf
-                                                                        <button
-                                                                            class="btn btn-outline-{{ $consumable->pivot->ready ? 'danger' : 'success' }} py-0 px-1"
-                                                                            type="submit">
-                                                                            @if ($consumable->pivot->ready)
-                                                                                <i class="fs-4 bi bi-x-circle-fill"></i>
-                                                                            @else
-                                                                                <i
-                                                                                    class="fs-4 bi bi-check-circle-fill "></i>
-                                                                            @endif
-                                                                        </button>
-                                                                    </form>
-                                                                @endif
-                                                                <button>otro boton</button>
+                                                                <div class="d-flex justify-content-center">
+                                                                    @if ($event->status == 'Pendiente' || $event->status == 'En espera')
+                                                                        <form
+                                                                            action="{{ route('dashboard.event.consumable', $consumable->pivot->id) }}"
+                                                                            method="POST"
+                                                                            onsubmit="updateStatus(this); return false;">
+                                                                            @csrf
+                                                                            <button
+                                                                                class="btn btn-outline-{{ $consumable->pivot->ready ? 'danger' : 'success' }} py-0 px-1"
+                                                                                type="submit">
+                                                                                <i style="display: {{ $consumable->pivot->ready ? 'block' : 'none' }}"
+                                                                                    class="fs-4 bi bi-x-circle-fill listo seleccionado"></i>
+                                                                                <i style="display: {{ !$consumable->pivot->ready ? 'block' : 'none' }}"
+                                                                                    class="fs-4 bi bi-check-circle-fill no-listo no-seleccionado"></i>
+                                                                            </button>
+                                                                        </form>
+                                                                    @endif
+                                                                    <button class="btn btn-outline-danger py-0 px-2"><i
+                                                                            class="bi bi-trash3"></i></button>
+                                                                </div>
                                                             </td>
                                                         @endif
                                                     </tr>
@@ -247,12 +326,10 @@
             </div>
         </div>
     </main>
-    <footer>
 
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-    </script>
+@endsection
+
+@section('scripts')
     @if ($data || $data2)
         <script>
             document.addEventListener('DOMContentLoaded', function() {
@@ -261,6 +338,46 @@
             });
         </script>
     @endif
-</body>
+    <script>
+        function updateStatus(form) {
+            event.preventDefault();
+            let currentRow = form.closest('tr');
+            let estadoListo = currentRow.querySelector('.estadoL');
+            let estadoNoListo = currentRow.querySelector('.estadoNL');
+            let botonForm = currentRow.querySelector('button[type="submit"]');
+            let iconoListo = botonForm.querySelector('.listo');
+            let iconoNoListo = botonForm.querySelector('.no-listo');
+            /*
+            if (iconoListo.style.display === 'none') {
+                iconoListo.style.display = 'block';
+                iconoNoListo.style.display = 'none';
+                botonForm.classList.remove('btn-outline-success');
+                botonForm.classList.add('btn-outline-danger')
+            } else {
+                botonForm.classList.remove('btn-outline-danger');
+                botonForm.classList.add('btn-outline-success')
+                iconoListo.style.display = 'none';
+                iconoNoListo.style.display = 'block';
+            }
 
-</html>
+            if (estadoListo.style.display === 'none') {
+                estadoListo.style.display = 'block';
+                estadoNoListo.style.display = 'none';
+            } else {
+                estadoListo.style.display = 'none';
+                estadoNoListo.style.display = 'block';
+            }
+            */
+            $.post($(form).attr('action'), $(form).serialize(), function(respuesta) {
+                if (respuesta.status === 'success') {
+                    estadoListo.style.display = estadoListo.style.display === 'none' ? 'block' : 'none';
+                    estadoNoListo.style.display = estadoNoListo.style.display === 'block' ? 'none' : 'block';
+                    iconoListo.style.display = iconoListo.style.display === 'none' ? 'block' : 'none';
+                    iconoNoListo.style.display = iconoNoListo.style.display === 'block' ? 'none' : 'block';
+                    botonForm.classList.toggle('btn-outline-danger');
+                    botonForm.classList.toggle('btn-outline-success');
+                }
+            });
+        }
+    </script>
+@endsection
