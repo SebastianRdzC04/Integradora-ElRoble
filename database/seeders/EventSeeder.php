@@ -15,7 +15,7 @@ class EventSeeder extends Seeder
         $faker = Faker::create();
         
         // Get quotes that are 'pagada' status
-        $quotes = Quote::where('status', 'pagada')->get();
+        $quotes = Quote::where('status', 'pagada')->where('id', '!=', 1)->get();
 
         Event::create([
             'quote_id' => 1,
