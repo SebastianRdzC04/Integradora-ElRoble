@@ -58,10 +58,11 @@
 
     $datos = [];
 
+
     foreach ($places as $place) {
         $datos[] = [
             'name' => $place->name,
-            'value' => $place->quotes->count(),
+            'value' => $place->quotes->count() ,
         ];
     }
 @endphp
@@ -75,7 +76,6 @@
         let datos = @json($datos);
         let datos2 = @json($datos2);
         let datos3 = @json($ingresosPorMes);
-        console.log(datos3);
     </script>
 
     <script src="{{ asset('js/dashboard/graphs.js') }}"></script>

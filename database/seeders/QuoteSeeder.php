@@ -40,17 +40,16 @@ class QuoteSeeder extends Seeder
 };
 
         // Quotes with packages
-        for ($i = 1; $i <= 15; $i++) {
+        for ($i = 1; $i <= 30; $i++) {
             $times = $getEventTimes();
-            $estimated_price = $faker->numberBetween(15000, 50000);
             Quote::create([
                 'user_id' => rand(1, 10),
                 'package_id' => rand(1, 6),
                 'place_id' => null,
                 'date' => $faker->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d'),
-                'status' => $faker->randomElement(['pendiente', 'pagada', 'cancelada', 'pendiente cotizacion']),
-                'estimated_price' => $estimated_price,
-                'espected_advance' => $estimated_price * 0.30,
+                'status' => 'pendiente cotizacion',
+                'estimated_price' => 0,
+                'espected_advance' => 0,
                 'start_time' => $times['start'],
                 'end_time' => $times['end'],
                 'type_event' => $faker->randomElement($eventTypes),
@@ -69,7 +68,7 @@ class QuoteSeeder extends Seeder
                 'package_id' => null,
                 'place_id' => rand(1, 3),
                 'date' => $faker->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d'),
-                'status' => $faker->randomElement(['pendiente', 'pagada', 'cancelada', 'pendiente cotizacion']),
+                'status' => 'pendiente',
                 'estimated_price' => $estimated_price,
                 'espected_advance' => $estimated_price * 0.30,
                 'start_time' => $times['start'],
@@ -82,15 +81,15 @@ class QuoteSeeder extends Seeder
         }
 
         // Special events
-        for ($i = 1; $i <= 60; $i++) {
+        for ($i = 1; $i <= 100; $i++) {
             $times = $getEventTimes();
             $estimated_price = $faker->numberBetween(45000, 70000);
             Quote::create([
                 'user_id' => rand(1, 10),
-                'package_id' => rand(5, 6),
+                'package_id' => rand(1, 6),
                 'place_id' => null,
                 'date' => $faker->dateTimeBetween('2024-06-01', '2024-12-31')->format('Y-m-d'),
-                'status' => $faker->randomElement(['pendiente', 'pagada']),
+                'status' => $faker->randomElement(['pagada', 'cancelada']),
                 'estimated_price' => $estimated_price,
                 'espected_advance' => $estimated_price * 0.30,
                 'start_time' => $times['start'],
@@ -120,5 +119,11 @@ class QuoteSeeder extends Seeder
                 'updated_at' => $faker->dateTimeBetween('-6 months', 'now')
             ]);
         }
+        $quotes = Quote::all();
+        foreach ($quotes as $quote){
+            $quote->services()->attach(1);
+            $quote->services()->attach(2);
+            $quote->services()->attach(3);
+        };
     }
 }

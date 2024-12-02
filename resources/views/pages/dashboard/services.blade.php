@@ -12,7 +12,7 @@
 
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-10">
+            <div class="col-12">
                     <div class="table-responsive">
                         <table class="table mb-0 shadow" id="servicios-table">
                             <thead>
