@@ -18,9 +18,9 @@
 
 @section('content')
     <main>
-        <div class="container mt-5">
+        <div class="container mt-4">
             <div class="row justify-content-center">
-                <div class="col-5 border">
+                <div class="col-5 border shadow">
                     <div>
                         <h4>{{ $event->quote->type_event }} para {{ $event->quote->user->person->first_name }}</h4>
                     </div>

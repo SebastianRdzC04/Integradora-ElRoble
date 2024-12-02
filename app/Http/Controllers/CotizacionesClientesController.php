@@ -132,7 +132,7 @@ class CotizacionesClientesController extends Controller
                 'package_id' => $request->input('package_id'),
                 'date' => $request->input('date'),
                 'place_id' => $request->input('place_id'),
-                'status' => $request->input('status', 'pendiente'),
+                'status' => $request->input('status', 'pendiente cotizacion'),
                 'estimated_price' => $request->input('estimated_price', '0'),
                 'espected_advance' => $request->input('espected_advance', '0'),
                 'start_time' => $request->input('start_time'),
