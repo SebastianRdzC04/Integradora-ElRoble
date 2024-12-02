@@ -67,7 +67,7 @@
                     @csrf
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <button class="nav-link" href="{{ route('logout') }}">Cerrar Sesión</button>
+                            <button class="nav-link" id="IniciarSesionBoton" href="{{ route('logout') }}">Cerrar Sesión</button>
                         </li>
                     </ul>
                 </form>

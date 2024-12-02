@@ -137,7 +137,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function initMap() {
-            const location = { lat: 25.540078, lng: -103.403014 }; // Coordenadas de "El Roble"
+            const location = { lat: 25.497935161704735, lng: -103.39312323421343 }; // Coordenadas de "El Roble"
             const map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 15,
                 center: location,
