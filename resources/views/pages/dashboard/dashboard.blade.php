@@ -88,7 +88,10 @@
         $daysOcupedQuotes = [];
         foreach ($eventsPending as $event) {
             $eventos[] = [
-                'title' => $event->quote->type_event . ' de ' . ($event->quote->user ? $event->quote->user->person->first_name : $event->quote->owner_name),
+                'title' =>
+                    $event->quote->type_event .
+                    ' de ' .
+                    ($event->quote->user ? $event->quote->user->person->first_name : $event->quote->owner_name),
                 'start' => $event->date,
                 'color' => 'blue',
                 'url' => route('dashboard.event.view', $event->id),
@@ -96,7 +99,10 @@
         }
         foreach ($eventsFinalized as $event) {
             $eventos[] = [
-                'title' => $event->quote->type_event . ' de ' . $event->quote->user->person->first_name,
+                'title' =>
+                    $event->quote->type_event .
+                    ' de ' .
+                    ($event->quote->user ? $event->quote->user->person->first_name : $event->quote->owner_name),
                 'start' => $event->date,
                 'color' => 'green',
                 'url' => route('dashboard.event.view', $event->id),
@@ -104,7 +110,10 @@
         }
         if ($currentEvent) {
             $eventos[] = [
-                'title' => $currentEvent->quote->type_event . ' de ' . $currentEvent->quote->user->person->first_name,
+                'title' =>
+                    $event->quote->type_event .
+                    ' de ' .
+                    ($event->quote->user ? $event->quote->user->person->first_name : $event->quote->owner_name),
                 'start' => $currentEvent->date,
                 'color' => 'red',
                 'url' => route('dashboard.event.now'),
@@ -118,7 +127,6 @@
                 'url' => route('dashboard.quotes'),
             ];
         }
-
     @endphp
 
     <script>
