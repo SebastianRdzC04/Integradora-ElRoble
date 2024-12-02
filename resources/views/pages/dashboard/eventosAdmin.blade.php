@@ -22,7 +22,7 @@
             <div class="row justify-content-center">
                 <div class="col-5 border shadow">
                     <div>
-                        <h4>{{ $event->quote->type_event }} para {{ $event->quote->user->person->first_name }}</h4>
+                        <h4>{{ $event->quote->type_event }} para {{ ($event->quote->user ? $event->quote->user->person->first_name : $event->quote->owner_name) }}</h4>
                     </div>
                     <div class="d-flex justify-content-between">
                         <div>
