@@ -14,7 +14,7 @@ class AddQuantifiableToServicesTable extends Migration
     public function up()
     {
         Schema::table('services', function (Blueprint $table) {
-            $table->boolean('quantifiable')->default(false);
+            $table->boolean('quantifiable')->default(false)->after('image_path');
         });
     }
 
