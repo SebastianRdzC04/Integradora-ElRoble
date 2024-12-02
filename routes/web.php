@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\InicioClientesController;
 use App\Models\ConsumableCategory;
 use App\Models\ConsumableEventDefault;
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -474,6 +475,11 @@ Route::middleware('superadmin')->group(function () {
         }
         return redirect()->back()->with('error', 'No se encontro banda');
     })->name('dashboard.consumable.edit');
+
+    Route::get('dashboard/users', function(){
+        $users = User::all();
+        return view('pages.dashboard.users', compact('users'));
+    })->name('dashboard.users');
 });
 
 

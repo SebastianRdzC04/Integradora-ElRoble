@@ -13,7 +13,7 @@
         <div class="row">
         </div>
         <div class="row justify-content-center">
-            <div class="col-10">
+            <div class="col-12">
                 <div class="table-resposive">
                     <table class="table shadow" id="inventory-table">
                         <thead>

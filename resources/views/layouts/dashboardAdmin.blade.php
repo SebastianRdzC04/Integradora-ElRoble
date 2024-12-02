@@ -5,7 +5,9 @@
 
     $timeToStart = '00:00:00';
 
-    $event = Event::whereDate('date', Carbon::now()->format('Y-m-d'))->where('status', '!=', 'Finalizado')->first();
+    $event = Event::whereDate('date', Carbon::now()->format('Y-m-d'))
+        ->whereNotIn('status', ['Finalizado', 'Cancelado'])
+        ->first();
     if ($event) {
         if ($event->status == 'Pendiente') {
             $event->status = 'En espera';
@@ -200,7 +202,8 @@
         .line-separator {
             border-bottom: 1px solid #ccc;
         }
-        .line-separator-up{
+
+        .line-separator-up {
             border-top: 1px solid #ccc
         }
     </style>
@@ -232,14 +235,14 @@
                         @if (auth()->user()->roles->contains('id', 1))
                             <li class="sidebar-item">
                                 <a href="{{ route('dashboard.graphics') }}" class="sidebar-link">
-                                    <i class="lni lni-agenda"></i>
+                                    <i class="bi bi-graph-up-arrow"></i>
                                     <span>Graficos</span>
                                 </a>
                             </li>
                             <li class="sidebar-item">
                                 <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                                     data-bs-target="#auth" aria-expanded="false" aria-controls="auth">
-                                    <i class="lni lni-protection"></i>
+                                    <i class="bi bi-archive"></i>
                                     <span>Inventario</span>
                                 </a>
                                 <ul id="auth" class="sidebar-dropdown list-unstyled collapse"
@@ -257,34 +260,35 @@
                         <li class="sidebar-item">
                             <a href="#" class="sidebar-link collapsed has-dropdown" data-bs-toggle="collapse"
                                 data-bs-target="#multi" aria-expanded="false" aria-controls="multi">
-                                <i class="lni lni-layout"></i>
+                                <i class="bi bi-table"></i>
                                 <span>Formularios</span>
                             </a>
                             <ul id="multi" class="sidebar-dropdown list-unstyled collapse"
                                 data-bs-parent="#sidebar">
-                                <li class="sidebar-item">
-                                    <a href="{{ route('dashboard.packages') }}" class="sidebar-link">Paquetes</a>
-                                </li>
-                                <li class="sidebar-item">
-                                    <a href="{{ route('dashboard.services') }}" class="sidebar-link">Servicios</a>
-                                </li>
                                 @if (auth()->user()->roles->contains('id', 1))
-                                    <li class="sidebar-item">
-                                        <a href="{{ route('dashboard.records') }}" class="sidebar-link">Records</a>
-                                    </li>
                                     <li class="sidebar-item">
                                         <a href="{{ route('dashboard.events') }}" class="sidebar-link">Eventos</a>
                                     </li>
                                     <li class="sidebar-item">
                                         <a href="{{ route('dashboard.quotes') }}" class="sidebar-link">Cotizaciones</a>
                                     </li>
+                                    <li class="sidebar-item">
+                                        <a href="{{ route('dashboard.users') }}" class="sidebar-link">Usuarios</a>
+                                    </li>
                                 @endif
+                                <li class="sidebar-item">
+                                    <a href="{{ route('dashboard.packages') }}" class="sidebar-link">Paquetes</a>
+                                </li>
+                                <li class="sidebar-item">
+                                    <a href="{{ route('dashboard.services') }}" class="sidebar-link">Servicios</a>
+                                </li>
+
                             </ul>
                         </li>
                         @if ($event)
                             <li class="sidebar-item">
                                 <a href="{{ route('dashboard.event.now') }}" class="sidebar-link">
-                                    <i class="lni lni-popup"></i>
+                                    <i class="bi bi-bell-fill"></i>
                                     <span>Evento ahora</span>
                                 </a>
                             </li>
