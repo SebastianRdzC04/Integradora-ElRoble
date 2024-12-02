@@ -32,6 +32,7 @@ input[type="number"] {
             <!-- Selección de Categorías -->
             <h6>Seleccione Categorías:</h6>
             <button type="button" id="btnAbrirModalFormulario" class="btn btn-primary mb-3">Crear Categoría</button>
+            <button type="button" id="btnAbrirModalCodigoSerie" class="btn btn-primary mb-3">Añadir codgigos de serie</button>
             
             <div class="d-grid gap-2 overflow-auto" style="max-height: 124px;">
                 @foreach ($serials as $serial)
@@ -50,6 +51,69 @@ input[type="number"] {
 </div>
 
 
+<div class="modal fade" id="modalAgregarCodigosDeSerie" tabindex="-1" aria-labelledby="modalFormularioInventarioLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg" style="min-width: 80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalFormularioInventarioLabel">Rellenar Información del Inventario</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body row justify-content-between">
+                <div class="row col-md-4">
+                    <!-- Columna izquierda -->
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <label for="serialListBox" class="form-label">Serie</label>
+                            <div class="col-auto">
+                                <input type="text" id="inputCategoriaNueva" class="form-control col-md-8" minlength="3" placeholder="Sillas" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="d-flex">
+                                <button id="btnCancelarFormulario" class="btn btn-primary me-2">Cancelar</button>
+                                <button id="btnCrearInventario" class="btn btn-primary w-100" disabled>Crear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Columna derecha -->
+                <div class="col-md-7">
+                    <div class="row mb-2">
+                        <div class="col-6 d-flex">
+                            <div class="fs-6 d-grid" style="align-content: center;">
+                                Agregar Serie
+                            </div>
+                        </div>
+                        <div class="col-6 d-flex justify-content-end">
+                            <button class="btn btnEliminarSerie me-2" id="btnDeleteSerial">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                    <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                            </button>
+                            <button id="btnAgregarSerie" class="btn align-baseline">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                    <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m-7-7h14"/>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="seriesContainer" class="overflow-y-auto overflow-x-hidden" style="max-height: 130px;">
+                        <!-- Fila inicial de inputs -->
+                        <div class="row mb-2">
+                            <div class="col-4">
+                                <input type="text" class="form-control inputSerie" minlength="3" placeholder="CG" required>
+                            </div>
+                            <div class="col-8">
+                                <input type="text" class="form-control inputNombreSerie" minlength="3" placeholder="Carro con Globos" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Modal para crear categorias y asignar un numero alfanumerio -->
 <div class="modal fade" id="modalFormularioInventario" tabindex="-1" aria-labelledby="modalFormularioInventarioLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" style="min-width: 80%;">
@@ -65,7 +129,7 @@ input[type="number"] {
                         <div class="mb-3">
                             <label for="serialListBox" class="form-label">Serie</label>
                             <div class="col-auto">
-                                <input type="text" id="inputCategoriaNueva" class="form-control col-md-8" minlength="3" placeholder="Sillas" required disabled>
+                                <input type="text" id="inputCategoriaNueva" class="form-control col-md-8" minlength="3" placeholder="Sillas" required>
                             </div>
                         </div>
                         <div class="row">
@@ -142,7 +206,9 @@ input[type="number"] {
                                                 <path d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718zm3.391-3.836c-1.043-.263-1.6-.825-1.6-1.616 0-.944.704-1.641 1.8-1.828v3.495l-.2-.05zm1.591 1.872c1.287.323 1.852.859 1.852 1.769 0 1.097-.826 1.828-2.2 1.939V8.73z"></path>
                                             </svg>
                                         </span>
-                                        <input type="number" name="price" id="price" class="form-control" placeholder="10" aria-label="Input group example" aria-describedby="basic-addon1" disabled>
+                                        <select type="number" name="price" id="price" class="form-control" placeholder="10" aria-label="Input group example" aria-describedby="basic-addon1" disabled>
+                                            
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -183,16 +249,23 @@ input[type="number"] {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+ document.getElementById('btnAbrirModalCodigoSerie').addEventListener('click', function () {
+    const modalAgregarCodigosDeSerie = new bootstrap.Modal(document.getElementById('modalAgregarCodigosDeSerie'));
+    modalAgregarCodigosDeSerie.show();
+})
+    
     // Abrir el modal de Crear Categoría
     document.getElementById('btnAbrirModalFormulario').addEventListener('click', function () {
+        const selectedCategories = $("input[name='categories[]']:checked")
+            .map(function () {
+                return $(this).val().toUpperCase();
+            }).get();
+
+        if (selectedCategories.length === 0) {
+            toastr.error('Selecciona al menos un elemento de la lista');
+        }
         const modalFormularioInventario = new bootstrap.Modal(document.getElementById('modalFormularioInventario'));
         modalFormularioInventario.show();
-    });
-
-    // Abrir el modal de Agregar Inventario
-    document.getElementById('btnAbrirModalInventario').addEventListener('click', function () {
-        const formModal = new bootstrap.Modal(document.getElementById('formModal'));
-        formModal.show();
     });
 
     // Controlar dinámicamente filas en el modal de Crear Categoría
