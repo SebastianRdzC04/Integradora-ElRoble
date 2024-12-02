@@ -21,23 +21,39 @@ class QuoteSeeder extends Seeder
 
         // Helper function para generar horarios coherentes
         $getEventTimes = function() use ($faker) {
-        $startHour = $faker->numberBetween(13, 19);
-        $duration = $faker->numberBetween(5, 8);
-    
-        $start = new DateTime($startHour . ':00');
-        $end = clone $start;
-        $end->modify("+{$duration} hours");
-    
-        // Si la hora final pasa de medianoche, ajustar a 23:59
-        if ($end->format('H') > 23) {
-            $end->setTime(23, 59);
-        }
-    
-        return [
-            'start' => $start->format('H:i:s'),
-            'end' => $end->format('H:i:s')
-        ];
-};
+            $startHour = $faker->numberBetween(13, 19);
+            $duration = $faker->numberBetween(5, 8);
+        
+            $start = new DateTime($startHour . ':00');
+            $end = clone $start;
+            $end->modify("+{$duration} hours");
+        
+            // Si la hora final pasa de medianoche, ajustar a 23:59
+            if ($end->format('H') > 23) {
+                $end->setTime(23, 59);
+            }
+        
+            return [
+                'start' => $start->format('H:i:s'),
+                'end' => $end->format('H:i:s')
+            ];
+        };
+
+        Quote::create([
+            'user_id' => 1,
+            'package_id' => 1,
+            'place_id' => null,
+            'date' => $faker->dateTimeBetween('2024-01-01', '2024-12-31')->format('Y-m-d'),
+            'status' => 'pagada',
+            'estimated_price' => 50000,
+            'espected_advance' => 500,
+            'start_time' => '14:00:00',
+            'end_time' => '20:00:00',
+            'type_event' => 'Boda',
+            'guest_count' => 60,
+            'created_at' => $faker->dateTimeBetween('-6 months', 'now'),
+            'updated_at' => $faker->dateTimeBetween('-6 months', 'now')
+        ]);
 
         // Quotes with packages
         for ($i = 1; $i <= 30; $i++) {
