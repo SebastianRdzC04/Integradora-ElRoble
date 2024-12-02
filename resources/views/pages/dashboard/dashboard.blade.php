@@ -88,7 +88,7 @@
         $daysOcupedQuotes = [];
         foreach ($eventsPending as $event) {
             $eventos[] = [
-                'title' => $event->quote->type_event . ' de ' . $event->quote->user->person->first_name,
+                'title' => $event->quote->type_event . ' de ' . ($event->quote->user ? $event->quote->user->person->first_name : $event->quote->owner_name),
                 'start' => $event->date,
                 'color' => 'blue',
                 'url' => route('dashboard.event.view', $event->id),
