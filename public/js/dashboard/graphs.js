@@ -37,6 +37,8 @@ const option = {
     }
   ]
 };
+
+
 myChart.setOption(option);
 // Grafico 2
 let myChart2 = echarts.init(document.getElementById('grafico3'));

@@ -86,7 +86,7 @@ class QuoteSeeder extends Seeder
             $estimated_price = $faker->numberBetween(45000, 70000);
             Quote::create([
                 'user_id' => rand(1, 10),
-                'package_id' => rand(5, 6),
+                'package_id' => rand(1, 6),
                 'place_id' => null,
                 'date' => $faker->dateTimeBetween('2024-06-01', '2024-12-31')->format('Y-m-d'),
                 'status' => $faker->randomElement(['pagada', 'cancelada']),
