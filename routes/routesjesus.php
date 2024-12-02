@@ -9,6 +9,9 @@ use App\Http\Controllers\ConsumableController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\EmployeeEventController;
 use App\Http\Controllers\IncidentController;
+use App\Http\Controllers\InventoryController;
+use App\Models\InventoryCategory;
+use App\Models\SerialNumberType;
 use Laravel\Socialite\Facades\Socialite;
  
 //Aqui esta el login de Facebook
@@ -108,18 +111,6 @@ Route::middleware('auth')->group(function(){
     Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
 });
 
-
-/* Esto no se si quitarlo o no despues decido no se ni para que servia xd
-    Route::get('/registeruser/{phoneoremail}', [RegisterUserController::class, 'create'])->name('registeruser.create');
-    Route::post('/registeruser', [RegisterUserController::class, 'store'])->name('registeruser.store');
-
-
-    //Route::get('/personregister', [RegisterPersonController::class, 'create'])->name('registerperson.create');
-    //Route::post('/personregister', [RegisterPersonController::class, 'store'])->name('registerperson.store');
-
-*/
-
-
 //rutas para el crud de consumables --------------------------------------
 Route::get('consumable/create',[ConsumableController::class,'create'])->name('consumables.create');
 Route::post('consumable/store',[ConsumableController::class,'store'])->name('consumables.store');
@@ -156,7 +147,15 @@ Route::get('/prueba', function () {
 })->middleware('auth','verified');
 
 
-Route::view('/prueba3','pages.inventory.inventory_create');
+Route::get('/prueba3',function () { 
+    $serials = InventoryCategory::all();
+    return view('pages.inventory.inventory_create',compact('serials'));});
+
+Route::get('/inventory/consult/number' ,[InventoryController::class,'filterDataCategories'])->name('filtertest');
+
+Route::post('/add/inventory',[InventoryController::class,'addInventory'])->name('inventoryadd.store');
+
+
 Route::view('/prueba2','layouts.dashboardAdmin');
 
 

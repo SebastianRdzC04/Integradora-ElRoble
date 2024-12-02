@@ -13,6 +13,10 @@ class Inventory extends Model
 
     protected $fillable = [
         'status',
+        'serial_number_type_id',
+        'number',
+        'description',
+        'price',
     ];
 
     public function SerialType()
