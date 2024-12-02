@@ -1,12 +1,12 @@
     /* Fondo replicado */
     body {
-        background-color: #000000fa;
-        background-image: url('/images/imagen4.jpg');
-        background-repeat: repeat;
-        background-size: contain;
-        background-position: center;
-        color: rgb(255, 255, 255);
-      }
+      background-color: #000000fa;
+      background-image: url('/images/imagen4.jpg'), url('/images/imagen9.jpg');
+      background-repeat: repeat;
+      background-size: contain, contain;
+      background-position: top, bottom;
+      color: rgb(255, 255, 255);
+  }
       /* Carrusel completo ancho */
       .carousel img {
         width: 100%;
