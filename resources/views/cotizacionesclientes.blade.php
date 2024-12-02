@@ -149,7 +149,7 @@
                         <div class="mb-3 row">
                             <div class="col-md-6">
                                 <label for="guest_count" class="form-label">Cantidad de Invitados</label>
-                                <input type="number" name="guest_count" id="guest_count" class="form-control @error('guest_count') is-invalid @enderror" oninput="updatePreview()" value="{{ old('guest_count') }}" required>
+                                <input type="number" name="guest_count" id="guest_count" class="form-control @error('guest_count') is-invalid @enderror" oninput="updatePreview()" value="{{ old('guest_count') }}" max="80" required>
                                 @error('guest_count')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -767,12 +767,12 @@
 
             const placeId = document.getElementById('place_id').value;
             if (!placeId) {
-                alert("Por favor, selecciona un lugar.");
+                alert("Por favor, llena todos los campos requeridos.");
                 return;
             }
 
             if (!date || !startTime || !endTime) {
-                alert("Por favor, selecciona la fecha y las horas de inicio y fin del evento.");
+                alert("Por favor, llena todos los campos requeridos.");
                 return;
             }
 
@@ -915,14 +915,14 @@
     
         document.addEventListener('DOMContentLoaded', function() {
             const fieldsToWatch = ['place_id', 'date', 'start_time', 'end_time', 'guest_count', 'type_event', 'owner_name', 'owner_phone'];
-    
+
             fieldsToWatch.forEach(fieldId => {
                 const field = document.getElementById(fieldId);
                 if (field) {
                     field.addEventListener('input', updatePreview);
                 }
             });
-    
+
             function updatePreview() {
                 const name = document.getElementById('owner_name').value || 'Nombre';
                 const date = document.getElementById('date').value || '-';
@@ -930,7 +930,7 @@
                 const endTime = document.getElementById('end_time').value || '-';
                 const guests = document.getElementById('guest_count').value || '-';
                 const typeEvent = document.getElementById('type_event').value || 'Evento';
-    
+
                 document.getElementById('prevista-nombre').innerText = name;
                 document.getElementById('prevista-fecha').innerText = `Fecha: ${date}`;
                 document.getElementById('prevista-horario').innerText = `Hora: ${startTime} - ${endTime}`;
@@ -938,15 +938,37 @@
                 document.getElementById('prevista-tipo-evento').innerText = `Tipo de Evento: ${typeEvent}`;
             }
 
-        const phoneInput = document.getElementById('owner_phone');
-        phoneInput.addEventListener('input', limitPhoneNumberLength);
+            const phoneInput = document.getElementById('owner_phone');
+            phoneInput.addEventListener('input', limitPhoneNumberLength);
 
-        function limitPhoneNumberLength() {
-            if (this.value.length > 10) {
-                this.value = this.value.slice(0, 10);
+            function limitPhoneNumberLength() {
+                this.value = this.value.replace(/\D/g, '');
+                if (this.value.length > 10) {
+                    this.value = this.value.slice(0, 10);
+                }
             }
-        }
-    
+
+            const nameInput = document.getElementById('owner_name');
+            nameInput.addEventListener('input', limitNameLength);
+
+            function limitNameLength() {
+                if (this.value.length > 20) {
+                    this.value = this.value.slice(0, 20);
+                }
+            }
+
+            const guestCountInput = document.getElementById('guest_count');
+            guestCountInput.addEventListener('input', limitGuestCount);
+
+            function limitGuestCount() {
+                this.value = this.value.replace(/\D/g, '');
+                if (this.value.length > 2) {
+                    this.value = this.value.slice(0, 2);
+                }
+                if (parseInt(this.value) > 80) {
+                    this.value = '80';
+                }
+            }
         });
     
     </script>

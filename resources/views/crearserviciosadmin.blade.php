@@ -163,6 +163,12 @@
                         <label for="imageUpload" class="form-label">Subir Imagen del Servicio</label>
                         <input type="file" id="imageUpload" name="image" class="form-control" accept="image/*">
                     </div>
+
+                    <div class="mb-3">
+                        <label for="quantifiable" class="form-label">¿Es Cuantificable?</label>
+                        <input type="checkbox" id="quantifiable" name="quantifiable" class="form-check-input">
+                        <i class="bi bi-info-circle-fill text-white" data-bs-toggle="tooltip" data-bs-placement="right" title="Un servicio cuantificable es aquel al que se le puede pedir una cantidad específica. Por ejemplo, 'Tacos de Canasta' es cuantificable porque puedes pedir una cantidad específica de tacos. En cambio, 'Música en Vivo' no es cuantificable porque no se puede pedir una cantidad específica."></i>
+                    </div>
                 </form>
             </div>
     
@@ -189,26 +195,48 @@
 @section('scripts')
     <script>
 
-    showLoader(); // Para mostrar
-    hideLoader(); // Para ocultar
+    showLoader();
+    hideLoader();
     
-        const categorySelect = document.getElementById('category');
-        const newCategoryInput = document.getElementById('newCategory');
-        const categoryLabel = document.getElementById('category-label');
-        const quantityInput = document.getElementById('quantity');
-        const quantityPreview = document.getElementById('quantityPreview');
-        const formCrearServicio = document.getElementById('formCrearServicio');
-        const estimatedPriceInput = document.getElementById('estimatedPrice');
-        const serviceNameInput = document.getElementById('serviceName');
-        const descriptionInput = document.getElementById('description');
-        const imageUploadInput = document.getElementById('imageUpload');
-        const previewImage = document.getElementById('previstaImagen');
-    
-        function removeInvalidClassOnInput(element) {
-            element.addEventListener('input', function() {
-                const invalidFeedback = this.nextElementSibling;
-                if (this.value.trim()) {
+    document.addEventListener('DOMContentLoaded', function() {
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            const categorySelect = document.getElementById('category');
+            const newCategoryInput = document.getElementById('newCategory');
+            const categoryLabel = document.getElementById('category-label');
+            const quantityInput = document.getElementById('quantity');
+            const quantityPreview = document.getElementById('quantityPreview');
+            const formCrearServicio = document.getElementById('formCrearServicio');
+            const estimatedPriceInput = document.getElementById('estimatedPrice');
+            const serviceNameInput = document.getElementById('serviceName');
+            const descriptionInput = document.getElementById('description');
+            const imageUploadInput = document.getElementById('imageUpload');
+            const previewImage = document.getElementById('previstaImagen');
+        
+            function removeInvalidClassOnInput(element) {
+                element.addEventListener('input', function() {
+                    const invalidFeedback = this.nextElementSibling;
+                    if (this.value.trim()) {
+                        this.classList.remove('is-invalid');
+                        if (invalidFeedback && invalidFeedback.classList.contains('invalid-feedback')) {
+                            invalidFeedback.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+                            invalidFeedback.style.opacity = "0";
+                            invalidFeedback.style.transform = "translateY(-10px)";
+                            setTimeout(() => invalidFeedback.style.display = "none", 500);
+                        }
+                    }
+                });
+            }
+        
+            [serviceNameInput, descriptionInput, estimatedPriceInput].forEach(removeInvalidClassOnInput);
+        
+            categorySelect.addEventListener('change', function() {
+                if (this.value) {
                     this.classList.remove('is-invalid');
+                    const invalidFeedback = this.nextElementSibling;
                     if (invalidFeedback && invalidFeedback.classList.contains('invalid-feedback')) {
                         invalidFeedback.style.transition = "opacity 0.5s ease, transform 0.5s ease";
                         invalidFeedback.style.opacity = "0";
@@ -216,62 +244,47 @@
                         setTimeout(() => invalidFeedback.style.display = "none", 500);
                     }
                 }
+                if (this.value === "Otro") {
+                    newCategoryInput.style.display = "block";
+                } else {
+                    newCategoryInput.style.display = "none";
+                }
+                categoryLabel.style.display = this.value ? "inline-block" : "none";
+                categoryLabel.textContent = this.value;
             });
-        }
-    
-        [serviceNameInput, descriptionInput, estimatedPriceInput].forEach(removeInvalidClassOnInput);
-    
-        categorySelect.addEventListener('change', function() {
-            if (this.value) {
-                this.classList.remove('is-invalid');
-                const invalidFeedback = this.nextElementSibling;
-                if (invalidFeedback && invalidFeedback.classList.contains('invalid-feedback')) {
-                    invalidFeedback.style.transition = "opacity 0.5s ease, transform 0.5s ease";
-                    invalidFeedback.style.opacity = "0";
-                    invalidFeedback.style.transform = "translateY(-10px)";
-                    setTimeout(() => invalidFeedback.style.display = "none", 500);
-                }
-            }
-            if (this.value === "Otro") {
-                newCategoryInput.style.display = "block";
-            } else {
-                newCategoryInput.style.display = "none";
-            }
-            categoryLabel.style.display = this.value ? "inline-block" : "none";
-            categoryLabel.textContent = this.value;
-        });
-    
-        serviceNameInput.addEventListener('input', function() {
-            document.getElementById('previewTitle').textContent = this.value || "Nombre del Servicio";
-        });
-    
-        descriptionInput.addEventListener('input', function() {
-            document.getElementById('previewDescription').textContent = this.value || "Descripción del servicio.";
-        });
-    
-        estimatedPriceInput.addEventListener('input', function() {
-            document.getElementById('previewPrice').textContent = `Precio Estimado: $${this.value || "0"}`;
-        });
-    
-        quantityInput.addEventListener('input', function() {
-            quantityPreview.textContent = this.value || "0";
-        });
-    
-        document.getElementById('crearPaqueteBoton').addEventListener('click', function() {
-            formCrearServicio.submit();
-        });
+        
+            serviceNameInput.addEventListener('input', function() {
+                document.getElementById('previewTitle').textContent = this.value || "Nombre del Servicio";
+            });
+        
+            descriptionInput.addEventListener('input', function() {
+                document.getElementById('previewDescription').textContent = this.value || "Descripción del servicio.";
+            });
+        
+            estimatedPriceInput.addEventListener('input', function() {
+                document.getElementById('previewPrice').textContent = `Precio Estimado: $${this.value || "0"}`;
+            });
+        
+            quantityInput.addEventListener('input', function() {
+                quantityPreview.textContent = this.value || "0";
+            });
+        
+            document.getElementById('crearPaqueteBoton').addEventListener('click', function() {
+                formCrearServicio.submit();
+            });
 
-        imageUploadInput.addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    previewImage.src = e.target.result;
+            imageUploadInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    previewImage.src = '/images/imagen6.jpg';
                 }
-                reader.readAsDataURL(file);
-            } else {
-                previewImage.src = '/images/imagen6.jpg';
-            }
+            });
         });
     </script>
 @endsection

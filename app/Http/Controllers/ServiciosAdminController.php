@@ -24,6 +24,7 @@ class ServiciosAdminController extends Controller
             'price_estimate' => 'required|numeric|min:0|max:99999.99',
             'quantity' => 'integer|min:0',
             'image' => 'nullable|image|max:1024',
+            'quantifiable' => 'boolean',
         ], [
             'category.required' => 'El campo categoría es obligatorio.',
             'new_category.required_if' => 'El campo nueva categoría es obligatorio si seleccionas "Otro".',
@@ -39,6 +40,7 @@ class ServiciosAdminController extends Controller
             'quantity.min' => 'La cantidad debe ser al menos 1.',
             'image.image' => 'El archivo debe ser una imagen.',
             'image.max' => 'La imagen no puede exceder 1MB.',
+            'quantifiable.boolean' => 'El campo cuantificable debe ser verdadero o falso.',
         ]);
     
         if ($validated['category'] === 'Otro' && empty($validated['new_category'])) {
@@ -67,8 +69,9 @@ class ServiciosAdminController extends Controller
             'description' => $validated['description'],
             'service_category_id' => $categoryId,
             'price' => $validated['price_estimate'],
-            'cantidad' => $validated['quantity'],
+            'quantity' => $validated['quantity'],
             'image_path' => $imagePath,
+            'quantifiable' => $request->has('quantifiable'),
         ]);
     
         return redirect()->route('crearservicios')->with('success', 'El servicio ha sido creado con éxito.');

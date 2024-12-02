@@ -48,7 +48,7 @@
     <div style="margin-top: 15px" class="container mb-5">
         <h2 class="text-center">Nuestros Paquetes</h2>
         <div class="row">
-            @for($i = 1; $i <= 5; $i++)
+            @for($i = 1; $i <= 4; $i++)
             <div class="col-lg-3 col-md-4 col-sm-6 mb-4">
                 <div class="package-card">
                     <img src="/images/imagen2.jpg" alt="Paquete {{ $i }}">
