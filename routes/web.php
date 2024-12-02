@@ -93,7 +93,7 @@ Route::middleware('admin')->group(function () {
 
 });
 
-Route::middleware('superadmin')->group(function () {
+Route::middleware(['auth' ,'superadmin'])->group(function () {
 
     Route::get('dashboard/graphics/profits', function(Request $request){
         $request->validate([
@@ -197,6 +197,10 @@ Route::middleware('superadmin')->group(function () {
         if ($quote->status == 'pendiente') {
             $quote->status = 'pagada';
             $quote->save();
+            $quotesSimi = Quote::where('date', $quote->date)->get();
+            foreach ($quotesSimi as $quotee) {
+                //aqui ya manda el mail a cada quote user
+            }
             return redirect()->back()->with('success', 'La cotización ha sido pagada. Termina de configurar el evento');
         }
         return redirect()->back()->with('error', 'La cotización no puede ser pagada');
