@@ -187,4 +187,17 @@ class CotizacionesClientesController extends Controller
     
         return view('historial', ['quotes' => $quotes]);
     }
+
+    public function getCotizations(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = \Carbon\Carbon::parse($startDate)->addMonths(2)->endOfMonth()->toDateString();
+    
+        $cotizations = Quote::select(DB::raw('date, COUNT(*) as count, MAX(status) as status'))
+            ->whereBetween('date', [$startDate, $endDate])
+            ->groupBy('date')
+            ->get();
+    
+        return response()->json($cotizations);
+    }
 }

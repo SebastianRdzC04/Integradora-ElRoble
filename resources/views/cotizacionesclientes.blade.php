@@ -122,13 +122,12 @@
                         @csrf
                         <div class="mb-3 row">
                             <div class="col-md-6">
-                                <label for="date" class="form-label">Fecha</label>
-                                <input type="date" name="date" id="date" class="form-control @error('date') is-invalid @enderror" oninput="updatePreview()" value="{{ old('date') }}" required>
-                                @error('date')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <button id="escogerFechaBoton" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#calendarModal">
+                                    Selecciona una Fecha
+                                </button>
+                                <input type="hidden" name="date" id="selectedDate">
+                                <span class="selected-date"></span>
                             </div>
-
                             <div class="col-md-3">
                                 <label for="start_time" class="form-label">Hora de Inicio</label>
                                 <input type="time" name="start_time" id="start_time" class="form-control @error('start_time') is-invalid @enderror" min="12:00" max="23:59" step="1800" oninput="updatePreview()" value="{{ old('start_time') }}" required>
@@ -251,6 +250,32 @@
             <button type="button" class="btn btn-success mt-3" id="crearPaqueteBoton" onclick="document.getElementById('hiddenSubmitButton').click()"><strong>Enviar Cotización</strong></button>
         </div>
     </div>
+
+<!-- Modal del calendario -->
+<div class="modal fade" id="calendarModal" tabindex="-1" aria-labelledby="calendarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="background-color: rgb(27, 59, 23); border: 3px solid rgb(255, 255, 255);">
+            <div class="modal-header">
+                <h5 class="modal-title" id="calendarModalLabel">Selecciona una Fecha</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: white;"></button>
+            </div>
+            <div class="modal-body">
+                <div id="calendar-controls" class="d-flex justify-content-between mb-2">
+                    <button id="prevMonth" class="btn btn-secondary">&lt; Anterior</button>
+                    <h6 id="calendarMonthYear"></h6>
+                    <button id="nextMonth" class="btn btn-secondary">Siguiente &gt;</button>
+                </div>
+                <div id="calendar"></div>
+                <div class="mt-3">
+                    <p><span class="badge bg-success">Verde</span> - Disponible</p>
+                    <p><span class="badge bg-warning">Amarillo</span> - Más personas cotizando por la misma fecha</p>
+                    <p><span class="badge bg-danger">Rojo</span> - No Disponible</p>
+                    <p><span class="badge bg-secondary">Gris</span> - Fecha Inaccesible</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Modal de Paquetes -->
 <div class="modal fade" id="packageModal" tabindex="-1" aria-labelledby="packageModalLabel" aria-hidden="true">
@@ -756,7 +781,7 @@
             const form = document.getElementById('cotizacionForm');
             document.querySelectorAll('.service-hidden-input').forEach(input => input.remove());
 
-            const date = document.getElementById('date').value;
+            const date = document.getElementById('selectedDate').value;
             const startInput = document.getElementById('start_time');
             const endInput = document.getElementById('end_time');
             const startTime = startInput.value;
@@ -970,6 +995,138 @@
                 }
             }
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+    const calendar = document.getElementById('calendar');
+    const selectedDateInput = document.getElementById('selectedDate');
+    const calendarMonthYear = document.getElementById('calendarMonthYear');
+    const prevMonthButton = document.getElementById('prevMonth');
+    const nextMonthButton = document.getElementById('nextMonth');
+    const today = new Date();
+    let currentDate = new Date(today.getFullYear(), today.getMonth(), 1);
+    const csrfToken = '{{ csrf_token() }}';
+
+    prevMonthButton.addEventListener('click', () => changeMonth(-1));
+    nextMonthButton.addEventListener('click', () => changeMonth(1));
+
+    function changeMonth(offset) {
+        currentDate.setMonth(currentDate.getMonth() + offset);
+        generateCalendar();
+    }
+
+    function generateCalendar() {
+        calendar.innerHTML = '';
+        calendarMonthYear.innerText = currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+        // Deshabilitar botones de navegación según las restricciones
+        const minDate = new Date(today.getFullYear(), today.getMonth(), 1);
+        const maxDate = new Date(today.getFullYear(), today.getMonth() + 2, 1);
+
+        prevMonthButton.disabled = currentDate <= minDate;
+        nextMonthButton.disabled = currentDate >= maxDate;
+
+        const daysOfWeek = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+        const daysHeader = document.createElement('div');
+        daysHeader.classList.add('days-header', 'd-flex', 'justify-content-between');
+        daysOfWeek.forEach(day => {
+            const dayElement = document.createElement('div');
+            dayElement.classList.add('day-header');
+            dayElement.innerText = day;
+            daysHeader.appendChild(dayElement);
+        });
+        calendar.appendChild(daysHeader);
+
+        const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
+        const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+
+        let day = 1;
+        let row = document.createElement('div');
+        row.classList.add('days-row', 'd-flex', 'justify-content-between');
+
+        for (let i = 0; i < firstDayOfMonth; i++) {
+            const emptyCell = document.createElement('div');
+            emptyCell.classList.add('day', 'empty');
+            row.appendChild(emptyCell);
+        }
+
+        while (day <= daysInMonth) {
+            if (row.children.length === 7) {
+                calendar.appendChild(row);
+                row = document.createElement('div');
+                row.classList.add('days-row', 'd-flex', 'justify-content-between');
+            }
+
+            const dayButton = document.createElement('button');
+            dayButton.classList.add('day');
+            dayButton.innerText = day;
+            const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+            dayButton.dataset.date = date.toISOString().split('T')[0];
+
+            if (date < today) {
+                dayButton.classList.add('bg-secondary');
+            } else {
+                dayButton.classList.add('bg-success');
+                dayButton.addEventListener('click', function() {
+                    if (!dayButton.classList.contains('bg-danger')) {
+                        selectedDateInput.value = this.dataset.date;
+                        document.querySelector('.selected-date').innerText = this.dataset.date;
+
+                        // Remove bg-primary from all buttons
+                        document.querySelectorAll('.day.bg-primary').forEach(btn => {
+                            btn.classList.remove('bg-primary');
+                            btn.classList.add('bg-success');
+                        });
+
+                        // Add bg-primary to the clicked button
+                        dayButton.classList.remove('bg-success', 'bg-warning', 'bg-danger');
+                        dayButton.classList.add('bg-primary');
+                    }
+                });
+            }
+
+            row.appendChild(dayButton);
+            day++;
+        }
+
+        while (row.children.length < 7) {
+            const emptyCell = document.createElement('div');
+            emptyCell.classList.add('day', 'empty');
+            row.appendChild(emptyCell);
+        }
+
+        calendar.appendChild(row);
+        fetchCotizations();
+    }
+
+    function fetchCotizations() {
+        fetch('/api/cotizations', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken
+            },
+            body: JSON.stringify({ start_date: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString().split('T')[0] })
+        })
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(cotization => {
+                const dateButton = document.querySelector(`button[data-date="${cotization.date}"]`);
+                if (dateButton) {
+                    if (cotization.status === 'pagada' || cotization.count >= 3) {
+                        dateButton.classList.remove('bg-success', 'bg-warning');
+                        dateButton.classList.add('bg-danger');
+                        dateButton.disabled = true;
+                    } else if (cotization.count >= 1) {
+                        dateButton.classList.remove('bg-success');
+                        dateButton.classList.add('bg-warning');
+                    }
+                }
+            });
+        });
+    }
+
+    generateCalendar();
+});
     
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>

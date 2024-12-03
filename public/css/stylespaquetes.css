@@ -344,6 +344,15 @@ li {
     margin-bottom: 5px;
     border: 1px solid rgba(255, 255, 255, 0.904);
 }
+#escogerFechaBoton {
+    background-color: #2b1a06; 
+    padding: 10px;
+    border-radius: 100px;
+    color: white;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border: 1px solid rgba(255, 255, 255, 0.904);
+}
 .lugar-card {
     cursor: pointer;
     transition: transform 0.2s;
@@ -375,4 +384,49 @@ li {
 }
 #quitabottom {
     margin-bottom: 0 !important;
+}
+#calendar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.days-header, .days-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.day-header, .day {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: white;
+}
+
+.day.empty {
+    background-color: transparent;
+}
+
+.bg-primary {
+    background-color: blue;
+}
+
+.bg-success {
+    background-color: green;
+}
+
+.bg-warning {
+    background-color: yellow;
+}
+
+.bg-danger {
+    background-color: red;
+}
+
+.bg-secondary {
+    background-color: gray;
+    cursor: not-allowed;
 }
