@@ -123,15 +123,6 @@ Route::group(['middleware' => 'guest'], function () {
 
 Route::get('/list/{id?}',[RegisterPersonController::class, 'index'])->name('tablepeople.index');
 
-
-
-//ruta para la lista de personas ------------------------
-Route::get('/list/{id?}',[RegisterPersonController::class, 'index'])->name('tablepeople.index');
-Route::get('/list/personupdate/{id}',[RegisterPersonController::class,'edit'])->name('person.createupdate');
-Route::patch('/list/personupdate/{id}',[RegisterPersonController::class,'update'])->name('person.update');
-Route::delete('/list/persondestroy/{id}',[RegisterPersonController::class,'destroy'])->name('person.destroy');
-
-
 //el usuario que inicie sesion pero no confirme su email solo podra estar aqui y no podra mandar la cotizacion
 Route::get('/notverified', function () {
     return view('welcome');
@@ -149,7 +140,9 @@ Route::get('/prueba', function () {
 
 Route::get('/prueba3',function () { 
     $serials = InventoryCategory::all();
-    return view('pages.inventory.inventory_create',compact('serials'));})->name('inventory');
+    return view('pages.inventory.inventory_create',compact('serials'));
+})->name('inventory');
+
 
 Route::get('/inventory/consult/number' ,[InventoryController::class,'filterDataCategories'])->name('filtertest');
 Route::post('/add/category', [InventoryController::class,'newCategory'])->name('newcategory.store');
@@ -157,7 +150,4 @@ Route::post('/add/inventory',[InventoryController::class,'addInventory'])->name(
 Route::post('/add/code',[InventoryController::class,'addNewCodeOrUpdate'])->name('codeadd.store');
 
 
-
-Route::view('/prueba2','layouts.dashboardAdmin');
-
-
+Route::view('/prueba1','pages.sesion.notification.verify_phone');

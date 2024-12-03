@@ -121,7 +121,6 @@ class RegisterUserController extends Controller
         'gender' => 'required|in:Masculino,Femenino,Otro',
         'phone' => 'required|string|size:10|regex:/^[0-9]+$/',
         // esto es por si el se presiona el checkbox de solo con google aunque modifiquen el front aqui se valida
-        'password' => $request->omit_password ? 'nullable' : 'required|string|min:8',
     ]);
 
     
@@ -149,11 +148,9 @@ class RegisterUserController extends Controller
                 'birthdate' => $validatedData['birthdate'],
             ]);
 
-            $password = $validatedData['password'] ? Hash::make($validatedData['password']) : null;
 
             $userNew = User::create([
                 'email' => $user->email,
-                'password' => $password,
                 'avatar' => $user->avatar,
                 'external_id' => $user->id,
                 'external_auth' => 'google',
