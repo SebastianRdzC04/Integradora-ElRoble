@@ -27,9 +27,14 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="">Nombre del Interesado:</div>
-                                <div> {{ $quote->user ? $quote->user->person->first_name : $quote->owner_name }} <i
-                                        data-bs-toggle="modal" data-bs-target="#dataModal" class="bi bi-three-dots"></i>
-                                </div>
+                                @if ($quote->owner_name)
+                                    <div> {{ $quote->owner_name }} <i data-bs-toggle="modal" data-bs-target="#dataModal"
+                                            class="bi bi-three-dots"></i> </div>
+                                @else
+                                    <div> {{ $quote->user ? $quote->user->person->first_name : $quote->owner_name }} <i
+                                            data-bs-toggle="modal" data-bs-target="#dataModal" class="bi bi-three-dots"></i>
+                                    </div>
+                                @endif
                                 <div class="modal fade" id="dataModal">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
@@ -39,20 +44,20 @@
                                             <div class="modal-body">
                                                 <div>
                                                     <h6>Nombre:</h6>
-                                                    <p> {{ $quote->user ? $quote->user->person->first_name : $quote->owner_name }}
-                                                        {{ $quote->user ? $quote->user->person->last_name : '' }} </p>
+                                                    <p> {{ $quote->owner_name ? $quote->owner_name : $quote->user->person->first_name }}
+                                                        {{ $quote->owner_name ? '' : $quote->user->person->last_name }} </p>
                                                 </div>
                                                 <div>
                                                     <h6>Telefono:</h6>
-                                                    <p> {{ $quote->user ? $quote->user->person->phone : $quote->owner_phone }}
+                                                    <p> {{ $quote->owner_phone ? $quote->owner_phone : $quote->user->person->phone }}
                                                     </p>
                                                 </div>
                                                 <div>
                                                     <h6>Correo:</h6>
-                                                    <p> {{ $quote->user ? $quote->user->email : '' }} </p>
+                                                    <p> {{ $quote->owner_name ? '' : $quote->user->email }} </p>
                                                 </div>
                                             </div>
-                                            @if ($quote->user)
+                                            @if (!$quote->owner_name)
                                                 <div class="modal-footer">
                                                     <h6>El usuario se registro
                                                         {{ Carbon::parse($quote->user->created_at)->diffForHumans() }} </h6>
