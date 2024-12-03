@@ -43,6 +43,16 @@ class SerialNumberSeeder extends Seeder
                 'category' => 2,
             ],
             [
+                'code' => 'HCH',
+                'name' => 'Hielera chica',
+                'category' => 3,
+            ],
+            [
+                'code' => 'HGR',
+                'name' => 'Hielera grande',
+                'category' => 3,
+            ],
+            [
                 'code' => 'VC',
                 'name' => 'Vasos de vidrio',
                 'category' => 4,

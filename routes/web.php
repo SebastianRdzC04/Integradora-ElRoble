@@ -25,6 +25,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\InicioClientesController;
 use App\Models\ConsumableCategory;
 use App\Models\ConsumableEventDefault;
+use App\Models\User;
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -92,7 +94,7 @@ Route::middleware('admin')->group(function () {
 
 });
 
-Route::middleware('superadmin')->group(function () {
+Route::middleware(['auth' ,'superadmin'])->group(function () {
 
     Route::get('dashboard/graphics/profits', function(Request $request){
         $request->validate([
@@ -196,6 +198,10 @@ Route::middleware('superadmin')->group(function () {
         if ($quote->status == 'pendiente') {
             $quote->status = 'pagada';
             $quote->save();
+            $quotesSimi = Quote::where('date', $quote->date)->get();
+            foreach ($quotesSimi as $quotee) {
+                //aqui ya manda el mail a cada quote user
+            }
             return redirect()->back()->with('success', 'La cotización ha sido pagada. Termina de configurar el evento');
         }
         return redirect()->back()->with('error', 'La cotización no puede ser pagada');
@@ -474,6 +480,11 @@ Route::middleware('superadmin')->group(function () {
         }
         return redirect()->back()->with('error', 'No se encontro banda');
     })->name('dashboard.consumable.edit');
+
+    Route::get('dashboard/users', function(){
+        $users = User::all();
+        return view('pages.dashboard.users', compact('users'));
+    })->name('dashboard.users');
 });
 
 
@@ -544,6 +555,11 @@ Route::post('/servicios', [ServiciosAdminController::class, 'store'])->name('ser
 Route::get('/cotizaciones', [CotizacionesClientesController::class, 'create'])->name('cotizaciones.create');
 Route::post('cotizacionesclientes', [CotizacionesClientesController::class, 'store'])->name('cotizacionesclientes.store');
 Route::get('/inicio', [InicioClientesController::class, 'create'])->name('inicio');
+Route::get('/historial', [CotizacionesClientesController::class, 'historial'])->name('historial');
+Route::post('/pagar', [PaymentController::class, 'pay'])->name('pagar');
+Route::post('/create-payment-intent', [PaymentController::class, 'createPaymentIntent'])->name('create-payment-intent');
+Route::post('/confirm-payment', [PaymentController::class, 'confirmPayment'])->name('confirm-payment');
+Route::post('/api/cotizations', [CotizacionesClientesController::class, 'getCotizations']);
 
 // Si necesitas una vista para listar paquetes
 Route::get('/paquetes', [PaquetesAdminController::class, 'index'])->name('paquetes.index'); // O lo que desees

@@ -1,30 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.dashboardAdmin')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <title>Document</title>
-</head>
+@php
+    use Carbon\Carbon;
+    Carbon::setLocale('es');
+@endphp
 
-<body>
-    <aside>
-        @if (auth()->user()->roles->contains('id', 3))
-            <a href="{{ route('dashboard') }}">Ir a Dashboard</a>
-        @endif
-        @if (auth()->user()->roles->contains('id', 1))
-            <a href="{{ route('dashboard.quotes') }}">Volver</a>
-        @endif
-    </aside>
+@section('title', 'Cotizacion')
+
+@section('styles')
+
+@endsection
+
+@section('content')
     <main>
         <div class="container">
             <div class="row">
                 <div class="col-5">
-                    <div class="card">
+                    <div class="card shadow">
                         <div class="card-header text-center">
                             <h2 class="mb-0">Cotizacion Evento</h2>
                         </div>
@@ -35,7 +27,41 @@
                             </div>
                             <div class="row mb-3">
                                 <div class="">Nombre del Interesado:</div>
-                                <div> {{ $quote->user->person->firstName }} </div>
+                                <div> {{ $quote->user ? $quote->user->person->first_name : $quote->owner_name }} <i
+                                        data-bs-toggle="modal" data-bs-target="#dataModal" class="bi bi-three-dots"></i>
+                                </div>
+                                <div class="modal fade" id="dataModal">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h1>Datos del Cliente</h1>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div>
+                                                    <h6>Nombre:</h6>
+                                                    <p> {{ $quote->user ? $quote->user->person->first_name : $quote->owner_name }}
+                                                        {{ $quote->user ? $quote->user->person->last_name : '' }} </p>
+                                                </div>
+                                                <div>
+                                                    <h6>Telefono:</h6>
+                                                    <p> {{ $quote->user ? $quote->user->person->phone : $quote->owner_phone }}
+                                                    </p>
+                                                </div>
+                                                <div>
+                                                    <h6>Correo:</h6>
+                                                    <p> {{ $quote->user ? $quote->user->email : '' }} </p>
+                                                </div>
+                                            </div>
+                                            @if ($quote->user)
+                                                <div class="modal-footer">
+                                                    <h6>El usuario se registro
+                                                        {{ Carbon::parse($quote->user->created_at)->diffForHumans() }} </h6>
+                                                </div>
+                                            @endif
+
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="row mb-3">
                                 <div>Tipo de Evento:</div>
@@ -60,8 +86,8 @@
                             </div>
                             <div class="row mb-3">
                                 <div>Precio de la cotizacion:</div>
-                                <div> ${{ $quote->estimated_price }} <i data-bs-toggle="modal"
-                                        data-bs-target="#quoteModal" class="text-end bi bi-pencil"></i></div>
+                                <div> ${{ $quote->estimated_price }} <i data-bs-toggle="modal" data-bs-target="#quoteModal"
+                                        class="text-end bi bi-pencil"></i></div>
                                 <div class="modal fade" id="quoteModal">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
@@ -125,8 +151,7 @@
                             <div class="row">
                                 <div class="text-end">
                                     @if ($quote->status == 'pendiente')
-                                        <form action="{{ route('dashboard.quote.payment', $quote->id) }}"
-                                            method="POST">
+                                        <form action="{{ route('dashboard.quote.payment', $quote->id) }}" method="POST">
                                             @csrf
                                             <button class="btn btn-primary">Confirmar y crear evento</button>
                                         </form>
@@ -138,14 +163,14 @@
                     </div>
                 </div>
                 <div class="col-7">
-                    <div class="card">
+                    <div class="card shadow">
                         <div class="card-header text-center">
                             <h2 class="mb-0">Servicios Interesados:
                                 {{ ($quote->package ? $quote->package->services->count() : 0) + $quote->services->count() }}
                             </h2>
                         </div>
                         <div class="card-body">
-                            <div>
+                            <div class="">
                                 <table class="table">
                                     <thead>
                                         <tr>
@@ -175,7 +200,8 @@
                                             @foreach ($quote->services as $service)
                                                 <tr>
                                                     <td>{{ $service->name }}</td>
-                                                    <td>{{ $service->pivot->description }}</td>
+                                                    <td>{{ $service->pivot->description ? $service->pivot->description : 'Sin especificar' }}
+                                                    </td>
                                                     <td> {{ $service->pivot->quantity ? $service->pivot->quantity : 'norelevante' }}
                                                     </td>
                                                     <td>{{ $service->pivot->price }}</td>
@@ -201,29 +227,32 @@
                                                                             <form method="POST"
                                                                                 action="{{ route('dashboard.quote.status', $service->pivot->id) }}">
                                                                                 @csrf
-                                                                                <div class="row mb-3">
+                                                                                <div class="mb-3">
                                                                                     <label for="cantidad"
                                                                                         class="form-label">Cantidad</label>
-                                                                                    <input type="number"
-                                                                                        name="cantidad"
+                                                                                    <input class="form-control"
+                                                                                        type="number" name="cantidad"
                                                                                         value="0">
                                                                                 </div>
-                                                                                <div class="row mb-3">
-                                                                                    <label for="precio">Cuanto Vas
+                                                                                <div class="mb-3">
+                                                                                    <label class="form-label"
+                                                                                        for="precio">Cuanto Vas
                                                                                         a
                                                                                         cobrar?</label>
-                                                                                    <input type="number"
-                                                                                        name="precio">
+                                                                                    <input class="form-control"
+                                                                                        type="number" name="precio">
                                                                                 </div>
-                                                                                <div class="row mb-3">
-                                                                                    <label for="costo">Cuanto te
+                                                                                <div class=" mb-3">
+                                                                                    <label class="form-label"
+                                                                                        for="costo">Cuanto te
                                                                                         cuesta a
                                                                                         ti? </label>
-                                                                                    <input type="number"
-                                                                                        name="costo">
+                                                                                    <input class="form-control"
+                                                                                        type="number" name="costo">
                                                                                 </div>
-                                                                                <div class="row mb-3">
-                                                                                    <button>Enviar</button>
+                                                                                <div class="mb-3">
+                                                                                    <button
+                                                                                        class="btn btn-primary">Enviar</button>
                                                                                 </div>
 
                                                                             </form>
@@ -236,6 +265,13 @@
                                                     </td>
                                                 </tr>
                                             @endforeach
+                                            <tr>
+                                                <td colspan="2"></td>
+                                                <td>Total: </td>
+                                                <td>Precio: ${{ $quote->services->sum('pivot.price') }}</td>
+                                                <td>Costo: ${{ $quote->services->sum('pivot.coast') }} </td>
+                                                <td></td>
+                                            </tr>
                                         @endif
                                     </tbody>
                                 </table>
@@ -244,16 +280,6 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
     </main>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-    </script>
-    <script></script>
-
-</body>
-
-</html>
+@endsection

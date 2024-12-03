@@ -1,3 +1,8 @@
+@php
+    use Carbon\Carbon;
+    Carbon::setLocale('es');
+@endphp
+
 @extends('layouts.dashboardAdmin')
 
 @section('styles')
@@ -11,7 +16,7 @@
 
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-10">
+            <div class="col-12">
                 <div class="table-responsive pack-table">
                     <table class="table shadow" id="tabla-paquetes">
                         <thead>
@@ -30,8 +35,9 @@
                                 <tr class="parent-row">
                                     <td>{{ $package->name }}</td>
                                     <td>{{ $package->status }}</td>
-                                    <td>{{ $package->start_date }} - {{ $package->end_date }} </td>
-                                    <td>{{ $package->price }}</td>
+                                    <td>{{ Carbon::parse($package->start_date)->format('d-m-Y') }} ->
+                                        {{ Carbon::parse($package->end_date)->format('d-m-Y') }} </td>
+                                    <td class="text-center">${{ $package->price }}</td>
                                     <td>{{ $package->place->name }}</td>
                                     <td class="text-center">
                                         {{ $package->services->count() }}

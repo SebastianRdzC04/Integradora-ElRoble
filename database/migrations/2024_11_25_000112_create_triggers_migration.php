@@ -44,6 +44,20 @@ return new class extends Migration
                 END IF;
             END
         ');
+        DB::unprepared('
+            CREATE TRIGGER set_quote_place_from_package
+            BEFORE INSERT ON quotes
+            FOR EACH ROW
+            BEGIN
+                IF NEW.package_id IS NOT NULL THEN
+                    SET NEW.place_id = (
+                        SELECT place_id 
+                        FROM packages 
+                        WHERE id = NEW.package_id
+                    );
+                END IF;
+            END
+        ');
     }
 
     public function down()
@@ -51,5 +65,6 @@ return new class extends Migration
         DB::unprepared('DROP TRIGGER IF EXISTS update_quote_status');
         DB::unprepared('DROP TRIGGER IF EXISTS update_consumable_stock');
         DB::unprepared('DROP TRIGGER IF EXISTS update_consumables_stock_after_event');
+        DB::unprepared('DROP TRIGGER IF EXISTS set_quote_place_from_package');
     }
 };

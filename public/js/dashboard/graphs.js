@@ -37,6 +37,8 @@ const option = {
     }
   ]
 };
+
+
 myChart.setOption(option);
 // Grafico 2
 let myChart2 = echarts.init(document.getElementById('grafico3'));
@@ -58,6 +60,13 @@ myChart2.setOption(option2);
 // Grafico 3
 let myChart3 = echarts.init(document.getElementById('grafico1'));
 const option3 = {
+  tooltip: {
+    trigger: 'item'
+  },
+  legend: {
+    top: '5%',
+    left: 'center'
+  },
   xAxis: {
     type: 'category',
     data: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']

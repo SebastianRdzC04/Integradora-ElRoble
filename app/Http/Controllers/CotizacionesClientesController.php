@@ -29,12 +29,14 @@ class CotizacionesClientesController extends Controller
     
     public function store(Request $request)
     {
+        $request->merge(['user_id' => auth()->id()]);
+    
         if ($request->has('otro_tipo_evento') && !empty($request->input('otro_tipo_evento'))) {
             $request->merge(['type_event' => (string) $request->input('otro_tipo_evento')]);
         } else {
             $request->merge(['type_event' => (string) $request->input('type_event')]);
         }
-
+    
         $validated = $request->validate(
             [
                 'user_id' => 'nullable|exists:users,id',
@@ -132,7 +134,7 @@ class CotizacionesClientesController extends Controller
                 'package_id' => $request->input('package_id'),
                 'date' => $request->input('date'),
                 'place_id' => $request->input('place_id'),
-                'status' => $request->input('status', 'pendiente'),
+                'status' => $request->input('status', 'pendiente cotizacion'),
                 'estimated_price' => $request->input('estimated_price', '0'),
                 'espected_advance' => $request->input('espected_advance', '0'),
                 'start_time' => $request->input('start_time'),
@@ -175,5 +177,27 @@ class CotizacionesClientesController extends Controller
                 ->withErrors(['general' => 'Error al crear la cotización. Por favor, revisa los datos e inténtalo de nuevo.'])
                 ->withInput();
         }
+    }
+
+    public function historial()
+    {
+        $quotes = Quote::with('place')
+                       ->where('user_id', auth()->id())
+                       ->paginate(10);
+    
+        return view('historial', ['quotes' => $quotes]);
+    }
+
+    public function getCotizations(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = \Carbon\Carbon::parse($startDate)->addMonths(2)->endOfMonth()->toDateString();
+    
+        $cotizations = Quote::select(DB::raw('date, COUNT(*) as count, MAX(status) as status'))
+            ->whereBetween('date', [$startDate, $endDate])
+            ->groupBy('date')
+            ->get();
+    
+        return response()->json($cotizations);
     }
 }

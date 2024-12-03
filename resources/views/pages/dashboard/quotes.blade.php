@@ -12,7 +12,7 @@
 
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-11">
+            <div class="col-12">
                 <div class="table-responsive">
                     <table class="table shadow" id="quote-table">
                         <thead>
