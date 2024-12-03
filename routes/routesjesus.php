@@ -149,11 +149,13 @@ Route::get('/prueba', function () {
 
 Route::get('/prueba3',function () { 
     $serials = InventoryCategory::all();
-    return view('pages.inventory.inventory_create',compact('serials'));});
+    return view('pages.inventory.inventory_create',compact('serials'));})->name('inventory');
 
 Route::get('/inventory/consult/number' ,[InventoryController::class,'filterDataCategories'])->name('filtertest');
-
+Route::post('/add/category', [InventoryController::class,'newCategory'])->name('newcategory.store');
 Route::post('/add/inventory',[InventoryController::class,'addInventory'])->name('inventoryadd.store');
+Route::post('/add/code',[InventoryController::class,'addNewCodeOrUpdate'])->name('codeadd.store');
+
 
 
 Route::view('/prueba2','layouts.dashboardAdmin');

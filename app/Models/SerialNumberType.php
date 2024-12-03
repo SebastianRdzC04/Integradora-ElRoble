@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class SerialNumberType extends Model
 {
     use HasFactory;
+    protected $fillable = ['category_id', 'code', 'name', 'created_at', 'updated_at'];
     protected $table = 'serial_number_types_inventory';
 
     public function Category()

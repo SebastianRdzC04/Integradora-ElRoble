@@ -32,7 +32,7 @@ input[type="number"] {
             <!-- Selección de Categorías -->
             <h6>Seleccione Categorías:</h6>
             <button type="button" id="btnAbrirModalFormulario" class="btn btn-primary mb-3">Crear Categoría</button>
-            <button type="button" id="btnAbrirModalCodigoSerie" class="btn btn-primary mb-3">Añadir codgigos de serie</button>
+            <button type="button" id="btnAbrirModalCodigoserial" class="btn btn-primary mb-3">Añadir codgigos de serial</button>
             
             <div class="d-grid gap-2 overflow-auto" style="max-height: 124px;">
                 @foreach ($serials as $serial)
@@ -50,76 +50,75 @@ input[type="number"] {
     </div>
 </div>
 
-
-<div class="modal fade" id="modalAgregarCodigosDeSerie" tabindex="-1" aria-labelledby="modalFormularioInventarioLabel" aria-hidden="true">
-<div class="modal-dialog modal-lg" style="min-width: 80%;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalFormularioInventarioLabel">Rellenar Información del Inventario</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body row justify-content-between">
-                <div class="row col-md-4">
-                    <!-- Columna izquierda -->
-                    <div class="col-md-12">
-                        <div class="mb-3">
-                            <label for="serialListBox" class="form-label">Serie</label>
-                            <div class="col-auto">
-                                <input type="text" id="inputCategoriaNueva" class="form-control col-md-8" minlength="3" placeholder="Sillas" required>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="d-flex">
-                                <button id="btnCancelarFormulario" class="btn btn-primary me-2">Cancelar</button>
-                                <button id="btnCrearInventario" class="btn btn-primary w-100" disabled>Crear</button>
-                            </div>
-                        </div>
-                    </div>
+<!-- Modal para Agregar Códigos de serial -->
+<div class="modal fade" id="modalAddCodeOfSerial" tabindex="-1" aria-labelledby="modalAddCodeOfSerialLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="min-width: 80%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalAddCodeOfSerialLabel">Agregar Nueva serial</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <!-- Columna derecha -->
-                <div class="col-md-7">
-                    <div class="row mb-2">
-                        <div class="col-6 d-flex">
-                            <div class="fs-6 d-grid" style="align-content: center;">
-                                Agregar Serie
+                <div class="modal-body row justify-content-between">
+                    <div class="row col-md-4">
+                        <!-- Columna izquierda -->
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="selectCategory" class="form-label">serial</label>
+                                <div class="col-auto">
+                                    <select type="text" id="selectCategory" class="form-control col-md-8" minlength="3" placeholder="Sillas" required>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="d-flex">
+                                    <button id="btnCancelSerial" class="btn btn-primary me-2">Cancelar</button>
+                                    <button id="btnCreateSerial" class="btn btnCreateInventory btn-primary w-100" disabled>Crear</button>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-6 d-flex justify-content-end">
-                            <button class="btn btnEliminarSerie me-2" id="btnDeleteSerial">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                    <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                </svg>
-                            </button>
-                            <button id="btnAgregarSerie" class="btn align-baseline">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                    <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m-7-7h14"/>
-                                </svg>
-                            </button>
-                        </div>
                     </div>
-                    <div id="seriesContainer" class="overflow-y-auto overflow-x-hidden" style="max-height: 130px;">
-                        <!-- Fila inicial de inputs -->
+                    <!-- Columna derecha -->
+                    <div class="col-md-7">
                         <div class="row mb-2">
-                            <div class="col-4">
-                                <input type="text" class="form-control inputSerie" minlength="3" placeholder="CG" required>
+                            <div class="col-6 d-flex">
+                                <div class="fs-6 d-grid" style="align-content: center;">Agregar serial</div>
                             </div>
-                            <div class="col-8">
-                                <input type="text" class="form-control inputNombreSerie" minlength="3" placeholder="Carro con Globos" required>
+                            <div class="col-6 d-flex justify-content-end">
+                                <button class="btn btnDeleteSerial me-2" id="btnDeleteSerialCode">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                                <button id="btnAddSerialCode" class="btn align-baseline">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                                        <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m-7-7h14" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="serialCodeContainer" class="overflow-y-auto overflow-x-hidden" style="max-height: 130px;">
+                            <!-- Fila inicial de inputs -->
+                            <div class="row mb-2">
+                                <div class="col-4">
+                                    <input type="text" name="addnewcode[]" class="form-control inputCode" minlength="3" placeholder="CG" required>
+                                </div>
+                                <div class="col-8">
+                                    <input type="text" name="addnewname[]" class="form-control inputNameCode" minlength="3" placeholder="Carro con Globos" required>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
     </div>
 </div>
 
-<!-- Modal para crear categorias y asignar un numero alfanumerio -->
-<div class="modal fade" id="modalFormularioInventario" tabindex="-1" aria-labelledby="modalFormularioInventarioLabel" aria-hidden="true">
+<!-- Modal para Crear Categorías -->
+<div class="modal fade" id="modalCreateCategories" tabindex="-1" aria-labelledby="modalCreateCategoriesLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" style="min-width: 80%;">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalFormularioInventarioLabel">Rellenar Información del Inventario</h5>
+                <h5 class="modal-title" id="modalCreateCategoriesLabel">Crear Categorías</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body row justify-content-between">
@@ -127,15 +126,15 @@ input[type="number"] {
                     <!-- Columna izquierda -->
                     <div class="col-md-12">
                         <div class="mb-3">
-                            <label for="serialListBox" class="form-label">Serie</label>
+                            <label for="inputCategoryNew" class="form-label">Nueva Categoría</label>
                             <div class="col-auto">
-                                <input type="text" id="inputCategoriaNueva" class="form-control col-md-8" minlength="3" placeholder="Sillas" required>
+                                <input type="text" id="inputCategoryNew" name="newcategory" class="form-control col-md-8" minlength="3" placeholder="Sillas" required>
                             </div>
                         </div>
                         <div class="row">
                             <div class="d-flex">
-                                <button id="btnCancelarFormulario" class="btn btn-primary me-2">Cancelar</button>
-                                <button id="btnCrearInventario" class="btn btn-primary w-100" disabled>Crear</button>
+                                <button id="btnCancelCategory" class="btn btn-primary me-2">Cancelar</button>
+                                <button id="btnCreateCategory" type="submit" class="btn btnCreateInventory btn-primary w-100" disabled>Crear</button>
                             </div>
                         </div>
                     </div>
@@ -144,31 +143,29 @@ input[type="number"] {
                 <div class="col-md-7">
                     <div class="row mb-2">
                         <div class="col-6 d-flex">
-                            <div class="fs-6 d-grid" style="align-content: center;">
-                                Agregar Serie
-                            </div>
+                            <div class="fs-6 d-grid" style="align-content: center;">Agregar Categoría</div>
                         </div>
                         <div class="col-6 d-flex justify-content-end">
-                            <button class="btn btnEliminarSerie me-2" id="btnDeleteSerial">
+                            <button class="btn btnDeleteSerial me-2" id="btnDeleteCategoryRow">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                    <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                    <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                                 </svg>
                             </button>
-                            <button id="btnAgregarSerie" class="btn align-baseline">
+                            <button id="btnAddCategoryRow" class="btn align-baseline">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-                                    <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m-7-7h14"/>
+                                    <path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v14m-7-7h14" />
                                 </svg>
                             </button>
                         </div>
                     </div>
-                    <div id="seriesContainer" class="overflow-y-auto overflow-x-hidden" style="max-height: 130px;">
+                    <div id="categoriesContainer" class="overflow-y-auto overflow-x-hidden" style="max-height: 130px;">
                         <!-- Fila inicial de inputs -->
                         <div class="row mb-2">
                             <div class="col-4">
-                                <input type="text" class="form-control inputSerie" minlength="3" placeholder="CG" required>
+                                <input type="text" name="newcode[0]" class="form-control inputCode" minlength="3" placeholder="CG" required>
                             </div>
                             <div class="col-8">
-                                <input type="text" class="form-control inputNombreSerie" minlength="3" placeholder="Carro con Globos" required>
+                                <input type="text" name="newname[0]" class="form-control inputNameCode" minlength="3" placeholder="Carro con Globos" required>
                             </div>
                         </div>
                     </div>
@@ -179,7 +176,9 @@ input[type="number"] {
 </div>
 
 
-<!-- Modal Agregar Inventario -->
+
+
+<!-- Modal Agregar Inventario ----------------------------------------------------------------->
 <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" style="max-width: 600px;">
         <div class="modal-content">
@@ -206,9 +205,7 @@ input[type="number"] {
                                                 <path d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718zm3.391-3.836c-1.043-.263-1.6-.825-1.6-1.616 0-.944.704-1.641 1.8-1.828v3.495l-.2-.05zm1.591 1.872c1.287.323 1.852.859 1.852 1.769 0 1.097-.826 1.828-2.2 1.939V8.73z"></path>
                                             </svg>
                                         </span>
-                                        <select type="number" name="price" id="price" class="form-control" placeholder="10" aria-label="Input group example" aria-describedby="basic-addon1" disabled>
-                                            
-                                        </select>
+                                        <input type="number" name="price" id="price" class="form-control" placeholder="10" aria-label="Input group example" aria-describedby="basic-addon1" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -248,85 +245,326 @@ input[type="number"] {
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+
+
 <script>
- document.getElementById('btnAbrirModalCodigoSerie').addEventListener('click', function () {
-    const modalAgregarCodigosDeSerie = new bootstrap.Modal(document.getElementById('modalAgregarCodigosDeSerie'));
-    modalAgregarCodigosDeSerie.show();
-})
-    
-    // Abrir el modal de Crear Categoría
-    document.getElementById('btnAbrirModalFormulario').addEventListener('click', function () {
-        const selectedCategories = $("input[name='categories[]']:checked")
-            .map(function () {
-                return $(this).val().toUpperCase();
-            }).get();
+document.getElementById('btnCreateSerial').addEventListener('click', function () {
 
-        if (selectedCategories.length === 0) {
-            toastr.error('Selecciona al menos un elemento de la lista');
-        }
-        const modalFormularioInventario = new bootstrap.Modal(document.getElementById('modalFormularioInventario'));
-        modalFormularioInventario.show();
-    });
+    const csrfToken = $('meta[name="csrf-token"]').attr('content'); // Obtenemos el token CSRF
 
-    // Controlar dinámicamente filas en el modal de Crear Categoría
-    document.addEventListener('DOMContentLoaded', function () {
-        const seriesContainer = document.getElementById('seriesContainer');
-        const btnAgregarSerie = document.getElementById('btnAgregarSerie');
-        const btnDeleteSerial = document.getElementById('btnDeleteSerial');
-        const btnCrearInventario = document.getElementById('btnCrearInventario');
+    const principalCategory = document.getElementById('selectCategory').value;
+    const modal = document.getElementById('modalAddCodeOfSerial');
+    const code = modal.querySelectorAll('.inputCode');
+    const namecode = modal.querySelectorAll('.inputNameCode');
 
-        btnAgregarSerie.addEventListener('click', function () {
-            if (seriesContainer.children.length < 10) {
-                const newRow = document.createElement('div');
-                newRow.classList.add('row', 'mb-2');
-                newRow.innerHTML = `
-                    <div class="col-4">
-                        <input type="text" class="form-control inputSerie" minlength="3" placeholder="CG" required>
-                    </div>
-                    <div class="col-8">
-                        <input type="text" class="form-control inputNombreSerie" minlength="3" placeholder="Carro con Globos" required>
-                    </div>
-                `;
-                seriesContainer.appendChild(newRow);
-                checkFormValidation();
-            }
-        });
+    const categoryData = [];
 
-        btnDeleteSerial.addEventListener('click', function () {
-            if (seriesContainer.children.length > 1) {
-                seriesContainer.lastElementChild.remove();
-                checkFormValidation();
-            }
-        });
+    for (let i = 0; i < code.length; i++) {
+        const serialValue = code[i].value;
+        const nameSerialValue = namecode[i].value;
 
-        function checkFormValidation() {
-            const inputSeries = document.querySelectorAll('.inputSerie');
-            const inputNombres = document.querySelectorAll('.inputNombreSerie');
-            let valid = true;
-
-            inputSeries.forEach(input => {
-                if (!input.value) valid = false;
+        if (serialValue && nameSerialValue) {
+            categoryData.push({
+                code: serialValue,
+                namecode: nameSerialValue
             });
-            inputNombres.forEach(input => {
-                if (!input.value) valid = false;
-            });
-
-            btnCrearInventario.disabled = !valid;
         }
+    }
 
-        checkFormValidation();
+    const finalJson = {
+        category: parseInt(principalCategory),
+        codeinf: categoryData
+    };
+
+    console.log(JSON.stringify(finalJson));
+    $.ajax({
+        url: '{{route('codeadd.store')}}',
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken 
+        },
+        contentType: 'application/json',
+        data: JSON.stringify(finalJson),
+        success: function (response) {
+            toastr.success('Codigos agregados exitosamente.');
+            location.reload();
+        },
+        error: function (xhr) {
+            const errors = xhr.responseJSON.errors;
+            for (let key in errors) {
+                errors[key].forEach(msg => toastr.error(msg));
+            }
+        }
     });
+});
+
+
 </script>
 
-<!--script para rellenar el select de seriales-->
+<script>
+    document.getElementById('btnCreateCategory').addEventListener('click', function () {
+
+    const csrfToken = $('meta[name="csrf-token"]').attr('content'); // Obtenemos el token CSRF
+
+    const principalCategory = document.getElementById('inputCategoryNew').value;
+    const modal = document.getElementById('modalCreateCategories');
+    const serials = modal.querySelectorAll('.inputCode');
+    const nameSerials = modal.querySelectorAll('.inputNameCode');
+
+    if (!principalCategory || principalCategory.length < 3) {
+        toastr.error('Por favor, ingresa una categoría válida.');
+        return;
+    }
+
+    const categoryData = [];
+    
+    for (let i = 0; i < serials.length; i++) {
+        const serialValue = serials[i].value;
+        const nameSerialValue = nameSerials[i].value;
+
+        if (serialValue && nameSerialValue) {
+            categoryData.push({
+                code: serialValue,
+                namecode: nameSerialValue
+            });
+        }
+    }
+
+    const finalJson = {
+        category: principalCategory,
+        codes: categoryData
+    };
+
+    console.log(JSON.stringify(finalJson));
+    $.ajax({
+        url: '{{route('newcategory.store')}}',
+        method: 'POST',
+        headers: {
+            'X-CSRF-TOKEN': csrfToken 
+        },
+        contentType: 'application/json',
+        data: JSON.stringify(finalJson),
+        success: function (response) {
+            console.log('Respuesta del servidor:', response);
+            toastr.success('Categoría enviada exitosamente.');
+            location.reload();
+        },
+        error: function (xhr, status, error) {
+            const errors = xhr.responseJSON.errors;
+            for (let key in errors) 
+            {
+                errors[key].forEach(msg => toastr.error(msg));
+            }
+        }
+    });
+});
+
+
+</script>
+<!-- script para el funcionamiento del modal para agregar codigo de serial -->
+<script>
+    const serials = @json($serials);
+
+    document.getElementById('btnAbrirModalCodigoserial').addEventListener('click', function () {
+        const modalAddCodeOfSerial = new bootstrap.Modal(document.getElementById('modalAddCodeOfSerial'));
+        modalAddCodeOfSerial.show();
+        
+        const select = document.getElementById('selectCategory');
+        select.innerHTML = '';
+
+        serials.forEach((serial) => {
+            const option = document.createElement('option');
+            option.value = serial.id; 
+            option.textContent = serial.name; 
+            select.appendChild(option);
+        });
+
+        checkFormValidation('modalAddCodeOfSerial'); 
+    });
+
+    
+    document.getElementById('btnAbrirModalFormulario').addEventListener('click', function () {
+            const modalFormularioInventario = new bootstrap.Modal(document.getElementById('modalCreateCategories'));
+            modalFormularioInventario.show();
+
+            checkFormValidation('modalCreateCategories');
+    });
+    let count = 0;
+
+    function addNewSerialRow(containerId, modalnowid) {
+    const container = document.getElementById(containerId);
+
+    
+    const inputs = container.querySelectorAll('input');
+    for (let input of inputs) {
+        if (!input.value.trim()) {
+            toastr.error('Completa todos los campos antes de agregar una nueva fila.');
+            return;
+        }
+    }
+
+    if (container.children.length < 10) {
+        const row = document.createElement('div');
+        row.classList.add('row', 'mb-2');
+        count++; 
+
+        let nameserial = "";
+        let nameCode = "";
+        
+    
+        if (modalnowid === "modalAddCodeOfSerial") {
+            nameserial = `addnewcode[${count}]`;  
+            nameCode = `addnewname[${count}]`; 
+        } else if (modalnowid === "modalCreateCategories") {
+            nameserial = `newcode[${count}]`;  
+            nameCode = `newname[${count}]`; 
+        }
+
+        row.innerHTML = `
+            <div class="col-4">
+                <input type="text" class="form-control inputCode" minlength="3" placeholder="CG" name="${nameserial}" required>
+            </div>
+            <div class="col-8">
+                <input type="text" class="form-control inputNameCode" minlength="3" placeholder="Carro con Globos" name="${nameCode}" required>
+            </div>
+        `;
+        container.appendChild(row);
+
+        
+        row.querySelectorAll('input').forEach(input => {
+            input.addEventListener('input', () => checkFormValidation(modalnowid));
+        });
+    }
+}
+
+    function deleteLastSerialRow(containerId) {
+    const container = document.getElementById(containerId);
+    if (container.children.length > 1) {
+        container.lastElementChild.remove();
+        count--;
+    }
+}
+
+    function checkFormValidation(modalId) {
+    const modal = document.getElementById(modalId);
+    const inputserials = modal.querySelectorAll('.inputCode');
+    const inputNombres = modal.querySelectorAll('.inputNameCode');
+    const btnCreateInventory = modal.querySelector('.btnCreateInventory');
+    let valid = true;
+    
+    inputserials.forEach(input => {
+        if (input.value.trim().length < 2) { 
+            valid = false; 
+        }
+    });
+    
+    if (valid) { 
+        inputNombres.forEach(input => {
+            if (!input.value.trim()) { 
+                valid = false;
+            }
+        });
+    }
+
+    btnCreateInventory.disabled = !valid;
+}
+
+    document.getElementById('btnAddSerialCode').addEventListener('click', () => {
+    addNewSerialRow('serialCodeContainer', 'modalAddCodeOfSerial');
+    disableConfirmButton('modalAddCodeOfSerial'); 
+});
+    document.getElementById('btnDeleteSerialCode').addEventListener('click', () => {deleteLastSerialRow('serialCodeContainer');
+        checkFormValidation('modalAddCodeOfSerial');
+    });
+
+    document.getElementById('btnAddCategoryRow').addEventListener('click', () => {
+    addNewSerialRow('categoriesContainer', 'modalCreateCategories');
+    disableConfirmButton('modalCreateCategories'); 
+});
+    document.getElementById('btnDeleteCategoryRow').addEventListener('click', () => {deleteLastSerialRow('categoriesContainer');
+        checkFormValidation('modalCreateCategories');
+    });
+
+    function disableConfirmButton(modalId) {
+    const modal = document.getElementById(modalId);
+    const btnConfirm = modal.querySelector('.btnCreateInventory'); 
+    btnConfirm.disabled = true; 
+    
+}
+    
+    document.querySelectorAll('.inputCode, .inputNameCode').forEach(input => {
+        input.addEventListener('input', function () {
+            const modalVisible = document.querySelector('.modal.show');
+            if (modalVisible) {
+                checkFormValidation(modalVisible.id);
+            }
+        });
+    });
+
+    
+function resetModal(modalId, containerId) {
+    const modal = document.getElementById(modalId);
+    const container = document.getElementById(containerId);
+    const inputs = modal.querySelectorAll('input');
+    const buttons = modal.querySelectorAll('button');
+    count = 0;
+
+    inputs.forEach(input => {
+        input.value = '';  
+    });
+    
+    const btnCreate = modal.querySelector('.btnCreateInventory');
+
+    container.innerHTML = ''; 
+    
+    if (containerId === 'serialCodeContainer') {
+        container.innerHTML = `
+            <div class="row mb-2">
+                <div class="col-4">
+                    <input type="text" name="addnewcode[]" class="form-control inputCode" minlength="3" placeholder="CG" required>
+                </div>
+                <div class="col-8">
+                    <input type="text" name="addnewname[]" class="form-control inputNameCode" minlength="3" placeholder="Carro con Globos" required>
+                </div>
+            </div>`;
+    } else if (containerId === 'categoriesContainer') {
+        container.innerHTML = `
+            <div class="row mb-2">
+                <div class="col-4">
+                    <input type="text" name="newcode[0]" class="form-control inputCode" minlength="3" placeholder="CG" required>
+                </div>
+                <div class="col-8">
+                    <input type="text" name="newname[0]" class="form-control inputNameCode" minlength="3" placeholder="Carro con Globos" required>
+                </div>
+            </div>`;
+    }
+
+    container.querySelectorAll('.inputCode, .inputNameCode').forEach(input => {
+        input.addEventListener('input', function () {
+            checkFormValidation(modalId);
+        });
+    });
+
+    btnCreate.disabled = true;
+}
+
+document.getElementById('modalAddCodeOfSerial').addEventListener('hidden.bs.modal', function () {
+    resetModal('modalAddCodeOfSerial', 'serialCodeContainer');
+});
+
+document.getElementById('modalCreateCategories').addEventListener('hidden.bs.modal', function () {
+    resetModal('modalCreateCategories', 'categoriesContainer');
+});
+
+
+</script>
 
 <script>
-    // Estructuras globales
-    const serialMap = {}; // Mapea los códigos y su próximo número
-    const usedSerialNumbers = {}; // Rastrea los números usados por cada código
-    const inventoryData = []; // Almacena los datos de inventario en formato JSON
+    //modal de agregar inventario --------------------------------------------------------------------------
+    const serialMap = {}; 
+    const usedSerialNumbers = {}; 
+    const inventoryData = []; 
 
-    // Evento al abrir el modal de inventario
     document.getElementById('btnAbrirModalInventario').addEventListener('click', function () {
         const selectedCategories = $("input[name='categories[]']:checked")
             .map(function () {
@@ -338,6 +576,9 @@ input[type="number"] {
             return;
         }
 
+        const modalAddInventory = new bootstrap.Modal(document.getElementById('formModal'));
+        modalAddInventory.show();
+        
         $.ajax({
             url: "{{Route('filtertest')}}",
             type: "GET",
@@ -347,35 +588,31 @@ input[type="number"] {
             dataType: "json",
             success: function (response) {
                 console.log("Respuesta del servidor: ", response);
-                // Limpia el select y las estructuras globales
                 $("#serialListBox").html('<option value="">Seleccione un Serial</option>');
                 Object.keys(serialMap).forEach(key => delete serialMap[key]);
                 Object.keys(usedSerialNumbers).forEach(key => delete usedSerialNumbers[key]);
 
-                // Llena el select y actualiza el mapa asociativo
                 $.each(response, function (index, serial) {
                     $("#serialListBox").append(
                         `<option value="${serial.id}">${serial.code} - ${serial.name}</option>`
                     );
 
-                    serialMap[serial.id] = serial.next_number; // Almacena el próximo número
-                    usedSerialNumbers[serial.id] = []; // Inicializa números usados
+                    serialMap[serial.id] = serial.next_number; 
+                    usedSerialNumbers[serial.id] = []; 
                 });
 
-                // Cambiar de modal
                 bootstrap.Modal.getInstance(document.getElementById('inventoryModal')).hide();
                 new bootstrap.Modal(document.getElementById('formModal')).show();
             },
             error: function (xhr, status, error) {
-                console.error("Error al obtener los números de serie", error);
+                console.error("Error al obtener los números de serial", error);
                 toastr.error("Hubo un error. Intenta nuevamente.");
             },
         });
     });
 
-    // Evento de cambio en el select
 document.getElementById('serialListBox').addEventListener('change', function () {
-    const selectedId = this.value;  // Ahora capturamos el id
+    const selectedId = this.value; 
     const numberInfo = document.getElementById('lastNumber');
     const inventoryDescription = document.getElementById('description');
     const priceInput = document.getElementById('price');
@@ -399,7 +636,6 @@ document.getElementById('serialListBox').addEventListener('change', function () 
     }
 });
 
-// Evento para añadir un ítem
 document.getElementById('addItemButton').addEventListener('click', () => {
     const serialListBox = document.getElementById('serialListBox');
     const description = document.getElementById('description');
@@ -418,20 +654,19 @@ document.getElementById('addItemButton').addEventListener('click', () => {
             nextNumber++;
         }
 
-        usedSerialNumbers[serialId].push(nextNumber); // Agregar a usados
-        serialMap[serialId] = nextNumber + 1; // Actualizar próximo número
+        usedSerialNumbers[serialId].push(nextNumber); 
+        serialMap[serialId] = nextNumber + 1;
 
-        // Obtener el código para mostrar en la lista
-        const serialCode = $("option:selected", serialListBox).text().split(" ")[0]; // Extrae el código
+        
+        const serialCode = $("option:selected", serialListBox).text().split(" ")[0]; 
 
-        // Agregar el ítem al inventario
         const item = {
-            id: serialId,  // Enviar el id al backend
+            id: serialId, 
             number: nextNumber,
             description: descriptionText,
             price: inventoryPrice
         };
-        inventoryData.push(item); // Guardar en el arreglo JSON
+        inventoryData.push(item); 
 
         const listItem = document.createElement('li');
         listItem.classList.add('list-group-item');
@@ -440,7 +675,6 @@ document.getElementById('addItemButton').addEventListener('click', () => {
 
         confirmInventoryButton.disabled = false;
 
-        // Limpiar y resetear los campos
         serialListBox.selectedIndex = 0;
         description.value = '';
         spandiv.style.display = 'none';
@@ -455,10 +689,8 @@ document.getElementById('addItemButton').addEventListener('click', () => {
     }
 });
 
-// Botón de confirmar inventario
 document.getElementById('updateInventory').addEventListener('click', () => {
     if (inventoryData.length > 0) {
-        // Convertir el inventario en JSON
         const inventoryJson = JSON.stringify({
             items: inventoryData.map(item => ({
                 id: item.id,  // Enviar el id en lugar del código
@@ -469,18 +701,17 @@ document.getElementById('updateInventory').addEventListener('click', () => {
         });
         console.log('Inventario JSON a enviar:', inventoryJson);
         
-        // Enviar una solicitud POST con AJAX
         $.ajax({
             url: '{{route('inventoryadd.store')}}',  // Reemplaza esto con la URL de tu controlador
             type: 'POST',
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // Añade el token CSRF en el encabezado
             },
-            contentType: 'application/json',  // Establecer que el tipo de contenido es JSON
-            data: inventoryJson,  // El cuerpo de la solicitud es el inventario en formato JSON
+            contentType: 'application/json',  
+            data: inventoryJson, 
             success: function(response) {
                 console.log('Respuesta del servidor:', response);
-                // Si la respuesta es exitosa
+
                 toastr.success('Inventario confirmado correctamente.');
                 resetModalData();
                 bootstrap.Modal.getInstance(document.getElementById('formModal')).hide();
@@ -496,7 +727,6 @@ document.getElementById('updateInventory').addEventListener('click', () => {
 });
 
 
-    // Resetea el modal
     function resetModalData() {
         const serialListBox = document.getElementById('serialListBox');
         const description = document.getElementById('description');
@@ -525,7 +755,6 @@ document.getElementById('updateInventory').addEventListener('click', () => {
         Object.keys(usedSerialNumbers).forEach(key => delete usedSerialNumbers[key]);
     }
 
-    // Evento para limpiar el modal al cerrarlo
     document.addEventListener('DOMContentLoaded', function () {
         const formModal = document.getElementById('formModal');
         if (formModal) {
@@ -533,8 +762,6 @@ document.getElementById('updateInventory').addEventListener('click', () => {
         }
     });
 </script>
-
-
 
 </body>
 </html>

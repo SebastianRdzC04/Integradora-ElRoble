@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Inventory;
+use App\Models\InventoryCategory;
 use App\Models\SerialNumberType;
+use Carbon\Carbon;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -70,6 +73,69 @@ public function addInventory(Request $request)
     });
 
     // Responder con éxito
+    return;
+}
+
+public function newCategory(Request $request)
+{
+    $validated = $request->validate([
+        'category' => 'required|string|min:3|max:255|unique:inventory_categories,name',
+        'codes' => 'required|array',
+        'codes.*.code' => 'required|string|min:2|max:10|unique:serial_number_types_inventory,code',
+        'codes.*.namecode' => 'required|string|min:3|max:255',
+    ],[
+        'category.unique' => 'La categoría seleccionada ya esta registrada.',
+        'codes.*.code.unique' => 'El codigo que se ingreso ya se registro anteriormente'
+    ]);
+
+
+    DB::transaction(function () use ($validated) {
+        // Crear la categoría principal
+        $categoria = InventoryCategory::create([
+            'name' => ucfirst($validated['category']),
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
+        ]);
+    
+        foreach ($validated['codes'] as $code) {
+            SerialNumberType::create([
+                'category_id' => $categoria->id, 
+                'code' => strtoupper($code['code']),
+                'name' => ucfirst($code['namecode']),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        }
+    });
+
+    return;
+}
+public function addNewCodeOrUpdate(Request $request)
+{
+    $validated = $request->validate([
+        'category' => 'required|integer|exists:inventory_categories,id',
+        'codeinf' => 'required|array',
+        'codeinf.*.code' => 'required|string|min:2|max:10|unique:serial_number_types_inventory,code',
+        'codeinf.*.namecode' => 'required|string|min:3|max:255',
+    ],[
+        'codeinf.*.code.unique' => 'El codigo que se ingreso ya se registro anteriormente',
+        'category.exists' => 'La categoría seleccionada no esta registrada.',
+    ]);
+
+
+    DB::transaction(function () use ($validated) {
+    
+        foreach ($validated['codeinf'] as $code) {
+            SerialNumberType::create([
+                'category_id' => $validated['category'], 
+                'code' => $code['code'],
+                'name' => $code['namecode'],
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        }
+    });
+
     return;
 }
 

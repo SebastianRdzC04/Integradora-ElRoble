@@ -11,6 +11,7 @@ class InventoryCategory extends Model
 
     protected $table = 'inventory_categories';
 
+    protected $fillable = ['name', 'created_at', 'updated_at'];
     public function SerialNumberTypes()
     {
         return $this->hasMany(SerialNumberType::class, 'category_id', 'id');
