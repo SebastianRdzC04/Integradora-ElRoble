@@ -17,7 +17,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->text('comment');
-            $table->enum('status', ['active', 'inactive']);
+            $table->enum('status', ['activo', 'inactivo'])->default('inactivo');
+            $table->integer('rating')->default(5);
             $table->timestamps();
         });
     }
