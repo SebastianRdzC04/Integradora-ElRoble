@@ -29,12 +29,14 @@ class CotizacionesClientesController extends Controller
     
     public function store(Request $request)
     {
+        $request->merge(['user_id' => auth()->id()]);
+    
         if ($request->has('otro_tipo_evento') && !empty($request->input('otro_tipo_evento'))) {
             $request->merge(['type_event' => (string) $request->input('otro_tipo_evento')]);
         } else {
             $request->merge(['type_event' => (string) $request->input('type_event')]);
         }
-
+    
         $validated = $request->validate(
             [
                 'user_id' => 'nullable|exists:users,id',
@@ -175,5 +177,14 @@ class CotizacionesClientesController extends Controller
                 ->withErrors(['general' => 'Error al crear la cotización. Por favor, revisa los datos e inténtalo de nuevo.'])
                 ->withInput();
         }
+    }
+
+    public function historial()
+    {
+        $quotes = Quote::with('place')
+                       ->where('user_id', auth()->id())
+                       ->paginate(10);
+    
+        return view('historial', ['quotes' => $quotes]);
     }
 }

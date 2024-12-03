@@ -104,3 +104,58 @@
       font-size: 0.9rem;
     }
   }
+
+  .quote-card {
+    background-color: rgba(21, 58, 21, 0.89);
+    border: 2px solid white;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 10px 0;
+    color: white;
+}
+
+.quote-card.pendiente {
+    border-color: yellow;
+}
+
+.quote-card.pagada {
+    border-color: green;
+}
+
+.quote-card.pendiente-cotizacion {
+  border-color: blue;
+}
+
+.quote-card.cancelada {
+    border-color: red;
+}
+
+.quote-card h3 {
+    margin-top: 0;
+}
+
+.quote-card p {
+    margin: 5px 0;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination .page-link {
+    color: white;
+    background-color: rgba(21, 58, 21, 0.89);
+    border: 1px solid white;
+    margin: 0 5px;
+}
+
+.pagination .page-link:hover {
+    background-color: rgba(21, 58, 21, 0.7);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: rgba(21, 58, 21, 0.7);
+    border-color: white;
+}

@@ -26,6 +26,7 @@ use App\Http\Controllers\InicioClientesController;
 use App\Models\ConsumableCategory;
 use App\Models\ConsumableEventDefault;
 use App\Models\User;
+use App\Http\Controllers\PaymentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -554,6 +555,10 @@ Route::post('/servicios', [ServiciosAdminController::class, 'store'])->name('ser
 Route::get('/cotizaciones', [CotizacionesClientesController::class, 'create'])->name('cotizaciones.create');
 Route::post('cotizacionesclientes', [CotizacionesClientesController::class, 'store'])->name('cotizacionesclientes.store');
 Route::get('/inicio', [InicioClientesController::class, 'create'])->name('inicio');
+Route::get('/historial', [CotizacionesClientesController::class, 'historial'])->name('historial');
+Route::post('/pagar', [PaymentController::class, 'pay'])->name('pagar');
+Route::post('/create-payment-intent', [PaymentController::class, 'createPaymentIntent'])->name('create-payment-intent');
+Route::post('/confirm-payment', [PaymentController::class, 'confirmPayment'])->name('confirm-payment');
 
 // Si necesitas una vista para listar paquetes
 Route::get('/paquetes', [PaquetesAdminController::class, 'index'])->name('paquetes.index'); // O lo que desees
