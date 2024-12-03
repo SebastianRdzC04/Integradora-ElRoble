@@ -31,11 +31,17 @@
                         <tbody>
                             @foreach ($quotes as $quote)
                                 <tr>
-                                    <td> {{ $quote->user ? $quote->user->person->first_name : $quote->owner_name }} </td>
+                                    @if ($quote->owner_name)
+                                        <td> {{ $quote->owner_name }} </td>
+                                    @else
+                                        <td> {{ $quote->user ? $quote->user->person->first_name : $quote->owner_name }}
+                                        </td>
+                                    @endif
                                     <td> {{ $quote->type_event }} </td>
                                     <td> {{ $quote->package ? $quote->package->place->name : $quote->place->name }} </td>
                                     <td class="text-start"> {{ $quote->date }} </td>
-                                    <td> {{ date('h:ia', strtotime($quote->start_time)) }} {{date('h:ia', strtotime($quote->end_time))}} </td>
+                                    <td> {{ date('h:ia', strtotime($quote->start_time)) }}
+                                        {{ date('h:ia', strtotime($quote->end_time)) }} </td>
                                     <td> {{ $quote->package ? $quote->package->name : 'Sin paquete' }} </td>
                                     <td> {{ $quote->status }} </td>
                                     <td> {{ $quote->guest_count }} </td>

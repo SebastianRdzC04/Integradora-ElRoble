@@ -21,9 +21,19 @@
         <div class="container mt-4">
             <div class="row justify-content-center">
                 <div class="col-5 border shadow">
-                    <div>
-                        <h4>{{ $event->quote->type_event }} para {{ ($event->quote->user ? $event->quote->user->person->first_name : $event->quote->owner_name) }}</h4>
-                    </div>
+                    @if ($event->quote->owner_name)
+                        <div>
+                            <h4>{{ $event->quote->type_event }} para
+                                {{ $event->quote->owner_name }}
+                            </h4>
+                        </div>
+                    @else
+                        <div>
+                            <h4>{{ $event->quote->type_event }} para
+                                {{ $event->quote->user ? $event->quote->user->person->first_name : $event->quote->owner_name }}
+                            </h4>
+                        </div>
+                    @endif
                     <div class="d-flex justify-content-between">
                         <div>
                             <p>Lugar:
@@ -72,7 +82,8 @@
                                             <h3>Sillas</h3>
                                         </div>
                                         <div class="modal-body">
-                                            <form action="{{ route('dashboard.event.chairs', $event->id) }}" method="POST">
+                                            <form action="{{ route('dashboard.event.chairs', $event->id) }}"
+                                                method="POST">
                                                 @csrf
                                                 <div class="mb-3">
                                                     <label for="sillas" class="form-label">Cantidad de sillas</label>
