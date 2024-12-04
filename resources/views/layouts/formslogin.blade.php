@@ -71,6 +71,7 @@
 @if(session('error'))
     <script>
         toastr.error("{{ session('error') }}");
+        toastr.success("{{session('success')}}");
     </script>
 @endif
 

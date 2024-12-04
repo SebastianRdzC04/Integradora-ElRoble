@@ -11,9 +11,9 @@
     <div class="container">
         <div class="row">
             <div class="col-6">
-                <a href="{{ route('consumables.create') }}" class="btn btn-primary">Agregar</a>
             </div>
             <div class="col-6 d-flex justify-content-end">
+                <a href="{{ route('consumables.create') }}" class="btn btn-primary">Agregar</a>
                 <a href="" type="button" class="btn btn-primary text-end" data-bs-toggle="modal"
                     data-bs-target="#modalPredeterminados">Ver predeterminados</a>
             </div>
@@ -80,116 +80,130 @@
                                     <td class="text-center"> {{ $item->minimum_stock }}{{ $item->unit }} </td>
                                     <td class="text-center"> {{ $item->stock }}{{ $item->unit }} </td>
                                     <td class="text-center"> {{ $item->maximum_stock }}{{ $item->unit }} </td>
-                                    <td class="text-center">
-                                        <div class="d-flex">
-                                            <button class="btn btn-outline-primary p-1 m-0" data-bs-toggle="modal"
-                                                data-bs-target="#agregarModal{{ $item->id }}">
-                                                <i class="bi bi-plus-circle-fill"></i>
-                                            </button>
-                                            <div class="modal fade" id="agregarModal{{ $item->id }}">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h3>Agregar stock</h3>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <form
-                                                                action="{{ route('dashboard.consumable.add.stock', $item->id) }}"
-                                                                method="POST">
-                                                                @csrf
-                                                                <div class="mb-3">
-                                                                    <label class="form-label"
-                                                                        for="cantidad">Cantidad</label>
-                                                                    <input class="form-control" type="number"
-                                                                        name="cantidad" id="cantidad">
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label for="precio">Precio</label>
-                                                                    <input class="form-control" type="number"
-                                                                        name="precio" id="precio">
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <button class="btn btn-primary">Enviar</button>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <a class="btn btn-outline-primary p-1 m-0" href="" data-bs-toggle="modal" data-bs-target="#editModal{{$item->id}}"><i
-                                                    class="bi bi-pencil-square"></i></a>
-                                            <div class="modal fade" id="editModal{{$item->id}}">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h4>Editar Consumible</h4>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <form action="{{route('dashboard.consumable.edit', $item->id)}}" method="POST">
-                                                                @csrf
-                                                                <div class="mb-3">
-                                                                    <label class="form-label" for="nombre">Editar Nombre</label>
-                                                                    <input class="form-control" type="text" name="nombre_edit" id="nombre" value="{{$item->name}}">
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label class="form-label" for="nombre">Editar Descripcion</label>
-                                                                    <input class="form-control" type="text" name="descripcion_edit" id="descripcion_edit" value="{{$item->description}}">
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label class="form-label" for="nombre">Editar Unidades</label>
-                                                                    <input class="form-control" type="text" name="unidad_edit" id="unidad_edit" value="{{$item->unit}}">
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label class="form-label" for="nombre">Editar Stock Minimo</label>
-                                                                    <input class="form-control" type="text" name="stock_min_edit" id="stock_min_edit" value="{{$item->minimum_stock}}">
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <label class="form-label" for="nombre">Editar Stock Maximo</label>
-                                                                    <input class="form-control" type="text" name="stock_max_edit" id="stock_max_edit" value="{{$item->maximum_stock}}">
-                                                                </div>
-                                                                <div class="mb-3">
-                                                                    <button class="btn btn-primary">Enviar</button>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <form action="{{ route('dashboard.consumable.delete', $item->id) }}" method="POST">
-                                                @csrf
-                                                <button class="btn btn-outline-danger p-1 m-0">
-                                                    <i class="bi bi-trash3"></i></button>
-                                            </form>
+                                    <td class="d-flex"><select class="form-select" name="select" id="">
+                                            <option value="">Opciones</option>
+                                            <option data-bs-toggle="modal"
+                                                data-bs-target="#agregarModal{{ $item->id }}" value="">Agregar
+                                                Stock</option>
+                                            <option data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}"
+                                                value="">Editar Elemento</option>
                                             @if (!$item->consumableEventDefault)
-                                                <button class="btn btn-outline-success p-1 m-0" data-bs-toggle="modal"
-                                                    data-bs-target="#predModal{{ $item->id }}"><i
-                                                        class="bi bi-star"></i></button>
+                                                <option data-bs-toggle="modal"
+                                                    data-bs-target="#predModal{{ $item->id }}" value="">Agregar a
+                                                    Predeterminados</option>
                                             @endif
-
-
-                                            <div class="modal fade" id="predModal{{ $item->id }}">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h3>Agregar a predeterminados</h3>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <form action="{{ route('dashboard.add.consumable.default') }}"
-                                                                method="POST">
-                                                                @csrf
-                                                                <input type="hidden" name="consumable_id"
-                                                                    value="{{ $item->id }}">
-                                                                <div class="mb-3">
-                                                                    <label class="form-label" for="cantidad">Ingresa la
-                                                                        cantidad</label>
-                                                                    <input class="form-control" type="number"
-                                                                        name="cantidad" id="cantidad">
-                                                                </div>
-                                                                <div>
-                                                                    <button class="btn btn-primary">Confirmar</button>
-                                                                </div>
-                                                            </form>
-                                                        </div>
+                                            <option value="4">Eliminar</option>
+                                        </select>
+                                        <form class="eliminar-elemento {{$item->id}}" action="{{ route('dashboard.consumable.delete', $item->id) }}"
+                                            method="POST">
+                                            @csrf
+                                            <button class="btn btn-outline-danger p-1 m-0">
+                                                <i class="bi bi-trash3"></i></button>
+                                        </form>
+                                        <div class="modal fade" id="editModal{{ $item->id }}">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h4>Editar Consumible</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="{{ route('dashboard.consumable.edit', $item->id) }}"
+                                                            method="POST">
+                                                            @csrf
+                                                            <div class="mb-3">
+                                                                <label class="form-label" for="nombre">Editar
+                                                                    Nombre</label>
+                                                                <input class="form-control" type="text"
+                                                                    name="nombre_edit" id="nombre"
+                                                                    value="{{ $item->name }}">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label" for="nombre">Editar
+                                                                    Descripcion</label>
+                                                                <input class="form-control" type="text"
+                                                                    name="descripcion_edit" id="descripcion_edit"
+                                                                    value="{{ $item->description }}">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label" for="nombre">Editar
+                                                                    Unidades</label>
+                                                                <input class="form-control" type="text"
+                                                                    name="unidad_edit" id="unidad_edit"
+                                                                    value="{{ $item->unit }}">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label" for="nombre">Editar Stock
+                                                                    Minimo</label>
+                                                                <input class="form-control" type="text"
+                                                                    name="stock_min_edit" id="stock_min_edit"
+                                                                    value="{{ $item->minimum_stock }}">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label" for="nombre">Editar Stock
+                                                                    Maximo</label>
+                                                                <input class="form-control" type="text"
+                                                                    name="stock_max_edit" id="stock_max_edit"
+                                                                    value="{{ $item->maximum_stock }}">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <button class="btn btn-primary">Enviar</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal fade" id="predModal{{ $item->id }}">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h3>Agregar a predeterminados</h3>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="{{ route('dashboard.add.consumable.default') }}"
+                                                            method="POST">
+                                                            @csrf
+                                                            <input type="hidden" name="consumable_id"
+                                                                value="{{ $item->id }}">
+                                                            <div class="mb-3">
+                                                                <label class="form-label" for="cantidad">Ingresa la
+                                                                    cantidad</label>
+                                                                <input class="form-control" type="number"
+                                                                    name="cantidad" id="cantidad">
+                                                            </div>
+                                                            <div>
+                                                                <button class="btn btn-primary">Confirmar</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal fade" id="agregarModal{{ $item->id }}">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h3>Agregar stock</h3>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form
+                                                            action="{{ route('dashboard.consumable.add.stock', $item->id) }}"
+                                                            method="POST">
+                                                            @csrf
+                                                            <div class="mb-3">
+                                                                <label class="form-label" for="cantidad">Cantidad</label>
+                                                                <input class="form-control" type="number"
+                                                                    name="cantidad" id="cantidad">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="precio">Precio</label>
+                                                                <input class="form-control" type="number" name="precio"
+                                                                    id="precio">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <button class="btn btn-primary">Enviar</button>
+                                                            </div>
+                                                        </form>
                                                     </div>
                                                 </div>
                                             </div>
@@ -208,6 +222,31 @@
 @endsection
 
 @section('scripts')
+    <script>
+        const selects = document.querySelectorAll('.form-select');
+
+        selects.forEach(select => {
+            select.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                if (selectedOption.value === '4') {
+                    //buscar dentro de su row. un formulario con la clase eliminar-elemento
+                    const form = this.parentElement.querySelector('.eliminar-elemento');
+                    form.submit();
+                    return;
+                    
+                }
+                const modalId = selectedOption.getAttribute('data-bs-target');
+
+                if (modalId) {
+                    const modal = new bootstrap.Modal(document.querySelector(modalId));
+                    modal.show();
+                }
+
+                // Resetear el select después de abrir el modal
+                this.selectedIndex = 0;
+            });
+        });
+    </script>
 
     <script src="{{ asset('js/dashboard/consumables.js') }}"></script>
 @endsection
