@@ -54,7 +54,7 @@
                     <a class="nav-link" href=""></a>
                 </li>
                 @if (auth()->check())
-                    @if (auth()->user()->roles->contains('id', 3))
+                    @if (auth()->user()->roles->contains('id', 2))
                         <li class="nav-item">
                             <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
                         </li>
