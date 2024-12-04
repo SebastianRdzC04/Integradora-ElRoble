@@ -177,25 +177,65 @@ class RegisterUserController extends Controller
         return Socialite::driver('facebook')->redirect();
     }
 
-    public function handleFacebookCallback()
-    {
-        $user = Socialite::driver('facebook')->user();
-        // esto es para facebook solo para validar que ese usuario exista
-        $existingUser = User::where('facebook_id', $user->getId())->first();
+    public function storeFacebook(Request $request)
+{
+    //estos son los datos que socialite me regreso de facebook en el LoginController
+    $user = session('facebook');
 
-        if ($existingUser) {
-            Auth::login($existingUser, true);
-        } else {
-            $newUser = User::create([
-                'name' => $user->getName(),
-                'email' => $user->getEmail(),
-                'facebook_id' => $user->getId(),
-                'avatar' => $user->getAvatar(),
-            ]);
-            Auth::login($newUser, true);
-        }
+    $validatedData = $request->validate([
+        'day' => 'required|integer|min:1|max:31',
+        'month' => 'required|integer|min:1|max:12',
+        'year' => 'required|integer|min:1900|max:' . date('Y'),
+        'gender' => 'required|in:Masculino,Femenino,Otro',
+        'phone' => 'required|string|size:10|regex:/^[0-9]+$/',
+    ]);
 
-        return redirect()->route('home');  
+    $validatedData = $this->validateAndProcessBirthdate($validatedData);
+
+    if ($validatedData instanceof RedirectResponse) {
+        return $validatedData;
     }
+
+    $userExist = User::where('external_id', $user->id)
+                    ->where('external_auth', 'facebook')
+                    ->first();
+
+    if ($userExist) {
+        Auth::login($userExist);
+        session()->forget('user');
+        return redirect()->intended(RouteServiceProvider::HOME);
+    } else {
+        DB::transaction(function () use ($user, $validatedData) {
+            $personNew = Person::create([
+                'first_name' => $user->user['first_name'],  
+                'last_name' => $user->user['last_name'],    
+                'gender' => $validatedData['gender'],      
+                'phone' => $validatedData['phone'],         
+                'birthdate' => $validatedData['birthdate'], 
+            ]);
+
+            $userNew = User::create([
+                'email' => $user->email,                   
+                'avatar' => $user->avatar,                 
+                'external_id' => $user->id,                
+                'external_auth' => 'facebook',             
+                'person_id' => $personNew->id,             
+                'email_verified_at' => Carbon::now(),      
+            ]);
+
+            $role = Rol::where('name', 'user')->first();
+            if ($role) {
+                $userNew->roles()->attach($role->id);
+            }
+
+            Auth::login($userNew);
+            session()->forget('user');
+        });
+    }
+
+    session()->forget('facebook');
+    
+    return redirect()->intended(RouteServiceProvider::HOME);
+}
 
 }

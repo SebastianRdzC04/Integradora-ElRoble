@@ -16,7 +16,7 @@ use Laravel\Socialite\Facades\Socialite;
 Route::get('auth/facebook', [RegisterUserController::class, 'redirectToFacebook'])->name('login.facebook');
 Route::get('/auth/facebook/callback', [LoginController::class, 'handleFacebookCallback'])->name('facebook.callback');
 Route::get('/auth/facebook/datacomplete', [LoginController::class, 'createdatacompletefacebook'])->name('datafacebook');
-Route::post('/registerfacebook/store', [LoginController::class, 'storeFacebook'])->name('registerfacebook.store');
+Route::post('/registerfacebook/store', [RegisterUserController::class, 'storeFacebook'])->name('registerfacebook.store');
 
 //esta es la vista basica de google donde te pide la cuenta
 Route::get('/login-google', function () {
