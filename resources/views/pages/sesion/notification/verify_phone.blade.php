@@ -1,7 +1,7 @@
 @extends('layouts.formslogin')
 
 @section('title')
-    Verificación de correo
+    Verificación de telefono
 @endsection
 
 @section('link')
@@ -32,55 +32,62 @@
 @section('form')
 <a href="/">Verificar más tarde</a>
 
-<form id="resendForm" action="{{ route('verification.send') }}" method="POST">
+<form id="resendForm" action="{{ route('verify.otp') }}" method="POST">
     @csrf
     <label for="code">Código de verificación:</label>
 
     <div class="form-floating mb-3">
         <div class="row d-flex">
             <div class="col-2">
-                <input type="text" name="code1" id="code1" placeholder="#" pattern="\d*" class="form-control code-input" maxlength="1" required autocomplete="off" oninput="moveFocus(1)">
+                <input type="number" name="code1" id="code1" placeholder="#" class="form-control code-input" maxlength="1" required autocomplete="off" inputmode="numeric" oninput="moveFocus(1)">
             </div>
             <div class="col-2">
-                <input type="text" name="code2" id="code2" placeholder="#" pattern="\d*" class="form-control code-input" maxlength="1" required autocomplete="off" oninput="moveFocus(2)">
+                <input type="number" name="code2" id="code2" placeholder="#" class="form-control code-input" maxlength="1" required autocomplete="off" inputmode="numeric" oninput="moveFocus(2)">
             </div>
             <div class="col-2">
-                <input type="text" name="code3" id="code3" placeholder="#" pattern="\d*" class="form-control code-input" maxlength="1" required autocomplete="off" oninput="moveFocus(3)">
+                <input type="number" name="code3" id="code3" placeholder="#" class="form-control code-input" maxlength="1" required autocomplete="off" inputmode="numeric" oninput="moveFocus(3)">
             </div>
             <div class="col-2">
-                <input type="text" name="code4" id="code4" placeholder="#" pattern="\d*" class="form-control code-input" maxlength="1" required autocomplete="off" oninput="moveFocus(4)">
+                <input type="number" name="code4" id="code4" placeholder="#" class="form-control code-input" maxlength="1" required autocomplete="off" inputmode="numeric" oninput="moveFocus(4)">
             </div>
             <div class="col-2">
-                <input type="text" name="code5" id="code5" placeholder="#" pattern="\d*" class="form-control code-input" maxlength="1" required autocomplete="off" oninput="moveFocus(5)">
+                <input type="number" name="code5" id="code5" placeholder="#" class="form-control code-input" maxlength="1" required autocomplete="off" inputmode="numeric" oninput="moveFocus(5)">
             </div>
             <div class="col-2">
-                <input type="text" name="code6" id="code6" placeholder="#" pattern="\d*" class="form-control code-input" maxlength="1" required autocomplete="off" oninput="moveFocus(6)">
+                <input type="number" name="code6" id="code6" placeholder="#" class="form-control code-input" maxlength="1" required autocomplete="off" inputmode="numeric" oninput="moveFocus(6)">
             </div>
         </div>
     </div>
 
     <div class="d-flex col mb-3">
         <div class="col-6">
-            <button id="btnVerifyEmail" class="btn">Verificar con email</button>
+            <button id="btnVerifyEmail" class="btn"></a> Verificar con email</button>
         </div>
         <div class="col-6">
             <button type="button" class="btn" id="resendButton" style="background-color: #af6400b3;">
                 <span id="countdownText">Reenviar código de verificación</span>
             </button>
+        </form>
+            <form method="POST" action="{{route('send.otp')}}">
+            @csrf
+            <button type="submit" class="btn">enviar mensaje</button>
+            </form>
         </div>
     </div>
-</form>
+@endsection
 @section('script')
 <script>
+
+    verifyEmailButton.addEventListener('click', function (event) {
+        event.preventDefault();
+
     const waitTime = 60;
 
     const resendButton = document.getElementById('resendButton');
     const countdownText = document.getElementById('countdownText');
 
-    // Cargar el tiempo final desde el localStorage
     let savedEndTime = localStorage.getItem('phoneTimerEndTime');
 
-    // Función para iniciar el temporizador
     function startTimer() {
         const endTime = Date.now() + waitTime * 1000;
         localStorage.setItem('phoneTimerEndTime', endTime);
@@ -88,7 +95,6 @@
         updateCountdown();
     }
 
-    // Actualizar el contador
     function updateCountdown() {
         const now = Date.now();
         const timeLeft = Math.max(0, Math.floor((savedEndTime - now) / 1000));

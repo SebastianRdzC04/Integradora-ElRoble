@@ -27,7 +27,6 @@ class RegisterUserController extends Controller
     // aqui se procesa la edad y el birthdate para que no se repite codigo 
     protected function validateAndProcessBirthdate($data)
     {
-        // Validación de fecha de nacimiento
         $day = $data['day'];
         $month = $data['month'];
         $year = $data['year'];
@@ -37,18 +36,16 @@ class RegisterUserController extends Controller
                                    ->with('error', 'Hubo un problema con la fecha de nacimiento');
         }
     
-        // Crear la fecha de nacimiento y calcular la edad
         $birthdate = Carbon::createFromDate($year, $month, $day);
         $data['birthdate'] = $birthdate;
         $age = $birthdate->age;
     
-        // Asegurarse que el usuario tenga al menos 18 años
         if ($age < 18) {
             return redirect()->back()->withErrors(['birthdate' => 'Debes tener al menos 18 años para registrarte'])
                                    ->with('error', 'Eres menor de 18');
         }
     
-        return $data;  // Devolver los datos con la edad calculada
+        return $data;  
     }
 
     public function store(Request $request)
@@ -120,7 +117,6 @@ class RegisterUserController extends Controller
         'year' => 'required|integer|min:1900|max:' . date('Y'),
         'gender' => 'required|in:Masculino,Femenino,Otro',
         'phone' => 'required|string|size:10|regex:/^[0-9]+$/',
-        // esto es por si el se presiona el checkbox de solo con google aunque modifiquen el front aqui se valida
     ]);
 
     
@@ -202,5 +198,4 @@ class RegisterUserController extends Controller
         return redirect()->route('home');  // Redirige a la página principal o donde desees
     }
 
-    //Aqui esta X o Twitter como lo llamen ---------------------------------------------
 }

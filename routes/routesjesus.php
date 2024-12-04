@@ -10,10 +10,11 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\EmployeeEventController;
 use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\VerifyPhoneController;
 use App\Models\InventoryCategory;
 use App\Models\SerialNumberType;
 use Laravel\Socialite\Facades\Socialite;
- 
+
 //Aqui esta el login de Facebook
 Route::get('auth/facebook', [RegisterUserController::class, 'redirectToFacebook'])->name('login.facebook');
 Route::get('auth/facebook/callback', [RegisterUserController::class, 'handleFacebookCallback'])->name('register.facebook');
@@ -89,11 +90,6 @@ Route::middleware('guest')->group(function()
     Route::post('/login', [LoginController::class, 'store'])->name('login.store');
 });
 
-Route::post('/email/verification-notification', [VerifyEmailController::class, 'resendVerificationEmail'])
-->middleware('custom.throttle:1,2,verification.notice')->name('verification.send');
-
-Route::get('/email/verify/phone', [VerifyEmailController::class, 'showVerificationPhoneView'])
-        ->name('phoneverify.create');
 
 Route::middleware('auth')->group(function(){
     // Ruta para el enlace de verificación del email
@@ -102,6 +98,8 @@ Route::middleware('auth')->group(function(){
         ->name('verification.verify');     
 
     // Ruta para reenviar el enlace de verificación con control de tiempo
+    Route::post('/email/verification-notification', [VerifyEmailController::class, 'resendVerificationEmail'])
+    ->middleware('custom.throttle:1,2,verification.notice')->name('verification.send');    
 
     // Ruta para mostrar la vista de verificación de correo
     Route::get('/email/verify', [VerifyEmailController::class, 'showVerificationEmailView'])
@@ -143,11 +141,11 @@ Route::get('/prueba3',function () {
     return view('pages.inventory.inventory_create',compact('serials'));
 })->name('inventory');
 
-
 Route::get('/inventory/consult/number' ,[InventoryController::class,'filterDataCategories'])->name('filtertest');
 Route::post('/add/category', [InventoryController::class,'newCategory'])->name('newcategory.store');
 Route::post('/add/inventory',[InventoryController::class,'addInventory'])->name('inventoryadd.store');
 Route::post('/add/code',[InventoryController::class,'addNewCodeOrUpdate'])->name('codeadd.store');
 
-
-Route::view('/prueba1','pages.sesion.notification.verify_phone');
+Route::get('/phone/verify',[VerifyPhoneController::class, 'create'])->name('verifyphone.get');
+Route::post('/send-otp', [VerifyPhoneController::class, 'sendOtp'])->name('send.otp');
+Route::post('/verify-otp', [VerifyPhoneController::class, 'verifyOtp'])->name('verify.otp'); 
