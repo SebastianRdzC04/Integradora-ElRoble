@@ -38,8 +38,7 @@ class VerifyEmailController extends Controller
     
         $user->sendEmailVerificationNotification();
     
-        session()->flash('success', 'Enlace de verificación reenviado.');
-        return redirect()->url('/prueba3');
+        return redirect()->back()->with('success', 'Enlace de verificación reenviado.');
     }
 
     public function showVerificationEmailView()

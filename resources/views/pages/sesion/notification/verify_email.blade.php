@@ -19,50 +19,73 @@
 @endsection
 
 @section('form')
-    <div id="countdownContainer">
-        <p id="countdownText">Puedes reenviar el enlace en: <span id="countdown"></span></p>
-    </div>
 
-    <a href="/">Verificar mas tarde</a>
+    <a href="/">Verificar más tarde</a>
     
-    <form id="resendForm" action="{{ route('verification.send') }}" method="POST" style="display: none;">
+    <form id="resendForm" action="{{ route('verification.send') }}" method="POST">
         @csrf
-        
-        <div class="d-grid mb-3">
-            <button type="submit" class="btn" id="resendButton" style="background-color: #af6400b3;">Reenviar enlace de verificación</button>
+
+        <div class="d-flex col mb-3">
+            <div class="col-6">
+                <button id="btnVerifyPhone" class="btn">Verificar con teléfono</button>
+            </div>
+            <div class="col-6">
+                <button type="submit" class="btn" id="resendButton" style="background-color: #af6400b3;">
+                    <span id="countdownText">Reenviar código de verificación</span>
+                </button>
+            </div>
         </div>
     </form>
+
 @endsection
 
 @section('script')
-    <script>
-        const waitTime = {{ session('waitTime') ?? 120 }}; // Tiempo de espera en segundos (por defecto 120 segundos)
-        const countdownText = document.getElementById('countdown');
-        const resendForm = document.getElementById('resendForm');
-        const resendButton = document.getElementById('resendButton');
+<script>
+    const waitTime = 60;
 
-        // Obtener el tiempo de finalización del contador desde localStorage o calcularlo
-        const endTime = localStorage.getItem('endTime') || (Date.now() + waitTime * 1000);
-        localStorage.setItem('endTime', endTime);
+    const resendButton = document.getElementById('resendButton');
+    const countdownText = document.getElementById('countdownText');
 
-        function updateCountdown() {
-            const now = Date.now();
-            const timeLeft = Math.max(0, Math.floor((endTime - now) / 1000));
+    let savedEndTime = localStorage.getItem('emailTimerEndTime');
 
-            // Mostrar el tiempo restante
-            countdownText.textContent = `${Math.floor(timeLeft / 60)}:${String(timeLeft % 60).padStart(2, '0')}`;
-
-            // Habilitar el botón cuando el tiempo haya terminado
-            if (timeLeft <= 0) {
-                clearInterval(countdownInterval);
-                localStorage.removeItem('endTime');
-                resendForm.style.display = 'block';
-                countdownText.textContent = 'Ya puedes reenviar el enlace de verificación.';
-            }
-        }
-
-        // Actualizar el contador cada segundo
-        const countdownInterval = setInterval(updateCountdown, 1000);
+    function startTimer() {
+        const endTime = Date.now() + waitTime * 1000;
+        localStorage.setItem('emailTimerEndTime', endTime);
+        savedEndTime = endTime;
         updateCountdown();
-    </script>
+    }
+
+    function updateCountdown() {
+        const now = Date.now();
+        const timeLeft = Math.max(0, Math.floor((savedEndTime - now) / 1000));
+
+        if (timeLeft > 0) {
+            resendButton.disabled = true;
+            countdownText.textContent = `Siguiente reenvío... (${Math.floor(timeLeft / 60)}:${String(timeLeft % 60).padStart(2, '0')})`;
+        } else {
+            clearInterval(countdownInterval);
+            resendButton.disabled = false;
+            countdownText.textContent = 'Reenviar código de verificación';
+            localStorage.removeItem('emailTimerEndTime');
+        }
+    }
+
+    resendButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        if (!localStorage.getItem('emailTimerEndTime')) {
+            startTimer();
+        } else {
+            console.log("Temporizador ya activo, espera a que termine.");
+        }
+        document.getElementById('resendForm').submit();
+    });
+
+    if (savedEndTime) {
+        updateCountdown();
+    } else {
+        countdownText.textContent = 'Reenviar código de verificación';
+    }
+
+    const countdownInterval = setInterval(updateCountdown, 1000);
+</script>
 @endsection
