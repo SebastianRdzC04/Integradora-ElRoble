@@ -17,6 +17,7 @@ class EventSeeder extends Seeder
         // Get quotes that are 'pagada' status
         $quotes = Quote::where('status', 'pagada')->where('id', '!=', 1)->get();
 
+        // Crear evento inicial
         Event::create([
             'quote_id' => 1,
             'user_id' => 1,
@@ -38,8 +39,8 @@ class EventSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now()
         ]);
-        
 
+        // Crear eventos para cada cotización pagada
         foreach ($quotes as $quote) {
             $total_price = $quote->estimated_price;
             $advance = $total_price * 0.30;
@@ -52,7 +53,7 @@ class EventSeeder extends Seeder
             Event::create([
                 'quote_id' => $quote->id,
                 'user_id' => $quote->user_id,
-                'date' => $faker->dateTimeBetween('now', '+6 months')->format('Y-m-d'),
+                'date' => $quote->date, // Usar la fecha de la cotización original
                 'status' => 'pendiente',
                 'estimated_start_time' => $quote->start_time,
                 'estimated_end_time' => $quote->end_time,
@@ -71,6 +72,5 @@ class EventSeeder extends Seeder
                 'updated_at' => now()
             ]);
         }
-        $events = Event::all();
     }
 }

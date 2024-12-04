@@ -717,7 +717,7 @@ document.getElementById('updateInventory').addEventListener('click', () => {
                 bootstrap.Modal.getInstance(document.getElementById('formModal')).hide();
             },
             error: function(xhr, status, error) {
-                console.error('Error al enviar los datos:', error);
+                console.log("Response Text:", xhr.responseText);
                 toastr.error('Hubo un problema al confirmar el inventario. Intenta nuevamente.');
             }
         });

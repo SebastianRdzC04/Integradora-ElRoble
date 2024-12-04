@@ -47,6 +47,12 @@
                                     <td> {{ $quote->guest_count }} </td>
                                     </td>
                                     <td>
+                                        <select name="" id="">
+                                            <option value="">Opciones</option>
+                                            <option value="">Ver Detalles</option>
+                                            <option value="">Ver Servicios</option>
+                                            <option value="">Eliminar</option>
+                                        </select>
                                         <div class="">
                                             @if ($quote->status == 'pendiente' || $quote->status == 'pendiente cotizacion')
                                                 <a class="btn btn-outline-primary p-1 m-0"
