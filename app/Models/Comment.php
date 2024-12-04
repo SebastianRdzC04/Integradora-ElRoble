@@ -19,6 +19,7 @@ class Comment extends Model
         'comment',
         'status',
         'rating',
+        'anonymous',
     ];
 
     /**

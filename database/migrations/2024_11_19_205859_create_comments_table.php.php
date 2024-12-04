@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('comment');
             $table->enum('status', ['activo', 'inactivo'])->default('inactivo');
             $table->integer('rating')->default(5);
+            $table->boolean('anonymous')->default(false);
             $table->timestamps();
         });
     }
