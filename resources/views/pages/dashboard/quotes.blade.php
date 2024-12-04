@@ -47,24 +47,17 @@
                                     <td> {{ $quote->guest_count }} </td>
                                     </td>
                                     <td>
-                                        <select name="" id="">
+                                        <select class="form-select" name="" id="">
                                             <option value="">Opciones</option>
-                                            <option value="">Ver Detalles</option>
-                                            <option value="">Ver Servicios</option>
+                                            @if ($quote->status == 'pendiente' || $quote->status == 'pendiente cotizacion')
+                                                <option value="{{ route('dashboard.quote', $quote->id) }}">Ver Detalles
+                                                </option>
+                                            @endif
+                                            <option data-bs-toggle="modal" data-bs-target="#modal{{ $quote->id }}"
+                                                value="">Ver Servicios</option>
                                             <option value="">Eliminar</option>
                                         </select>
                                         <div class="">
-                                            @if ($quote->status == 'pendiente' || $quote->status == 'pendiente cotizacion')
-                                                <a class="btn btn-outline-primary p-1 m-0"
-                                                    href="{{ route('dashboard.quote', $quote->id) }}"><i
-                                                        class="bi bi-pencil-square"></i></a>
-                                            @endif
-                                            <a class="btn btn-outline-danger p-1 m-0" href=""><i
-                                                    class="bi bi-trash3"></i></a>
-                                            <button type="button" class="btn btn-outline-primary p-1 m-0"
-                                                data-bs-toggle="modal" data-bs-target="#modal{{ $quote->id }}">
-                                                <i class="bi bi-three-dots"></i>
-                                            </button>
                                             <div class="modal fade" id="modal{{ $quote->id }}" tabindex="-1"
                                                 aria-labelledby="modalLabel{{ $quote->id }}" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -156,6 +149,31 @@
 @endsection
 
 @section('scripts')
+    <script>
+        const selects = document.querySelectorAll('.form-select');
+
+        selects.forEach(select => {
+            select.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const optionValue = selectedOption.value;
+
+                if (optionValue && optionValue.includes('dashboard/quotes')) {
+                    window.location.href = optionValue;
+                    return;
+                }
+
+                const modalId = selectedOption.getAttribute('data-bs-target');
+
+                if (modalId) {
+                    const modal = new bootstrap.Modal(document.querySelector(modalId));
+                    modal.show();
+                }
+
+                // Resetear el select después de abrir el modal
+                this.selectedIndex = 0;
+            });
+        });
+    </script>
 
     <script src="{{ asset('js/dashboard/quotes.js') }}"></script>
 

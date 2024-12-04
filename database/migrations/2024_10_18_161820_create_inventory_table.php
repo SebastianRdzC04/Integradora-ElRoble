@@ -18,9 +18,8 @@ return new class extends Migration
             $table->foreignId('serial_number_type_id')->constrained('serial_number_types_inventory')->onDelete('cascade');
             $table->integer('number');
             $table->string('description', 100);
-            $table->float('price', 5, 2);
-            $table->enum('status', ['disponible', 'no disponible', 'en reparacion', 'en mantenimiento', 'dado de baja'])->default('disponible');
-            $table->string('details', 100)->default('Sin detalles');
+            $table->float('price', 6, 2);
+            $table->enum('status', ['disponible', 'no disponible'])->default('disponible');
             $table->timestamps();
         });
     }

@@ -85,6 +85,26 @@ Route::middleware('empleado')->group(function () {
 
 
 Route::middleware('admin')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('dashboard/event/current', function () {
+        $event = Event::where('date', Carbon::now()->format('Y-m-d'))->where('status', '!=', 'Finalizado')->first();
+        if ($event) {
+            session(['event' => $event]);
+            return view('pages.dashboard.eventosAdmin', compact('event'));
+        }
+        return redirect()->route('dashboard');
+    })->name('dashboard.event.now');
+
+    Route::get('dashboard/packages', function () {
+        $packages = Package::all();
+        return view('pages.dashboard.packages', compact('packages'));
+    })->name('dashboard.packages');
+
+    Route::get('dashboard/services', function () {
+        $services = Service::all();
+        return view('pages.dashboard.services', compact('services'));
+    })->name('dashboard.services');
     Route::get('dashboard/inventory', function () {
         $inventory = Inventory::all();
         $consumableRecords = ConsumableRecord::all();
@@ -102,7 +122,7 @@ Route::middleware(['auth' ,'superadmin'])->group(function () {
         ]);
         $year = $request->year;
         $ingresosPorMes = array_fill(0, 12, 0);
-        Event::where('status', 'Pendiente')
+        Event::where('status', 'Finalizado')
             ->whereYear('date', $year)
             ->get()
             ->each(function($event) use (&$ingresosPorMes) {
@@ -117,7 +137,7 @@ Route::middleware(['auth' ,'superadmin'])->group(function () {
         $events = Event::where('status', 'Pendiente')->orWhere('status', 'Finalizado')->get();
         $paquetes = Package::all();
         $ingresosPorMes = array_fill(0, 12, 0);
-        Event::where('status', 'Pendiente')
+        Event::where('status', 'Finalizado')
             ->whereYear('date', Carbon::now()->year)
             ->get()
             ->each(function($event) use (&$ingresosPorMes) {
@@ -144,7 +164,7 @@ Route::middleware(['auth' ,'superadmin'])->group(function () {
             ];
         }
         $yearActual = Carbon::now()->year;
-        $eventsThisYear = Event::whereYear('date', $yearActual)->get();
+        $eventsThisYear = Event::whereYear('date', $yearActual)->where('status', '!=', 'Cancelado')->get();
         foreach ($eventsThisYear as $event) {
             if ($event->quote->package_id == null) {
                 $eventos_sinPaquete++;
@@ -485,6 +505,30 @@ Route::middleware(['auth' ,'superadmin'])->group(function () {
         $users = User::all();
         return view('pages.dashboard.users', compact('users'));
     })->name('dashboard.users');
+
+    Route::post('dashboard/inventory/edit/{id}', function ($id, Request $request){
+        $inventory = Inventory::find($id);
+        $request->validate([
+            'description' => 'required|string',
+            'status' => 'required|string',
+        ]);
+        if ($inventory){
+            $inventory->status = $request->status;
+            $inventory->description = $request->description;
+            $inventory->save();
+            return redirect()->back()->with('success', 'si se edito banda');
+        }
+        return redirect()->back()->with('error', 'No se encontro banda');
+    })->name('dashboard.inventory.edit');
+
+    Route::post('dashboard/inventory/delete/{id}', function ($id){
+        $inventory = Inventory::find($id);
+        if ($inventory){
+            $inventory->delete();
+            return redirect()->back()->with('success', 'si se elimino banda');
+        }
+        return redirect()->back()->with('error', 'No se encontro banda');
+    })->name('dashboard.inventory.delete');
 });
 
 
