@@ -48,10 +48,10 @@ class QuoteSeeder extends Seeder
         };
 
         // 100 cotizaciones pagadas/canceladas (Enero-Noviembre 2024)
-        for ($i = 1; $i <= 100; $i++) {
+        for ($i = 1; $i <= 390; $i++) {
             $times = $getEventTimes();
             $estimated_price = $faker->numberBetween(45000, 80000);
-            $date = $getUniqueDate('2024-01-01', '2024-11-30');
+            $date = $getUniqueDate('2022-01-01', '2024-11-30');
             
             $status = 'cancelada';
             if ($faker->boolean(30) && !$paidDates->contains($date)) {
