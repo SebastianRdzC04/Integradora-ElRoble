@@ -21,7 +21,6 @@
                                 <th class="text-center">No.Serie</th>
                                 <th class="text-center">Descripcion</th>
                                 <th class="text-center">Estado</th>
-                                <th class="text-center">Detalles</th>
                                 <th class="text-center">Precio</th>
                                 <th class="text-center">Acciones</th>
                             </tr>
@@ -32,7 +31,6 @@
                                     <td class="text-center">{{ $item->SerialType->code }}-{{ $item->number }}</td>
                                     <td class="text-center"> {{ $item->description }} </td>
                                     <td class="text-center"> {{ $item->status }} </td>
-                                    <td class="text-center"> {{ $item->details }} </td>
                                     <td class="text-center">${{ $item->price }}</td>
                                     <td>
                                         <select class="form-select" name="select" id="">

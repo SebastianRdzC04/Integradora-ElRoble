@@ -122,7 +122,7 @@ Route::middleware(['auth' ,'superadmin'])->group(function () {
         ]);
         $year = $request->year;
         $ingresosPorMes = array_fill(0, 12, 0);
-        Event::where('status', 'Pendiente')
+        Event::where('status', 'Finalizado')
             ->whereYear('date', $year)
             ->get()
             ->each(function($event) use (&$ingresosPorMes) {

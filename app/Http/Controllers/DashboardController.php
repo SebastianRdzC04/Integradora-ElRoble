@@ -32,6 +32,7 @@ class DashboardController extends Controller
         $currentEvent = Event::where('date', date('Y-m-d'))->where('status', '!=', 'Finalizado')->first();
         // $currentEvent = Event::where('date', date('Y-m-d'))->first();
         $fullQuoteDates = Quote::selectRaw('date, count(*) as count')
+        ->whereIn('status', ['pendiente', 'pendiente cotizacion'])
         ->groupBy('date')
         ->having('count', '>=', 3)
         ->pluck('date'); 
