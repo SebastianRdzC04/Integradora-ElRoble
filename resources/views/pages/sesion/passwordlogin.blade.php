@@ -31,9 +31,9 @@ Iniciar Sesión
                         </button>
                     </div>
 
-                    <div class="form-floating mb-3">
+                    <div class="form-floating d-flex mb-3">
                         <input type="checkbox" id="remember" name="remember">
-                        <label for="remember">Recuerdame</label>
+                        <p for="remember">Recuerdame</p>
                     </div>
 
                     <a href="{{route('password.request')}}">¿Olvidate la contraseña?</a>
