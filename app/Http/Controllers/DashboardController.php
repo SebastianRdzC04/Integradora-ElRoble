@@ -6,7 +6,6 @@ use App\Models\Consumable;
 use App\Models\Event;
 use App\Models\Quote;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 
 class DashboardController extends Controller

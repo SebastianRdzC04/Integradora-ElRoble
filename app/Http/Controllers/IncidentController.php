@@ -19,7 +19,7 @@ class IncidentController extends Controller
 {
     public function create()
     {
-        return view('pages.people.employee.report_incidents');
+        return view('pages.inventory.report_incidents');
     }
 
     public function saveItems(Request $request)
@@ -78,7 +78,7 @@ class IncidentController extends Controller
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
                     $path = $image->store('event_images', 's3');
-
+                    // guardamos en el s3 de Amazon 
                     Storage::disk('s3')->setVisibility($path, 'public');
 
                     IncidentImage::create([

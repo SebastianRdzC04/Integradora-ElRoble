@@ -101,6 +101,10 @@
                 <div class="alert alert-success" role="alert">
                     {{ session('success') }}
                 </div>
+            @elseif(session('error'))
+                <div class="alert alert-success" role="alert">
+                    {{ session('error') }}
+                </div>
             @endif
     
             <div class="col-md-6" id="crearServicio">

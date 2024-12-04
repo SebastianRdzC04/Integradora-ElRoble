@@ -50,7 +50,9 @@ class TwilioService
         try {
             $verificationCheck = $this->client->verify->v2->services($this->serviceSid)
                 ->verificationChecks
-                ->create($otpCode, ['to' => $phoneNumber]); 
+                ->create([
+                'code' => $otpCode, 
+                'to' => $phoneNumber]); 
 
             return $verificationCheck->status;
         } catch (TwilioException $e) {
