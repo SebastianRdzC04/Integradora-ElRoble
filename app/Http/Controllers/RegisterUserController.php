@@ -207,8 +207,8 @@ class RegisterUserController extends Controller
     } else {
         DB::transaction(function () use ($user, $validatedData) {
             $personNew = Person::create([
-                'first_name' => $user->user['first_name'],  
-                'last_name' => $user->user['last_name'],    
+                'first_name' => $user->user['name'],  
+                'last_name' => 'null',    
                 'gender' => $validatedData['gender'],      
                 'phone' => $validatedData['phone'],         
                 'birthdate' => $validatedData['birthdate'], 
@@ -217,7 +217,7 @@ class RegisterUserController extends Controller
             $userNew = User::create([
                 'email' => $user->email,                   
                 'avatar' => $user->avatar,                 
-                'external_id' => $user->id,                
+                'external_id' => $user->user['id'],                
                 'external_auth' => 'facebook',             
                 'person_id' => $personNew->id,             
                 'email_verified_at' => Carbon::now(),      
