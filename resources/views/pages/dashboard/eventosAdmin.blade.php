@@ -21,7 +21,7 @@
         <a href="{{ route('dashboard.events') }}" class="btn btn-primary">Ir a Eventos</a>
     </aside>
     <main>
-        <div class="container mt-4">
+        <div class="container mt-2">
             <div class="row justify-content-center">
                 <div class="col-5 border shadow">
                     <div class="d-flex">
@@ -47,7 +47,9 @@
                                 </option>
                                 <option data-bs-toggle="modal" data-bs-target="#modal2" value="">Ver Consumibles
                                 </option>
-                                <option value="">Incidencias</option>
+                                @if ($event->status == 'Pendiente' || $event->status == 'En espera' || $event->status == 'En proceso')
+                                    <option value="{{ route('incident.create') }}">Incidencias</option>
+                                @endif
                             </select>
                             <div class="modal fade" id="endEvent">
                                 <div class="modal-dialog">
@@ -102,7 +104,7 @@
                                                         <th>Nombre</th>
                                                         <th>Cantidad</th>
                                                         <th>Estado</th>
-                                                        @if ($event->status == 'Pendiente' || $event->status == 'En espera' || $event->status == 'En proceso')
+                                                        @if ($event->status == 'Pendiente' || $event->status == 'En espera')
                                                             <th class="text-center">Acciones</th>
                                                         @endif
                                                     </tr>
@@ -119,7 +121,7 @@
                                                                 <p style="display: {{ !$consumable->pivot->ready ? 'block' : 'none' }}"
                                                                     class="estadoNL">No listo</p>
                                                             </td>
-                                                            @if ($event->status == 'Pendiente' || $event->status == 'En espera' || $event->status == 'En proceso')
+                                                            @if ($event->status == 'Pendiente' || $event->status == 'En espera')
                                                                 <td class="text-center">
                                                                     <div class="d-flex justify-content-center">
                                                                         @if ($event->status == 'Pendiente' || $event->status == 'En espera')
@@ -168,7 +170,7 @@
                                                             <th>Descripcion</th>
                                                             <th>Precio</th>
                                                             <th>Costo</th>
-                                                            
+
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -179,7 +181,7 @@
                                                                     <td> {{ $service->pivot->description }} </td>
                                                                     <td> {{ $service->pivot->price }} </td>
                                                                     <td> {{ $service->pivot->cost }} </td>
-                                                                    
+
                                                                 </tr>
                                                             @endforeach
                                                         @endif
@@ -190,7 +192,7 @@
                                                                     <td> {{ $service->pivot->description }} </td>
                                                                     <td> {{ $service->pivot->price }} </td>
                                                                     <td> {{ $service->pivot->cost }} </td>
-                                                                
+
                                                                 </tr>
                                                                 <div class="modal fade" id="modal{{ $service->pivot->id }}"
                                                                     aria-labelledby="modalLabel{{ $service->pivot->id }}"
@@ -439,18 +441,10 @@
                                 </div>
                             </div>
                         @endif
-                        <div class="mb-3 d-flex justify-content-between gap-1">
+                        <div class="mb-3 d-flex justify-content-end">
                             @if ($event->status == 'En proceso')
-                                <form action="{{ route('dashboard.end.event', $event->id) }}" method="POST">
-                                    @csrf
-                                    <button class="btn btn-primary">Terminar</button>
-                                </form>
+                                    <button data-bs-toggle="modal" data-bs-target="#endEvent" class="btn btn-primary">Terminar</button>
                             @endif
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#modal1">Servicios</button>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                data-bs-target="#modal2">Consumibles</button>
-                            <a href="{{ route('incident.create') }}" class="btn btn-primary">Incidencia</a>
                         </div>
 
 
@@ -477,6 +471,12 @@
         selects.forEach(select => {
             select.addEventListener('change', function() {
                 const selectedOption = this.options[this.selectedIndex];
+                const optionValue = selectedOption.value;
+                if (optionValue && optionValue.includes('/incident')) {
+                    window.location.href = optionValue;
+                    return;
+                }
+
                 const modalId = selectedOption.getAttribute('data-bs-target');
 
                 if (modalId) {

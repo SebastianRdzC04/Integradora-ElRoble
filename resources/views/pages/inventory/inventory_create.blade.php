@@ -24,6 +24,9 @@ input[type="number"] {
     </style>
 </head>
 <body>
+    <aside>
+        <a href="{{route('dashboard.inventory')}}" class="btn btn-primary">Ir a Inventario</a>
+    </aside>
 <div class="container mt-4 d-flex justify-content-center">
     <div class="card" style="width: 40rem; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
         <div class="card-body">

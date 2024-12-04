@@ -10,9 +10,12 @@
 
 @section('content')
     <div class="container">
-        <div class="row">
-        </div>
         <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="d-flex justify-content-end">
+                    <a href="{{ route('inventory') }}" class="btn btn-primary">Agregar Inventario</a>
+                </div>
+            </div>
             <div class="col-12">
                 <div class="table-resposive">
                     <table class="table shadow" id="inventory-table">
@@ -33,7 +36,7 @@
                                     <td class="text-center"> {{ $item->status }} </td>
                                     <td class="text-center">${{ $item->price }}</td>
                                     <td>
-                                        <select class="form-select" name="select" id="">
+                                        <select class="form-select alv" name="select" id="">
                                             <option value="">Opciones</option>
                                             <option data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}"
                                                 value="">Editar</option>
@@ -49,7 +52,35 @@
                                                     <div class="modal-body">
                                                         <div class="row">
                                                             <div class="col-12">
-
+                                                                <form
+                                                                    action="{{ route('dashboard.inventory.edit', $item->id) }}"
+                                                                    method="POST">
+                                                                    @csrf
+                                                                    <div class="mb-3">
+                                                                        <label for="description"
+                                                                            class="form-label">Descripcion</label>
+                                                                        <input type="text" class="form-control"
+                                                                            value="{{ $item->description }}"
+                                                                            name="description" required maxlength="50">
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <label for="status"
+                                                                            class="form-label">Estado</label>
+                                                                        <select class="form-select" name="status">
+                                                                            <option value="disponible"
+                                                                                {{ $item->status == 'disponible' ? 'selected' : '' }}>
+                                                                                disponible
+                                                                            </option>
+                                                                            <option value="no disponible"
+                                                                                {{ $item->status == 'no disponible' ? 'selected' : '' }}>
+                                                                                no disponible
+                                                                            </option>
+                                                                        </select>
+                                                                    </div>
+                                                                    <div class="mb-3 d-flex justify-content-end">
+                                                                        <button class="btn btn-primary">Enviar</button>
+                                                                    </div>
+                                                                </form>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -69,7 +100,8 @@
                                                     </div>
                                                     <div class="modal-footer">
                                                         <div class="d-flex justify-content-end">
-                                                            <form action="" method="POST" class="eliminar-elemento">
+                                                            <form action="{{route('dashboard.inventory.delete', $item->id)}}" method="POST" class="eliminar-elemento">
+                                                                @csrf
                                                                 <button class="text-end btn btn-danger">Eliminar</button>
                                                             </form>
                                                         </div>
@@ -91,7 +123,7 @@
 
 @section('scripts')
     <script>
-        const selects = document.querySelectorAll('.form-select');
+        const selects = document.querySelectorAll('.alv');
 
         selects.forEach(select => {
             select.addEventListener('change', function() {

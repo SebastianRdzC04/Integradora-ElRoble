@@ -505,6 +505,30 @@ Route::middleware(['auth' ,'superadmin'])->group(function () {
         $users = User::all();
         return view('pages.dashboard.users', compact('users'));
     })->name('dashboard.users');
+
+    Route::post('dashboard/inventory/edit/{id}', function ($id, Request $request){
+        $inventory = Inventory::find($id);
+        $request->validate([
+            'description' => 'required|string',
+            'status' => 'required|string',
+        ]);
+        if ($inventory){
+            $inventory->status = $request->status;
+            $inventory->description = $request->description;
+            $inventory->save();
+            return redirect()->back()->with('success', 'si se edito banda');
+        }
+        return redirect()->back()->with('error', 'No se encontro banda');
+    })->name('dashboard.inventory.edit');
+
+    Route::post('dashboard/inventory/delete/{id}', function ($id){
+        $inventory = Inventory::find($id);
+        if ($inventory){
+            $inventory->delete();
+            return redirect()->back()->with('success', 'si se elimino banda');
+        }
+        return redirect()->back()->with('error', 'No se encontro banda');
+    })->name('dashboard.inventory.delete');
 });
 
 

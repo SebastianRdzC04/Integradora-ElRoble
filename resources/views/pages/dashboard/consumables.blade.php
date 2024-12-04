@@ -109,8 +109,8 @@
                                                             action="{{ route('dashboard.consumable.delete', $item->id) }}"
                                                             method="POST">
                                                             @csrf
-                                                            <button class="btn btn-outline-danger p-1 m-0">
-                                                                <i class="bi bi-trash3"></i></button>
+                                                            <button class="btn btn-danger">
+                                                                Eliminar</button>
                                                         </form>
                                                     </div>
                                                 </div>
