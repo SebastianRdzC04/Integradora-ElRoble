@@ -2,22 +2,21 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\RegisterPersonController;
 use App\Http\Controllers\RegisterUserController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\ConsumableController;
 use App\Http\Controllers\Auth\VerifyEmailController;
-use App\Http\Controllers\EmployeeEventController;
 use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\VerifyPhoneController;
 use App\Models\InventoryCategory;
-use App\Models\SerialNumberType;
 use Laravel\Socialite\Facades\Socialite;
 
 //Aqui esta el login de Facebook lo mismo que google
 Route::get('auth/facebook', [RegisterUserController::class, 'redirectToFacebook'])->name('login.facebook');
-Route::get('auth/facebook/callback', [RegisterUserController::class, 'handleFacebookCallback'])->name('register.facebook');
+Route::get('/auth/facebook/callback', [LoginController::class, 'handleFacebookCallback'])->name('facebook.callback');
+Route::get('/auth/facebook/datacomplete', [LoginController::class, 'createdatacompletefacebook'])->name('datafacebook');
+Route::post('/registerfacebook/store', [LoginController::class, 'storeFacebook'])->name('registerfacebook.store');
 
 //esta es la vista basica de google donde te pide la cuenta
 Route::get('/login-google', function () {
