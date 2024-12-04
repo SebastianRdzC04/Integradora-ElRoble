@@ -29,7 +29,9 @@ class DashboardController extends Controller
         
         $eventsPending = Event::orderBy('date', 'asc')->where('status', 'Pendiente')->get();
         $eventsFinalized = Event::orderBy('date', 'asc')->where('status', 'Finalizado')->get();
-        $currentEvent = Event::where('date', date('Y-m-d'))->where('status', '!=', 'Finalizado')->first();
+        $currentEvent = Event::whereDate('date', Carbon::now()->format('Y-m-d'))
+        ->whereNotIn('status', ['Finalizado', 'Cancelado'])
+        ->first();
         // $currentEvent = Event::where('date', date('Y-m-d'))->first();
         $fullQuoteDates = Quote::selectRaw('date, count(*) as count')
         ->whereIn('status', ['pendiente', 'pendiente cotizacion'])
