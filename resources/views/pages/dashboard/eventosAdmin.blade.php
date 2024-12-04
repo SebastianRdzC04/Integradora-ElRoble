@@ -17,6 +17,9 @@
 @section('title', 'Evento')
 
 @section('content')
+    <aside>
+        <a href="{{route('dashboard.events')}}" class="btn btn-primary">Ir a Eventos</a>
+    </aside>
     <main>
         <div class="container mt-4">
             <div class="row justify-content-center">
