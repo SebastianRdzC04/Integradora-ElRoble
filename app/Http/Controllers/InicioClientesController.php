@@ -3,7 +3,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Package;
 use App\Models\Comment;
 use Carbon\Carbon;

@@ -9,6 +9,7 @@ use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Models\Place;
 use App\Models\Package;
+use Carbon\Carbon;
 
 class CotizacionesClientesController extends Controller
 {
@@ -16,14 +17,23 @@ class CotizacionesClientesController extends Controller
     {
         $categories = ServiceCategory::all();
         $places = Place::all();
-        $packages = Package::with('place', 'services')->get();
+        $today = Carbon::today();
+
+        // Filtrar los paquetes vigentes
+        $packages = Package::with('place', 'services')
+            ->where('start_date', '<=', $today)
+            ->where('end_date', '>=', $today)
+            ->get();
+
         $services = Service::all()->keyBy('id');
-    
+        $user = auth()->user(); // Obtener el usuario autenticado
+
         return view('cotizacionesclientes', [
             'categories' => $categories,
             'places' => $places,
             'packages' => $packages,
             'services' => $services,
+            'user' => $user, // Pasar el usuario a la vista
         ]);
     }
     
@@ -37,6 +47,11 @@ class CotizacionesClientesController extends Controller
             $request->merge(['type_event' => (string) $request->input('type_event')]);
         }
     
+        // Obtener el usuario autenticado
+        $user = auth()->user();
+        $person = $user->person;
+    
+        // Validar los datos
         $validated = $request->validate(
             [
                 'user_id' => 'nullable|exists:users,id',
@@ -50,8 +65,6 @@ class CotizacionesClientesController extends Controller
                 'end_time' => 'required|date_format:Y-m-d H:i|after:start_time',
                 'type_event' => 'required|string|max:50',
                 'otro_tipo_evento' => 'nullable|string|max:50',
-                'owner_name' => 'required|string|max:40',
-                'owner_phone' => 'required|string|max:10',
                 'guest_count' => 'required|integer|min:10|max:80',
             ],
             [
@@ -79,12 +92,6 @@ class CotizacionesClientesController extends Controller
                 'type_event.max' => 'El tipo de evento no puede tener más de 50 caracteres.',
                 'otro_tipo_evento.string' => 'El campo "otro tipo de evento" debe ser un texto.',
                 'otro_tipo_evento.max' => 'El campo "otro tipo de evento" no puede tener más de 50 caracteres.',
-                'owner_name.required' => 'El nombre del propietario es obligatorio.',
-                'owner_name.string' => 'El nombre del propietario debe ser un texto.',
-                'owner_name.max' => 'El nombre del propietario no puede tener más de 40 caracteres.',
-                'owner_phone.required' => 'El teléfono del propietario es obligatorio.',
-                'owner_phone.string' => 'El teléfono del propietario debe ser un texto.',
-                'owner_phone.max' => 'El teléfono del propietario no puede tener más de 10 caracteres.',
                 'guest_count.required' => 'La cantidad de invitados es obligatoria.',
                 'guest_count.integer' => 'La cantidad de invitados debe ser un número entero.',
                 'guest_count.min' => 'La cantidad de invitados no puede ser menor a 10.',
@@ -141,8 +148,8 @@ class CotizacionesClientesController extends Controller
                 'end_time' => $request->input('end_time'),
                 'type_event' => $request->input('type_event'),
                 'otro_tipo_evento' => $request->input('otro_tipo_evento'),
-                'owner_name' => $request->input('owner_name'),
-                'owner_phone' => $request->input('owner_phone'),
+                'owner_name' => $person->first_name . ' ' . $person->last_name, // Obtener el nombre del propietario
+                'owner_phone' => $person->phone, // Obtener el teléfono del propietario
                 'guest_count' => $request->input('guest_count'),
             ]);
     

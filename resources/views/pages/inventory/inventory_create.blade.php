@@ -32,13 +32,13 @@ input[type="number"] {
             <!-- Selección de Categorías -->
             <h6>Seleccione Categorías:</h6>
             <button type="button" id="btnAbrirModalFormulario" class="btn btn-primary mb-3">Crear Categoría</button>
-            <button type="button" id="btnAbrirModalCodigoserial" class="btn btn-primary mb-3">Añadir codgigos de serial</button>
+            <button type="button" id="btnAbrirModalCodigoserial" class="btn btn-primary mb-3">Añadir Series</button>
             
-            <div class="d-grid gap-2 overflow-auto" style="max-height: 124px;">
-                @foreach ($serials as $serial)
+            <div class="d-grid gap-2 overflow-auto p-1" style="max-height: 124px;">
+                @foreach ($categories as $category)
                 <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="categories[]" value="{{$serial->name}}" id="checkbox{{$serial->id}}">
-                    <label class="form-check-label" for="checkbox{{$serial->id}}">{{$serial->name}}</label>
+                    <input maxlength="255" class="form-check-input" type="checkbox" name="categories[]" value="{{$category->name}}" id="checkbox{{$category->id}}">
+                    <label class="form-check-label" for="checkbox{{$category->id}}">{{$category->name}}</label>
                 </div>
                 @endforeach
             </div>
@@ -63,9 +63,9 @@ input[type="number"] {
                         <!-- Columna izquierda -->
                         <div class="col-md-12">
                             <div class="mb-3">
-                                <label for="selectCategory" class="form-label">serial</label>
+                                <label for="selectCategory" class="form-label">Categoria</label>
                                 <div class="col-auto">
-                                    <select type="text" id="selectCategory" class="form-control col-md-8" minlength="3" placeholder="Sillas" required>
+                                    <select type="text" id="selectCategory" class="form-control col-md-8" placeholder="Sillas" required>
                                     </select>
                                 </div>
                             </div>
@@ -81,7 +81,7 @@ input[type="number"] {
                     <div class="col-md-7">
                         <div class="row mb-2">
                             <div class="col-6 d-flex">
-                                <div class="fs-6 d-grid" style="align-content: center;">Agregar serial</div>
+                                <div class="fs-6 d-grid" style="align-content: center;">Codigos Agregados</div>
                             </div>
                             <div class="col-6 d-flex justify-content-end">
                                 <button class="btn btnDeleteSerial me-2" id="btnDeleteSerialCode">
@@ -100,10 +100,10 @@ input[type="number"] {
                             <!-- Fila inicial de inputs -->
                             <div class="row mb-2">
                                 <div class="col-4">
-                                    <input type="text" name="addnewcode[]" class="form-control inputCode" minlength="3" placeholder="CG" required>
+                                    <input type="text" name="addnewcode[]" class="form-control inputCode" minlength="3" maxlength="10" placeholder="CG" required>
                                 </div>
                                 <div class="col-8">
-                                    <input type="text" name="addnewname[]" class="form-control inputNameCode" minlength="3" placeholder="Carro con Globos" required>
+                                    <input type="text" name="addnewname[]" class="form-control inputNameCode" minlength="3" maxlength="50" placeholder="Carro con Globos" required>
                                 </div>
                             </div>
                         </div>
@@ -128,7 +128,7 @@ input[type="number"] {
                         <div class="mb-3">
                             <label for="inputCategoryNew" class="form-label">Nueva Categoría</label>
                             <div class="col-auto">
-                                <input type="text" id="inputCategoryNew" name="newcategory" class="form-control col-md-8" minlength="3" placeholder="Sillas" required>
+                                <input type="text" id="inputCategoryNew" name="newcategory" class="form-control col-md-8" minlength="4" maxlength="50" placeholder="Sillas" required>
                             </div>
                         </div>
                         <div class="row">
@@ -162,10 +162,10 @@ input[type="number"] {
                         <!-- Fila inicial de inputs -->
                         <div class="row mb-2">
                             <div class="col-4">
-                                <input type="text" name="newcode[0]" class="form-control inputCode" minlength="3" placeholder="CG" required>
+                                <input type="text" title="Por favor, ingresa entre 10 y 2 caracteres." name="newcode[0]" class="form-control inputCode" minlength="2" maxlength="10"  placeholder="CG" required>
                             </div>
                             <div class="col-8">
-                                <input type="text" name="newname[0]" class="form-control inputNameCode" minlength="3" placeholder="Carro con Globos" required>
+                                <input type="text" title="Por favor, ingresa solo letras y al menos 2 caracteres." name="newname[0]" class="form-control inputNameCode" minlength="2" maxlength="50" placeholder="Carro con Globos" required>
                             </div>
                         </div>
                     </div>
@@ -205,7 +205,7 @@ input[type="number"] {
                                                 <path d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718zm3.391-3.836c-1.043-.263-1.6-.825-1.6-1.616 0-.944.704-1.641 1.8-1.828v3.495l-.2-.05zm1.591 1.872c1.287.323 1.852.859 1.852 1.769 0 1.097-.826 1.828-2.2 1.939V8.73z"></path>
                                             </svg>
                                         </span>
-                                        <input type="number" pattern="^-?[0-9]+$" name="price" id="price" class="form-control" placeholder="10" aria-label="Input group example" aria-describedby="basic-addon1" disabled>
+                                        <input type="tel" name="price" id="price" class="form-control" placeholder="10" aria-label="Input group example" aria-describedby="basic-addon1" maxlength="4" pattern="[0-9]{1,4}" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'');" disabled>
                                     </div>
                                 </div>
                             </div>
@@ -286,8 +286,8 @@ document.getElementById('btnCreateSerial').addEventListener('click', function ()
         contentType: 'application/json',
         data: JSON.stringify(finalJson),
         success: function (response) {
-            toastr.success('Codigos agregados exitosamente.');
             location.reload();
+            toastr.success('Codigos agregados exitosamente.');
         },
         error: function (xhr) {
             const errors = xhr.responseJSON.errors;
@@ -345,9 +345,9 @@ document.getElementById('btnCreateSerial').addEventListener('click', function ()
         contentType: 'application/json',
         data: JSON.stringify(finalJson),
         success: function (response) {
-            console.log('Respuesta del servidor:', response);
-            toastr.success('Categoría enviada exitosamente.');
+            //console.log('Respuesta del servidor:', response);
             location.reload();
+            toastr.success('Categoría enviada exitosamente.');
         },
         error: function (xhr, status, error) {
             const errors = xhr.responseJSON.errors;
@@ -363,7 +363,7 @@ document.getElementById('btnCreateSerial').addEventListener('click', function ()
 </script>
 <!-- script para el funcionamiento del modal para agregar codigo de serial -->
 <script>
-    const serials = @json($serials);
+    const serials = @json($categories);
 
     document.getElementById('btnAbrirModalCodigoserial').addEventListener('click', function () {
         const modalAddCodeOfSerial = new bootstrap.Modal(document.getElementById('modalAddCodeOfSerial'));
@@ -422,10 +422,10 @@ document.getElementById('btnCreateSerial').addEventListener('click', function ()
 
         row.innerHTML = `
             <div class="col-4">
-                <input type="text" class="form-control inputCode" minlength="3" placeholder="CG" name="${nameserial}" required>
+                <input type="text" class="form-control title="Por favor, ingresa entre 10 y 2 caracteres." inputCode" minlength="3" maxlength="10" placeholder="CG" name="${nameserial}" required>
             </div>
             <div class="col-8">
-                <input type="text" class="form-control inputNameCode" minlength="3" placeholder="Carro con Globos" name="${nameCode}" required>
+                <input type="text" class="form-control inputNameCode" minlength="3" maxlength="50" placeholder="Carro con Globos" name="${nameCode}" required>
             </div>
         `;
         container.appendChild(row);
@@ -710,14 +710,14 @@ document.getElementById('updateInventory').addEventListener('click', () => {
             contentType: 'application/json',  
             data: inventoryJson, 
             success: function(response) {
-                console.log('Respuesta del servidor:', response);
+                //console.log('Respuesta del servidor:', response);
 
-                toastr.success('Inventario confirmado correctamente.');
                 resetModalData();
                 bootstrap.Modal.getInstance(document.getElementById('formModal')).hide();
+                toastr.success('Inventario confirmado correctamente.');
             },
             error: function(xhr, status, error) {
-                console.error('Error al enviar los datos:', error);
+                //console.log("Response Text:", xhr.responseText);
                 toastr.error('Hubo un problema al confirmar el inventario. Intenta nuevamente.');
             }
         });

@@ -180,7 +180,7 @@ class RegisterUserController extends Controller
     public function handleFacebookCallback()
     {
         $user = Socialite::driver('facebook')->user();
-        // Aquí puedes buscar al usuario en tu base de datos o crear uno nuevo
+        // esto es para facebook solo para validar que ese usuario exista
         $existingUser = User::where('facebook_id', $user->getId())->first();
 
         if ($existingUser) {
@@ -195,7 +195,7 @@ class RegisterUserController extends Controller
             Auth::login($newUser, true);
         }
 
-        return redirect()->route('home');  // Redirige a la página principal o donde desees
+        return redirect()->route('home');  
     }
 
 }
