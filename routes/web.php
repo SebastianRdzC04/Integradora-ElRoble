@@ -58,7 +58,7 @@ Route::get('dashboard/records', function () {
 // Rutas que seran protegidas con el middleware del administrador
 
 
-
+/*
 Route::middleware('empleado')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -82,9 +82,10 @@ Route::middleware('empleado')->group(function () {
     })->name('dashboard.services');
     
 });
+*/
 
 
-Route::middleware('admin')->group(function () {
+Route::middleware(['auth' ,'admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('dashboard/event/current', function () {
