@@ -30,7 +30,7 @@
                                         <tr>
                                             <th>Nombre</th>
                                             <th>Cantidad</th>
-                                            <th>Acciones</th>
+                                            <th class="text-center">Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -38,7 +38,7 @@
                                             <tr>
                                                 <td>{{ $item->consumable->name }}</td>
                                                 <td>{{ $item->quantity }}{{ $item->consumable->unit }}</td>
-                                                <td>
+                                                <td class="text-center">
                                                     <form
                                                         action="{{ route('dashboard.delete.consumable.default', $item->id) }}"
                                                         method="POST">

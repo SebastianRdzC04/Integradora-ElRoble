@@ -27,6 +27,7 @@ use App\Models\ConsumableCategory;
 use App\Models\ConsumableEventDefault;
 use App\Models\User;
 use App\Http\Controllers\PaymentController;
+use App\Models\ServiceCategory;
 
 /*
 |--------------------------------------------------------------------------
@@ -608,6 +609,29 @@ Route::post('/api/cotizations', [CotizacionesClientesController::class, 'getCoti
 
 // Si necesitas una vista para listar paquetes
 Route::get('/paquetes', [PaquetesAdminController::class, 'index'])->name('paquetes.index'); // O lo que desees
+
+
+
+
+Route::get('dashboard/crear/paquetes', function () {
+    return view('pages.dashboard.crearPaquetes');
+})->name('dashboard.crear.paquetes');
+
+Route::get('dashboard/crear/servicios', function () {
+    $serviceCategories = ServiceCategory::all();
+    return view('pages.dashboard.crearServicios', compact('serviceCategories'));
+})->name('dashboard.crear.servicios');
+
+Route::post('dashboard/crear/categoria/servicios', function (Request $request){
+    $request->validate([
+        'nombreCategoria' => 'required|string|max:50|unique:service_categories,name',
+    ]);
+    $serviceCategory = new ServiceCategory();
+    $serviceCategory->name = $request->nombreCategoria;
+    $serviceCategory->save();
+    return redirect()->back()->with('success', 'La categoria ha sido creada correctamente');
+})->name('dashboard.crear.categoria.servicios');
+
 
 require __DIR__.'/routesjesus.php';
 

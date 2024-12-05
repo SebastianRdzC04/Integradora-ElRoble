@@ -11,6 +11,9 @@
 @section('content')
 
     <div class="container">
+        <div class="d-flex justify-content-end mb-1">
+            <a href="{{route('dashboard.crear.servicios')}}" class="btn btn-primary">Crear Servicio</a>
+        </div>
         <div class="row justify-content-center">
             <div class="col-12">
                     <div class="table-responsive">

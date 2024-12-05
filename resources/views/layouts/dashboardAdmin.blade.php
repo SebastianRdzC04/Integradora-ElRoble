@@ -122,7 +122,7 @@
             min-width: 70px;
             z-index: 1000;
             transition: all .25s ease-in-out;
-            background-image: url("{{ asset('images/imagen4.jpg') }}");
+            background-color: #1e1e1e;
             background-size: cover;
             display: grid;
             grid-template-rows: auto 1fr auto;
@@ -239,6 +239,7 @@
         .line-separator-up {
             border-top: 1px solid #ccc
         }
+
     </style>
 </head>
 
