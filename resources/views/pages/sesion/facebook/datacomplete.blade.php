@@ -5,15 +5,16 @@
 @endsection
 
 @section('title form')
-    Hola {{$user->user['given_name']}} completa tus datos para iniciar sesión
+    Hola {{$user->user['name']}} completa tus datos para iniciar sesión
 @endsection
+
 
 @section('subtitle form')
     <h7>Esto es usado para enviar tus cotizaciones</h7>
 @endsection
 
 @section('form')
-    <form method="POST" action="{{ route('registergoogle.store') }}">
+    <form method="POST" action="{{ route('registerfacebook.store') }}">
         @csrf
         <div class="form-floating mb-3">
             <input type="text" name="phone" id="phone" class="form-control" maxlength="10" pattern="\d{10}" title="Ingresa un número de 10 dígitos" required autocomplete="off">
