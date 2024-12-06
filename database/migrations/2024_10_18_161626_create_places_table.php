@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 50);
             $table->string('description', 100);
+            $table->int('max_guest');
             $table->timestamps();
         });
     }

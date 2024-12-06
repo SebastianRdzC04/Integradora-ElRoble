@@ -19,47 +19,47 @@ class SerialNumberSeeder extends Seeder
         $base = [
             [
                 'code' => 'SN',
-                'name' => 'Sillas normales',
+                'name' => 'Sillas Normales',
                 'category' => 1,
             ],
             [
                 'code' => 'SC',
-                'name' => 'Sillas chicas',
+                'name' => 'Sillas Chicas',
                 'category' => 1,
             ],
             [
                 'code' => 'MC',
-                'name' => 'Mesas cuadradas',
+                'name' => 'Mesas Cuadradas',
                 'category' => 2,
             ],
             [
                 'code' => 'MR',
-                'name' => 'Mesas rectangulares',
+                'name' => 'Mesas Rectangulares',
                 'category' => 2,
             ],
             [
                 'code' => 'MRC',
-                'name' => 'Mesas redondas',
+                'name' => 'Mesas Redondas',
                 'category' => 2,
             ],
             [
                 'code' => 'HCH',
-                'name' => 'Hielera chica',
+                'name' => 'Hielera Chica',
                 'category' => 3,
             ],
             [
                 'code' => 'HGR',
-                'name' => 'Hielera grande',
+                'name' => 'Hielera Grande',
                 'category' => 3,
             ],
             [
                 'code' => 'VC',
-                'name' => 'Vasos de vidrio',
+                'name' => 'Vasos de Vidrio',
                 'category' => 4,
             ],
             [
                 'code' => 'PL',
-                'name' => 'Platos de loza',
+                'name' => 'Platos de Loza',
                 'category' => 4,
             ],
         ];
