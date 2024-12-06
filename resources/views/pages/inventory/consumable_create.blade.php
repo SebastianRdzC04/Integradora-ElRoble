@@ -8,7 +8,7 @@
 
 @section('content')
     <aside>
-        <a href="{{route('dashboard.consumables')}}" class="btn btn-primary">Volver a Consumibles</a>
+        <a href="{{ route('dashboard.consumables') }}" class="btn btn-primary">Volver a Consumibles</a>
     </aside>
 
     <body>
@@ -96,5 +96,13 @@
 @endsection
 
 @section('scripts')
+
+    @if ($errors->any())
+        @foreach ($errors->all() as $error)
+            <script>
+                toastr.error('{{ $error }}');
+            </script>
+        @endforeach
+    @endif
 
 @endsection

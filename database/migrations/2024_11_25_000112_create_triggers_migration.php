@@ -142,7 +142,51 @@ return new class extends Migration
                     END IF;
                 END IF;
             END
+        ');
+        DB::unprepared('
+            CREATE TRIGGER prevent_exceeding_maximum_stock 
+            BEFORE UPDATE ON consumables
+            FOR EACH ROW
+            BEGIN
+                IF NEW.stock > NEW.maximum_stock THEN
+                    SIGNAL SQLSTATE "45000"
+                    SET MESSAGE_TEXT = "El stock no puede exceder el máximo permitido";
+                END IF;
+            END
         ');      
+        DB::unprepared('
+            CREATE TRIGGER prevent_exceeding_maximum_stock_insert
+            BEFORE INSERT ON consumables
+            FOR EACH ROW
+            BEGIN
+                IF NEW.stock > NEW.maximum_stock THEN
+                    SIGNAL SQLSTATE "45000"
+                    SET MESSAGE_TEXT = "El stock no puede exceder el máximo permitido";
+                END IF;
+            END
+        ');
+        DB::unprepared('
+            CREATE TRIGGER prevent_minimum_exceeding_maximum_update
+            BEFORE UPDATE ON consumables
+            FOR EACH ROW
+            BEGIN
+                IF NEW.minimum_stock > NEW.maximum_stock THEN
+                    SIGNAL SQLSTATE "45000"
+                    SET MESSAGE_TEXT = "El stock mínimo no puede ser mayor al stock máximo";
+                END IF;
+            END
+        ');
+        DB::unprepared('
+            CREATE TRIGGER prevent_minimum_exceeding_maximum_insert
+            BEFORE INSERT ON consumables
+            FOR EACH ROW
+            BEGIN
+                IF NEW.minimum_stock > NEW.maximum_stock THEN
+                    SIGNAL SQLSTATE "45000"
+                    SET MESSAGE_TEXT = "El stock mínimo no puede ser mayor al stock máximo";
+                END IF;
+            END
+        ');
     }
     public function down()
     {
@@ -154,5 +198,9 @@ return new class extends Migration
         DB::unprepared('DROP TRIGGER IF EXISTS check_event_date_availability');
         DB::unprepared('DROP TRIGGER IF EXISTS prevent_duplicate_paid_quotes_insert');
         DB::unprepared('DROP TRIGGER IF EXISTS prevent_duplicate_paid_quotes_update');
+        DB::unprepared('DROP TRIGGER IF EXISTS prevent_exceeding_maximum_stock');
+        DB::unprepared('DROP TRIGGER IF EXISTS prevent_exceeding_maximum_stock_insert');
+        DB::unprepared('DROP TRIGGER IF EXISTS prevent_minimum_exceeding_maximum_insert');
+        DB::unprepared('DROP TRIGGER IF EXISTS prevent_minimum_exceeding_maximum_update');
     }
 };

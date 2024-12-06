@@ -72,7 +72,6 @@
                                                                     <th>Cantidad</th>
                                                                     <th>Costo</th>
                                                                     <th>Detalles</th>
-                                                                    <th>Acciones</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -84,16 +83,6 @@
                                                                             <td> {{ $service->pivot->quantity }} </td>
                                                                             <td> {{ $service->pivot->price }} </td>
                                                                             <td> {{ $service->pivot->description }}
-                                                                            </td>
-                                                                            <td>
-                                                                                <div>
-                                                                                    <a class="btn btn-outline-primary p-1 m-0"
-                                                                                        href=""><i
-                                                                                            class="bi bi-pencil-square"></i></a>
-                                                                                    <a class="btn btn-outline-danger p-1 m-0"
-                                                                                        href=""><i
-                                                                                            class="bi bi-trash3"></i></a>
-                                                                                </div>
                                                                             </td>
                                                                         </tr>
                                                                     @endforeach
@@ -107,16 +96,6 @@
                                                                             <td> {{ $service->pivot->price }} </td>
                                                                             <td> {{ $service->pivot->description }}
                                                                             </td>
-                                                                            <td>
-                                                                                <div>
-                                                                                    <a class="btn btn-outline-primary p-1 m-0"
-                                                                                        href=""><i
-                                                                                            class="bi bi-pencil-square"></i></a>
-                                                                                    <a class="btn btn-outline-danger p-1 m-0"
-                                                                                        href=""><i
-                                                                                            class="bi bi-trash3"></i></a>
-                                                                                </div>
-                                                                            </td>
                                                                         </tr>
                                                                     @endforeach
                                                                 @endif
@@ -128,16 +107,6 @@
                                                                             <td> {{ $service->pivot->quantity }} </td>
                                                                             <td> {{ $service->pivot->price }} </td>
                                                                             <td> {{ $service->pivot->description }}
-                                                                            </td>
-                                                                            <td>
-                                                                                <div>
-                                                                                    <a class="btn btn-outline-primary p-1 m-0"
-                                                                                        href=""><i
-                                                                                            class="bi bi-pencil-square"></i></a>
-                                                                                    <a class="btn btn-outline-danger p-1 m-0"
-                                                                                        href=""><i
-                                                                                            class="bi bi-trash3"></i></a>
-                                                                                </div>
                                                                             </td>
                                                                         </tr>
                                                                     @endforeach

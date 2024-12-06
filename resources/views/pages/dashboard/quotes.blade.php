@@ -17,6 +17,7 @@
                     <table class="table shadow" id="quote-table">
                         <thead>
                             <tr>
+                                <th></th>
                                 <th>Cliente</th>
                                 <th>Tipo de Evento</th>
                                 <th>Lugar</th>
@@ -31,6 +32,7 @@
                         <tbody>
                             @foreach ($quotes as $quote)
                                 <tr>
+                                    <td> <p style="display: none"> {{ $quote->created_at->timestamp }} </p></td> 
                                     @if ($quote->owner_name)
                                         <td> {{ $quote->owner_name }} </td>
                                     @else
