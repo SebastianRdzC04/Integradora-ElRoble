@@ -93,7 +93,9 @@ Route::middleware(['auth' ,'admin'])->group(function () {
         $event = Event::where('date', Carbon::now()->format('Y-m-d'))->where('status', '!=', 'Finalizado')->first();
         if ($event) {
             session(['event' => $event]);
-            return view('pages.dashboard.eventosAdmin', compact('event'));
+            $consumables = Consumable::all();
+            $consumablesCategories = ConsumableCategory::all();
+            return view('pages.dashboard.eventosAdmin', compact('event', 'consumables', 'consumablesCategories'));
         }
         return redirect()->route('dashboard');
     })->name('dashboard.event.now');
@@ -105,7 +107,8 @@ Route::middleware(['auth' ,'admin'])->group(function () {
 
     Route::get('dashboard/services', function () {
         $services = Service::all();
-        return view('pages.dashboard.services', compact('services'));
+        $serviceCategories = ServiceCategory::all();
+        return view('pages.dashboard.services', compact('services', 'serviceCategories'));
     })->name('dashboard.services');
     Route::get('dashboard/inventory', function () {
         $inventory = Inventory::all();
@@ -184,7 +187,7 @@ Route::middleware(['auth' ,'superadmin'])->group(function () {
 
 
     Route::get('dashboard/quotes', function () {
-        $quotes = Quote::all();
+        $quotes = Quote::all()->sortByDesc('created_at');
         return view('pages.dashboard.quotes', compact('quotes'));
     })->name('dashboard.quotes');
 
@@ -282,7 +285,9 @@ Route::middleware(['auth' ,'superadmin'])->group(function () {
         $event = Event::find($id);
         if ($event) {
             session(['event' => $event]);
-            return view('pages.dashboard.eventosAdmin', compact('event'));
+            $consumables = Consumable::all();
+            $consumablesCategories = ConsumableCategory::all();
+            return view('pages.dashboard.eventosAdmin', compact('event', 'consumables', 'consumablesCategories'));
         }
         return redirect()->route('dashboard');
     })->name('dashboard.event.view');
@@ -427,19 +432,18 @@ Route::middleware(['auth' ,'superadmin'])->group(function () {
     })->name('dashboard.consumable.category.create');
 
 
-    Route::post('dashboard/consumable/add/default', function (Request $request) {
+    Route::post('dashboard/consumable/add/default{id}', function ($id, Request $request) {
+        $consumable = Consumable::find($id);
         $request->validate([
-            'consumable_id' => 'required|integer',
             'cantidad' => 'required|integer|min:0',
         ]);
-        $consumable = Consumable::find($request->consumable_id);
-        if ($consumable) {
+        if ($consumable && $consumable->maximum_stock >= $request->cantidad) {
             $consumable->consumableEventDefault()->create([
                 'quantity' => $request->cantidad,
             ]);
             return redirect()->back()->with('success', 'El consumible ha sido agregado a los eventos por defecto');
         }
-        return redirect()->back()->with('error', 'El consumible no se ha encontrado');
+        return redirect()->back()->with('error', 'No puedes sobrepasar el stock maximo come caca');
 
     })->name('dashboard.add.consumable.default');
 
@@ -462,12 +466,22 @@ Route::middleware(['auth' ,'superadmin'])->group(function () {
             'precio' => 'required|numeric|min:0',
         ]);
         if ($consumable) {
-            $consumableRecord = new ConsumableRecord();
-            $consumableRecord->consumable_id = $consumable->id;
-            $consumableRecord->quantity = $request->cantidad;
-            $consumableRecord->price = $request->precio;
-            $consumableRecord->save();
-            return redirect()->back()->with('success', 'El stock ha sido agregado correctamente');
+            try {
+                $consumableRecord = new ConsumableRecord();
+                $consumableRecord->consumable_id = $consumable->id;
+                $consumableRecord->quantity = $request->cantidad;
+                $consumableRecord->price = $request->precio;
+                $consumableRecord->save();
+                
+                return redirect()->back()->with('success', 'El stock ha sido agregado correctamente');
+            } catch (\PDOException $e) {
+                // Captura específicamente el error del trigger
+                if ($e->getCode() == "45000") {
+                    return redirect()->back()->with('error', 'El stock es mas del permitido carnal');
+                }
+                // Otros errores de base de datos
+                return redirect()->back()->with('error', 'Error al actualizar el stock');
+            }
         }
         return redirect()->back()->with('error', 'El consumible no se ha encontrado');
 
@@ -492,15 +506,23 @@ Route::middleware(['auth' ,'superadmin'])->group(function () {
             'stock_max_edit' => 'required|integer|min:0',
         ]);
         if ($consumable){
-            $consumable->name = $request->nombre_edit;
-            $consumable->description = $request->descripcion_edit;
-            $consumable->unit = $request->unidad_edit;
-            $consumable->minimum_stock = $request->stock_min_edit;
-            $consumable->maximum_stock = $request->stock_max_edit;
-            $consumable->save();
-            return redirect()->back()->with('success', 'si se edito banda');
+            try {
+                $consumable->name = $request->nombre_edit;
+                $consumable->description = $request->descripcion_edit;
+                $consumable->unit = $request->unidad_edit;
+                $consumable->minimum_stock = $request->stock_min_edit;
+                $consumable->maximum_stock = $request->stock_max_edit;
+                $consumable->save();
+                return redirect()->back()->with('success', 'si se edito banda');
+            } catch (\PDOException $e) {
+                // Captura específicamente el error del trigger
+                if ($e->getCode() == "45000") {
+                    return redirect()->back()->with('error', 'El stock minimo no puede ser mayor al stock maximo');
+                }
+                // Otros errores de base de datos
+                return redirect()->back()->with('error', 'Error al actualizar el stock');
+            }
         }
-        return redirect()->back()->with('error', 'No se encontro banda');
     })->name('dashboard.consumable.edit');
 
     Route::get('dashboard/users', function(){
@@ -531,6 +553,15 @@ Route::middleware(['auth' ,'superadmin'])->group(function () {
         }
         return redirect()->back()->with('error', 'No se encontro banda');
     })->name('dashboard.inventory.delete');
+
+    Route::post('dashboard/consumable/event/delete/{id}', function($id){
+        $consumableEvent = ConsumableEvent::find($id);
+        if ($consumableEvent){
+            $consumableEvent->delete();
+            return redirect()->back()->with('success', 'si se elimino banda');
+        }
+        return redirect()->back()->with('error', 'No se encontro banda');
+    })->name('dashboard.consumable.event.delete');
 });
 
 
@@ -632,6 +663,61 @@ Route::post('dashboard/crear/categoria/servicios', function (Request $request){
     $serviceCategory->save();
     return redirect()->back()->with('success', 'La categoria ha sido creada correctamente');
 })->name('dashboard.crear.categoria.servicios');
+
+Route::post('dashboard/event/consumable/add/{id}', function ($id, Request $request) {
+    $event = Event::find($id);
+    $request->validate([
+        'consumible' => 'required|integer|exists:consumables,id',
+    ]);
+    $consumable = Consumable::find($request->consumible);
+
+    $request->validate([
+        'cantidad' => [
+            'required',
+            'integer',
+            'min:0',
+            function ($attribute, $value, $fail) use ($consumable) {
+                if ($value > $consumable->maximum_stock) {
+                    $fail("La cantidad no puede ser mayor al stock máximo del consumible ({$consumable->maximum_stock})");
+                }
+            }
+        ],
+    ]);
+
+    if ($event && $consumable) {
+        $consumableEvent = new ConsumableEvent();
+        $consumableEvent->event_id = $event->id;
+        $consumableEvent->consumable_id = $consumable->id;
+        $consumableEvent->quantity = $request->cantidad;
+        $consumableEvent->save();
+        
+        return redirect()->back()->with('success', 'El consumible ha sido agregado al evento');
+    }
+
+    return redirect()->back()->with('error', 'El evento o consumible no se ha encontrado');
+
+})->name('dashboard.event.consumable.add');
+
+Route::post('dashboard/service/edit/{id}', function($id, Request $request){
+    $request->validate([
+        'categoria' => 'required|string|exists:service_categories,name',
+        'nombre' => 'required|string',
+        'descripcion' => 'required|string',
+        'precio' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
+        'costo' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/', 
+        'afore' => 'required|integer|max:100',
+    ]);
+    $service = Service::find($id);
+    $service->service_category_id = ServiceCategory::where('name', $request->categoria)->first()->id;
+    $service->name = $request->nombre;
+    $service->description = $request->descripcion;
+    $service->price = $request->precio;
+    $service->coast = $request->costo;
+    $service->people_quantity = $request->afore;
+    $service->save();
+    return redirect()->back()->with('success', 'El servicio ha sido actualizado correctamente');
+
+})->name('dashboard.service.edit');
 
 
 require __DIR__.'/routesjesus.php';

@@ -31,7 +31,7 @@
                             </h4>
                         </div>
                         <div class="ms-auto">
-                            <select class="ms-auto form-select" name="" id="">
+                            <select class="ms-auto form-select alv" name="" id="">
                                 <option value="">Opciones</option>
                                 @if ($event->status == 'En espera')
                                     <option data-bs-toggle="modal" data-bs-target="#startEvent" value="">Comenzar
@@ -93,6 +93,8 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h4>Consumibles incluidos</h4>
+                                            <button data-bs-toggle="modal" data-bs-target="#modalAggCons" type="button"
+                                                class="btn btn-primary ms-auto">Agregar</button>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                         </div>
@@ -122,8 +124,8 @@
                                                                     class="estadoNL">No listo</p>
                                                             </td>
                                                             @if ($event->status == 'Pendiente' || $event->status == 'En espera')
-                                                                <td class="text-center">
-                                                                    <div class="d-flex justify-content-center">
+                                                                <td class="text-start" style="width: 150px">
+                                                                    <div class="d-inline-flex justify-content-center">
                                                                         @if ($event->status == 'Pendiente' || $event->status == 'En espera')
                                                                             <form
                                                                                 action="{{ route('dashboard.event.consumable', $consumable->pivot->id) }}"
@@ -140,8 +142,26 @@
                                                                                 </button>
                                                                             </form>
                                                                         @endif
-                                                                        <button class="btn btn-outline-danger py-0 px-2"><i
+
+
+                                                                        <button
+                                                                            class="btn btn-outline-danger eliminar py-0 px-2"><i
                                                                                 class="bi bi-trash3"></i></button>
+
+                                                                        <button style="display: none"
+                                                                            class="btn btn-outline-warning arrepentir py-0 px-2"><i
+                                                                                class="bi bi-x-circle"></i></button>
+
+                                                                        <form
+                                                                            action="{{ route('dashboard.consumable.event.delete', $consumable->pivot->id) }}"
+                                                                            method="POST">
+                                                                            @csrf
+                                                                            <button style="display: none"
+                                                                                class="btn btn-outline-primary confirmar px-2"><i
+                                                                                    class="bi bi-check2"></i></button>
+                                                                        </form>
+
+
                                                                     </div>
                                                                 </td>
                                                             @endif
@@ -194,7 +214,8 @@
                                                                     <td> {{ $service->pivot->cost }} </td>
 
                                                                 </tr>
-                                                                <div class="modal fade" id="modal{{ $service->pivot->id }}"
+                                                                <div class="modal fade"
+                                                                    id="modal{{ $service->pivot->id }}"
                                                                     aria-labelledby="modalLabel{{ $service->pivot->id }}"
                                                                     aria-hidden="true">
                                                                     <div
@@ -258,6 +279,40 @@
                             </div>
                         </div>
 
+                    </div>
+
+                    <div class="modal fade" id="modalAggCons">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3>Hola que rollo</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="{{ route('dashboard.event.consumable.add', $event->id) }}"
+                                        method="POST">
+                                        @csrf
+                                        <div class="mb-3">
+                                            <label for="consumible" class="form-label">Consumible</label>
+                                            <select name="consumible" id="consumible" class="form-select">
+                                                <option value="">Selecciona un consumible</option>
+                                                @foreach ($consumables as $consumable)
+                                                    @if ($event->consumables->contains($consumable))
+                                                        @continue
+                                                    @endif
+                                                    <option value="{{ $consumable->id }}">{{ $consumable->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="cantidad" class="form-label">Cantidad</label>
+                                            <input type="number" class="form-control" name="cantidad">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Agregar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="d-flex justify-content-between">
@@ -443,7 +498,8 @@
                         @endif
                         <div class="mb-3 d-flex justify-content-end">
                             @if ($event->status == 'En proceso')
-                                    <button data-bs-toggle="modal" data-bs-target="#endEvent" class="btn btn-primary">Terminar</button>
+                                <button data-bs-toggle="modal" data-bs-target="#endEvent"
+                                    class="btn btn-primary">Terminar</button>
                             @endif
                         </div>
 
@@ -465,8 +521,40 @@
             });
         </script>
     @endif
+
+
+    @if ($errors->any())
+        <script>
+            $(document).ready(function() {
+                @foreach ($errors->all() as $error)
+                    toastr.error('{{ $error }}');
+                @endforeach
+
+                // Reabrir el modal si hay errores
+                var modal = new bootstrap.Modal(document.getElementById('modalAggCons'));
+                modal.show();
+            });
+        </script>
+    @endif
+
+    @if (session('success'))
+        <script>
+            $(document).ready(function() {
+                toastr.success('{{ session('success') }}');
+            });
+        </script>
+    @endif
+
+    @if (session('error'))
+        <script>
+            $(document).ready(function() {
+                toastr.error('{{ session('error') }}');
+            });
+        </script>
+    @endif
+
     <script>
-        const selects = document.querySelectorAll('.form-select');
+        const selects = document.querySelectorAll('.alv');
 
         selects.forEach(select => {
             select.addEventListener('change', function() {
@@ -490,6 +578,28 @@
         });
     </script>
     <script>
+        let eliminarBtns = document.querySelectorAll('.eliminar');
+        eliminarBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                let currentRow = this.closest('tr');
+                let confirmarBtn = currentRow.querySelector('.confirmar');
+                let arrepentirBtn = currentRow.querySelector('.arrepentir');
+                this.style.display = 'none';
+                arrepentirBtn.style.display = 'block';
+                confirmarBtn.style.display = 'block';
+                confirmarBtn.addEventListener('click', function() {
+                    let form = currentRow.querySelector('form');
+                    form.submit();
+                });
+                arrepentirBtn.addEventListener('click', function() {
+                    this.style.display = 'none';
+                    confirmarBtn.style.display = 'none';
+                    currentRow.querySelector('.eliminar').style.display = 'block';
+                });
+
+            });
+        });
+
         function updateStatus(form) {
             event.preventDefault();
             let currentRow = form.closest('tr');
@@ -498,6 +608,7 @@
             let botonForm = currentRow.querySelector('button[type="submit"]');
             let iconoListo = botonForm.querySelector('.listo');
             let iconoNoListo = botonForm.querySelector('.no-listo');
+
             /*
             if (iconoListo.style.display === 'none') {
                 iconoListo.style.display = 'block';
@@ -527,6 +638,9 @@
                     iconoNoListo.style.display = iconoNoListo.style.display === 'block' ? 'none' : 'block';
                     botonForm.classList.toggle('btn-outline-danger');
                     botonForm.classList.toggle('btn-outline-success');
+                    toastr.success('Estado actualizado correctamente');
+                } else {
+                    toastr.error('No tienes suficiente stock para marcar este consumible como listo');
                 }
             });
         }
