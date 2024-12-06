@@ -6,6 +6,7 @@
     <title>Nueva Cotización</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.css' rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempus-dominus/6.0.0-beta1/css/tempus-dominus.min.css" />
     <style>
         .place-card {
             cursor: pointer;
@@ -47,9 +48,12 @@
                             
                             <div class="mb-3">
                                 <label class="form-label">Hora de Inicio:</label>
-                                <select class="form-select" id="startTime">
-                                    <option value="">Seleccione hora de inicio</option>
-                                </select>
+                                <div class="input-group date" id="startTimePicker" data-td-target-input="nearest" data-td-target-toggle="nearest">
+                                    <input type="text" id="startTime" class="form-control" data-td-target="#startTimePicker"/>
+                                    <span class="input-group-text" data-td-target="#startTimePicker" data-td-toggle="datetimepicker">
+                                        <i class="fa fa-clock"></i>
+                                    </span>
+                                </div>
                             </div>
                             
                             <div class="mb-3">
@@ -62,11 +66,6 @@
                                     <option value="7">7 horas</option>
                                     <option value="8">8 horas</option>
                                 </select>
-                            </div>
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Hora de Finalización:</label>
-                                <input type="text" class="form-control" id="endTime" readonly>
                             </div>
                         </div>
                     </div>
@@ -127,6 +126,7 @@
 
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tempus-dominus/6.0.0-beta1/js/tempus-dominus.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             var calendarEl = document.getElementById('calendar');
@@ -139,43 +139,20 @@
             });
             calendar.render();
 
-            // Generar opciones de hora de inicio
-            const startTimeSelect = document.getElementById('startTime');
-            for (let hour = 12; hour <= 23; hour++) {
-                // Agregar hora completa
-                startTimeSelect.add(new Option(
-                    ${hour}:00,
-                    ${hour}:00
-                ));
-                // Agregar media hora
-                startTimeSelect.add(new Option(
-                    ${hour}:30,
-                    ${hour}:30
-                ));
-            }
-
-            // Calcular hora de finalización
-            function calculateEndTime() {
-                const startTime = document.getElementById('startTime').value;
-                const duration = document.getElementById('duration').value;
-                
-                if (startTime && duration) {
-                    const [hours, minutes] = startTime.split(':');
-                    let endHour = parseInt(hours) + parseInt(duration);
-                    const endMinutes = minutes;
-                    
-                    if (endHour >= 24) {
-                        endHour = endHour - 24;
+            // Inicializar el selector de tiempo
+            new tempusDominus.TempusDominus(document.getElementById('startTimePicker'), {
+                display: {
+                    components: {
+                        useTwentyfourHour: true,
+                        seconds: false
                     }
-                    
-                    document.getElementById('endTime').value = 
-                        ${endHour.toString().padStart(2, '0')}:${endMinutes};
                 }
-            }
+            });
 
             // Event listeners
-            document.getElementById('startTime').addEventListener('change', calculateEndTime);
-            document.getElementById('duration').addEventListener('change', calculateEndTime);
+            document.getElementById('startTime').addEventListener('change', function() {
+                console.log('Hora de inicio seleccionada:', this.value);
+            });
         });
 
         function selectPlace(placeId) {
@@ -185,7 +162,7 @@
             });
 
             // Seleccionar nueva card
-            const selectedCard = document.querySelector(.place-card[onclick="selectPlace(${placeId})"]);
+            const selectedCard = document.querySelector(`.place-card[onclick="selectPlace(${placeId})"]`);
             if (selectedCard) {
                 selectedCard.classList.add('selected');
             }
