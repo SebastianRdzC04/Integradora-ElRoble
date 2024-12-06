@@ -38,7 +38,7 @@ use App\Models\ServiceCategory;
 | grupo de middleware "web".
 */
 
-Route::get('/', [InicioClientesController::class, 'create'])->name('inicio');
+Route::view('/','layouts.appprincipal')->name('inicio');
 
 Route::get('inventory/create', function() {
     return view('pages.inventory.inventory_create');
