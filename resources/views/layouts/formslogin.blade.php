@@ -51,7 +51,7 @@
     };
 </script>
 </head>
-<body class="d-flex align-items-center justify-content-center" style="margin: 0;height: 100vh; overflow: hidden; min-height: 100vh;">
+<body class="d-flex align-items-center justify-content-center" style="margin: 0;height: 100vh; overflow-y: auto; overflow-x:hidden; min-height: 100vh;">
 
 <script>
         // Verifica si hay errores de validación

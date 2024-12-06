@@ -13,7 +13,7 @@
             <div class="col-6">
             </div>
             <div class="col-6 d-flex justify-content-end">
-                <a href="{{ route('consumables.create') }}" class="btn btn-primary">Agregar</a>
+                <a href="{{ route('consumables.create') }}" class="btn btn-primary me-1">Agregar</a>
                 <a href="" type="button" class="btn btn-primary text-end" data-bs-toggle="modal"
                     data-bs-target="#modalPredeterminados">Ver predeterminados</a>
             </div>
@@ -30,7 +30,7 @@
                                         <tr>
                                             <th>Nombre</th>
                                             <th>Cantidad</th>
-                                            <th>Acciones</th>
+                                            <th class="text-center">Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -38,7 +38,7 @@
                                             <tr>
                                                 <td>{{ $item->consumable->name }}</td>
                                                 <td>{{ $item->quantity }}{{ $item->consumable->unit }}</td>
-                                                <td>
+                                                <td class="text-center">
                                                     <form
                                                         action="{{ route('dashboard.delete.consumable.default', $item->id) }}"
                                                         method="POST">
@@ -92,14 +92,31 @@
                                                     data-bs-target="#predModal{{ $item->id }}" value="">Agregar a
                                                     Predeterminados</option>
                                             @endif
-                                            <option value="4">Eliminar</option>
+                                            <option data-bs-toggle="modal" data-bs-target="#delModal{{ $item->id }}"
+                                                value="4">Eliminar</option>
                                         </select>
-                                        <form class="eliminar-elemento {{$item->id}}" action="{{ route('dashboard.consumable.delete', $item->id) }}"
-                                            method="POST">
-                                            @csrf
-                                            <button class="btn btn-outline-danger p-1 m-0">
-                                                <i class="bi bi-trash3"></i></button>
-                                        </form>
+                                        <div class="modal fade" id="delModal{{$item->id}}">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h3>Eliminar</h3>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <p>Seguro que desea eliminar consumible?</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <form class="eliminar-elemento {{ $item->id }}"
+                                                            action="{{ route('dashboard.consumable.delete', $item->id) }}"
+                                                            method="POST">
+                                                            @csrf
+                                                            <button class="btn btn-danger">
+                                                                Eliminar</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <div class="modal fade" id="editModal{{ $item->id }}">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
@@ -228,13 +245,7 @@
         selects.forEach(select => {
             select.addEventListener('change', function() {
                 const selectedOption = this.options[this.selectedIndex];
-                if (selectedOption.value === '4') {
-                    //buscar dentro de su row. un formulario con la clase eliminar-elemento
-                    const form = this.parentElement.querySelector('.eliminar-elemento');
-                    form.submit();
-                    return;
-                    
-                }
+                
                 const modalId = selectedOption.getAttribute('data-bs-target');
 
                 if (modalId) {

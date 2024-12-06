@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Person;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use App\Services\TwilioService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -40,7 +43,7 @@ class VerifyPhoneController extends Controller
             return response()->json(['error' => $result['error']], 500);
         }
 
-        return back()->whit('success', 'OTP enviado correctamente');
+        return redirect()->back()->whit('success', 'OTP enviado correctamente');
     }
 
     /**
@@ -80,7 +83,7 @@ class VerifyPhoneController extends Controller
             $phone = '+52' . $phoneWithOutPrefix;         
         }
         else {
-    return response()->json(['error' => 'Teléfono no encontrado.'], 400);
+            return response()->json(['error' => 'Teléfono no encontrado.'], 400);
         }
         $status = $this->twilio->verifyOtp($phone, $otpCode);
 
@@ -89,6 +92,8 @@ class VerifyPhoneController extends Controller
         }
 
         if ($status == 'approved') {
+            $id = User::where('id',auth()->user()->getAuthIdentifier())->value('person_id');
+            Person::where('id',$id)->update(['phone_verified_at' => Carbon::now()]);
             return redirect()->intended(RouteServiceProvider::HOME);
         }
 

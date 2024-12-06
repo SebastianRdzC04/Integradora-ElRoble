@@ -1,14 +1,14 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>El Roble - Cotización</title>
+@extends('layouts.appaxel')
+
+@section('title', 'El Roble - Cotización')
+
+@section('styles')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/stylespaquetes.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
-</head>
-<body>
+@endsection
+
+@section('content')
     <div class="container mt-4">
         <div class="row">
             @if(session('success'))
@@ -126,7 +126,7 @@
                                     Selecciona una Fecha
                                 </button>
                                 <input type="hidden" name="date" id="selectedDate">
-                                <span class="selected-date"></span>
+                                <span class="selected-date" oninput="updatePreview()"></span>
                             </div>
                             <div class="col-md-3">
                                 <label for="start_time" class="form-label">Hora de Inicio</label>
@@ -178,24 +178,8 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
-
-                        <div class="mb-3 row">
-                            <div class="col-md-6">
-                                <label for="owner_name" class="form-label">Nombre</label>
-                                <input type="text" name="owner_name" id="owner_name" class="form-control @error('owner_name') is-invalid @enderror" oninput="updatePreview()" value="{{ old('owner_name') }}" required>
-                                @error('owner_name')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label for="owner_phone" class="form-label">Teléfono</label>
-                                <input type="number" name="owner_phone" id="owner_phone" class="form-control @error('owner_phone') is-invalid @enderror" oninput="updatePreview()" value="{{ old('owner_phone') }}" required>
-                                @error('owner_phone')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
-                        </div>
-
+                        <input type="hidden" name="owner_name" id="owner_name" value="{{ $user->name }}">
+                        <input type="hidden" name="owner_phone" id="owner_phone" value="{{ $user->phone }}">
                         <!-- Servicios -->
                         <h4 class="mt-4">Seleccionar Servicios</h4>
                         <div class="row">
@@ -217,8 +201,10 @@
                                                         <h5 class="card-title">{{ $service->name }}</h5>
                                                         <p class="card-text" style="font-weight: bold">Precio Aprox: ${{ $service->price }}</p>
                                                         <p class="card-text">Descripción: {{ $service->description }}</p>
-                                                        <input type="checkbox" name="services[{{ $service->id }}]" value="{{ $service->id }}" class="form-check-input" onchange="selectService(this, '{{ $category->id }}')">
-                                                        <input type="number" name="services[{{ $service->id }}][quantity]" placeholder="Cantidad" class="form-control mt-2" min="1" style="display:none;">
+                                                        <input type="checkbox" name="services[{{ $service->id }}]" value="{{ $service->id }}" class="form-check-input" onchange="selectService(this, '{{ $category->id }}', {{ $service->quantifiable }})">
+                                                        @if($service->quantifiable)
+                                                            <input type="number" name="services[{{ $service->id }}][quantity]" placeholder="Cantidad" class="form-control mt-2" min="1" style="display:none;">
+                                                        @endif
                                                         <button type="button" id="confirm-btn-{{ $service->id }}" class="btn btn-primary mt-2" style="display:none;" disabled onclick="confirmService('{{ $service->id }}')">Confirmar</button>
                                                     </div>
                                                 </div>
@@ -239,20 +225,19 @@
             <div class="prevista-imagen-container">
                 <img id="prevista-imagen" class="prevista-imagen" src="{{ asset('images/imagen1.jpg') }}" alt="Vista previa" style="border: 2px solid rgba(255, 255, 255, 0.904)">
                 <div class="prevista-caption-previa">
-                    <h5 id="prevista-nombre">Nombre</h5>
                     <p id="prevista-fecha">Fecha: -</p>
                     <p id="prevista-horario">Hora: -</p>
                     <p id="prevista-invitados">Invitados: -</p>
+                    <p id="prevista-tipo-evento">Tipo de Evento: -</p>
                 </div>
             </div>
-            <p id="prevista-servicios">Servicios seleccionados:</p>
-            <div id="vista-previa-servicios" class="vista-previa mt-3">No hay servicios confirmados aún.</div>
+            <button id="SolicitarPaqueteBoton" type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#servicesModal"><strong>Ver Servicios Confirmados</strong></button>
             <button type="button" class="btn btn-success mt-3" id="crearPaqueteBoton" onclick="document.getElementById('hiddenSubmitButton').click()"><strong>Enviar Cotización</strong></button>
         </div>
     </div>
 
 <!-- Modal del calendario -->
-<div class="modal fade" id="calendarModal" tabindex="-1" aria-labelledby="calendarModalLabel" aria-hidden="true">
+<div class="modal fade" id="calendarModal" tabindex="-1" aria-labelledby="calendarModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content" style="background-color: rgb(27, 59, 23); border: 3px solid rgb(255, 255, 255);">
             <div class="modal-header">
@@ -272,13 +257,31 @@
                     <p><span class="badge bg-danger">Rojo</span> - No Disponible</p>
                     <p><span class="badge bg-secondary">Gris</span> - Fecha Inaccesible</p>
                 </div>
+                <button id="regresarPaqueteBoton" type="button" class="btn btn-primary mt-3 d-none" onclick="regresarAPaquete()">Regresar a Paquete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Servicios Confirmados -->
+<div class="modal fade" id="servicesModal" tabindex="-1" aria-labelledby="servicesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="background-color: rgb(27, 59, 23); border: 3px solid rgb(255, 255, 255);">
+            <div class="modal-header">
+                <h5 class="modal-title" id="servicesModalLabel">Servicios Confirmados</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="background-color: white;"></button>
+            </div>
+            <div class="modal-body">
+                <div id="modal-services-list" class="list-group">
+                    <!-- Los servicios confirmados se agregarán aquí dinámicamente -->
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <!-- Modal de Paquetes -->
-<div class="modal fade" id="packageModal" tabindex="-1" aria-labelledby="packageModalLabel" aria-hidden="true">
+<div class="modal fade" id="packageModal" tabindex="-1" aria-labelledby="packageModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-lg">
         <div class="modal-content" style="background-color: rgb(27, 59, 23); border: 3px solid rgb(255, 255, 255);">
             <div class="modal-header">
@@ -294,13 +297,13 @@
                                 <h5 id="packageName">Nombre</h5>
                                 <p id="packageDescription">Descripción: -</p>
                                 <p id="packagePrice">Precio: -</p>
-                                <p id="packageDates">Fechas: -</p>
                             </div>
                         </div>
                     </div>
                     <div class="col-12 col-lg-6 d-flex flex-column align-items-center">
                         <p id="packageServices"><strong>Servicios incluidos:</strong></p>
                         <ul id="packageServicesList" class="text-center"></ul>
+                        <p id="packageEndDate" class="mt-3">Fecha de Finalización: -</p>
                     </div>
                 </div>
                 <form id="packageForm" action="{{ route('cotizacionesclientes.store') }}" method="POST">
@@ -313,8 +316,11 @@
                     <input type="hidden" name="services" id="modal_services_input">
                     <div class="mb-3 row">
                         <div class="col-md-6">
-                            <label for="modal_date" class="form-label">Fecha</label>
-                            <input type="date" name="date" id="modal_date" class="form-control" required>
+                            <button id="crearPaqueteBoton" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#calendarModal" onclick="setCalendarModalContext('package')">
+                                Selecciona una Fecha
+                            </button>
+                            <input type="hidden" name="date" id="modal_selectedDate">
+                            <span id="modal_selectedDateText" class="selected-date"></span>
                         </div>
                         <div class="col-md-3">
                             <label for="modal_start_time_input" class="form-label">Hora de Inicio</label>
@@ -348,16 +354,9 @@
                         <label for="modal_otro_tipo_evento" class="form-label">Especificar Tipo de Evento</label>
                         <input type="text" name="otro_tipo_evento" id="modal_otro_tipo_evento" class="form-control">
                     </div>
-                    <div class="mb-3 row">
-                        <div class="col-md-6">
-                            <label for="owner_name" class="form-label">Nombre</label>
-                            <input type="text" name="owner_name" id="owner_name" class="form-control" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="owner_phone" class="form-label">Teléfono</label>
-                            <input type="text" name="owner_phone" id="owner_phone" class="form-control" required>
-                        </div>
-                    </div>
+                    <!-- Agregar estos campos ocultos en el modal -->
+                    <input type="hidden" name="owner_name" id="modal_owner_name" value="{{ $user->name }}">
+                    <input type="hidden" name="owner_phone" id="modal_owner_phone" value="{{ $user->phone }}">
                     <button type="submit" class="btn btn-success" id="crearCotizacionModalBoton"><strong>Enviar Cotización</strong></button>
                 </form>
             </div>
@@ -382,26 +381,45 @@
             const serviceCard = document.getElementById(`service-details-${serviceId}`);
             const quantityInput = serviceCard.querySelector(`input[name="services[${serviceId}][quantity]"]`);
             const confirmButton = serviceCard.querySelector(`#confirm-btn-${serviceId}`);
-    
-            if (!quantityInput || quantityInput.value.trim() === "") {
+        
+            if (quantityInput && !quantityInput.value.trim()) {
                 alert('Por favor, ingresa una cantidad válida.');
                 return;
             }
-    
-            if (confirmButton && confirmButton.disabled === false) {
-                confirmedServices[serviceId] = { categoryId, quantity: quantityInput.value.trim(), isConfirmed: true };
-    
-                serviceCard.classList.add('service-disabled');
-                serviceCard.classList.remove('service-enabled');
-                const checkbox = serviceCard.querySelector('input[type="checkbox"]');
-                if (checkbox) checkbox.disabled = true;
-    
-                confirmButton.disabled = true;
-    
-                actualizarVistaServicios();
-            } else {
-                console.log('No se puede confirmar el servicio aún.');
+
+            confirmedServices[serviceId] = {
+                categoryId,
+                quantity: quantityInput ? quantityInput.value.trim() : null,
+                isConfirmed: true
+            };
+
+            serviceCard.classList.add('service-disabled');
+            confirmButton.style.display = 'none';
+            if (quantityInput) {
+                quantityInput.style.display = 'none';
             }
+
+            actualizarVistaServicios();
+        }
+
+        let calendarModalContext = 'main';
+
+        function setCalendarModalContext(context) {
+            calendarModalContext = context;
+            const regresarPaqueteBoton = document.getElementById('regresarPaqueteBoton');
+            if (context === 'package') {
+                regresarPaqueteBoton.classList.remove('d-none');
+            } else {
+                regresarPaqueteBoton.classList.add('d-none');
+            }
+        }
+
+        function regresarAPaquete() {
+            const calendarModal = bootstrap.Modal.getInstance(document.getElementById('calendarModal'));
+            calendarModal.hide();
+
+            const packageModal = new bootstrap.Modal(document.getElementById('packageModal'));
+            packageModal.show();
         }
 
         function getPackageImageUrl(placeId) {
@@ -448,44 +466,59 @@
         });
     
         function openPackageModal(packageId) {
-            const package = @json($packages).find(pkg => pkg.id === packageId);
-            if (!package) return;
+    const package = @json($packages).find(pkg => pkg.id === packageId);
+    if (!package) return;
 
-            document.getElementById('packageId').value = package.id;
-            document.getElementById('modal_place_id').value = package.place.id;
-            document.getElementById('modal_max_people').value = package.max_people;
-            document.getElementById('packageName').innerText = package.name;
-            document.getElementById('packageDescription').innerText = `Descripción: ${package.description}`;
-            document.getElementById('packagePrice').innerText = `Precio: $${package.price}`;
-            document.getElementById('packageDates').innerText = `Fechas: ${package.start_date} - ${package.end_date}`;
+    document.getElementById('packageId').value = package.id;
+    document.getElementById('modal_place_id').value = package.place.id;
+    document.getElementById('modal_max_people').value = package.max_people;
+    document.getElementById('packageName').innerText = package.name;
+    document.getElementById('packageDescription').innerText = `Descripción: ${package.description}`;
+    document.getElementById('packagePrice').innerText = `Precio: $${package.price}`;
 
-            let packageImage;
-            switch (package.place.id) {
-                case 1:
-                    packageImage = '/images/imagen2.jpg';
-                    break;
-                case 2:
-                    packageImage = '/images/imagen7.jpg';
-                    break;
-                case 3:
-                    packageImage = '/images/imagen8.jpg';
-                    break;
-                default:
-                    packageImage = '/images/imagen1.jpg';
-            }
-            document.getElementById('packageImage').src = packageImage;
+    // Formatear la fecha de finalización
+    const endDate = new Date(package.end_date).toISOString().split('T')[0];
+    const today = new Date();
+    const endDateObj = new Date(endDate);
+    const packageEndDateElement = document.getElementById('packageEndDate');
 
-            const servicesList = document.getElementById('packageServicesList');
-            servicesList.innerHTML = '';
-            package.services.forEach(service => {
-                const li = document.createElement('li');
-                li.innerText = service.name;
-                servicesList.appendChild(li);
-            });
+    packageEndDateElement.innerText = `Fecha de Finalización: ${endDate}`;
 
-            const packageModal = new bootstrap.Modal(document.getElementById('packageModal'));
-            packageModal.show();
-        }
+    if (endDateObj <= today) {
+        packageEndDateElement.style.color = 'red';
+        packageEndDateElement.style.fontWeight = 'bold';
+    } else {
+        packageEndDateElement.style.color = 'white';
+        packageEndDateElement.style.fontWeight = 'normal';
+    }
+
+    let packageImage;
+    switch (package.place.id) {
+        case 1:
+            packageImage = '/images/imagen2.jpg';
+            break;
+        case 2:
+            packageImage = '/images/imagen7.jpg';
+            break;
+        case 3:
+            packageImage = '/images/imagen8.jpg';
+            break;
+        default:
+            packageImage = '/images/imagen1.jpg';
+    }
+    document.getElementById('packageImage').src = packageImage;
+
+    const servicesList = document.getElementById('packageServicesList');
+    servicesList.innerHTML = '';
+    package.services.forEach(service => {
+        const li = document.createElement('li');
+        li.innerText = service.name;
+        servicesList.appendChild(li);
+    });
+
+    const packageModal = new bootstrap.Modal(document.getElementById('packageModal'));
+    packageModal.show();
+}
 
         function validateGuestCount() {
             const maxPeopleInput = document.getElementById('modal_max_people');
@@ -518,57 +551,79 @@
         }
 
         document.getElementById('packageForm').onsubmit = function(e) {
-            e.preventDefault();
-            console.log('Formulario enviado');
+    e.preventDefault();
+    console.log('Formulario enviado');
 
-            if (!validateGuestCount()) {
-                return false;
-            }
+    if (!validateGuestCount()) {
+        return false;
+    }
 
-            const date = document.getElementById('modal_date').value;
-            const startTime = document.getElementById('modal_start_time_input').value;
-            const endTime = document.getElementById('modal_end_time_input').value;
+    const date = document.getElementById('modal_selectedDate');
+    const startTime = document.getElementById('modal_start_time_input');
+    const endTime = document.getElementById('modal_end_time_input');
+    const startDateTime = `${date.value} ${startTime.value}`;
+    let endDateTime = `${date.value} ${endTime.value}`;
 
-            const startDateTime = `${date} ${startTime}`;
-            let endDateTime = `${date} ${endTime}`;
+    const endHour = parseInt(endTime.value.split(':')[0], 10);
+    if (endHour >= 0 && endHour <= 3) {
+        const dateObj = new Date(`${date.value}T${endTime.value}`);
+        dateObj.setDate(dateObj.getDate() + 1);
+        const endDate = dateObj.toISOString().slice(0, 10);
+        endDateTime = `${endDate} ${endTime.value}`;
+    }
 
-            const endHour = parseInt(endTime.split(':')[0], 10);
-            if (endHour >= 0 && endHour <= 3) {
-                const dateObj = new Date(`${date}T${endTime}`);
-                dateObj.setDate(dateObj.getDate() + 1);
-                const endDate = dateObj.toISOString().slice(0, 10);
-                endDateTime = `${endDate} ${endTime}`;
-            }
+    const modalStartTime = document.getElementById('modal_start_time');
+    const modalEndTime = document.getElementById('modal_end_time');
+    const packageId = document.getElementById('packageId');
+    const modalPlaceId = document.getElementById('modal_place_id');
+    const modalServicesInput = document.getElementById('modal_services_input');
+    const modalGuestCount = document.getElementById('modal_guest_count');
+    const modalTypeEvent = document.getElementById('modal_type_event');
 
-            document.getElementById('modal_start_time').value = startDateTime;
-            document.getElementById('modal_end_time').value = endDateTime;
+    if (!date || !startTime || !endTime || !modalStartTime || !modalEndTime || !packageId || !modalPlaceId || !modalServicesInput || !modalGuestCount || !modalTypeEvent) {
+        console.error('Elementos no encontrados:', {
+            date: !!date,
+            startTime: !!startTime,
+            endTime: !!endTime,
+            modalStartTime: !!modalStartTime,
+            modalEndTime: !!modalEndTime,
+            packageId: !!packageId,
+            modalPlaceId: !!modalPlaceId,
+            modalServicesInput: !!modalServicesInput,
+            modalGuestCount: !!modalGuestCount,
+            modalTypeEvent: !!modalTypeEvent
+        });
+        return false;
+    }
 
-            const package = @json($packages).find(pkg => pkg.id === document.getElementById('packageId').value);
-            if (package && package.services) {
-                const servicesData = {};
-                package.services.forEach(service => {
-                    servicesData[service.id] = {
-                        quantity: null
-                    };
-                });
+    modalStartTime.value = startDateTime;
+    modalEndTime.value = endDateTime;
 
-                document.getElementById('modal_services_input').value = JSON.stringify(servicesData);
-            }
+    const package = @json($packages).find(pkg => pkg.id === packageId.value);
+    if (package && package.services) {
+        const servicesData = {};
+        package.services.forEach(service => {
+            servicesData[service.id] = {
+                quantity: null
+            };
+        });
 
-            console.log('Datos a enviar:', {
-                package_id: document.getElementById('packageId').value,
-                place_id: document.getElementById('modal_place_id').value,
-                start_time: startDateTime,
-                end_time: endDateTime,
-                date: date,
-                guest_count: document.getElementById('modal_guest_count').value,
-                type_event: document.getElementById('modal_type_event').value,
-                services: document.getElementById('modal_services_input').value ? 
-                JSON.parse(document.getElementById('modal_services_input').value) : {}
-            });
+        modalServicesInput.value = JSON.stringify(servicesData);
+    }
 
-            this.submit();
-        };
+    console.log('Datos a enviar:', {
+        package_id: packageId.value,
+        place_id: modalPlaceId.value,
+        start_time: startDateTime,
+        end_time: endDateTime,
+        date: date.value,
+        guest_count: modalGuestCount.value,
+        type_event: modalTypeEvent.value,
+        services: modalServicesInput.value ? JSON.parse(modalServicesInput.value) : {}
+    });
+
+    this.submit();
+};
 
         function toggleModalOtroTipoEvento() {
             const tipoEvento = document.getElementById('modal_type_event').value;
@@ -586,36 +641,31 @@
         }
 
         function actualizarVistaServicios() {
-            const vistaPrevia = document.getElementById('vista-previa-servicios');
-            vistaPrevia.innerHTML = '';
-    
-            const serviciosConfirmados = Object.entries(confirmedServices).filter(
-                ([, serviceData]) => serviceData.isConfirmed
-            );
-    
-            if (serviciosConfirmados.length === 0) {
-                vistaPrevia.innerHTML = '<p>No hay servicios confirmados aún.</p>';
-                return;
-            }
-    
-            const listaServicios = document.createElement('ul');
-            listaServicios.className = 'lista-servicios-confirmados';
-    
-            for (const [serviceId, serviceData] of serviciosConfirmados) {
-                const serviceItem = document.createElement('li');
-                serviceItem.className = 'service-item';
-                serviceItem.innerHTML = `
-                    <div class="service-info">
-                        <h4 class="service-name">${getServiceName(serviceId)}</h4>
-                        <p style="color: black;" class="service-quantity">Cantidad: ${serviceData.quantity || 'No especificada'}</p>
-                        <button class="btn btn-danger btn-sm" onclick="confirmarEliminacionServicio('${serviceId}')">Eliminar</button>
-                    </div>
-                `;
-                listaServicios.appendChild(serviceItem);
-            }
-    
-            vistaPrevia.appendChild(listaServicios);
-        }
+    const modalServicesList = document.getElementById('modal-services-list');
+    modalServicesList.innerHTML = '';
+
+    const serviciosConfirmados = Object.entries(confirmedServices).filter(
+        ([, serviceData]) => serviceData.isConfirmed
+    );
+
+    if (serviciosConfirmados.length === 0) {
+        modalServicesList.innerHTML = '<p>No hay servicios confirmados aún.</p>';
+        return;
+    }
+
+    for (const [serviceId, serviceData] of serviciosConfirmados) {
+        const serviceItem = document.createElement('div');
+        serviceItem.className = 'list-group-item list-group-item-action';
+        serviceItem.innerHTML = `
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">${getServiceName(serviceId)}</h5>
+                <button class="btn btn-danger btn-sm" onclick="confirmarEliminacionServicio('${serviceId}')">Eliminar</button>
+            </div>
+            <p class="mb-1">Cantidad: ${serviceData.quantity || 'No especificada'}</p>
+        `;
+        modalServicesList.appendChild(serviceItem);
+    }
+}
     
         function confirmarEliminacionServicio(serviceId) {
             const modalHtml = `
@@ -637,16 +687,16 @@
                     </div>
                 </div>
             `;
-    
+
             document.body.insertAdjacentHTML('beforeend', modalHtml);
             const confirmDeleteModal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
             confirmDeleteModal.show();
-    
+
             confirmDeleteModal._element.addEventListener('hidden.bs.modal', function () {
                 document.getElementById('confirmDeleteModal').remove();
             });
         }
-    
+
         function eliminarServicio(serviceId) {
             delete confirmedServices[serviceId];
             actualizarVistaServicios();
@@ -684,7 +734,7 @@
             servicesDiv.style.display = servicesDiv.style.display === 'block' ? 'none' : 'block';
         } 
     
-        function selectService(checkbox, categoryId) {
+        function selectService(checkbox, categoryId, isQuantifiable) {
             const selectedServiceId = checkbox.value;
             const isSelected = checkbox.checked;
             const serviceCard = checkbox.closest('.service-card');
@@ -694,21 +744,28 @@
             if (isSelected) {
                 selectedServices[selectedServiceId] = { categoryId, isSelected: true };
     
-                serviceQuantityInput.style.display = 'block';
-                confirmButton.style.display = 'block';
-                serviceQuantityInput.focus();
-    
-                serviceQuantityInput.addEventListener('input', () => {
+                if (isQuantifiable) {
+                    serviceQuantityInput.style.display = 'block';
+                    confirmButton.style.display = 'block';
+                    serviceQuantityInput.focus();
+
+                    serviceQuantityInput.addEventListener('input', () => {
                     confirmButton.disabled = !serviceQuantityInput.value.trim();
                 });
-    
+            } else {
+                confirmButton.style.display = 'block';
+                confirmButton.disabled = false;
+            }
+
                 confirmButton.addEventListener('click', () => confirmarServicio(selectedServiceId, categoryId));
             } else {
                 delete selectedServices[selectedServiceId];
                 delete confirmedServices[selectedServiceId];
-    
-                serviceQuantityInput.style.display = 'none';
-                serviceQuantityInput.value = '';
+
+                if (isQuantifiable) {
+                    serviceQuantityInput.style.display = 'none';
+                    serviceQuantityInput.value = '';
+                }
                 confirmButton.style.display = 'none';
                 confirmButton.disabled = true;
             }
@@ -820,6 +877,11 @@
             form.appendChild(generarInputOculto('type_event', typeEventValue));
             form.appendChild(generarInputOculto('place_id', placeId));
 
+            const ownerName = document.getElementById('owner_name').value;
+            const ownerPhone = document.getElementById('owner_phone').value;
+            form.appendChild(generarInputOculto('owner_name', ownerName));
+            form.appendChild(generarInputOculto('owner_phone', ownerPhone));
+
             let anyServiceConfirmed = false;
             for (let serviceId in confirmedServices) {
                 const service = confirmedServices[serviceId];
@@ -860,7 +922,7 @@
     
         window.onscroll = function() {
             const vistaPrevia = document.getElementById('previstaServicio');
-            const offset = Math.min(window.scrollY + 320, window.innerHeight - 300);
+            const offset = Math.min(window.scrollY + 400, window.innerHeight - 400);
             vistaPrevia.style.top = offset + 'px';
         };
     
@@ -948,39 +1010,6 @@
                 }
             });
 
-            function updatePreview() {
-                const name = document.getElementById('owner_name').value || 'Nombre';
-                const date = document.getElementById('date').value || '-';
-                const startTime = document.getElementById('start_time').value || '-';
-                const endTime = document.getElementById('end_time').value || '-';
-                const guests = document.getElementById('guest_count').value || '-';
-                const typeEvent = document.getElementById('type_event').value || 'Evento';
-
-                document.getElementById('prevista-nombre').innerText = name;
-                document.getElementById('prevista-fecha').innerText = `Fecha: ${date}`;
-                document.getElementById('prevista-horario').innerText = `Hora: ${startTime} - ${endTime}`;
-                document.getElementById('prevista-invitados').innerText = `Invitados: ${guests}`;
-                document.getElementById('prevista-tipo-evento').innerText = `Tipo de Evento: ${typeEvent}`;
-            }
-
-            const phoneInput = document.getElementById('owner_phone');
-            phoneInput.addEventListener('input', limitPhoneNumberLength);
-
-            function limitPhoneNumberLength() {
-                this.value = this.value.replace(/\D/g, '');
-                if (this.value.length > 10) {
-                    this.value = this.value.slice(0, 10);
-                }
-            }
-
-            const nameInput = document.getElementById('owner_name');
-            nameInput.addEventListener('input', limitNameLength);
-
-            function limitNameLength() {
-                if (this.value.length > 20) {
-                    this.value = this.value.slice(0, 20);
-                }
-            }
 
             const guestCountInput = document.getElementById('guest_count');
             guestCountInput.addEventListener('input', limitGuestCount);
@@ -1068,8 +1097,13 @@
                 dayButton.classList.add('bg-success');
                 dayButton.addEventListener('click', function() {
                     if (!dayButton.classList.contains('bg-danger')) {
-                        selectedDateInput.value = this.dataset.date;
-                        document.querySelector('.selected-date').innerText = this.dataset.date;
+                        if (calendarModalContext === 'main') {
+                            selectedDateInput.value = this.dataset.date;
+                            document.querySelector('.selected-date').innerText = this.dataset.date;
+                        } else if (calendarModalContext === 'package') {
+                            document.getElementById('modal_selectedDate').value = this.dataset.date;
+                            document.getElementById('modal_selectedDateText').innerText = this.dataset.date;
+                        }
 
                         // Remove bg-primary from all buttons
                         document.querySelectorAll('.day.bg-primary').forEach(btn => {
@@ -1128,9 +1162,50 @@
     generateCalendar();
 });
     
+function updatePreview() {
+    const date = document.getElementById('selectedDate').value || '-';
+    const startTime = document.getElementById('start_time').value || '-';
+    const endTime = document.getElementById('end_time').value || '-';
+    const guests = document.getElementById('guest_count').value || '-';
+    const typeEvent = document.getElementById('type_event').value || 'Evento';
+
+    document.getElementById('prevista-fecha').innerText = `Fecha: ${date}`;
+    document.getElementById('prevista-horario').innerText = `Hora: ${startTime} - ${endTime}`;
+    document.getElementById('prevista-invitados').innerText = `Invitados: ${guests}`;
+    document.getElementById('prevista-tipo-evento').innerText = `Tipo de Evento: ${typeEvent}`;
+
+    const serviciosConfirmados = Object.entries(confirmedServices).filter(
+        ([, serviceData]) => serviceData.isConfirmed
+    );
+
+    const vistaPreviaServicios = document.getElementById('vista-previa-servicios');
+    vistaPreviaServicios.innerHTML = '';
+
+    if (serviciosConfirmados.length === 0) {
+        vistaPreviaServicios.innerHTML = '<p>No hay servicios confirmados aún.</p>';
+        return;
+    }
+
+    const listaServicios = document.createElement('ul');
+    listaServicios.className = 'lista-servicios-confirmados';
+
+    for (const [serviceId, serviceData] of serviciosConfirmados) {
+        const serviceItem = document.createElement('li');
+        serviceItem.className = 'service-item';
+        serviceItem.innerHTML = `
+            <div class="service-info">
+                <h4 class="service-name">${getServiceName(serviceId)}</h4>
+                <p style="color: black;" class="service-quantity">Cantidad: ${serviceData.quantity || 'No especificada'}</p>
+                <button class="btn btn-danger btn-sm" onclick="confirmarEliminacionServicio('${serviceId}')">Eliminar</button>
+            </div>
+        `;
+        listaServicios.appendChild(serviceItem);
+    }
+
+    vistaPreviaServicios.appendChild(listaServicios);
+}
+
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"></script>
-    
-</body>
-</html>
+@endsection

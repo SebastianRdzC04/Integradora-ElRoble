@@ -122,6 +122,42 @@ class LoginController extends Controller
         $user = session('user');
         return view('pages.sesion.google.datacomplete', compact('user'));
     }
+
+    public function handleFacebookCallback()
+{
+    $user = Socialite::driver('facebook')->user();
+
+    session(['facebook' => $user]);
+    $userExist = User::where('external_id', $user->id)->where('external_auth', 'facebook')->first();
+
+    if ($userExist) {
+        Auth::login($userExist);
+        return redirect()->intended(RouteServiceProvider::HOME);
+    }
+
+    $userIsLogin = User::where('email', $user->email)->first();
+
+    if ($userIsLogin) {
+        User::where('id', $userIsLogin->id)->update([
+            'avatar' => $user->avatar,
+            'external_id' => $user->id,
+            'external_auth' => 'facebook',
+            'email_verified_at' => now(),
+        ]);
+
+        Auth::login($userIsLogin);
+        return redirect()->intended(RouteServiceProvider::HOME);
+    }
+
+    return redirect()->route('datafacebook');
+}
+
+public function createdatacompletefacebook()
+{
+    $user = session('user');
+    return view('pages.sesion.facebook.datacomplete', compact('user'));
+}
+
     
 }
 

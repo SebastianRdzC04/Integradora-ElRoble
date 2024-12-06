@@ -26,7 +26,7 @@ class PaquetesAdminController extends Controller
             'name' => 'required|max:50',
             'description' => 'required|max:255',
             'max_people' => 'required|integer|min:30',
-            'price' => 'required|numeric|min:1000',
+            'price' => 'required|numeric|min:1000|max:99999.99',
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after_or_equal:start_date',
             'services' => 'array',

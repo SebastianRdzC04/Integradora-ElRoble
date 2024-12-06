@@ -40,7 +40,8 @@
                                     </td>
                                     <td>{{ $event->quote->type_event }}</td>
                                     <td>{{ $event->date }}</td>
-                                    <td>{{ Carbon::parse($event->estimated_start_time)->format('h:iA')}} - {{ Carbon::parse($event->estimated_end_time)->format('h:iA') }}
+                                    <td>{{ Carbon::parse($event->estimated_start_time)->format('h:iA') }} -
+                                        {{ Carbon::parse($event->estimated_end_time)->format('h:iA') }}
                                     </td>
                                     <td>{{ $event->status }}</td>
                                     <td>{{ $event->total_price }}</td>
@@ -51,7 +52,6 @@
                                             </option>
                                             <option value="" data-bs-toggle="modal"
                                                 data-bs-target="#modal{{ $event->id }}">Ver Servicios</option>
-                                            <option value="">Eliminar</option>
                                         </select>
                                         <div class="modal fade" id="modal{{ $event->id }}" tabindex="-1"
                                             aria-labelledby="modalLabel{{ $event->id }}" aria-hidden="true">
@@ -59,14 +59,11 @@
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <h5 class="modal-title" id="modalLabel{{ $event->id }}">
-                                                            Detalles del evento</h5>
+                                                            Servicios Incluidos</h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <div>
-                                                            <h3>Servicios incluidos</h3>
-                                                        </div>
                                                         <table class="table">
                                                             <thead>
                                                                 <tr>

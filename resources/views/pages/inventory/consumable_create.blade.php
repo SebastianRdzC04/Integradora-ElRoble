@@ -7,6 +7,9 @@
 @endsection
 
 @section('content')
+    <aside>
+        <a href="{{route('dashboard.consumables')}}" class="btn btn-primary">Volver a Consumibles</a>
+    </aside>
 
     <body>
         <div class="modal fade" id="agregarCategoriaModal">
@@ -31,10 +34,10 @@
                 </div>
             </div>
         </div>
-        <div class="container mt-2">
-            <h2 class="text-center mb-3">Agregar Consumible</h2>
-            <div class="row justify-content-center">
-                <div class="col-md-8">
+        <div class="container mt-2 ">
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-8 border shadow pt-4">
+                    <h2 class="text-center mb-3">Agregar Consumible</h2>
                     <form action="{{ route('consumables.store') }}" method="POST">
                         @csrf
                         <div class="mb-3">

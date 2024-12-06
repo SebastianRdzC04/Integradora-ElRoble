@@ -69,8 +69,8 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-8">
+        <div class="row justify-content-center">
+            <div class="col-10">
                 <div class="card border shadow mb-4">
                     <div id="calendar"></div>
                 </div>
@@ -111,9 +111,11 @@
         if ($currentEvent) {
             $eventos[] = [
                 'title' =>
-                    $event->quote->type_event .
+                    $currentEvent->quote->type_event .
                     ' de ' .
-                    ($event->quote->user ? $event->quote->user->person->first_name : $event->quote->owner_name),
+                    ($currentEvent->quote->owner_name
+                        ? $currentEvent->quote->owner_name
+                        : $currentEvent->quote->user->person->first_name),
                 'start' => $currentEvent->date,
                 'color' => 'red',
                 'url' => route('dashboard.event.now'),
