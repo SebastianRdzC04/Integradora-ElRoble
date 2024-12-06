@@ -207,4 +207,13 @@ class CotizacionesClientesController extends Controller
     
         return response()->json($cotizations);
     }
+
+    public function nuevaCotizacion()
+    {
+        $places = Place::all();
+        
+        return view('cotizacionesnuevasclientes', [
+            'places' => $places
+        ]);
+    }
 }
