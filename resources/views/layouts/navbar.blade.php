@@ -1,85 +1,56 @@
-<!-- resources/views/layouts/navbar.blade.php -->
-<style>
-    #IniciarSesionBoton {
-        background-color: #2b1a06;
-        padding: 10px;
-        border-radius: 100px;
-        color: white;
-        margin-top: 20px;
-        margin-bottom: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.904);
-        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
-        text-decoration: none;
-    }
+<link rel="stylesheet" href="{{ asset('css/app.css') }}">
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
-    .navbar {
-        background-color: #000000a1 !important;
-    }
+<header class="header">
+    <a href="#" class="logo">Logo</a>
+    <nav class="navbar" style="text-align: center;">
+            <a href="#">Inicio</a>
+            <a href="#">Haz tu <br>cotización</a>
+            <a href="#">¿Comó Llegar?</a>
+            <a href="#" style="text-align: center;">Paquetes <br>y<br> servicios</a>
+        <a href="#" id="smalllogin">Iniciar Sesion o crear cuenta</a>
+    </nav>
 
-    .navbar-brand,
-    .nav-link {
-        color: white !important;
-    }
+    <nav class="navbar">
+        <a href="#" style="text-align: center;">Iniciar Sesion <br>o<br> crear cuenta</a>
+    </nav>
+    
+    <i class='bx bx-menu' id="menu-icon"></i>
+</header>
+<div class="nav-bg"></div>
 
-    .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.75)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
-    }
+<script>
+const menuIcon = document.querySelector('#menu-icon');
+const navbar = document.querySelector('.navbar');
+const navbg = document.querySelector('.nav-bg');
+menuIcon.addEventListener('click', () => {
+    menuIcon.classList.toggle('bx-x');
+    navbar.classList.toggle('active');
+    navbg.classList.toggle('active');
+});
+//para la animacion de cambio de color del navbar
+window.addEventListener('scroll', function () {
+    var header =document.querySelector('header');
+    header.classList.toggle('down',window.scrollY>0);
+});
 
-    .navbar-toggler {
-        border-color: rgba(255, 255, 255, 0.5) !important;
-    }
-</style>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">
-            <img src="{{ asset('images/logobranding.png') }}" width="170" height="45"
-                class="d-inline-block align-top" style="margin-right: 10px" alt="">
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="/">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/cotizaciones">Cotizaciones</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/historial">Historial</a>
-                </li>
-                <li>
-                    <a class="nav-link" href=""></a>
-                </li>
-                @if (auth()->check())
-                    @if (auth()->user()->roles->contains('id', 2))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
-                        </li>
-                    @endif
+const header = document.querySelector('.header');
+let lastScrollY = 0;
 
-                @endif
-            </ul>
-            @if (auth()->check())
-                <form class="ms-auto" action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <button class="nav-link" id="IniciarSesionBoton" href="{{ route('logout') }}">Cerrar Sesión</button>
-                        </li>
-                    </ul>
-                </form>
-            @endif
-            @if (!auth()->check())
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a href="/login" id="IniciarSesionBoton">Iniciar Sesión / Registrarse</a>
-                    </li>
-                </ul>
-            @endif
+window.addEventListener('scroll', () => {
+  const currentScrollY = window.scrollY;
 
-        </div>
-    </div>
-</nav>
+  if (currentScrollY > lastScrollY) {
+    // Scrolleando hacia abajo
+    const maxOffset = parseFloat(getComputedStyle(header).getPropertyValue('--nav-height')) - 20; // Ajustar para dejar visible
+    const offset = Math.min(currentScrollY, maxOffset) + 20;
+    header.style.transform = `translateY(-${offset}px)`;
+  } else {
+    // Scrolleando hacia arriba
+    header.style.transform = `translateY(0)`;
+  }
+
+  lastScrollY = currentScrollY;
+});
+</script>

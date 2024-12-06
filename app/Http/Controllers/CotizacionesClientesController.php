@@ -211,9 +211,21 @@ class CotizacionesClientesController extends Controller
     public function nuevaCotizacion()
     {
         $places = Place::all();
-        
+        $today = Carbon::today();
+    
+        $cotizations = Quote::select(DB::raw('date, COUNT(*) as count, MAX(status) as status'))
+            ->whereBetween('date', [$today->startOfMonth(), $today->copy()->addMonths(2)->endOfMonth()])
+            ->groupBy('date')
+            ->get();
+    
+        $categories = ServiceCategory::all();
+        $services = Service::all();
+    
         return view('cotizacionesnuevasclientes', [
-            'places' => $places
+            'places' => $places,
+            'cotizations' => $cotizations,
+            'categories' => $categories,
+            'services' => $services,
         ]);
     }
 }
