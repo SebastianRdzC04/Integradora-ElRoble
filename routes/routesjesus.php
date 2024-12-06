@@ -12,7 +12,6 @@ use App\Http\Controllers\IncidentController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\VerifyPhoneController;
 use App\Models\InventoryCategory;
-use App\Models\SerialNumberType;
 use Laravel\Socialite\Facades\Socialite;
 
 //Aqui esta el login de Facebook
