@@ -46,7 +46,6 @@ class DatabaseSeeder extends Seeder
         $usuario->save();
         $usuario->roles()->attach(1);
         $usuario->roles()->attach(2);
-        $usuario->roles()->attach(3);
 
         $usuario = new User();
         $usuario->nickname = 'JesusElpro';
@@ -56,7 +55,6 @@ class DatabaseSeeder extends Seeder
         $usuario->person_id = 2;
         $usuario->save();
         $usuario->roles()->attach(2);
-        $usuario->roles()->attach(3);
 
         $usuario = new User();
         $usuario->nickname = 'AxelYYa';
@@ -65,7 +63,8 @@ class DatabaseSeeder extends Seeder
         $usuario->password = Hash::make('1234567890');
         $usuario->person_id = 3;
         $usuario->save();
-        $usuario->roles()->attach(3);
+        $usuario->roles()->attach(2);
+
 
 
 

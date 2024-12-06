@@ -13,15 +13,20 @@ use App\Models\InventoryCategory;
 use Laravel\Socialite\Facades\Socialite;
 
 //Aqui esta el login de Facebook lo mismo que google
-Route::get('auth/facebook', [RegisterUserController::class, 'redirectToFacebook'])->name('login.facebook');
-Route::get('/auth/facebook/callback', [LoginController::class, 'handleFacebookCallback'])->name('facebook.callback');
-Route::get('/auth/facebook/datacomplete', [LoginController::class, 'createdatacompletefacebook'])->name('datafacebook');
-Route::post('/registerfacebook/store', [LoginController::class, 'storeFacebook'])->name('registerfacebook.store');
 
-//esta es la vista basica de google donde te pide la cuenta
-Route::get('/login-google', function () {
-    return Socialite::driver('google')->redirect();
-})->name('login.google');
+Route::middleware('guest')->group(function()
+{
+    Route::get('auth/facebook', [RegisterUserController::class, 'redirectToFacebook'])->name('login.facebook');
+    Route::get('/auth/facebook/callback', [LoginController::class, 'handleFacebookCallback'])->name('facebook.callback');
+    Route::get('/auth/facebook/datacomplete', [LoginController::class, 'createdatacompletefacebook'])->name('datafacebook');
+    Route::post('/registerfacebook/store', [RegisterUserController::class, 'storeFacebook'])->name('registerfacebook.store');
+
+    //esta es la vista basica de google donde te pide la cuenta
+    Route::get('/login-google', function () {
+        return Socialite::driver('google')->redirect();
+    })->name('login.google');
+
+});
 
 // Html con politicas de uso, privacidad y de servicio publicas :)
 // facebook las requeria y google son opcionales
@@ -31,11 +36,7 @@ Route::view('/policy/delete/data', 'pages.policy.deletedata');
 
 
 //Uso de Ajax con JQuery para el filtrado de datos para el reporte de incidentes
-Route::get('/filter/select/report', [IncidentController::class,'filterDataIncidentReport'])->name('filterselectedcategories.employee');
-Route::post('/create/incident',[IncidentController::class,'store'])->name('incident.store');
-Route::post('/validate/incidents/inventory',[IncidentController::class,'saveItems'])->name('saveItems');
-Route::get('/categories/index',[IncidentController::class,'getCategories'])->name('getCategories');
-Route::get('/incident',[IncidentController::class,'create'])->name('incident.create');
+
 
 
 //rutas de inicio de sesion, recuperacion de contraseña y creacion de cuenta
@@ -95,9 +96,8 @@ Route::middleware('auth')->group(function(){
     Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
 });
 
+
 //rutas para el crud de consumables --------------------------------------
-Route::get('consumable/create',[ConsumableController::class,'create'])->name('consumables.create');
-Route::post('consumable/store',[ConsumableController::class,'store'])->name('consumables.store');
 
 
 //rutas de restablecimiento de contraseña
@@ -114,20 +114,35 @@ Route::get('/notverified', function () {
 /*aqui ya seria cuando el usuario mande la cotizacion 
 dentro de aqui  
 */
-
+/*
 Route::get('/prueba', function () {
     return view('welcome');
 })->middleware('auth','verified');
 
+*/
+
 //estos son los modales de agregar inventario con sus filtros los post se obtienen con AJAX
-Route::get('/add/inventory/all',function () { 
-    $categories = InventoryCategory::all();
-    return view('pages.inventory.inventory_create',compact('categories'));
-})->name('inventory');
-Route::get('/inventory/consult/number' ,[InventoryController::class,'filterDataCategories'])->name('filtertest');
-Route::post('/add/category', [InventoryController::class,'newCategory'])->name('newcategory.store');
-Route::post('/add/inventory',[InventoryController::class,'addInventory'])->name('inventoryadd.store');
-Route::post('/add/code',[InventoryController::class,'addNewCodeOrUpdate'])->name('codeadd.store');
+
+Route::middleware(['auth' ,'superadmin'])->group(function () {
+
+    Route::get('consumable/create',[ConsumableController::class,'create'])->name('consumables.create');
+    Route::post('consumable/store',[ConsumableController::class,'store'])->name('consumables.store');
+    Route::get('/filter/select/report', [IncidentController::class,'filterDataIncidentReport'])->name('filterselectedcategories.employee');
+    Route::post('/create/incident',[IncidentController::class,'store'])->name('incident.store');
+    Route::post('/validate/incidents/inventory',[IncidentController::class,'saveItems'])->name('saveItems');
+    Route::get('/categories/index',[IncidentController::class,'getCategories'])->name('getCategories');
+    Route::get('/incident',[IncidentController::class,'create'])->name('incident.create');
+
+
+    Route::get('/add/inventory/all',function () { 
+        $categories = InventoryCategory::all();
+        return view('pages.inventory.inventory_create',compact('categories'));
+    })->name('inventory');
+    Route::get('/inventory/consult/number' ,[InventoryController::class,'filterDataCategories'])->name('filtertest');
+    Route::post('/add/category', [InventoryController::class,'newCategory'])->name('newcategory.store');
+    Route::post('/add/inventory',[InventoryController::class,'addInventory'])->name('inventoryadd.store');
+    Route::post('/add/code',[InventoryController::class,'addNewCodeOrUpdate'])->name('codeadd.store');
+});
 
 //estos son los mensajes con twilio para el OTP de verificacion
 Route::get('/phone/verify',[VerifyPhoneController::class, 'create'])->name('verifyphone.get');

@@ -127,7 +127,7 @@ class LoginController extends Controller
 {
     $user = Socialite::driver('facebook')->user();
 
-    session(['user' => $user]);
+    session(['facebook' => $user]);
     $userExist = User::where('external_id', $user->id)->where('external_auth', 'facebook')->first();
 
     if ($userExist) {

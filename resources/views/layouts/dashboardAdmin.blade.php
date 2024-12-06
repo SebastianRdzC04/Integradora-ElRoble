@@ -256,7 +256,7 @@
             </div>
             <div style="resize: none; width: 100%; max-height: 85vh; overflow-x:hidden; overflow-y: auto;">
                 <ul class="sidebar-nav">
-                    @if (auth()->user()->roles->contains('id', 3))
+                    @if (auth()->user()->roles->contains('id', 2))
                         <li class="sidebar-item">
                             <a href="#" class="sidebar-link">
                                 <img src="https://lh3.googleusercontent.com/a/ACg8ocL87_YvuvpyJQMCkj8DgnlG9qKUx4z4O0z-uaLGRd8z7eiyqA=s96-c"

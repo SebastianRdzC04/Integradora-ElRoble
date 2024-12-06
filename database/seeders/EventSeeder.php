@@ -13,6 +13,7 @@ class EventSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create();
+        $today = Carbon::now()->startOfDay();
         
         // Get quotes that are 'pagada' status
         $quotes = Quote::where('status', 'pagada')->where('id', '!=', 1)->get();
@@ -22,7 +23,7 @@ class EventSeeder extends Seeder
             'quote_id' => 1,
             'user_id' => 1,
             'date' => Carbon::now()->format('Y-m-d'),
-            'status' => 'pendiente',
+            'status' => 'Pendiente',
             'estimated_start_time' => '18:00:00',
             'estimated_end_time' => '23:00:00',
             'start_time' => null,
@@ -40,7 +41,6 @@ class EventSeeder extends Seeder
             'updated_at' => now()
         ]);
 
-        // Crear eventos para cada cotización pagada
         foreach ($quotes as $quote) {
             $total_price = $quote->estimated_price;
             $advance = $total_price * 0.30;
@@ -50,15 +50,18 @@ class EventSeeder extends Seeder
             $estimated_end = new Carbon($quote->end_time);
             $duration = $estimated_start->diffInHours($estimated_end);
             
+            $eventDate = Carbon::parse($quote->date)->startOfDay();
+            $status = $eventDate->lt($today) ? 'Finalizado' : 'Pendiente';
+            
             Event::create([
                 'quote_id' => $quote->id,
                 'user_id' => $quote->user_id,
-                'date' => $quote->date, // Usar la fecha de la cotización original
-                'status' => 'pendiente',
+                'date' => $quote->date,
+                'status' => $status,
                 'estimated_start_time' => $quote->start_time,
                 'estimated_end_time' => $quote->end_time,
-                'start_time' => null,
-                'end_time' => null,
+                'start_time' => $status === 'Finalizado' ? $quote->start_time : null,
+                'end_time' => $status === 'Finalizado' ? $quote->end_time : null,
                 'duration' => $duration,
                 'chair_count' => $faker->numberBetween(50, 200),
                 'table_count' => $faker->numberBetween(5, 20),

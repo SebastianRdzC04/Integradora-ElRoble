@@ -22,6 +22,9 @@ input[type="number"] {
     </style>
     @endsection
 @section('content')
+<aside>
+    <a href="{{route('dashboard.inventory')}}" class="btn btn-primary">Ir a Inventario</a>
+</aside>
     
 
 <div class="container mt-4 d-flex justify-content-center">
