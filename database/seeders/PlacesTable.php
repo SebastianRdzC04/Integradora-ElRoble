@@ -20,23 +20,24 @@ class PlacesTable extends Seeder
             [
                 'name' => 'Quinta',
                 'description' => 'Quinta con alberca',
-                'max_guests' => 50
+                'max_guests' => 50,
             ],
             [
                 'name' => 'Salon',
                 'description' => 'Salón elegante ',
-                'max_guests' => 60
+                'max_guests' => 60,
             ],
             [
                 'name' => 'Quinta y Salón',
                 'description' => 'Conjunto de Quinta y Salón para fiestas grandes',
-                'max_guests' => 100
+                'max_guests' => 100,
             ],
             ];
         foreach ($places as $place) {
             Place::create([
                 'name' => $place['name'],
-                'description' => $place['description']
+                'description' => $place['description'],
+                'max_guests' => $place['max_guests']
             ]);
         }
     }
