@@ -16,6 +16,8 @@ return new class extends Migration
         Schema::create('service_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name', 50)->unique();
+            $table->string('description', 100)->nullable();
+            $table->string('image_path')->nullable();
             $table->timestamps();
         });
     }

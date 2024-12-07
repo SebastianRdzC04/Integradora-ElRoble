@@ -19,7 +19,7 @@ class InventoryTable extends Seeder
             $inventory = new Inventory();
             $inventory->serial_number_type_id = 1;
             $inventory->number = $j;
-            $inventory->description = 'Silla negra normal';
+            $inventory->description = 'Silla Negra Normal';
             $inventory->price = 90.00;
             $inventory->save();
         }
@@ -27,7 +27,7 @@ class InventoryTable extends Seeder
             $inventory = new Inventory();
             $inventory->serial_number_type_id = 2;
             $inventory->number = $i;
-            $inventory->description = 'Sillas chicas para niños';
+            $inventory->description = 'Sillas Chicas para Niños';
             $inventory->price = 70.00;
             $inventory->save();
         }
@@ -35,7 +35,7 @@ class InventoryTable extends Seeder
             $inventory = new Inventory();
             $inventory->serial_number_type_id = 3;
             $inventory->number = $i;
-            $inventory->description = 'Mesa cuadrada para 8 personas';
+            $inventory->description = 'Mesa Cuadrada para 8 Personas';
             $inventory->price = 500.00;
             $inventory->save();
         }
@@ -43,7 +43,7 @@ class InventoryTable extends Seeder
             $inventory = new Inventory();
             $inventory->serial_number_type_id = 4;
             $inventory->number = $i;
-            $inventory->description = 'Mesa rectangular para 10 personas';
+            $inventory->description = 'Mesa Rectangular para 10 Personas';
             $inventory->price = 600.00;
             $inventory->save();
         }
