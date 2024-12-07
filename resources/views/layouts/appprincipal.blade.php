@@ -25,7 +25,7 @@
     <!--dentro de aqui debe de ir todo el contenido de la pagina-->
 
 <!--importando el blade del carousel-->
-    @include('layouts.carousel.carousel')
+    @include('startblades.carousel')
 
     <section id="paquetes">
     <div class="slider">
@@ -61,7 +61,7 @@
             <button id="prev"><</button>
         </div>
     </section>
-    @include('layouts.carousel.carousel')
+    @include('startblades.carousel')
 
     <section id="form">
 
@@ -72,7 +72,7 @@
     </section>
 
     <section id="images">
-
+    @include('startblades.owlimages')
     </section>
     
   </main>
