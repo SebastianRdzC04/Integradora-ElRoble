@@ -1,3 +1,16 @@
+@php
+    /* Estas es la consulta para obtener las imagenes del carrusel cuando se suban al S3 De amazon
+    use App\Models\Service;
+    use Illuminate\Support\Facades\DB;
+
+    $serviciosMasCotizados = DB::table('quotes_services')->select('service_id', DB::raw('COUNT(*) as total_cotizaciones'))->groupBy('service_id')->orderByDesc('total_cotizaciones')->limit(7)->get();
+
+    $idsServicios = $serviciosMasCotizados->pluck('service_id');
+
+    $servicios = Service::whereIn('id', $idsServicios)->get();
+    */
+@endphp
+
 <section id="tranding" style="mask-image: linear-gradient(to top, #000000 91%, #91ef0400); background-color: antiquewhite;">
       <div class="container">
         <h3 class="text-center section-subheading">- popular Delivery -</h3>
