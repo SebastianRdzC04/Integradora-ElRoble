@@ -18,7 +18,8 @@
     }
 </style>
 
-<div class="carousel">
+<div class="carousel" style="mask-image: linear-gradient(to top,#000000 91%, #91ef0400); background-color:antiquewhite; mask-image:linear-gradient(#000000 91%, #91ef0400);">
+        Paquetes
     <a href="#one" class="carousel-item">
         <img src="{{ asset('images/imagen1.jpg') }}">
     </a>
