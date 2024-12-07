@@ -28,17 +28,10 @@
                 <h1 class="food-price">$20</h1>
                 <div class="tranding-slide-content-bottom">
                   <h2 class="food-name">
-                    Special Pizza
+                    Aqui va el nombre del servicio que bien
                   </h2>
                   <h3 class="food-rating">
-                    <span>4.5</span>
-                    <div class="rating">
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                    </div>
+                    <span>si arreglaran las migraciones ya verian cambios aqui</span>
                   </h3>
                 </div>
               </div>
