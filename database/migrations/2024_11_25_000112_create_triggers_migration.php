@@ -187,6 +187,28 @@ return new class extends Migration
                 END IF;
             END
         ');
+        DB::unprepared('
+            CREATE TRIGGER prevent_advance_exceeding_price_insert
+            BEFORE INSERT ON quotes
+            FOR EACH ROW
+            BEGIN
+                IF NEW.espected_advance > NEW.estimated_price THEN
+                    SIGNAL SQLSTATE "45000"
+                    SET MESSAGE_TEXT = "El anticipo no puede ser mayor al precio estimado";
+                END IF;
+            END
+        ');
+        DB::unprepared('
+            CREATE TRIGGER prevent_advance_exceeding_price_update
+            BEFORE UPDATE ON quotes
+            FOR EACH ROW
+            BEGIN
+                IF NEW.espected_advance > NEW.estimated_price THEN
+                    SIGNAL SQLSTATE "45000"
+                    SET MESSAGE_TEXT = "El anticipo no puede ser mayor al precio estimado";
+                END IF;
+            END
+        ');
     }
     public function down()
     {
@@ -202,5 +224,7 @@ return new class extends Migration
         DB::unprepared('DROP TRIGGER IF EXISTS prevent_exceeding_maximum_stock_insert');
         DB::unprepared('DROP TRIGGER IF EXISTS prevent_minimum_exceeding_maximum_insert');
         DB::unprepared('DROP TRIGGER IF EXISTS prevent_minimum_exceeding_maximum_update');
+        DB::unprepared('DROP TRIGGER IF EXISTS prevent_advance_exceeding_price_insert');
+        DB::unprepared('DROP TRIGGER IF EXISTS prevent_advance_exceeding_price_update');
     }
 };

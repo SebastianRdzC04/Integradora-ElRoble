@@ -47,8 +47,8 @@
                                 </option>
                                 <option data-bs-toggle="modal" data-bs-target="#modal2" value="">Ver Consumibles
                                 </option>
-                                @if ($event->status == 'Pendiente' || $event->status == 'En espera' || $event->status == 'En proceso')
-                                    <option value="{{ route('incident.create') }}">Incidencias</option>
+                                @if ($event->status == 'En proceso')
+                                    <option value="{{ route('incident.create') }}">Incidencia</option>
                                 @endif
                             </select>
                             <div class="modal fade" id="endEvent">
@@ -190,7 +190,9 @@
                                                             <th>Descripcion</th>
                                                             <th>Precio</th>
                                                             <th>Costo</th>
-
+                                                            @if ($event->status == 'Pendiente' || $event->status == 'En espera')
+                                                                <th>Acciones</th>
+                                                            @endif
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -201,7 +203,11 @@
                                                                     <td> {{ $service->pivot->description }} </td>
                                                                     <td> {{ $service->pivot->price }} </td>
                                                                     <td> {{ $service->pivot->cost }} </td>
-
+                                                                    @if ($event->status == 'Pendiente' || $event->status == 'En espera')
+                                                                        <td>
+                                                                            <p>Servicios incluidos con paquete</p>
+                                                                        </td>
+                                                                    @endif
                                                                 </tr>
                                                             @endforeach
                                                         @endif
@@ -211,63 +217,24 @@
                                                                     <td> {{ $service->name }} </td>
                                                                     <td> {{ $service->pivot->description }} </td>
                                                                     <td> {{ $service->pivot->price }} </td>
-                                                                    <td> {{ $service->pivot->cost }} </td>
+                                                                    <td> {{ $service->pivot->coast }} </td>
+                                                                    @if ($event->status == 'Pendiente' || $event->status == 'En espera')
+                                                                        <td>
+                                                                            <select name="" id=""
+                                                                                class="form-select alv">
+                                                                                <option value="">
+                                                                                    opciones</option>
+                                                                                <option data-bs-toggle="modal"
+                                                                                    data-bs-target="#modalEditS{{ $service->pivot->id }}"
+                                                                                    value="">Editar</option>
+                                                                                <option data-bs-toggle="modal"
+                                                                                    data-bs-target="#deleteService{{ $service->pivot->id }}"
+                                                                                    value="">Eliminar</option>
+                                                                            </select>
+                                                                        </td>
+                                                                    @endif
 
                                                                 </tr>
-                                                                <div class="modal fade"
-                                                                    id="modal{{ $service->pivot->id }}"
-                                                                    aria-labelledby="modalLabel{{ $service->pivot->id }}"
-                                                                    aria-hidden="true">
-                                                                    <div
-                                                                        class="modal-dialog modal-lg modal-dialog-centered">
-                                                                        <div class="modal-content">
-                                                                            <div class="modal-header">
-
-                                                                            </div>
-                                                                            <div class="modal-body">
-                                                                                <h3>Aqui ira el formulario</h3>
-                                                                                <div>
-                                                                                    <form method="POST"
-                                                                                        action="{{ route('dashboard.quote.status', $service->pivot->id) }}">
-                                                                                        @csrf
-                                                                                        <div class="mb-3">
-                                                                                            <label for="cantidad"
-                                                                                                class="form-label">Cantidad</label>
-                                                                                            <input class="form-control"
-                                                                                                type="number"
-                                                                                                name="cantidad"
-                                                                                                value="0">
-                                                                                        </div>
-                                                                                        <div class="mb-3">
-                                                                                            <label class="form-label"
-                                                                                                for="precio">Cuanto Vas
-                                                                                                a
-                                                                                                cobrar?</label>
-                                                                                            <input class="form-control"
-                                                                                                type="number"
-                                                                                                name="precio">
-                                                                                        </div>
-                                                                                        <div class=" mb-3">
-                                                                                            <label class="form-label"
-                                                                                                for="costo">Cuanto te
-                                                                                                cuesta a
-                                                                                                ti? </label>
-                                                                                            <input class="form-control"
-                                                                                                type="number"
-                                                                                                name="costo">
-                                                                                        </div>
-                                                                                        <div class="mb-3">
-                                                                                            <button
-                                                                                                class="btn btn-primary">Enviar</button>
-                                                                                        </div>
-
-                                                                                    </form>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-
-                                                                </div>
                                                             @endforeach
                                                         @endif
                                                     </tbody>
@@ -280,8 +247,69 @@
                         </div>
 
                     </div>
+                    @foreach ($event->quote->services as $service)
+                        <div class="modal fade" id="modalEditS{{ $service->pivot->id }}"
+                            aria-labelledby="modalLabel{{ $service->pivot->id }}" aria-hidden="true">
+                            <div class="modal-dialog modal-lg modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
 
-                    <div class="modal fade" id="modalAggCons">
+                                    </div>
+                                    <div class="modal-body">
+                                        <h3>{{ $service->name }}</h3>
+                                        <div>
+                                            <form method="POST"
+                                                action="{{ route('dashboard.quote.status', $service->pivot->id) }}">
+                                                @csrf
+                                                <div class="mb-3">
+                                                    <label for="cantidad" class="form-label">Cantidad</label>
+                                                    <input class="form-control" type="number" name="cantidad"
+                                                        value="{{$service->pivot->quantity}}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="form-label" for="precio">Cuanto Vas
+                                                        a
+                                                        cobrar?</label>
+                                                    <input class="form-control" type="number" name="precio" value="{{$service->pivot->price}}">
+                                                </div>
+                                                <div class=" mb-3">
+                                                    <label class="form-label" for="costo">Cuanto te
+                                                        cuesta a
+                                                        ti? </label>
+                                                    <input class="form-control" type="number" name="costo" value="{{$service->pivot->coast}}">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <button class="btn btn-primary">Enviar</button>
+                                                </div>
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="modal fade" id="deleteService{{ $service->pivot->id }}"
+                            aria-labelledby="papa{{ $service->pivot->id }}">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h3>Eliminar Servicio</h3>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Estas seguro de eliminar
+                                            {{ $service->name }} del evento?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-danger">Eliminar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+
+                    <div class="modal fade" id="modalAggCons" aria-hidden="true"
+                        aria-labelledby="modalLabel{{ $service->pivot->id }}" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
