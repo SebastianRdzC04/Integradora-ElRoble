@@ -1,14 +1,5 @@
 <style>
-        .carousel-indicators img{
-            width: 70px;
-            display: block;
-        }
-        .carousel-indicators button{
-            width: max-content!important;
-        }
-        .carousel-indicators{
-            position: unset;
-        }
+        
     </style>
 
 <div class="carousel slide" 

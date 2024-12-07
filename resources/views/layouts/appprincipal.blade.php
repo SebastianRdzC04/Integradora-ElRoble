@@ -14,108 +14,108 @@
     @include('layouts.navbar')
 
     <main style="min-height: 200vh;">
-    <div class="custom-bg custom-back-image align-content-center" style="background-image: url('{{ asset('js/images/El Roble principal image.jpg') }}');">
         
-        <div class="d-flex justify-content-center text-bg-info">
+        <section id="inicio">        
+                <div class="custom-bg custom-back-image align-content-center" style="background-image: url('{{ asset('js/images/El Roble principal image.jpg') }}');">
+                    <div class="d-flex justify-content-center text-bg-info">
+                        <div>
+                            <p class="text-image-front p-3">Este es el texto de muestra</p>
+                        </div>
+                    </div>
+                </div>
+        </section>
+
+        <!--importando el blade del carousel-->
+        <section id="servicios">
+            @include('startblades.carousel')
+        </section>
+
+        <section id="paquetes">
+            <div class="slider">
+                    <div class="item">
+                        <h1>Slide 1</h1>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
+                    </div>
+                    <div class="item">
+                        <h1>Slide 2</h1>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
+                    </div>
+                    <div class="item">
+                        <h1>Slide 3</h1>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
+                    </div>
+                    <div class="item">
+                        <h1>Slide 4</h1>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
+                    </div>
+                    <div class="item">
+                        <h1>Slide 5</h1>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
+                    </div>
+                    <div class="item">
+                        <h1>Slide 6</h1>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
+                    </div>
+                    <div class="item">
+                        <h1>Slide 7</h1>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
+                    </div>
+                    <button id="next">></button>
+                    <button id="prev"><</button>
+                </div>
+        </section>
+        <section id="paquetes2">
+            @include('startblades.carousel')
+        </section>
+
+        <section id="formulario">
+            <div style="height:500px">
+                aqui va el formulario
+            </div>
+        </section>
+
+        <section id="googlemaps">
+            <div class="container mb-5">
+                <h2 class="text-center">Visítanos</h2>
+                <div id="map" style="height: 400px; border: 2px solid white; border-radius: 10px;"></div>
+            </div>
+        </section>
+
+        <section id="imagenes">
+            @include('startblades.owlimages')
+        </section>
+        
+    </main>
+        <br>
+        <br>
+    <footer style="background-color: rgba(21, 58, 21, 0.87); color: white;" class="py-4">
+
+        <div class="container d-flex justify-content-between align-items-center">
             <div>
-                <p class="text-image-front p-3">Este es el texto de muestra</p>
+                <h5 class="mb-2">El Roble</h5>
+                <p class="mb-0">¡Tus eventos, nuestros mejores momentos!</p>
+                <small>© 2024 El Roble. Todos los derechos reservados.</small>
+            </div>
+            <div>
+                <img src="/images/logo.png" alt="Logo El Roble" class="img-fluid" style="max-height: 120px;">
             </div>
         </div>
-    </div>
-    <!--dentro de aqui debe de ir todo el contenido de la pagina-->
-
-<!--importando el blade del carousel-->
-    @include('startblades.carousel')
-
-    <section id="paquetes">
-    <div class="slider">
-            <div class="item">
-                <h1>Slide 1</h1>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
-            </div>
-            <div class="item">
-                <h1>Slide 2</h1>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
-            </div>
-            <div class="item">
-                <h1>Slide 3</h1>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
-            </div>
-            <div class="item">
-                <h1>Slide 4</h1>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
-            </div>
-            <div class="item">
-                <h1>Slide 5</h1>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
-            </div>
-            <div class="item">
-                <h1>Slide 6</h1>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
-            </div>
-            <div class="item">
-                <h1>Slide 7</h1>
-                Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
-            </div>
-            <button id="next">></button>
-            <button id="prev"><</button>
-        </div>
-    </section>
-    @include('startblades.carousel')
-
-    <section id="form">
-
-    </section>
-
-    <section id="googlemaps">
-
-    </section>
-
-    <section id="images">
-    @include('startblades.owlimages')
-    </section>
-    
-  </main>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-  <Script>
-    let items = document.querySelectorAll('.slider .item');
-    let next = document.getElementById('next');
-    let prev = document.getElementById('prev');
-    
-    let active = 3;
-    function loadShow(){
-        let stt = 0;
-        items[active].style.transform = `none`;
-        items[active].style.zIndex = 1;
-        items[active].style.filter = 'none';
-        items[active].style.opacity = 1;
-        for(var i = active + 1; i < items.length; i++){
-            stt++;
-            items[i].style.transform = `translateX(${120*stt}px) scale(${1 - 0.2*stt}) perspective(16px) rotateY(-1deg)`;
-            items[i].style.zIndex = -stt;
-            items[i].style.filter = 'blur(5px)';
-            items[i].style.opacity = stt > 2 ? 0 : 0.6;
-        }
-        stt = 0;
-        for(var i = active - 1; i >= 0; i--){
-            stt++;
-            items[i].style.transform = `translateX(${-120*stt}px) scale(${1 - 0.2*stt}) perspective(16px) rotateY(1deg)`;
-            items[i].style.zIndex = -stt;
-            items[i].style.filter = 'blur(5px)';
-            items[i].style.opacity = stt > 2 ? 0 : 0.6;
-        }
-    }
-    loadShow();
-    next.onclick = function(){
-        active = active + 1 < items.length ? active + 1 : active;
-        loadShow();
-    }
-    prev.onclick = function(){
-        active = active - 1 >= 0 ? active - 1 : active;
-        loadShow();
-    }
-  </Script>
-  
+    </footer>
+    <script>
+        function initMap() {
+                const location = { lat: 25.497935161704735, lng: -103.39312323421343 }; // Coordenadas de "El Roble"
+                const map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 15,
+                    center: location,
+                });
+                new google.maps.Marker({
+                    position: location,
+                    map: map,
+                });
+            }
+    </script>
+    <script src="https://unpkg.com/@dotlottie/player-component@2.7.12/dist/dotlottie-player.mjs" type="module"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCx4NNBGSBnu0ypvno3X4OSfXzVHRQbj1Y&callback=initMap" async defer></script>
 </body>
 </html>
 i

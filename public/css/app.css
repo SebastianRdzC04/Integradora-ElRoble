@@ -1,7 +1,16 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
 
 
-
+.carousel-indicators img{
+  width: 70px;
+  display: block;
+}
+.carousel-indicators button{
+  width: max-content!important;
+}
+.carousel-indicators{
+  position: unset;
+}
 
 
 
