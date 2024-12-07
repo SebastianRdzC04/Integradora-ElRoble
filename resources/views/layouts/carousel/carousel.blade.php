@@ -1,46 +1,223 @@
-<!-- resources/views/partials/carousel.blade.php -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-<style>
-    .carousel {
-        height: 500px; /* Ajusta la altura del carrusel */
-    }
-    .carousel-item img {
-        width: 100%; /* Ajusta el ancho de las imágenes */
-        height: 100%; /* Asegúrate de que las imágenes llenen el contenedor */
-        object-fit: cover; /* Evita distorsión */
-    }
-    .carousel-item img {
-        max-width: 100%; /* Permite que las imágenes llenen el espacio */
-        max-height: 500px; /* Ajusta la altura máxima */
-        object-fit: cover; /* Recorta las imágenes para evitar distorsión */
-    }
-</style>
+<section id="tranding" style="mask-image: linear-gradient(to top, #000000 91%, #91ef0400); background-color: antiquewhite;">
+      <div class="container">
+        <h3 class="text-center section-subheading">- popular Delivery -</h3>
+        <h1 class="text-center section-heading">Tranding food</h1>
+      </div>
+      <div class="container">
+        <div class="swiper tranding-slider">
+          <div class="swiper-wrapper">
+            <!-- Slide-start -->
+            <div class="swiper-slide tranding-slide">
+              <div class="tranding-slide-img">
+                <img src="{{asset('images/imagen1.jpg')}}" alt="Tranding">
+              </div>
+              <div class="tranding-slide-content">
+                <h1 class="food-price">$20</h1>
+                <div class="tranding-slide-content-bottom">
+                  <h2 class="food-name">
+                    Special Pizza
+                  </h2>
+                  <h3 class="food-rating">
+                    <span>4.5</span>
+                    <div class="rating">
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                    </div>
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <!-- Slide-end -->
+            <!-- Slide-start -->
+            <div class="swiper-slide tranding-slide">
+              <div class="tranding-slide-img">
+                <img src="{{asset('images/imagen8.jpg')}}" alt="Tranding">
+              </div>
+              <div class="tranding-slide-content">
+                <h1 class="food-price">$20</h1>
+                <div class="tranding-slide-content-bottom">
+                  <h2 class="food-name">
+                    Meat Ball
+                  </h2>
+                  <h3 class="food-rating">
+                    <span>4.5</span>
+                    <div class="rating">
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                    </div>
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <!-- Slide-end -->
+            <!-- Slide-start -->
+            <div class="swiper-slide tranding-slide">
+              <div class="tranding-slide-img">
+                <img src="{{asset('images/imagen7.jpg')}}" alt="Tranding">
+              </div>
+              <div class="tranding-slide-content">
+                <h1 class="food-price">$40</h1>
+                <div class="tranding-slide-content-bottom">
+                  <h2 class="food-name">
+                    Burger
+                  </h2>
+                  <h3 class="food-rating">
+                    <span>4.5</span>
+                    <div class="rating">
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                    </div>
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <!-- Slide-end -->
+            <!-- Slide-start -->
+            <div class="swiper-slide tranding-slide">
+              <div class="tranding-slide-img">
+                <img src="{{asset('images/imagen6.jpg')}}" alt="Tranding">
+              </div>
+              <div class="tranding-slide-content">
+                <h1 class="food-price">$15</h1>
+                <div class="tranding-slide-content-bottom">
+                  <h2 class="food-name">
+                    Frish Curry
+                  </h2>
+                  <h3 class="food-rating">
+                    <span>4.5</span>
+                    <div class="rating">
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                    </div>
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <!-- Slide-end -->
+            <!-- Slide-start -->
+            <div class="swiper-slide tranding-slide">
+              <div class="tranding-slide-img">
+                <img src="{{asset('images/imagen5.jpg')}}" alt="Tranding">
+              </div>
+              <div class="tranding-slide-content">
+                <h1 class="food-price">$15</h1>
+                <div class="tranding-slide-content-bottom">
+                  <h2 class="food-name">
+                    Pane Cake
+                  </h2>
+                  <h3 class="food-rating">
+                    <span>4.5</span>
+                    <div class="rating">
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                    </div>
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <!-- Slide-end -->
+            <!-- Slide-start -->
+            <div class="swiper-slide tranding-slide">
+              <div class="tranding-slide-img">
+                <img src="{{asset('images/imagen4.jpg')}}" alt="Tranding">
+              </div>
+              <div class="tranding-slide-content">
+                <h1 class="food-price">$20</h1>
+                <div class="tranding-slide-content-bottom">
+                  <h2 class="food-name">
+                    Vanilla cake
+                  </h2>
+                  <h3 class="food-rating">
+                    <span>4.5</span>
+                    <div class="rating">
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                    </div>
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <!-- Slide-end -->
+            <!-- Slide-start -->
+            <div class="swiper-slide tranding-slide">
+              <div class="tranding-slide-img">
+                <img src="{{asset('images/imagen3.jpg')}}" alt="Tranding">
+              </div>
+              <div class="tranding-slide-content">
+                <h1 class="food-price">$8</h1>
+                <div class="tranding-slide-content-bottom">
+                  <h2 class="food-name">
+                    Straw Cake
+                  </h2>
+                  <h3 class="food-rating">
+                    <span>4.5</span>
+                    <div class="rating">
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                      <ion-icon name="star"></ion-icon>
+                    </div>
+                  </h3>
+                </div>
+              </div>
+            </div>
+            <!-- Slide-end -->
+          </div>
 
-<div class="carousel" style="mask-image: linear-gradient(to top,#000000 91%, #91ef0400); background-color:antiquewhite; mask-image:linear-gradient(#000000 91%, #91ef0400);">
-        Paquetes
-    <a href="#one" class="carousel-item">
-        <img src="{{ asset('images/imagen1.jpg') }}">
-    </a>
-    <a href="#two" class="carousel-item">
-        <img src="{{ asset('images/imagen2.jpg') }}">
-    </a>
-    <a href="#three" class="carousel-item">
-        <img src="{{ asset('images/imagen3.jpg') }}">
-    </a>
-    <a href="#four" class="carousel-item">
-        <img src="{{ asset('images/imagen7.jpg') }}">
-    </a>
-    <a href="#five" class="carousel-item">
-        <img src="{{ asset('images/imagen8.jpg') }}">
-    </a>
-</div>
+          <div class="tranding-slider-control">
+            <div class="swiper-button-prev slider-arrow">
+              <ion-icon name="arrow-back-outline"></ion-icon>
+            </div>
+            <div class="swiper-button-next slider-arrow">
+              <ion-icon name="arrow-forward-outline"></ion-icon>
+            </div>
+            <div class="swiper-pagination"></div>
+          </div>
 
-<script>
-    $(document).ready(function(){
-        $('.carousel').carousel({
-            indicators: true
-        });
-    });
-</script>
+        </div>
+      </div>
+    </section>
+
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+<script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
+<script> var TrandingSlider = new Swiper('.tranding-slider', {
+  effect: 'coverflow',
+  grabCursor: true,
+  centeredSlides: true,
+  loop: true,
+  slidesPerView: 'auto',
+  coverflowEffect: {
+    rotate: 0,
+    stretch: 0,
+    depth: 100,
+    modifier: 2.5,
+  },
+  pagination: {
+    el: '.swiper-pagination',
+    clickable: true,
+  },
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  }
+});</script>
