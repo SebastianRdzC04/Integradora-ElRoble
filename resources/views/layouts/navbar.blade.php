@@ -2,13 +2,34 @@
     <header class="custom-header">
         <a href="{{ url('/') }}" class="custom-logo" style="background-image: url('{{ asset('images/logo.png') }}');"></a>
         <nav class="custom-navbar">
-            <a href="#" class="nav-item">Inicio</a>
-            <a href="#" class="nav-item">Haz tu cotización</a>
-            <a href="#" class="nav-item">¿Cómo Llegar?</a>
-            <a href="#" class="nav-item">Paquetes y servicios</a>
-            <a href="#" class="nav-item">Iniciar Sesión o Crear Cuenta</a>
-        </nav>
-        <i class='bx bx-menu' id="menu-icon"></i>
+            <a href="#" class="nav-item">Fotos</a>
+            <a href="#form" class="nav-item">Haz tu cotización</a>
+            <a href="#googlemaps" class="nav-item">¿Cómo Llegar?</a>
+            <a href="#tranding" class="nav-item">Paquetes y servicios</a>
+
+            @if (auth()->user())
+                <a href="{{route('login')}}" class="nav-item">Iniciar Sesión o Crear Cuenta</a>
+                </nav>
+                <i class='bx bx-menu' id="menu-icon"></i>
+
+            @else
+                </nav>
+                <div class="checando d-flex">
+                    <a href="#" class="d-flex align-items-center justify-content-center p-3 link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://github.com/mdo.png" alt="mdo" width="24" height="24" class="rounded-circle">
+                    </a>
+                    <ul class="dropdown-menu text-small shadow" style="background: rgb(0 0 0 / 60%);">
+                        <li><a class="dropdown-item nav-item" href="#">New project...</a></li>
+                        <li><a class="dropdown-item nav-item" href="#">Settings</a></li>
+                        <li><a class="dropdown-item nav-item" href="#">Profile</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item nav-item" href="{{route('logout')}}">Cerrar Sesion</a></li>
+                    </ul>
+                    <i class='bx bx-menu' id="menu-icon"></i>
+                </div>
+
+            @endif
+        
     </header>
     <script>
         const header = document.querySelector('.custom-header');

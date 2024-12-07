@@ -13,8 +13,8 @@
 
 <section id="tranding" style="mask-image: linear-gradient(to top, #000000 91%, #91ef0400); background-color: antiquewhite;">
       <div class="container">
-        <h3 class="text-center section-subheading">- popular Delivery -</h3>
-        <h1 class="text-center section-heading">Tranding food</h1>
+        <h3 class="text-center section-subheading">- Servicios mas cotizados -</h3>
+        <h1 class="text-center section-heading">Servicios</h1>
       </div>
       <div class="container">
         <div class="swiper tranding-slider">
@@ -22,7 +22,7 @@
             <!-- Slide-start -->
             <div class="swiper-slide tranding-slide">
               <div class="tranding-slide-img">
-                <img src="{{asset('images/imagen1.jpg')}}" alt="Tranding">
+                <img src="{{asset('images/imagen1.jpg')}}" alt="Servicio 1">
               </div>
               <div class="tranding-slide-content">
                 <h1 class="food-price">$20</h1>
@@ -47,7 +47,7 @@
             <!-- Slide-start -->
             <div class="swiper-slide tranding-slide">
               <div class="tranding-slide-img">
-                <img src="{{asset('images/imagen8.jpg')}}" alt="Tranding">
+                <img src="{{asset('images/imagen8.jpg')}}" alt="Servicio 2">
               </div>
               <div class="tranding-slide-content">
                 <h1 class="food-price">$20</h1>
@@ -72,7 +72,7 @@
             <!-- Slide-start -->
             <div class="swiper-slide tranding-slide">
               <div class="tranding-slide-img">
-                <img src="{{asset('images/imagen7.jpg')}}" alt="Tranding">
+                <img src="{{asset('images/imagen7.jpg')}}" alt="Servicio 3">
               </div>
               <div class="tranding-slide-content">
                 <h1 class="food-price">$40</h1>
@@ -97,7 +97,7 @@
             <!-- Slide-start -->
             <div class="swiper-slide tranding-slide">
               <div class="tranding-slide-img">
-                <img src="{{asset('images/imagen6.jpg')}}" alt="Tranding">
+                <img src="{{asset('images/imagen6.jpg')}}" alt="Servicio 4">
               </div>
               <div class="tranding-slide-content">
                 <h1 class="food-price">$15</h1>
@@ -122,7 +122,7 @@
             <!-- Slide-start -->
             <div class="swiper-slide tranding-slide">
               <div class="tranding-slide-img">
-                <img src="{{asset('images/imagen5.jpg')}}" alt="Tranding">
+                <img src="{{asset('images/imagen5.jpg')}}" alt="Servicio 5">
               </div>
               <div class="tranding-slide-content">
                 <h1 class="food-price">$15</h1>
@@ -147,7 +147,7 @@
             <!-- Slide-start -->
             <div class="swiper-slide tranding-slide">
               <div class="tranding-slide-img">
-                <img src="{{asset('images/imagen4.jpg')}}" alt="Tranding">
+                <img src="{{asset('images/imagen4.jpg')}}" alt="Servicio 6">
               </div>
               <div class="tranding-slide-content">
                 <h1 class="food-price">$20</h1>
@@ -172,7 +172,7 @@
             <!-- Slide-start -->
             <div class="swiper-slide tranding-slide">
               <div class="tranding-slide-img">
-                <img src="{{asset('images/imagen3.jpg')}}" alt="Tranding">
+                <img src="{{asset('images/imagen3.jpg')}}" alt="Servicio 7">
               </div>
               <div class="tranding-slide-content">
                 <h1 class="food-price">$8</h1>
