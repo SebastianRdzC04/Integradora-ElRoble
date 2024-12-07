@@ -23,7 +23,7 @@ class PlacesTable extends Seeder
                 'max_guests' => 50,
             ],
             [
-                'name' => 'Salon',
+                'name' => 'Salón',
                 'description' => 'Salón elegante ',
                 'max_guests' => 60,
             ],

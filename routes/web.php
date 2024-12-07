@@ -638,6 +638,7 @@ Route::post('/create-payment-intent', [PaymentController::class, 'createPaymentI
 Route::post('/confirm-payment', [PaymentController::class, 'confirmPayment'])->name('confirm-payment');
 Route::post('/api/cotizations', [CotizacionesClientesController::class, 'getCotizations']);
 Route::get('/cotizaciones/nueva', [CotizacionesClientesController::class, 'nuevaCotizacion'])->name('cotizaciones.nueva');
+Route::post('/cotizaciones/storeQuote', [CotizacionesClientesController::class, 'storeQuote'])->name('cotizaciones.storeQuote');
 
 // Si necesitas una vista para listar paquetes
 Route::get('/paquetes', [PaquetesAdminController::class, 'index'])->name('paquetes.index'); // O lo que desees
