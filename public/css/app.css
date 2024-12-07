@@ -1,5 +1,121 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
 
+/*aqui esta lo del navbar esto son puros estilos del navbar -----------------------------*/
+
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap");
+
+:root {
+    --nav-height: 80px;
+    --nav-bg-transparent: rgba(0, 0, 0, 0.22);
+    --nav-bg-solid: rgba(255, 255, 255, 0.9);
+    --nav-text-light: #fff;
+    --nav-text-dark: #000;
+    --nav-hover-color: #f00;
+}
+.custom-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--nav-height);
+    background: var(--nav-bg-transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4%;
+    transition: all 0.3s ease-in-out;
+    z-index: 1000;
+}
+.custom-header.scrolled {
+    background: var(--nav-bg-solid);
+}
+.custom-logo {
+    display: block;
+    width: 100px;
+    height: 100px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: transform 0.3s ease;
+}
+.custom-logo:hover {
+    transform: scale(1.05);
+}
+.custom-navbar {
+    display: flex;
+    align-items: center;
+}
+.custom-navbar a {
+    color: var(--nav-text-light);
+    font-size: 18px;
+    text-decoration: none;
+    margin-left: 20px;
+    transition: 0.3s;
+    text-align: center;
+}
+.custom-header.scrolled .custom-navbar a {
+    color: var(--nav-text-dark);
+}
+.custom-navbar a:hover {
+    color: var(--nav-hover-color);
+}
+#menu-icon {
+    font-size: 36px;
+    color: var(--nav-text-light);
+    cursor: pointer;
+    display: none;
+}
+.custom-header.scrolled #menu-icon {
+    color: var(--nav-text-dark);
+}
+@media (max-width: 992px) {
+      .custom-navbar {
+          position: fixed;
+          top: var(--nav-height);
+          left: -100%;
+          width: 100%;
+          padding: 10px 4%;
+          background: var(--nav-bg-solid);
+          flex-direction: column;
+          align-items: flex-start;
+          transition: 0.3s;
+      }
+      .custom-navbar.active {
+          left: 0;
+      }
+      .custom-navbar a {
+          display: block;
+          margin: 10px 0;
+          color: var(--nav-text-dark);
+      }
+      #menu-icon {
+          display: block;
+      }
+    
+  .nav-item {
+      position: relative;
+      overflow: hidden;
+  }
+  .nav-item::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background-color: var(--nav-hover-color);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+  }
+  .nav-item:hover::after {
+      transform: translateX(0);
+  }
+}
+
+/*es son los estilos de la imagen del principio y el mensaje que podra ver el usuario*/
+
 .custom-back-image {
     mask-image: linear-gradient(#000000 91%, #91ef0400);
     width: 100%;
@@ -9,165 +125,15 @@
     background-repeat: no-repeat;
 }
 
-#smalllogin {
-    display: none;
+.text-image-front{
+    background: #5933338f;
+    font-size: xx-large;
+    color: #eac896;
+    font-family: arial, cursive;
+    border-radius: 20px;
 }
 
-.custom-nav--hidden {
-    transform: translateY(calc(-1 * var(--nav-height)));
-    box-shadow: none;
-}
-
-.custom-navbar {
-    display: flex;
-}
-
-.custom-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 80px;
-    background: rgb(0 0 0 / 22%);
-    backdrop-filter: blur(10px);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-    --nav-height: 80px;
-    transform: translateY(0);
-    transition: transform 0.3s ease-in-out;
-    z-index: 100;
-}
-
-.custom-header::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.4),
-        transparent
-    );
-    transition: 0.5s;
-}
-
-.custom-header:hover::before {
-    left: 100%;
-}
-
-.custom-logo {
-    color: #fff;
-    font-size: 25px;
-    border-radius: 13%;
-    text-decoration: none;
-    font-weight: 600;
-    cursor: default;
-    display: flex;
-    justify-content: flex-start;
-}
-
-.custom-navbar a {
-    color: #fff;
-    font-size: 18px;
-    text-decoration: none;
-    margin-left: 19px;
-    transition: 0.3s;
-}
-
-.custom-header.down {
-    background-color: #ffffffd1;
-    padding: 15px 20px;
-}
-
-.custom-header.down .custom-logo,
-.custom-header.down a {
-    /* color: #000000; */
-}
-
-.custom-navbar a:hover {
-    color: #f00;
-}
-
-#menu-icon {
-    font-size: 36px;
-    color: #ffffff;
-    border-radius: 18%;
-    display: none;
-}
-.custom-navbar.active {
-  display: block;
-  background-color: transparent;
-}
-
-.custom-header {
-    padding: 1.25rem 4%;
-}
-
-/* BREAKPOINTS */
-@media (max-width: 992px) {
-}
-
-@media (max-width: 800px) {
-
-    #smalllogin {
-        display: block;
-    }
-
-    .custom-navbar {
-        display: none;
-    }
-
-    #menu-icon {
-        display: block;
-    }
-
-    .custom-navbar {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        width: 100%;
-        padding: 0.5rem 4%;
-        /* transition: 3s; */
-        display: none;
-    }
-
-    .custom-navbar.active {
-        display: block;
-        background-color: #73511d82;
-    }
-
-    .custom-navbar a {
-        display: block;
-        margin: 1.5rem 0;
-    }
-
-    .custom-nav-bg {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 350px;
-        background-color: rgb(255 255 255 / 24%);
-        border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(10px);
-        /* transition: 1s; */
-        -webkit-backdrop-filter: blur(10px); /* Soporte para Safari */
-        z-index: -1;
-        /* display: none; */
-    }
-
-    .custom-nav-bg.active {
-        display: block;
-        transition: 4s;
-    }
-}
-
-/* Aqui comienza el estilo del carrusel para los paquetes*/
+/* Aqui comienza el estilo del carrusel para los paquetes ---------------------------------*/
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap");
 *,
 *::before,
