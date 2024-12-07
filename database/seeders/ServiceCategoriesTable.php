@@ -15,18 +15,34 @@ class ServiceCategoriesTable extends Seeder
      */
     public function run()
     {
-        //
         $categories = [
-            'Equipamiento',
-            'Decoracion',
-            'Comida',
-            'Servicio',
-            'Musica'
+            [
+                'name' => 'Equipamiento',
+                'description' => 'Todo el equipo necesario para tu evento.'
+            ],
+            [
+                'name' => 'Decoración',
+                'description' => 'Elementos decorativos para ambientar tu evento.'
+            ],
+            [
+                'name' => 'Comida',
+                'description' => 'Servicios de catering, platillos y bebidas para tu evento.'
+            ],
+            [
+                'name' => 'Servicio',
+                'description' => 'Personal de servicio: meseros, limpieza y más.'
+            ],
+            [
+                'name' => 'Música',
+                'description' => 'Servicios de entretenimiento musical.'
+            ]
         ];
+
         foreach ($categories as $category) {
-            $serviceCategory = new ServiceCategory();
-            $serviceCategory->name = $category;
-            $serviceCategory->save();
+            ServiceCategory::create([
+                'name' => $category['name'],
+                'description' => $category['description']
+            ]);
         }
     }
 }

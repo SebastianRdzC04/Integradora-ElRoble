@@ -6,6 +6,8 @@
     <title>Nueva Cotización</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <style>
         .place-card {
             cursor: pointer;
@@ -144,13 +146,6 @@ label[for="startTime"]::before {
     font-weight: 900;
     margin-right: 5px;
 }
-
-label[for="duration"]::before {
-    content: "\f017"; /* Icono de reloj */
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    margin-right: 5px;
-}
 .service-card {
     width: 100%;
     margin-bottom: 15px;
@@ -194,8 +189,36 @@ label[for="duration"]::before {
 }
 
 .service-card.confirmed {
-    opacity: 0.5;
+    opacity: 0.7;
     pointer-events: none;
+    background-color: rgba(21, 80, 21, 0.5);
+}
+.category-card {
+    cursor: pointer;
+    transition: transform 0.2s;
+    margin-bottom: 15px;
+}
+
+.category-card:hover {
+    transform: scale(1.02);
+}
+
+.category-card img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+.service-card.confirmed input,
+.service-card.confirmed button,
+.service-card.confirmed .form-check {
+    pointer-events: none;
+    opacity: 0.6;
+}
+.service-card.confirmed .alert-success {
+    opacity: 1;
+    margin-top: 10px;
+    background-color: rgba(40, 167, 69, 0.8);
+    color: white;
 }
     </style>
 </head>
@@ -228,10 +251,10 @@ label[for="duration"]::before {
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
-                                    <label for="modal_start_time_input" class="form-label">
+                                    <label for="start_time" class="form-label">
                                         <i class="fas fa-clock"></i> Hora de Inicio
                                     </label>
-                                    <input type="time" id="modal_start_time_input" class="form-control" required onblur="roundTime(this)" placeholder="XX:XX">
+                                    <input type="time" id="start_time" class="form-control" required onblur="roundTime(this)" placeholder="XX:XX">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="duration" class="form-label">
@@ -244,6 +267,8 @@ label[for="duration"]::before {
                                         <option value="6">6 horas</option>
                                         <option value="7">7 horas</option>
                                         <option value="8">8 horas</option>
+                                        <option value="9">9 horas</option>
+                                        <option value="10">10 horas</option>
                                     </select>
                                 </div>
                             </div>
@@ -311,61 +336,40 @@ label[for="duration"]::before {
                             </div>
                         </div>
                         <div class="mt-4">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#servicesModal">
-                                Seleccionar Servicios
-                            </button>
-                        </div>
-                        
-                        <div class="modal fade" id="servicesModal" tabindex="-1" aria-labelledby="servicesModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="servicesModalLabel">Seleccionar Servicios</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="d-flex justify-content-start mb-3" id="categoryButtons">
-                                            <!-- Categorías de servicios -->
-                                            @foreach($categories as $category)
-                                                <button type="button" class="btn btn-secondary me-2" onclick="filterServices('{{ $category->id }}')">
-                                                    {{ $category->name }}
-                                                </button>
-                                            @endforeach
-                                        </div>
-                                        <div class="row" id="servicesContainer">
-                                            <!-- Cards de servicios -->
-                                            @foreach($services as $service)
-                                                <div class="col-md-4 mb-3">
-                                                    <div class="card service-card" data-category="{{ $service->service_category_id }}" id="serviceCard{{ $service->id }}">
-                                                        <img src="{{ $service->image_path ?? '/images/imagen6.jpg' }}" class="card-img-top" alt="{{ $service->name }}">
-                                                        <div class="card-body">
-                                                            <h5 class="card-title">{{ $service->name }}</h5>
-                                                            <p class="card-text">{{ $service->description }}</p>
-                                                            <p class="card-text"><strong><i class="fas fa-dollar-sign"></i> {{ $service->price }}</strong></p>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="checkbox" value="{{ $service->id }}" id="service{{ $service->id }}" onchange="toggleServiceDescription({{ $service->id }})">
-                                                                <label class="form-check-label" for="service{{ $service->id }}">
-                                                                    Seleccionar
-                                                                </label>
-                                                            </div>
-                                                            <div class="mt-3" id="descriptionContainer{{ $service->id }}" style="display: none;">
-                                                                <label for="description{{ $service->id }}" class="form-label">Descripción:</label>
-                                                                <input type="text" id="description{{ $service->id }}" class="form-control" placeholder="Ingrese una descripción">
-                                                                <button type="button" class="btn btn-success mt-2" onclick="confirmService({{ $service->id }})">Confirmar</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
+                            <div class="row">
+                                @foreach($categories as $category)
+                                    @php
+                                        $imageUrl = $category->image_path ?? '/images/imagen4.jpg';
+                                    @endphp
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card category-card" data-category-id="{{ $category->id }}">
+                                            <img src="{{ $imageUrl }}" class="card-img-top" alt="{{ $category->name }}" style="aspect-ratio: 4 / 3; object-fit: cover;">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ $category->name }}</h5>
+                                                <p class="card-text">{{ $category->description }}</p>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                        <button type="button" class="btn btn-primary">Guardar Selección</button>
-                                    </div>
-                                </div>
+                                @endforeach
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para Servicios -->
+    <div class="modal fade" id="servicesModal" tabindex="-1" aria-labelledby="servicesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="servicesModalLabel">Seleccionar Servicios</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" id="servicesContainer">
+                        <!-- Cards de servicios se llenarán dinámicamente -->
                     </div>
                 </div>
             </div>
@@ -375,6 +379,19 @@ label[for="duration"]::before {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.0.0-beta1/dist/js/tempus-dominus.min.js"></script>
     <script>
+        let confirmedServices = [];
+        const servicesData = @json($services);
+
+        document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.category-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const categoryId = this.dataset.categoryId;
+            showServicesModal(categoryId);
+        });
+    });
+    // Remove localStorage retrieval
+});
+
 function roundTime(input) {
     const time = input.value;
     const [hours, minutes] = time.split(':').map(Number);
@@ -415,11 +432,14 @@ document.addEventListener('DOMContentLoaded', function() {
         generateCalendar();
     }
 
+    function updateCalendarText() {
+        calendarMonthYear.innerText = currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+    }
+
     function generateCalendar() {
         calendar.innerHTML = '';
         updateCalendarText();
 
-        // Deshabilitar botones de navegación según las restricciones
         const minDate = new Date(today.getFullYear(), today.getMonth(), 1);
         const maxDate = new Date(today.getFullYear(), today.getMonth() + 2, 1);
 
@@ -462,6 +482,7 @@ document.addEventListener('DOMContentLoaded', function() {
             dayButton.innerText = day;
             const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
             dayButton.dataset.date = date.toISOString().split('T')[0];
+            dayButton.title = date.toDateString(); // Añadir tooltip
 
             if (date < today) {
                 dayButton.classList.add('bg-secondary');
@@ -472,7 +493,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (!dayButton.classList.contains('bg-danger')) {
                         selectedDateInput.value = this.dataset.date;
 
-                        // Remove bg-primary from all buttons and restore their original class
                         document.querySelectorAll('.day.bg-primary').forEach(btn => {
                             btn.classList.remove('bg-primary');
                             const originalClass = btn.dataset.originalClass;
@@ -483,7 +503,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                         });
 
-                        // Store the original class and add bg-primary to the clicked button
                         dayButton.dataset.originalClass = dayButton.classList.contains('bg-warning') ? 'bg-warning' : 'bg-success';
                         dayButton.classList.remove('bg-success', 'bg-warning', 'bg-danger');
                         dayButton.classList.add('bg-primary');
@@ -541,18 +560,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    function updateCalendarText() {
-        const monthYearText = currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
-        const shortMonthYearText = currentDate.toLocaleString('default', { month: 'short', year: 'numeric' });
-        calendarMonthYear.innerText = monthYearText;
-        calendarMonthYear.setAttribute('data-short-text', shortMonthYearText);
-
-        prevMonthButton.innerText = '< Anterior';
-        nextMonthButton.innerText = 'Siguiente >';
-        prevMonthButton.setAttribute('data-short-text', '<');
-        nextMonthButton.setAttribute('data-short-text', '>');
-    }
-
     function adjustDayButtonHeight() {
         const dayButtons = document.querySelectorAll('.day');
         dayButtons.forEach(button => {
@@ -566,6 +573,67 @@ document.addEventListener('DOMContentLoaded', function() {
 
     generateCalendar();
 });
+
+function showServicesModal(categoryId) {
+    const servicesContainer = document.getElementById('servicesContainer');
+    servicesContainer.innerHTML = '';
+
+    // Filter services by category
+    const filteredServices = servicesData.filter(service => 
+        service.service_category_id == categoryId
+    );
+
+    if (filteredServices.length === 0) {
+        servicesContainer.innerHTML = '<div class="alert alert-info">No hay servicios disponibles para esta categoría.</div>';
+        return;
+    }
+
+    // Generate service cards
+    filteredServices.forEach(service => {
+        const isConfirmed = confirmedServices.some(cs => cs.id === service.id);
+        const serviceCard = document.createElement('div');
+        serviceCard.classList.add('col-md-4', 'mb-3');
+        serviceCard.innerHTML = `
+            <div class="card service-card ${isConfirmed ? 'confirmed' : ''}" data-category="${service.service_category_id}" id="serviceCard${service.id}">
+                <img src="${service.image_path ?? '/images/imagen6.jpg'}" class="card-img-top" alt="${service.name}">
+                <div class="card-body">
+                    <h5 class="card-title">${service.name}</h5>
+                    <p class="card-text">${service.description}</p>
+                    <p class="card-text"><strong><i class="fas fa-dollar-sign"></i> ${service.price}</strong></p>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="${service.id}" 
+                            id="service${service.id}" 
+                            onchange="toggleServiceDescription(${service.id})"
+                            ${isConfirmed ? 'checked disabled' : ''}>
+                        <label class="form-check-label" for="service${service.id}">
+                            Seleccionar
+                        </label>
+                    </div>
+                    <div class="mt-3" id="descriptionContainer${service.id}" style="display: none">
+                        <label for="description${service.id}" class="form-label">Descripción:</label>
+                        <input type="text" 
+                            id="description${service.id}" 
+                            class="form-control" 
+                            placeholder="Ingrese una descripción"
+                            value="${isConfirmed ? confirmedServices.find(cs => cs.id === service.id).description : ''}">
+                        ${!isConfirmed ? `
+                            <button type="button" class="btn btn-success mt-2" 
+                                onclick="confirmService(${service.id})" 
+                                id="confirmBtn${service.id}" 
+                                disabled>
+                                Confirmar
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+        servicesContainer.appendChild(serviceCard);
+    });
+
+    const servicesModal = new bootstrap.Modal(document.getElementById('servicesModal'));
+    servicesModal.show();
+}
 
 function selectPlace(placeId) {
     // Remover selección previa
@@ -593,66 +661,73 @@ function toggleOtherEventType() {
 function toggleServiceDescription(serviceId) {
     const descriptionContainer = document.getElementById(`descriptionContainer${serviceId}`);
     const checkbox = document.getElementById(`service${serviceId}`);
+    const confirmBtn = document.getElementById(`confirmBtn${serviceId}`);
+    const descriptionInput = document.getElementById(`description${serviceId}`);
+
     if (checkbox.checked) {
         descriptionContainer.style.display = 'block';
+        
+        // Habilitar/deshabilitar botón basado en descripción
+        descriptionInput.addEventListener('input', function() {
+            confirmBtn.disabled = this.value.trim() === '';
+        });
     } else {
         descriptionContainer.style.display = 'none';
+        confirmBtn.disabled = true;
     }
 }
 
 function confirmService(serviceId) {
     const serviceCard = document.getElementById(`serviceCard${serviceId}`);
     const descriptionInput = document.getElementById(`description${serviceId}`);
+    const confirmBtn = document.getElementById(`confirmBtn${serviceId}`);
+    const checkbox = document.getElementById(`service${serviceId}`);
     const description = descriptionInput.value.trim();
+    const service = servicesData.find(s => s.id == serviceId);
 
     if (description) {
+        // Add to confirmedServices array only
+        confirmedServices.push({
+            id: serviceId,
+            description: description,
+            name: service.name,
+            price: service.price,
+            category_id: service.service_category_id
+        });
+
+        // Update UI
         serviceCard.classList.add('confirmed');
         descriptionInput.setAttribute('readonly', true);
-        serviceCard.querySelector('.btn-success').style.display = 'none';
-    } else {
-        alert('Por favor, ingrese una descripción.');
+        confirmBtn.style.display = 'none';
+        checkbox.disabled = true;
+
+        const confirmationMessage = document.createElement('div');
+        confirmationMessage.classList.add('alert', 'alert-success', 'mt-2');
+        confirmationMessage.textContent = 'Servicio confirmado';
+        serviceCard.querySelector('.card-body').appendChild(confirmationMessage);
     }
 }
 
-let selectedCategoryId = null;
+function validateForm() {
+    const selectedDate = document.getElementById('selectedDate').value;
+    const startTime = document.getElementById('start_time').value;
+    const duration = document.getElementById('duration').value;
+    const eventType = document.getElementById('eventType').value;
+    const guestCount = document.getElementById('guestCount').value;
 
-function filterServices(categoryId) {
-    const services = document.querySelectorAll('.service-card');
-    const categoryButtons = document.querySelectorAll('#categoryButtons .btn');
-
-    // Si la categoría seleccionada es la misma que la actual, deseleccionarla
-    if (selectedCategoryId === categoryId) {
-        selectedCategoryId = null;
-        services.forEach(service => {
-            service.classList.remove('d-none');
-        });
-        categoryButtons.forEach(button => {
-            button.classList.remove('active');
-            button.classList.remove('btn-primary');
-            button.classList.add('btn-secondary');
-        });
-    } else {
-        selectedCategoryId = categoryId;
-        services.forEach(service => {
-            if (categoryId === 'all' || service.dataset.category === categoryId) {
-                service.classList.remove('d-none');
-            } else {
-                service.classList.add('d-none');
-            }
-        });
-        categoryButtons.forEach(button => {
-            if (button.getAttribute('onclick').includes(categoryId)) {
-                button.classList.add('active');
-                button.classList.remove('btn-secondary');
-                button.classList.add('btn-primary');
-            } else {
-                button.classList.remove('active');
-                button.classList.remove('btn-primary');
-                button.classList.add('btn-secondary');
-            }
-        });
+    if (!selectedDate || !startTime || !duration || !eventType || !guestCount) {
+        alert('Por favor, complete todos los campos requeridos.');
+        return false;
     }
+
+    return true;
 }
+
+document.querySelector('form').addEventListener('submit', function(event) {
+    if (!validateForm()) {
+        event.preventDefault();
+    }
+});
     </script>
 </body>
 </html>

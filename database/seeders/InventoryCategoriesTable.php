@@ -20,7 +20,7 @@ class InventoryCategoriesTable extends Seeder
             'Sillas',
             'Mesas',
             'Hieleras',
-            'Utencilios'
+            'Utensilios'
         ];
         foreach ($categories as $category) {
             InventoryCategory::create([
