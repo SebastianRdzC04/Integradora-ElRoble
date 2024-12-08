@@ -30,7 +30,7 @@
                                         <tr>
                                             <th>Nombre</th>
                                             <th>Cantidad</th>
-                                            <th>Acciones</th>
+                                            <th class="text-center">Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -38,7 +38,7 @@
                                             <tr>
                                                 <td>{{ $item->consumable->name }}</td>
                                                 <td>{{ $item->quantity }}{{ $item->consumable->unit }}</td>
-                                                <td>
+                                                <td class="text-center">
                                                     <form
                                                         action="{{ route('dashboard.delete.consumable.default', $item->id) }}"
                                                         method="POST">
@@ -95,7 +95,7 @@
                                             <option data-bs-toggle="modal" data-bs-target="#delModal{{ $item->id }}"
                                                 value="4">Eliminar</option>
                                         </select>
-                                        <div class="modal fade" id="delModal{{$item->id}}">
+                                        <div class="modal fade" id="delModal{{ $item->id }}">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
@@ -177,11 +177,9 @@
                                                         <h3>Agregar a predeterminados</h3>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <form action="{{ route('dashboard.add.consumable.default') }}"
+                                                        <form action="{{ route('dashboard.add.consumable.default', $item->id) }}"
                                                             method="POST">
                                                             @csrf
-                                                            <input type="hidden" name="consumable_id"
-                                                                value="{{ $item->id }}">
                                                             <div class="mb-3">
                                                                 <label class="form-label" for="cantidad">Ingresa la
                                                                     cantidad</label>
@@ -239,13 +237,20 @@
 @endsection
 
 @section('scripts')
+
+    @if (session('error'))
+        <script>
+            toastr.error('{{ session('error') }}');
+        </script>
+    @endif
+
     <script>
         const selects = document.querySelectorAll('.form-select');
 
         selects.forEach(select => {
             select.addEventListener('change', function() {
                 const selectedOption = this.options[this.selectedIndex];
-                
+
                 const modalId = selectedOption.getAttribute('data-bs-target');
 
                 if (modalId) {

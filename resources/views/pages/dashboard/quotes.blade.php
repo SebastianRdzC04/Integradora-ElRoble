@@ -17,6 +17,7 @@
                     <table class="table shadow" id="quote-table">
                         <thead>
                             <tr>
+                                <th></th>
                                 <th>Cliente</th>
                                 <th>Tipo de Evento</th>
                                 <th>Lugar</th>
@@ -31,6 +32,7 @@
                         <tbody>
                             @foreach ($quotes as $quote)
                                 <tr>
+                                    <td> <p style="display: none"> {{ $quote->created_at->timestamp }} </p></td> 
                                     @if ($quote->owner_name)
                                         <td> {{ $quote->owner_name }} </td>
                                     @else
@@ -78,9 +80,9 @@
                                                                         <th>Nombre</th>
                                                                         <th>Descripcion</th>
                                                                         <th>Cantidad</th>
+                                                                        <th>Precio</th>
                                                                         <th>Costo</th>
                                                                         <th>Detalles</th>
-                                                                        <th>Acciones</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
@@ -91,17 +93,8 @@
                                                                                 <td> {{ $service->description }} </td>
                                                                                 <td> {{ $service->pivot->quantity }} </td>
                                                                                 <td> {{ $service->pivot->price }} </td>
+                                                                                <td> {{$service->pivot->coast}} </td>
                                                                                 <td> {{ $service->pivot->description }}
-                                                                                </td>
-                                                                                <td>
-                                                                                    <div>
-                                                                                        <a class="btn btn-outline-primary p-1 m-0"
-                                                                                            href=""><i
-                                                                                                class="bi bi-pencil-square"></i></a>
-                                                                                        <a class="btn btn-outline-danger p-1 m-0"
-                                                                                            href=""><i
-                                                                                                class="bi bi-trash3"></i></a>
-                                                                                    </div>
                                                                                 </td>
                                                                             </tr>
                                                                         @endforeach

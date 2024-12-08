@@ -1,85 +1,45 @@
-<!-- resources/views/layouts/navbar.blade.php -->
-<style>
-    #IniciarSesionBoton {
-        background-color: #2b1a06;
-        padding: 10px;
-        border-radius: 100px;
-        color: white;
-        margin-top: 20px;
-        margin-bottom: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.904);
-        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
-        text-decoration: none;
-    }
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <header class="custom-header">
+        <a href="{{ url('/') }}" class="custom-logo" style="background-image: url('{{ asset('images/logo.png') }}');"></a>
+        <nav class="custom-navbar">
+            <a href="#imagenes" class="nav-item">Fotos</a>
+            <a href="#formulario" class="nav-item">Haz tu cotización</a>
+            <a href="#googlemaps" class="nav-item">¿Cómo Llegar?</a>
+            <a href="#servicios" class="nav-item">Paquetes y servicios</a>
 
-    .navbar {
-        background-color: #000000a1 !important;
-    }
+            @if (!auth()->user())
+                <a href="{{route('login')}}" class="nav-item">Iniciar Sesión o Crear Cuenta</a>
+                </nav>
+                <i class='bx bx-menu' id="menu-icon"><a href="#inicio"></a></i>
 
-    .navbar-brand,
-    .nav-link {
-        color: white !important;
-    }
-
-    .navbar-toggler-icon {
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.75)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
-    }
-
-    .navbar-toggler {
-        border-color: rgba(255, 255, 255, 0.5) !important;
-    }
-</style>
-
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">
-            <img src="{{ asset('images/logobranding.png') }}" width="170" height="45"
-                class="d-inline-block align-top" style="margin-right: 10px" alt="">
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="/">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/cotizaciones">Cotizaciones</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/historial">Historial</a>
-                </li>
-                <li>
-                    <a class="nav-link" href=""></a>
-                </li>
-                @if (auth()->check())
-                    @if (auth()->user()->roles->contains('id', 2))
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
-                        </li>
-                    @endif
-
-                @endif
-            </ul>
-            @if (auth()->check())
-                <form class="ms-auto" action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <button class="nav-link" id="IniciarSesionBoton" href="{{ route('logout') }}">Cerrar Sesión</button>
-                        </li>
+            @else
+                </nav>
+                <div class="checando d-flex">
+                    <a href="#" class="d-flex align-items-center justify-content-center p-3 link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://github.com/mdo.png" alt="mdo" width="40" height="40" class="rounded-circle">
+                    </a>
+                    <ul class="dropdown-menu text-small shadow" style="background: rgb(0 0 0 / 60%);">
+                        <li><a class="dropdown-item nav-item" href="#">Historial</a></li>
+                        <li><a class="dropdown-item nav-item" href="#">Configuracion</a></li>
+                        <li><a class="dropdown-item nav-item" href="#">Perfil</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a id="logout" class="dropdown-item nav-item" href="#">Cerrar Sesion</a></li>
                     </ul>
+                    <i class='bx bx-menu' id="menu-icon"></i>
+                </div>
+
+                <form method="POST" id="outlog" style="display: none;" action="{{route('logout')}}">
+                    @csrf
                 </form>
             @endif
-            @if (!auth()->check())
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a href="/login" id="IniciarSesionBoton">Iniciar Sesión / Registrarse</a>
-                    </li>
-                </ul>
-            @endif
-
-        </div>
-    </div>
-</nav>
+        
+    </header>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="{{asset('js/app.js')}}"></script>
+    <script> 
+        document.getElementById('logout').addEventListener('click', (event)=>{
+            event.preventDefault();
+            document.getElementById('outlog').submit();
+        })
+    </script>
+    

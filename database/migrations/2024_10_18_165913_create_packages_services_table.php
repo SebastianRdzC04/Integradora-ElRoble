@@ -20,7 +20,6 @@ return new class extends Migration
             $table->integer('quantity')->nullable();
             $table->decimal('price', 10, 2)->nullable();
             $table->string('description', 255)->nullable();
-            $table->text('details_dj')->nullable();
             $table->decimal('coast', 10, 2)->nullable();
             $table->timestamps();
         });

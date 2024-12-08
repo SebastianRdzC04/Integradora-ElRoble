@@ -21,8 +21,26 @@ class ConsumableController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:50',
-            'stock' => 'required|integer|min:0',
-            'minimum_stock' => 'required|integer|min:0',
+            'stock' => [
+                'required',
+                'integer',
+                'min:0',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($value > $request->maximum_stock) {
+                        $fail('El stock inicial no puede ser mayor al stock máximo.');
+                    }
+                }
+            ],
+            'minimum_stock' => [
+                'required',
+                'integer',
+                'min:0',
+                function ($attribute, $value, $fail) use ($request) {
+                    if ($value > $request->maximum_stock) {
+                        $fail('El stock mínimo no puede ser mayor al stock máximo.');
+                    }
+                }
+            ],
             'maximum_stock' => 'required|integer|min:0',
             'unit' => 'required|string|max:10',
             'category_id' => 'required|exists:consumable_categories,id',

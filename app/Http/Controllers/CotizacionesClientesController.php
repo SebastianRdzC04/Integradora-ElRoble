@@ -148,8 +148,8 @@ class CotizacionesClientesController extends Controller
                 'end_time' => $request->input('end_time'),
                 'type_event' => $request->input('type_event'),
                 'otro_tipo_evento' => $request->input('otro_tipo_evento'),
-                'owner_name' => $person->first_name . ' ' . $person->last_name, // Obtener el nombre del propietario
-                'owner_phone' => $person->phone, // Obtener el teléfono del propietario
+                'owner_name' => $person->first_name . ' ' . $person->last_name,
+                'owner_phone' => $person->phone,
                 'guest_count' => $request->input('guest_count'),
             ]);
     
@@ -186,6 +186,65 @@ class CotizacionesClientesController extends Controller
         }
     }
 
+    public function storeQuote(Request $request)
+    {
+        $request->merge(['user_id' => auth()->id()]);
+    
+        if ($request->has('other_event_type') && !empty($request->input('other_event_type'))) {
+            $request->merge(['type_event' => (string) $request->input('other_event_type')]);
+        } else {
+            $request->merge(['type_event' => (string) $request->input('type_event')]);
+        }
+    
+        // Validar los datos
+        $validated = $request->validate([
+            'user_id' => 'nullable|exists:users,id',
+            'date' => 'required|date|after:today',
+            'place_id' => 'required|exists:places,id',
+            'start_time' => 'required|date_format:Y-m-d H:i',
+            'end_time' => 'required|date_format:Y-m-d H:i|after:start_time',
+            'type_event' => 'required|string|max:50',
+            'guest_count' => 'required|integer|min:10|max:80',
+        ]);
+    
+        DB::beginTransaction();
+    
+        try {
+            $quote = Quote::create([
+                'user_id' => $request->input('user_id'),
+                'date' => $request->input('date'),
+                'place_id' => $request->input('place_id'),
+                'start_time' => $request->input('start_time'),
+                'end_time' => $request->input('end_time'),
+                'type_event' => $request->input('type_event'),
+                'guest_count' => $request->input('guest_count'),
+                'status' => 'pendiente cotizacion',
+            ]);
+    
+            $servicesData = [];
+            foreach ($request->input('services', []) as $serviceId => $serviceData) {
+                if (isset($serviceData['confirmed']) && filter_var($serviceData['confirmed'], FILTER_VALIDATE_BOOLEAN)) {
+                    $servicesData[$serviceId] = [
+                        'description' => $serviceData['description'],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+    
+            if (!empty($servicesData)) {
+                $quote->services()->sync($servicesData);
+            }
+    
+            DB::commit();
+    
+            return redirect()->route('cotizaciones.create')->with('success', 'Cotización enviada exitosamente.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('cotizaciones.create')->with('error', 'Error al crear la cotización. Por favor, revisa los datos e inténtalo de nuevo.');
+        }
+    }    
+
     public function historial()
     {
         $quotes = Quote::with('place')
@@ -206,5 +265,26 @@ class CotizacionesClientesController extends Controller
             ->get();
     
         return response()->json($cotizations);
+    }
+
+    public function nuevaCotizacion()
+    {
+        $places = Place::all();
+        $today = Carbon::today();
+    
+        $cotizations = Quote::select(DB::raw('date, COUNT(*) as count, MAX(status) as status'))
+            ->whereBetween('date', [$today->startOfMonth(), $today->copy()->addMonths(2)->endOfMonth()])
+            ->groupBy('date')
+            ->get();
+    
+        $categories = ServiceCategory::all();
+        $services = Service::all();
+    
+        return view('cotizacionesnuevasclientes', [
+            'places' => $places,
+            'cotizations' => $cotizations,
+            'categories' => $categories,
+            'services' => $services,
+        ]);
     }
 }
