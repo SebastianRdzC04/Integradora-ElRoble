@@ -38,11 +38,11 @@
                 <div class="card mb-4">
                     <div class="card-body">
                         <h4 class="card-title mb-4 text-center">Selecciona una Fecha</h4>
-                        <div class="calendar-container">
+                        <div class="calendar-container" style="padding: 0;">
                             <div id="calendar-controls" class="d-flex justify-content-between mb-2">
-                                <button id="prevMonth" style="min-width: 32px;" class="btn-calendar"> < Anterior</button>
-                                <h6 id="calendarMonthYear"></h6>
-                                <button id="nextMonth" style="min-width: 32px;" class="btn-calendar">Siguiente ></button>
+                                <button id="prevMonth" style="min-width: 32px; margin: 10px;" class="btn-calendar"> < Anterior</button>
+                                <h6 id="calendarMonthYear" style="margin: 10px;"></h6>
+                                <button id="nextMonth" style="min-width: 32px; margin: 10px;" class="btn-calendar">Siguiente ></button>
                             </div>
                             <div id="calendar"></div>
                         </div>
@@ -287,7 +287,6 @@ function submitQuote() {
         return;
     }
 
-    // Validar la cantidad de invitados
     const place = places.find(p => p.id == placeId);
     if (place && guestCount > place.max_guest) {
         alert(`La cantidad máxima de invitados para este lugar es ${place.max_guest}.`);
