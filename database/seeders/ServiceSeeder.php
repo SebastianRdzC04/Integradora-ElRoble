@@ -125,6 +125,27 @@ class ServiceSeeder extends Seeder
 
     foreach ($services as $categoryServices) {
         foreach ($categoryServices['services'] as $service) {
+            $fileName = $service['image_file']; // Nombre del archivo en S3
+    
+            // Consultar la URL del archivo ya subido en S3
+            $url = Storage::disk('s3')->url("services_images/{$fileName}");
+    
+            // Guardar la URL en la base de datos
+            Service::create([
+                'name' => $service['name'],
+                'description' => $service['description'],
+                'service_category_id' => $categoryServices['category_id'],
+                'price' => $service['price'],
+                'people_quantity' => $service['people_quantity'] ?? null,
+                'coast' => $service['coast'],
+                'image_path' => $url, // Guardar la URL consultada
+            ]);
+        }
+    }
+    
+/*
+    foreach ($services as $categoryServices) {
+        foreach ($categoryServices['services'] as $service) {
             $localImagePath = storage_path("app/temp_images/service_images/" . $service['image_file']);
 
             // Subir directamente la imagen a S3 sin verificar MIME
@@ -155,5 +176,7 @@ class ServiceSeeder extends Seeder
             ]);
         }
     }
+    }*/
+
     }
 }
