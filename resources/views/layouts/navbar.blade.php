@@ -23,14 +23,23 @@
                         <li><a class="dropdown-item nav-item" href="#">Configuracion</a></li>
                         <li><a class="dropdown-item nav-item" href="#">Perfil</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item nav-item" href="{{route('logout')}}">Cerrar Sesion</a></li>
+                        <li><a id="logout" class="dropdown-item nav-item" href="#">Cerrar Sesion</a></li>
                     </ul>
                     <i class='bx bx-menu' id="menu-icon"></i>
                 </div>
 
+                <form method="POST" id="outlog" style="display: none;" action="{{route('logout')}}">
+                    @csrf
+                </form>
             @endif
         
     </header>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="{{asset('js/app.js')}}"></script>
+    <script> 
+        document.getElementById('logout').addEventListener('click', (event)=>{
+            event.preventDefault();
+            document.getElementById('outlog').submit();
+        })
+    </script>
     
