@@ -8,11 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class ConsumableEvent extends Model
 {
     use HasFactory;
-    protected $table = 'consumable_events';
 
-    protected $fillable = [
-        'event_id',
-        'consumable_id',
-        'prepared',
-    ];
+    protected $table = 'consumables_events';
+
+    public function consumable()
+    {
+        return $this->belongsTo(Consumable::class);
+    }
+    public function event()
+    {
+        return $this->belongsTo(Event::class);
+    }
 }

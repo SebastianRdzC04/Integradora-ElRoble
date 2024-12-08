@@ -8,25 +8,37 @@ use Illuminate\Database\Eloquent\Model;
 class Event extends Model
 {
     use HasFactory;
+
     protected $table = 'events';
 
-    protected $fillable = [
-        'quotation_id',
-        'total_cost',
-        'advance',
-        'remaining_amount',
-        'amount_paid',
-        'advance_payment_status',
-        'total_payment_status',
-        'event_date',
-        'num_chairs',
-        'num_tables',
-        'num_tablecloths',
-        'start_time',
-        'end_time',
-        'duration',
-        'event_type',
-        'extra_hours',
-        'event_status',
-    ];
+    public function quote()
+    {
+        return $this->belongsTo(Quote::class);
+    }
+    public function date()
+    {
+        return $this->belongsTo(Date::class);
+    }
+    public function incidents()
+    {
+        return $this->hasMany(Incident::class);
+    }
+
+
+    //relaciones muchos a muchos
+    public function consumables()
+    {
+        return $this->belongsToMany(Consumable::class, 'consumables_events')
+                    ->withPivot('quantity', 'ready', 'id')
+                    ->withTimestamps();
+    }
+    public function services()
+    { 
+        return $this->belongsToMany(Service::class, 'events_services')
+                    ->withPivot('quantity', 'price', 'description', 'id' , 'coast')
+                    ->withTimestamps();
+    }
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }

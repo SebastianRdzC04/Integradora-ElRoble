@@ -1,0 +1,127 @@
+#SiguienteBoton {
+    background-color: #2b1a06; 
+    padding: 10px;
+    border-radius: 100px;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.904);
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+}
+#SiguienteBoton:hover {
+    transform: scale(1.05);
+}
+.google-btn {
+    display: inline-flex;
+    align-items: center;
+    background-color: #ffffff;
+    color: #757575;
+    border: 2px solid #dadce0;
+    padding: 1px 16px;
+    border-radius: 4px;
+    font-family: 'Helvetica', Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 40px;
+    margin-bottom: 2px;
+    min-width: 300px;
+}
+.google-btn:hover {
+    background-color: #292929;
+    border-color: #d2e3fc;
+    color: white;
+}
+.google-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    transition: all 0.3s ease;
+}
+.btn-text {
+    padding-left: 8px;
+    padding-right: 8px;
+    margin-right: 8px;
+}
+.facebook-btn {
+    display: inline-flex;
+    align-items: center;
+    background-color: #1877f2;
+    color: #ffffff;
+    border: 2px solid #1877f2;
+    padding: 1px 16px;
+    border-radius: 4px;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 40px;
+    text-decoration: none;
+    min-width: 300px;
+    margin-bottom: 20px;
+}
+.facebook-btn:hover {
+    background-color: #ffffff;
+    color: #1877f2;
+}
+.facebook-icon {
+    width: 18px;
+    height: 18px;
+    margin-right: 8px;
+    transition: all 0.3s ease;
+}
+.facebook-btn:hover .facebook-icon path:first-child {
+    fill: #1877f2;
+}
+.facebook-btn:hover .facebook-icon path:last-child {
+    fill: #ffffff;
+}
+
+#LoginContainer
+{
+    width: 100%; 
+    max-width: 400px; 
+    background-color: rgba(26, 75, 26, 0.925);
+    border: 10px solid rgba(255, 255, 255, 0.904); 
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+    border-radius: 2% !important;
+
+}
+#LoginContainer2
+{
+    border: 3px solid rgba(255, 255, 255, 0.904); 
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3);
+    border-radius: 2%;
+}
+#Container3
+{
+    border-radius: 3%;
+}
+#TextoSeparador
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+    color: white;
+}
+#textobajo
+{
+    font-size: 11px;
+    color: white;
+}
+.btn-text
+{
+    display: inline;
+}
+.btn-text.hidden {
+    display: none;
+}
+@media (max-width: 384px) {
+    .facebook-btn{
+        min-width: 162px;
+    }
+    .google-btn{
+        min-width: 162px;
+    }
+}

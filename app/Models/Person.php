@@ -8,15 +8,20 @@ use Illuminate\Database\Eloquent\Model;
 class Person extends Model
 {
     use HasFactory;
+
     protected $table = 'people';
 
     protected $fillable = [
         'first_name',
         'last_name',
-        'middle_name',
-        'birth_date',
-        'age',
+        'birthdate',
+        'gender',
         'phone',
-        'rfc',
+        'age',
     ];
+
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
 }

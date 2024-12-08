@@ -8,13 +8,25 @@ use Illuminate\Database\Eloquent\Model;
 class Comment extends Model
 {
     use HasFactory;
-    protected $table = 'comments';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
-        'client_id',
+        'user_id',
         'comment',
-        'publication_date',
         'status',
         'rating',
+        'anonymous',
     ];
+
+    /**
+     * Get the user that owns the comment.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
