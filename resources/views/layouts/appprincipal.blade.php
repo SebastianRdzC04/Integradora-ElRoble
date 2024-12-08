@@ -31,41 +31,7 @@
         </section>
 
         <section id="paquetes">
-            <div class="slider">
-                    <div class="item">
-                        <h1>Slide 1</h1>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
-                    </div>
-                    <div class="item">
-                        <h1>Slide 2</h1>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
-                    </div>
-                    <div class="item">
-                        <h1>Slide 3</h1>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
-                    </div>
-                    <div class="item">
-                        <h1>Slide 4</h1>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
-                    </div>
-                    <div class="item">
-                        <h1>Slide 5</h1>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
-                    </div>
-                    <div class="item">
-                        <h1>Slide 6</h1>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
-                    </div>
-                    <div class="item">
-                        <h1>Slide 7</h1>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Facere magni magnam unde ipsam repudiandae explicabo expedita labore, sequi minus neque beatae voluptatum, quasi accusamus quia quis voluptas laborum ad! Ab totam doloribus, excepturi possimus rem vel quia fugit molestiae officiis!
-                    </div>
-                    <button id="next">></button>
-                    <button id="prev"><</button>
-                </div>
-        </section>
-        <section id="paquetes2">
-            @include('startblades.carousel')
+            @include('startblades.carousel2')
         </section>
 
         <section id="formulario">
