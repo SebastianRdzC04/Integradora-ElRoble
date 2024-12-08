@@ -13,6 +13,7 @@
         "laravel/socialite": "^5.16",
         "laravel/tinker": "^2.7",
         "laraveles/spanish": "^1.5",
+        "league/flysystem-aws-s3-v3": "^3.29",
         "stripe/stripe-php": "^16.3",
         "twilio/sdk": "^8.3"
     },
