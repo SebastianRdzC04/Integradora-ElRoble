@@ -91,7 +91,7 @@
                                                                     @foreach ($event->quote->services as $service)
                                                                         <tr>
                                                                             <td> {{ $service->name }} </td>
-                                                                            <td> {{ $service->pivot->description }} </td>
+                                                                            <td> {{ $service->description }} </td>
                                                                             <td> {{ $service->pivot->quantity }} </td>
                                                                             <td> {{ $service->pivot->price }} </td>
                                                                             <td> {{ $service->pivot->description }}
