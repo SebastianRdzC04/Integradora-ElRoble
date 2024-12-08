@@ -273,6 +273,7 @@ class CotizacionesClientesController extends Controller
         $today = Carbon::today();
         $categories = ServiceCategory::all();
         $services = Service::all();
+        $quotes = Quote::whereIn('status', ['pendiente cotizacion', 'pendiente', 'pagada'])->get();
         $user = auth()->user();
     
         $cotizations = Quote::select(DB::raw('date, COUNT(*) as count, MAX(status) as status'))
@@ -286,6 +287,7 @@ class CotizacionesClientesController extends Controller
             'categories' => $categories,
             'services' => $services,
             'user' => $user,
+            'quotes' => $quotes,
         ]);
     }
 }

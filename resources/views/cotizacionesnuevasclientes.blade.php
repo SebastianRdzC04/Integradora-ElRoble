@@ -62,7 +62,7 @@
                                     <label for="start_time" class="form-label">
                                         <i class="fas fa-clock"></i> Hora de Inicio
                                     </label>
-                                    <input type="time" id="start_time" class="form-control" required onblur="roundTime(this)" placeholder="XX:XX">
+                                    <input type="time" id="start_time" class="form-control" required onblur="roundTime(this)" onchange="updateDurationOptions()" placeholder="XX:XX">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="duration" class="form-label">
@@ -224,9 +224,10 @@
 window.addEventListener('load', adjustCalendarControls);
 window.addEventListener('resize', adjustCalendarControls);
 
-        let confirmedServices = [];
-        const servicesData = @json($services);
-        const places = @json($places);
+let confirmedServices = [];
+const servicesData = @json($services);
+const places = @json($places);
+const quotes = @json($quotes);
 
 function submitQuote() {
     console.log('submitQuote function called');
@@ -362,7 +363,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const nextMonthButton = document.getElementById('nextMonth');
     const today = new Date();
     let currentDate = new Date(today.getFullYear(), today.getMonth(), 1);
-    const csrfToken = '{{ csrf_token() }}';
 
     prevMonthButton.addEventListener('click', (event) => {
         event.preventDefault();
@@ -388,6 +388,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const minDate = new Date(today.getFullYear(), today.getMonth(), 1);
         const maxDate = new Date(today.getFullYear(), today.getMonth() + 2, 1);
+
+        if (currentDate <= minDate) {
+            prevMonthButton.classList.add('btn-disabled');
+        } else {
+            prevMonthButton.classList.remove('btn-disabled');
+        }
 
         prevMonthButton.disabled = currentDate <= minDate;
         nextMonthButton.disabled = currentDate >= maxDate;
@@ -468,42 +474,42 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         calendar.appendChild(row);
-        fetchCotizations();
+        updateCalendarWithQuotes();
         adjustDayButtonHeight();
     }
 
-    function fetchCotizations() {
-        fetch('/api/cotizations', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': csrfToken
-            },
-            body: JSON.stringify({ start_date: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).toISOString().split('T')[0] })
-        })
-        .then(response => response.json())
-        .then(data => {
-            data.forEach(cotization => {
-                const dateButton = document.querySelector(`button[data-date="${cotization.date}"]`);
-                if (dateButton) {
-                    const date = new Date(cotization.date);
-                    if (date < today) {
-                        dateButton.classList.remove('bg-success', 'bg-warning', 'bg-danger');
-                        dateButton.classList.add('bg-secondary');
-                        dateButton.style.color = 'black';
+    function updateCalendarWithQuotes() {
+        const quoteCounts = {};
+
+        quotes.forEach(quote => {
+            const date = quote.date;
+            if (!quoteCounts[date]) {
+                quoteCounts[date] = { count: 0, status: [] };
+            }
+            quoteCounts[date].count++;
+            quoteCounts[date].status.push(quote.status);
+        });
+
+        Object.keys(quoteCounts).forEach(date => {
+            const dateButton = document.querySelector(`button[data-date="${date}"]`);
+            if (dateButton) {
+                const dateInfo = quoteCounts[date];
+                if (new Date(date) < today) {
+                    dateButton.classList.remove('bg-success', 'bg-warning', 'bg-danger');
+                    dateButton.classList.add('bg-secondary');
+                    dateButton.style.color = 'black';
+                    dateButton.disabled = true;
+                } else {
+                    if (dateInfo.status.includes('pagada') || dateInfo.count >= 3) {
+                        dateButton.classList.remove('bg-success', 'bg-warning');
+                        dateButton.classList.add('bg-danger');
                         dateButton.disabled = true;
-                    } else {
-                        if (cotization.status === 'pagada' || cotization.count >= 3) {
-                            dateButton.classList.remove('bg-success', 'bg-warning');
-                            dateButton.classList.add('bg-danger');
-                            dateButton.disabled = true;
-                        } else if (cotization.count >= 1) {
-                            dateButton.classList.remove('bg-success');
-                            dateButton.classList.add('bg-warning');
-                        }
+                    } else if (dateInfo.count >= 1 && dateInfo.count < 3) {
+                        dateButton.classList.remove('bg-success');
+                        dateButton.classList.add('bg-warning');
                     }
                 }
-            });
+            }
         });
     }
 
@@ -617,9 +623,6 @@ function showServicesModal(categoryId) {
                             id="service${service.id}" 
                             onchange="toggleServiceDescription(${service.id})"
                             ${isConfirmed ? 'checked disabled' : ''}>
-                        <label class="form-check-label" for="service${service.id}">
-                            Seleccionar
-                        </label>
                     </div>
                     <div class="mt-3" id="descriptionContainer${service.id}" style="display: none">
                         <label for="description${service.id}" class="form-label">Descripción:</label>
@@ -683,6 +686,33 @@ function toggleServiceDescription(serviceId) {
     } else {
         descriptionContainer.style.display = 'none';
         confirmBtn.disabled = true;
+    }
+}
+
+function updateDurationOptions() {
+    const startTimeElement = document.getElementById('start_time');
+    const durationElement = document.getElementById('duration');
+    const startTime = startTimeElement.value;
+
+    if (!startTime) {
+        return;
+    }
+
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const maxEndHour = 3;
+
+    while (durationElement.options.length > 1) {
+        durationElement.remove(1);
+    }
+
+    for (let i = 4; i <= 10; i++) {
+        const endHour = (startHour + i) % 24;
+        if (endHour <= maxEndHour || endHour >= startHour) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.text = `${i} horas`;
+            durationElement.add(option);
+        }
     }
 }
 

@@ -139,9 +139,9 @@ margin-right: 5px;
 .service-card {
 width: 100%;
 margin-bottom: 15px;
-border: 2px solid rgb(255, 255, 255);
+border: 1px solid rgb(175, 175, 175);
 border-radius: 8px;
-background-color: rgba(21, 80, 21, 0.9);
+background-color: rgba(18, 110, 18, 0.9);
 color: white;
 text-align: center;
 transition: transform 0.3s;
@@ -213,6 +213,11 @@ color: white;
 
 .day-header {
     font-size: 1rem;
+}
+
+.btn-disabled {
+    opacity: 0.5;
+    pointer-events: none;
 }
 
 @media (max-width: 1400px) {
