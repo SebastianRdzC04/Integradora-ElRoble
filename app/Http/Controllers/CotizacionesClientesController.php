@@ -65,7 +65,7 @@ class CotizacionesClientesController extends Controller
                 'end_time' => 'required|date_format:Y-m-d H:i|after:start_time',
                 'type_event' => 'required|string|max:50',
                 'otro_tipo_evento' => 'nullable|string|max:50',
-                'guest_count' => 'required|integer|min:10|max:80',
+                'guest_count' => 'required|integer|min:10|max:100',
             ],
             [
                 'user_id.exists' => 'El usuario seleccionado no existe.',
@@ -238,12 +238,12 @@ class CotizacionesClientesController extends Controller
     
             DB::commit();
     
-            return redirect()->route('cotizaciones.create')->with('success', 'Cotización enviada exitosamente.');
+            return redirect()->route('cotizaciones.nueva')->with('success', 'Cotización enviada exitosamente.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('cotizaciones.create')->with('error', 'Error al crear la cotización. Por favor, revisa los datos e inténtalo de nuevo.');
+            return redirect()->route('cotizaciones.nueva')->withErrors(['store_quote_error' => 'Error al crear la cotización: ' . $e->getMessage()])->withInput();
         }
-    }    
+    }
 
     public function historial()
     {
@@ -271,20 +271,21 @@ class CotizacionesClientesController extends Controller
     {
         $places = Place::all();
         $today = Carbon::today();
+        $categories = ServiceCategory::all();
+        $services = Service::all();
+        $user = auth()->user();
     
         $cotizations = Quote::select(DB::raw('date, COUNT(*) as count, MAX(status) as status'))
             ->whereBetween('date', [$today->startOfMonth(), $today->copy()->addMonths(2)->endOfMonth()])
             ->groupBy('date')
             ->get();
     
-        $categories = ServiceCategory::all();
-        $services = Service::all();
-    
         return view('cotizacionesnuevasclientes', [
             'places' => $places,
             'cotizations' => $cotizations,
             'categories' => $categories,
             'services' => $services,
+            'user' => $user,
         ]);
     }
 }

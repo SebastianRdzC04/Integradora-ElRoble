@@ -7,223 +7,30 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <style>
-        .place-card {
-            cursor: pointer;
-            transition: transform 0.2s;
-            margin-bottom: 15px;
-        }
-        .place-card:hover {
-            transform: scale(1.02);
-        }
-        .place-card.selected {
-            border: 3px solid #198754;
-        }
-        .card-img-top {
-            height: 200px;
-            object-fit: cover;
-        }
-        #calendar {
-            max-width: 100%;
-            background-color: white;
-            padding: 15px;
-            border-radius: 8px;
-        }
-        .days-header {
-            display: flex;
-            justify-content: space-between;
-        }
-        .day-header, .day {
-            width: 14%;
-            text-align: center;
-        }
-        .days-row {
-            display: flex;
-            justify-content: space-between;
-        }
-        .day {
-            width: 40px;
-            height: 40px;
-            line-height: 40px;
-            padding: 0;
-            margin: 1px;
-            cursor: pointer;
-            border-radius: 50%;
-            transition: background-color 0.3s, color 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .day.empty {
-            background-color: #f0f0f0;
-        }
-        .day.bg-secondary, .day.bg-danger {
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-        .day.bg-secondary {
-            color: black;
-        }
-        .day.bg-primary {
-            background-color: #007bff;
-            color: white;
-        }
-        .day.bg-success {
-            background-color: #28a745;
-            color: white;
-        }
-        .day.bg-warning {
-            background-color: #ffc107;
-            color: black;
-        }
-        .day.day.bg-danger {
-            color: rgb(160, 160, 160);
-        }
-        #calendarMonthYear {
-            background-color: #1bad16ce;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 45px;
-            text-transform: capitalize;
-        }
-        .btn-calendar {
-            background-color: #007bff;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            border: none;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .btn-calendar:hover {
-            background-color: #0056b3;
-            color: white;
-        }
-        @media (max-width: 992px) {
-            .btn-calendar, #calendarMonthYear {
-                font-size: 0.8rem;
-            }
-            .card-title {
-                font-size: 1rem;
-            }
-        }
-        .calendar-container {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 15px;
-    background-color: white;
-}
-
-@media (max-width: 430px) {
-    .btn-calendar {
-        padding: 5px;
-    }
-    .btn-calendar::after {
-        content: '';
-    }
-    .btn-calendar span {
-        display: none;
-    }
-    #calendarMonthYear {
-        font-size: 0.8rem;
-    }
-    #calendarMonthYear::after {
-        content: '';
-    }
-}
-
-label[for="selectedDate"]::before {
-    content: "\f073"; /* Icono de calendario */
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    margin-right: 5px;
-}
-
-label[for="startTime"]::before {
-    content: "\f017"; /* Icono de reloj */
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    margin-right: 5px;
-}
-.service-card {
-    width: 100%;
-    margin-bottom: 15px;
-    border: 2px solid rgb(255, 255, 255);
-    border-radius: 8px;
-    background-color: rgba(21, 80, 21, 0.9);
-    color: white;
-    text-align: center;
-    transition: transform 0.3s;
-    margin: 0 auto;
-}
-
-.service-card:hover {
-    transform: scale(1.05);
-}
-
-.service-card img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-}
-
-.service-card .card-body {
-    padding: 10px;
-}
-
-.service-card h5 {
-    color: #ffffff;
-    margin-bottom: 5px;
-}
-
-.service-card p {
-    margin: 0;
-    font-size: 0.9em;
-}
-
-.service-card.expanded {
-    width: 75%;
-}
-
-.service-card.confirmed {
-    opacity: 0.7;
-    pointer-events: none;
-    background-color: rgba(21, 80, 21, 0.5);
-}
-.category-card {
-    cursor: pointer;
-    transition: transform 0.2s;
-    margin-bottom: 15px;
-}
-
-.category-card:hover {
-    transform: scale(1.02);
-}
-
-.category-card img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-}
-.service-card.confirmed input,
-.service-card.confirmed button,
-.service-card.confirmed .form-check {
-    pointer-events: none;
-    opacity: 0.6;
-}
-.service-card.confirmed .alert-success {
-    opacity: 1;
-    margin-top: 10px;
-    background-color: rgba(40, 167, 69, 0.8);
-    color: white;
-}
-    </style>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="{{ asset('css/stylescotizacionesnuevas.css') }}">
 </head>
 <body class="bg-light">
     <div class="container mt-4">
+        @if(session('success'))
+        <div class="alert alert-success" role="alert" style="background-color: rgb(30, 78, 21); color: white;">
+            {{ session('success') }}
+        </div>
+        @elseif ($errors->has('store_quote_error'))
+        <div class="alert alert-danger" role="alert" style="background-color: rgb(189, 18, 18); color: white;">
+            {{ $errors->first('store_quote_error') }}
+        </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <form id="quoteForm" method="POST" action="{{ route('cotizaciones.storeQuote') }}">
             @csrf
         <div class="row">
@@ -233,9 +40,9 @@ label[for="startTime"]::before {
                         <h4 class="card-title mb-4 text-center">Selecciona una Fecha</h4>
                         <div class="calendar-container">
                             <div id="calendar-controls" class="d-flex justify-content-between mb-2">
-                                <button id="prevMonth" class="btn-calendar">&lt; Anterior</button>
+                                <button id="prevMonth" style="min-width: 32px;" class="btn-calendar"> < Anterior</button>
                                 <h6 id="calendarMonthYear"></h6>
-                                <button id="nextMonth" class="btn-calendar">Siguiente &gt;</button>
+                                <button id="nextMonth" style="min-width: 32px;" class="btn-calendar">Siguiente ></button>
                             </div>
                             <div id="calendar"></div>
                         </div>
@@ -248,7 +55,7 @@ label[for="startTime"]::before {
                         <div class="mt-4">
                             <div class="mb-3">
                                 <label for="selectedDate" class="form-label">Fecha Seleccionada:</label>
-                                <input type="text" class="form-control" id="selectedDate" placeholder="AAAA/MM/DD" readonly>
+                                <input type="text" class="form-control" id="selectedDate" placeholder="AAAA-MM-DD" readonly>
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
@@ -274,14 +81,7 @@ label[for="startTime"]::before {
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h4 class="card-title mb-4 text-center">Selecciona el Lugar</h4>
+                        <h4 class="card-title mb-4 text-center" style="margin-top: 20px;">Selecciona el Lugar</h4>
                         <div class="row">
                             @foreach($places as $place)
                                 @php
@@ -310,7 +110,14 @@ label[for="startTime"]::before {
                                 </div>
                             @endforeach
                         </div>
-            
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+
                         <div class="mt-4">
                             <label class="form-label">Tipo de Evento:</label>
                             <select class="form-select" id="eventType" name="type_event" onchange="toggleOtherEventType()">
@@ -353,7 +160,7 @@ label[for="startTime"]::before {
                                     @php
                                         $imageUrl = $category->image_path ?? '/images/imagen6.jpg';
                                     @endphp
-                                    <div class="col-6 col-sm-6 col-md-4 col-xl-4 mb-3">
+                                    <div class="col-6 col-sm-6 col-md-6 col-xl-4 mb-3">
                                         <div class="card category-card" data-category-id="{{ $category->id }}">
                                             <img src="{{ $imageUrl }}" class="card-img-top" alt="{{ $category->name }}" style="aspect-ratio: 4 / 3; object-fit: cover;">
                                             <div class="card-body">
@@ -370,7 +177,7 @@ label[for="startTime"]::before {
             </div>
         </div>
         <div class="mt-4 text-center">
-            <button type="submit" class="btn btn-success">Enviar Cotización</button>
+            <button type="button" class="btn btn-success" style="margin-bottom: 30px; margin-top: -15px;" onclick="submitQuote()">Enviar Cotización</button>
         </div>
     </form>
     </div>
@@ -385,7 +192,6 @@ label[for="startTime"]::before {
                 </div>
                 <div class="modal-body">
                     <div class="row" id="confirmedServicesContainer">
-                        <!-- Cards de servicios confirmados se llenarán dinámicamente -->
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -405,7 +211,6 @@ label[for="startTime"]::before {
                 </div>
                 <div class="modal-body">
                     <div class="row" id="servicesContainer">
-                        <!-- Cards de servicios se llenarán dinámicamente -->
                     </div>
                 </div>
             </div>
@@ -415,8 +220,109 @@ label[for="startTime"]::before {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.0.0-beta1/dist/js/tempus-dominus.min.js"></script>
     <script>
+
+window.addEventListener('load', adjustCalendarControls);
+window.addEventListener('resize', adjustCalendarControls);
+
         let confirmedServices = [];
         const servicesData = @json($services);
+        const places = @json($places);
+
+function submitQuote() {
+    console.log('submitQuote function called');
+
+    const selectedDateElement = document.getElementById('selectedDate');
+    const startTimeElement = document.getElementById('start_time');
+    const durationElement = document.getElementById('duration');
+    const eventTypeElement = document.getElementById('eventType');
+    const otherEventTypeElement = document.getElementById('otherEventType');
+    const guestCountElement = document.getElementById('guestCount');
+    const placeCard = document.querySelector('.card.place-card.mb-3.selected');
+
+    console.log('selectedDateElement:', selectedDateElement);
+    console.log('startTimeElement:', startTimeElement);
+    console.log('durationElement:', durationElement);
+    console.log('eventTypeElement:', eventTypeElement);
+    console.log('otherEventTypeElement:', otherEventTypeElement);
+    console.log('guestCountElement:', guestCountElement);
+    console.log('placeCard:', placeCard);
+
+    const selectedDate = selectedDateElement ? selectedDateElement.value : null;
+    const startTime = startTimeElement ? startTimeElement.value : null;
+    const duration = durationElement ? durationElement.value : null;
+    const eventType = eventTypeElement ? eventTypeElement.value : null;
+    const otherEventType = otherEventTypeElement ? otherEventTypeElement.value : null;
+    const guestCount = guestCountElement ? guestCountElement.value : null;
+    let placeId = null;
+
+    if (placeCard) {
+        const onclickAttr = placeCard.getAttribute('onclick');
+        console.log('onclickAttr:', onclickAttr);
+        const match = onclickAttr.match(/\d+/);
+        console.log('match:', match);
+        placeId = match ? match[0] : null;
+    }
+
+    if (!selectedDate) {
+        console.error('selectedDate is null');
+    }
+    if (!startTime) {
+        console.error('startTime is null');
+    }
+    if (!duration) {
+        console.error('duration is null');
+    }
+    if (!eventType) {
+        console.error('eventType is null');
+    }
+    if (!guestCount) {
+        console.error('guestCount is null');
+    }
+    if (!placeId) {
+        console.error('placeId is null');
+    }
+
+    if (!selectedDate || !startTime || !duration || !eventType || !guestCount || !placeId) {
+        alert('Por favor, complete todos los campos requeridos.');
+        return;
+    }
+
+    // Validar la cantidad de invitados
+    const place = places.find(p => p.id == placeId);
+    if (place && guestCount > place.max_guest) {
+        alert(`La cantidad máxima de invitados para este lugar es ${place.max_guest}.`);
+        guestCountElement.value = place.max_guest;
+        return;
+    }
+
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const endHour = (startHour + parseInt(duration)) % 24;
+    const endTime = `${String(endHour).padStart(2, '0')}:${String(startMinute).padStart(2, '0')}`;
+
+    const form = document.getElementById('quoteForm');
+
+    form.appendChild(generarInputOculto('date', selectedDate));
+    form.appendChild(generarInputOculto('start_time', `${selectedDate} ${startTime}`));
+    form.appendChild(generarInputOculto('end_time', `${selectedDate} ${endTime}`));
+    form.appendChild(generarInputOculto('place_id', placeId));
+    form.appendChild(generarInputOculto('guest_count', guestCount));
+    form.appendChild(generarInputOculto('type_event', eventType === 'Otro' ? otherEventType : eventType));
+
+    confirmedServices.forEach(service => {
+        form.appendChild(generarInputOculto(`services[${service.id}][confirmed]`, true));
+        form.appendChild(generarInputOculto(`services[${service.id}][description]`, service.description));
+    });
+
+    form.submit();
+}
+
+function generarInputOculto(nombre, valor) {
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = nombre;
+    input.value = valor;
+    return input;
+}
 
         document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.category-card').forEach(card => {
@@ -425,7 +331,6 @@ label[for="startTime"]::before {
             showServicesModal(categoryId);
         });
     });
-    // Remove localStorage retrieval
 });
 
 function roundTime(input) {
@@ -460,8 +365,14 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentDate = new Date(today.getFullYear(), today.getMonth(), 1);
     const csrfToken = '{{ csrf_token() }}';
 
-    prevMonthButton.addEventListener('click', () => changeMonth(-1));
-    nextMonthButton.addEventListener('click', () => changeMonth(1));
+    prevMonthButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        changeMonth(-1);
+    });
+    nextMonthButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        changeMonth(1);
+    });
 
     function changeMonth(offset) {
         currentDate.setMonth(currentDate.getMonth() + offset);
@@ -518,14 +429,15 @@ document.addEventListener('DOMContentLoaded', function() {
             dayButton.innerText = day;
             const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
             dayButton.dataset.date = date.toISOString().split('T')[0];
-            dayButton.title = date.toDateString(); // Añadir tooltip
+            dayButton.title = date.toDateString();
 
             if (date < today) {
                 dayButton.classList.add('bg-secondary');
                 dayButton.style.color = 'black';
             } else {
                 dayButton.classList.add('bg-success');
-                dayButton.addEventListener('click', function() {
+                dayButton.addEventListener('click', function(event) {
+                    event.preventDefault();
                     if (!dayButton.classList.contains('bg-danger')) {
                         selectedDateInput.value = this.dataset.date;
 
@@ -642,10 +554,8 @@ function showConfirmedServicesModal() {
 }
 
 function removeConfirmedService(serviceId) {
-    // Remove from confirmedServices array
     confirmedServices = confirmedServices.filter(service => service.id !== serviceId);
 
-    // Restore service card in the main modal
     const serviceCard = document.getElementById(`serviceCard${serviceId}`);
     if (serviceCard) {
         serviceCard.classList.remove('confirmed');
@@ -668,13 +578,11 @@ function removeConfirmedService(serviceId) {
         }
     }
 
-    // Remove service card from the confirmed services modal
     const confirmedServiceCard = document.getElementById(`confirmedServiceCard${serviceId}`);
     if (confirmedServiceCard) {
         confirmedServiceCard.remove();
     }
 
-    // If no confirmed services left, show message
     if (confirmedServices.length === 0) {
         const confirmedServicesContainer = document.getElementById('confirmedServicesContainer');
         confirmedServicesContainer.innerHTML = '<div class="alert alert-info">No hay servicios confirmados.</div>';
@@ -685,7 +593,6 @@ function showServicesModal(categoryId) {
     const servicesContainer = document.getElementById('servicesContainer');
     servicesContainer.innerHTML = '';
 
-    // Filter services by category
     const filteredServices = servicesData.filter(service => 
         service.service_category_id == categoryId
     );
@@ -695,7 +602,6 @@ function showServicesModal(categoryId) {
         return;
     }
 
-    // Generate service cards
     filteredServices.forEach(service => {
         const isConfirmed = confirmedServices.some(cs => cs.id === service.id);
         const serviceCard = document.createElement('div');
@@ -743,12 +649,10 @@ function showServicesModal(categoryId) {
 }
 
 function selectPlace(placeId) {
-    // Remover selección previa
     document.querySelectorAll('.place-card').forEach(card => {
         card.classList.remove('selected');
     });
 
-    // Seleccionar nueva card
     const selectedCard = document.querySelector(`.place-card[onclick="selectPlace(${placeId})"]`);
     if (selectedCard) {
         selectedCard.classList.add('selected');
@@ -774,7 +678,6 @@ function toggleServiceDescription(serviceId) {
     if (checkbox.checked) {
         descriptionContainer.style.display = 'block';
         
-        // Habilitar/deshabilitar botón basado en descripción
         descriptionInput.addEventListener('input', function() {
             confirmBtn.disabled = this.value.trim() === '';
         });
@@ -804,10 +707,8 @@ function confirmService(serviceId) {
             });
         }
 
-        // Mostrar el contenido de confirmedServices en la consola
         console.log('Servicios confirmados:', confirmedServices);
 
-        // Update UI
         serviceCard.classList.add('confirmed');
         descriptionInput.setAttribute('readonly', true);
         confirmBtn.style.display = 'none';
@@ -818,7 +719,6 @@ function confirmService(serviceId) {
         confirmationMessage.textContent = 'Servicio confirmado';
         serviceCard.querySelector('.card-body').appendChild(confirmationMessage);
 
-        // Actualizar el modal de servicios confirmados
         updateConfirmedServicesModal();
     }
 }
@@ -857,70 +757,19 @@ function showConfirmedServicesModal() {
     confirmedServicesModal.show();
 }
 
-document.getElementById('quoteForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+function adjustCalendarControls() {
+    const prevMonthButton = document.getElementById('prevMonth');
+    const nextMonthButton = document.getElementById('nextMonth');
 
-    // Obtener datos del formulario
-    const selectedDate = document.getElementById('selectedDate').value;
-    const startTime = document.getElementById('start_time').value;
-    const duration = document.getElementById('duration').value;
-    const eventType = document.getElementById('eventType').value;
-    const otherEventType = document.getElementById('otherEventType').value;
-    const guestCount = document.getElementById('guestCount').value;
-    const placeId = document.querySelector('.place-card.selected')?.getAttribute('onclick').match(/\d+/)[0];
-
-    // Validaciones
-    if (!selectedDate || !startTime || !duration || !eventType || !guestCount || !placeId) {
-        alert('Por favor, complete todos los campos requeridos.');
-        return;
+    if (window.innerWidth < 992) {
+        prevMonthButton.textContent = '<';
+        nextMonthButton.textContent = '>';
+    } else {
+        prevMonthButton.textContent = '< Anterior';
+        nextMonthButton.textContent = 'Siguiente >';
     }
+}
 
-    // Calcular endTime
-    const [startHour, startMinute] = startTime.split(':').map(Number);
-    const endHour = (startHour + parseInt(duration)) % 24;
-    const endTime = `${String(endHour).padStart(2, '0')}:${String(startMinute).padStart(2, '0')}`;
-
-    // Añadir datos al formulario
-    const form = event.target;
-    const formData = new FormData(form);
-    formData.append('date', selectedDate);
-    formData.append('start_time', `${selectedDate} ${startTime}`);
-    formData.append('end_time', `${selectedDate} ${endTime}`);
-    formData.append('place_id', placeId);
-    formData.append('guest_count', guestCount);
-    formData.append('type_event', eventType === 'Otro' ? otherEventType : eventType);
-
-    // Añadir servicios confirmados
-    confirmedServices.forEach(service => {
-        formData.append(`services[${service.id}][confirmed]`, true);
-        formData.append(`services[${service.id}][description]`, service.description);
-    });
-
-    // Crear un formulario temporal para enviar los datos
-    const tempForm = document.createElement('form');
-    tempForm.method = 'POST';
-    tempForm.action = form.action;
-
-    // Añadir CSRF token
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    const csrfInput = document.createElement('input');
-    csrfInput.type = 'hidden';
-    csrfInput.name = '_token';
-    csrfInput.value = csrfToken;
-    tempForm.appendChild(csrfInput);
-
-    // Añadir los datos del formulario
-    formData.forEach((value, key) => {
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = value;
-        tempForm.appendChild(input);
-    });
-
-    document.body.appendChild(tempForm);
-    tempForm.submit();
-});
     </script>
 </body>
 </html>
