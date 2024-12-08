@@ -33,9 +33,9 @@ class Event extends Model
                     ->withTimestamps();
     }
     public function services()
-    {
+    { 
         return $this->belongsToMany(Service::class, 'events_services')
-                    ->withPivot('quantity', 'price', 'description', 'details_dj', 'id' , 'coast')
+                    ->withPivot('quantity', 'price', 'description', 'id' , 'coast')
                     ->withTimestamps();
     }
     public function user(){
