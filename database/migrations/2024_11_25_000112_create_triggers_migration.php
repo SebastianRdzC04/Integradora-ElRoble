@@ -209,6 +209,32 @@ return new class extends Migration
                 END IF;
             END
         ');
+        DB::unprepared('
+            CREATE TRIGGER create_package_images
+            AFTER INSERT ON packages
+            FOR EACH ROW
+            BEGIN
+                INSERT INTO packages_images (package_id, image_path, created_at, updated_at)
+                SELECT 
+                    NEW.id,
+                    places.image_path,
+                    NOW(),
+                    NOW()
+                FROM places 
+                WHERE places.id = NEW.place_id;
+
+                INSERT INTO packages_images (package_id, image_path, created_at, updated_at)
+                SELECT 
+                    NEW.id,
+                    services.image_path,
+                    NOW(),
+                    NOW()
+                FROM packages_services
+                JOIN services ON services.id = packages_services.service_id
+                WHERE packages_services.package_id = NEW.id
+                AND services.image_path IS NOT NULL;
+            END
+        ');
     }
     public function down()
     {
@@ -226,5 +252,6 @@ return new class extends Migration
         DB::unprepared('DROP TRIGGER IF EXISTS prevent_minimum_exceeding_maximum_update');
         DB::unprepared('DROP TRIGGER IF EXISTS prevent_advance_exceeding_price_insert');
         DB::unprepared('DROP TRIGGER IF EXISTS prevent_advance_exceeding_price_update');
+        DB::unprepared('DROP TRIGGER IF EXISTS create_package_images');
     }
 };

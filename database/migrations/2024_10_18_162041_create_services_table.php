@@ -21,6 +21,7 @@ return new class extends Migration
             $table->decimal('price', 10, 2);
             $table->integer('people_quantity')->nullable();
             $table->decimal('coast', 10, 2)->nullable();
+            $table->string('image_path')->nullable();
             $table->timestamps();
         });
     }

@@ -251,12 +251,20 @@ Route::middleware(['auth' ,'superadmin'])->group(function () {
         $request->validate([
             'anticipo' => 'required|numeric|min:0',
         ]);
-        if ($quote) {
+        if (!$quote) {
+        return redirect()->back()->with('error', 'La cotización no se ha encontrado');
+        }
+
+        try {
             $quote->espected_advance = $request->anticipo;
             $quote->save();
             return redirect()->back()->with('success', 'El anticipo ha sido registrado');
+        } catch (\PDOException $e) {
+            if ($e->getCode() == "45000") {
+                return redirect()->back()->with('error', 'El anticipo no puede ser mayor al precio estimado come caca');
+            }
+            return redirect()->back()->with('error', 'Error al registrar el anticipo');
         }
-        return redirect()->back()->with('error', 'La cotización no se ha encontrado');
 
     })->name('dashboard.quote.advance');
 
