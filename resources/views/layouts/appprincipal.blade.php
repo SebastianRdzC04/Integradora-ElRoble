@@ -16,13 +16,7 @@
     <main style="min-height: 200vh;">
         
         <section id="inicio">        
-                <div class="custom-bg custom-back-image align-content-center" style="background-image: url('{{ asset('js/images/El Roble principal image.jpg') }}');">
-                    <div class="d-flex justify-content-center text-bg-info">
-                        <div>
-                            <p class="text-image-front p-3">Este es el texto de muestra</p>
-                        </div>
-                    </div>
-                </div>
+            @include('startblades.animatedimages')
         </section>
 
         <!--importando el blade del carousel-->
