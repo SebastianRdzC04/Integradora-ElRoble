@@ -127,22 +127,17 @@ class ServiceSeeder extends Seeder
         foreach ($categoryServices['services'] as $service) {
             $localImagePath = storage_path("app/temp_images/service_images/" . $service['image_file']);
 
+            // Subir directamente la imagen a S3 sin verificar MIME
             if (file_exists($localImagePath)) {
-                // Detectar tipo MIME con mime_content_type
-                $mimeType = mime_content_type($localImagePath);
                 $fileName = basename($localImagePath);
 
-                // Subir a S3 con tipo MIME correcto
+                // Subir a S3
                 Storage::disk('s3')->put(
                     "services_images/{$fileName}",
-                    file_get_contents($localImagePath),
-                    [
-                        'ACL' => 'public-read',
-                        'ContentType' => $mimeType,
-                    ]
-                );
+                    file_get_contents($localImagePath)
+                    );
 
-                // Generar URL
+                // Generar URL directamente
                 $url = Storage::disk('s3')->url("services_images/{$fileName}");
             } else {
                 $url = null;
@@ -160,6 +155,5 @@ class ServiceSeeder extends Seeder
             ]);
         }
     }
-
     }
 }

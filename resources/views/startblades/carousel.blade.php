@@ -1,5 +1,5 @@
 @php
-    /* Estas es la consulta para obtener las imagenes del carrusel cuando se suban al S3 De amazon
+    // Estas es la consulta para obtener las imagenes del carrusel cuando se suban al S3 De amazon
     use App\Models\Service;
     use Illuminate\Support\Facades\DB;
 
@@ -8,7 +8,7 @@
     $idsServicios = $serviciosMasCotizados->pluck('service_id');
 
     $servicios = Service::whereIn('id', $idsServicios)->get();
-    */
+    
 @endphp
 
 <section id="tranding" style="mask-image: linear-gradient(to top, #000000 91%, #91ef0400); background-color: antiquewhite;">
@@ -22,16 +22,16 @@
             <!-- Slide-start -->
             <div class="swiper-slide tranding-slide">
               <div class="tranding-slide-img">
-                <img src="{{asset('images/imagen1.jpg')}}" alt="Servicio 1">
+                <img src="{{ $servicios->get(0)->image_path }}" alt="{{ $servicios->get(0)->name }}">
               </div>
               <div class="tranding-slide-content">
-                <h1 class="food-price">$20</h1>
+                <h1 class="food-price">${{ $servicios->get(0)->price }}</h1>
                 <div class="tranding-slide-content-bottom">
                   <h2 class="food-name">
-                    Aqui va el nombre del servicio que bien
+                  {{ $servicios->get(0)->name }}
                   </h2>
                   <h3 class="food-rating">
-                    <span>si arreglaran las migraciones ya verian cambios aqui</span>
+                    <span>{{ $servicios->get(0)->decription }}</span>
                   </h3>
                 </div>
               </div>
@@ -40,16 +40,16 @@
             <!-- Slide-start -->
             <div class="swiper-slide tranding-slide">
               <div class="tranding-slide-img">
-                <img src="{{asset('images/imagen8.jpg')}}" alt="Servicio 2">
+                <img src="{{ $servicios->get(1)->image_path }}" alt="{{ $servicios->get(1)->name }}">
               </div>
               <div class="tranding-slide-content">
-                <h1 class="food-price">$20</h1>
+                <h1 class="food-price">${{ $servicios->get(1)->price }}</h1>
                 <div class="tranding-slide-content-bottom">
                   <h2 class="food-name">
-                    Meat Ball
+                  {{ $servicios->get(1)->name }}
                   </h2>
                   <h3 class="food-rating">
-                    <span>4.5</span>
+                    <span>{{ $servicios->get(1)->description }}</span>
                     <div class="rating">
                       <ion-icon name="star"></ion-icon>
                       <ion-icon name="star"></ion-icon>
@@ -65,23 +65,17 @@
             <!-- Slide-start -->
             <div class="swiper-slide tranding-slide">
               <div class="tranding-slide-img">
-                <img src="{{asset('images/imagen7.jpg')}}" alt="Servicio 3">
+                <img src="{{ $servicios->get(2)->image_path }}" alt="{{ $servicios->get(2)->name }}">
               </div>
               <div class="tranding-slide-content">
-                <h1 class="food-price">$40</h1>
+                <h1 class="food-price">{{ $servicios->get(2)->price }}</h1>
                 <div class="tranding-slide-content-bottom">
                   <h2 class="food-name">
-                    Burger
+                  {{ $servicios->get(2)->name }}
                   </h2>
                   <h3 class="food-rating">
-                    <span>4.5</span>
-                    <div class="rating">
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                    </div>
+                    <span>{{ $servicios->get(2)->description }}</span>
+                    
                   </h3>
                 </div>
               </div>
@@ -90,23 +84,17 @@
             <!-- Slide-start -->
             <div class="swiper-slide tranding-slide">
               <div class="tranding-slide-img">
-                <img src="{{asset('images/imagen6.jpg')}}" alt="Servicio 4">
+                <img src="{{ $servicios->get(3)->image_path }}" alt="{{ $servicios->get(3)->name }}">
               </div>
               <div class="tranding-slide-content">
-                <h1 class="food-price">$15</h1>
+                <h1 class="food-price">${{ $servicios->get(3)->price }}</h1>
                 <div class="tranding-slide-content-bottom">
                   <h2 class="food-name">
-                    Frish Curry
+                  {{ $servicios->get(3)->name }}
                   </h2>
                   <h3 class="food-rating">
-                    <span>4.5</span>
-                    <div class="rating">
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                    </div>
+                    <span>{{ $servicios->get(3)->description }}</span>
+                    
                   </h3>
                 </div>
               </div>
@@ -115,23 +103,17 @@
             <!-- Slide-start -->
             <div class="swiper-slide tranding-slide">
               <div class="tranding-slide-img">
-                <img src="{{asset('images/imagen5.jpg')}}" alt="Servicio 5">
+                <img src="{{ $servicios->get(4)->image_path }}" alt="{{ $servicios->get(4)->name }}">
               </div>
               <div class="tranding-slide-content">
-                <h1 class="food-price">$15</h1>
+                <h1 class="food-price">${{ $servicios->get(4)->price }}</h1>
                 <div class="tranding-slide-content-bottom">
                   <h2 class="food-name">
-                    Pane Cake
+                  {{ $servicios->get(4)->name }}
                   </h2>
                   <h3 class="food-rating">
-                    <span>4.5</span>
-                    <div class="rating">
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                    </div>
+                    <span>{{ $servicios->get(4)->description }}</span>
+                    
                   </h3>
                 </div>
               </div>
@@ -140,23 +122,17 @@
             <!-- Slide-start -->
             <div class="swiper-slide tranding-slide">
               <div class="tranding-slide-img">
-                <img src="{{asset('images/imagen4.jpg')}}" alt="Servicio 6">
+                <img src="{{ $servicios->get(5)->image_path }}" alt="{{ $servicios->get(5)->name }}">
               </div>
               <div class="tranding-slide-content">
-                <h1 class="food-price">$20</h1>
+                <h1 class="food-price">${{ $servicios->get(5)->coast }}</h1>
                 <div class="tranding-slide-content-bottom">
                   <h2 class="food-name">
-                    Vanilla cake
+                  {{ $servicios->get(5)->name }}
                   </h2>
                   <h3 class="food-rating">
-                    <span>4.5</span>
-                    <div class="rating">
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                    </div>
+                    <span>{{ $servicios->get(5)->description }}</span>
+                    
                   </h3>
                 </div>
               </div>
@@ -165,23 +141,17 @@
             <!-- Slide-start -->
             <div class="swiper-slide tranding-slide">
               <div class="tranding-slide-img">
-                <img src="{{asset('images/imagen3.jpg')}}" alt="Servicio 7">
+                <img src="{{ $servicios->get(6)->image_path }}" alt="{{ $servicios->get(6)->name }}">
               </div>
               <div class="tranding-slide-content">
-                <h1 class="food-price">$8</h1>
+                <h1 class="food-price">${{ $servicios->get(6)->price }}</h1>
                 <div class="tranding-slide-content-bottom">
                   <h2 class="food-name">
-                    Straw Cake
+                  {{ $servicios->get(6)->name }}
                   </h2>
                   <h3 class="food-rating">
-                    <span>4.5</span>
-                    <div class="rating">
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                    </div>
+                    <span>{{ $servicios->get(6)->description }}</span>
+                    
                   </h3>
                 </div>
               </div>
