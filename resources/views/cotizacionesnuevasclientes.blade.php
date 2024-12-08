@@ -224,11 +224,13 @@ label[for="startTime"]::before {
 </head>
 <body class="bg-light">
     <div class="container mt-4">
+        <form id="quoteForm" method="POST" action="{{ route('cotizaciones.storeQuote') }}">
+            @csrf
         <div class="row">
             <div class="col-md-6">
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h4 class="card-title mb-4">Selecciona una Fecha</h4>
+                        <h4 class="card-title mb-4 text-center">Selecciona una Fecha</h4>
                         <div class="calendar-container">
                             <div id="calendar-controls" class="d-flex justify-content-between mb-2">
                                 <button id="prevMonth" class="btn-calendar">&lt; Anterior</button>
@@ -237,7 +239,6 @@ label[for="startTime"]::before {
                             </div>
                             <div id="calendar"></div>
                         </div>
-                        <div id="calendar"></div>
                         <div class="mt-3">
                             <p><span class="badge bg-success">Verde</span> - Disponible</p>
                             <p><span class="badge bg-warning">Amarillo</span> - Más personas cotizando por la misma fecha</p>
@@ -280,7 +281,7 @@ label[for="startTime"]::before {
             <div class="col-md-6">
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h4 class="card-title mb-4">Selecciona el Lugar</h4>
+                        <h4 class="card-title mb-4 text-center">Selecciona el Lugar</h4>
                         <div class="row">
                             @foreach($places as $place)
                                 @php
@@ -335,18 +336,29 @@ label[for="startTime"]::before {
                                 <input type="number" id="guestCount" name="guest_count" class="form-control" placeholder="Cantidad de invitados">
                             </div>
                         </div>
+
+                        <div class="mt-4" style="display: flex; justify-content: center;">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmedServicesModal" onclick="updateConfirmedServicesModal()">
+                                Ver Servicios Confirmados
+                            </button>
+                        </div>
+
                         <div class="mt-4">
+                            <div class="alert alert-info justified" role="alert">
+                                ¡Haz de tu evento un momento aún más especial añadiendo servicios para una mejor experiencia!
+                            </div>
+                            <h4 class="text-center">Servicios Disponibles:</h4>
                             <div class="row">
                                 @foreach($categories as $category)
                                     @php
-                                        $imageUrl = $category->image_path ?? '/images/imagen4.jpg';
+                                        $imageUrl = $category->image_path ?? '/images/imagen6.jpg';
                                     @endphp
-                                    <div class="col-md-4 mb-3">
+                                    <div class="col-6 col-sm-6 col-md-4 col-xl-4 mb-3">
                                         <div class="card category-card" data-category-id="{{ $category->id }}">
                                             <img src="{{ $imageUrl }}" class="card-img-top" alt="{{ $category->name }}" style="aspect-ratio: 4 / 3; object-fit: cover;">
                                             <div class="card-body">
-                                                <h5 class="card-title">{{ $category->name }}</h5>
-                                                <p class="card-text">{{ $category->description }}</p>
+                                                <h5 class="card-title text-center"><strong>{{ $category->name }}</strong></h5>
+                                                <p class="card-text text-justify">{{ $category->description }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -357,8 +369,32 @@ label[for="startTime"]::before {
                 </div>
             </div>
         </div>
+        <div class="mt-4 text-center">
+            <button type="submit" class="btn btn-success">Enviar Cotización</button>
+        </div>
+    </form>
     </div>
     
+    <!-- Modal para Servicios Confirmados -->
+    <div class="modal fade" id="confirmedServicesModal" tabindex="-1" aria-labelledby="confirmedServicesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmedServicesModalLabel">Servicios Confirmados</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row" id="confirmedServicesContainer">
+                        <!-- Cards de servicios confirmados se llenarán dinámicamente -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal para Servicios -->
     <div class="modal fade" id="servicesModal" tabindex="-1" aria-labelledby="servicesModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -574,6 +610,77 @@ document.addEventListener('DOMContentLoaded', function() {
     generateCalendar();
 });
 
+function showConfirmedServicesModal() {
+    const confirmedServicesContainer = document.getElementById('confirmedServicesContainer');
+    confirmedServicesContainer.innerHTML = '';
+
+    if (confirmedServices.length === 0) {
+        confirmedServicesContainer.innerHTML = '<div class="alert alert-info">No hay servicios confirmados.</div>';
+        return;
+    }
+
+    confirmedServices.forEach(service => {
+        const serviceCard = document.createElement('div');
+        serviceCard.classList.add('col-md-4', 'mb-3');
+        const imagePath = service.image_path ? service.image_path : '/images/imagen6.jpg';
+        serviceCard.innerHTML = `
+            <div class="card service-card confirmed" id="confirmedServiceCard${service.id}">
+                <img src="${imagePath}" class="card-img-top" alt="${service.name}">
+                <div class="card-body">
+                    <h5 class="card-title">${service.name}</h5>
+                    <p class="card-text">${service.description}</p>
+                    <p class="card-text"><strong><i class="fas fa-dollar-sign"></i> ${service.price}</strong></p>
+                    <button type="button" class="btn btn-danger mt-2" onclick="removeConfirmedService(${service.id})">Eliminar</button>
+                </div>
+            </div>
+        `;
+        confirmedServicesContainer.appendChild(serviceCard);
+    });
+
+    const confirmedServicesModal = new bootstrap.Modal(document.getElementById('confirmedServicesModal'));
+    confirmedServicesModal.show();
+}
+
+function removeConfirmedService(serviceId) {
+    // Remove from confirmedServices array
+    confirmedServices = confirmedServices.filter(service => service.id !== serviceId);
+
+    // Restore service card in the main modal
+    const serviceCard = document.getElementById(`serviceCard${serviceId}`);
+    if (serviceCard) {
+        serviceCard.classList.remove('confirmed');
+        serviceCard.querySelector('.form-check-input').checked = false;
+        serviceCard.querySelector('.form-check-input').disabled = false;
+        serviceCard.querySelector('.form-check-label').textContent = 'Seleccionar';
+        serviceCard.querySelector('.form-check-input').onchange = () => toggleServiceDescription(serviceId);
+        const descriptionContainer = serviceCard.querySelector(`#descriptionContainer${serviceId}`);
+        descriptionContainer.style.display = 'none';
+        descriptionContainer.querySelector('input').value = '';
+        descriptionContainer.querySelector('input').removeAttribute('readonly');
+        const confirmBtn = serviceCard.querySelector(`#confirmBtn${serviceId}`);
+        if (confirmBtn) {
+            confirmBtn.style.display = 'block';
+            confirmBtn.disabled = true;
+        }
+        const confirmationMessage = serviceCard.querySelector('.alert-success');
+        if (confirmationMessage) {
+            confirmationMessage.remove();
+        }
+    }
+
+    // Remove service card from the confirmed services modal
+    const confirmedServiceCard = document.getElementById(`confirmedServiceCard${serviceId}`);
+    if (confirmedServiceCard) {
+        confirmedServiceCard.remove();
+    }
+
+    // If no confirmed services left, show message
+    if (confirmedServices.length === 0) {
+        const confirmedServicesContainer = document.getElementById('confirmedServicesContainer');
+        confirmedServicesContainer.innerHTML = '<div class="alert alert-info">No hay servicios confirmados.</div>';
+    }
+}
+
 function showServicesModal(categoryId) {
     const servicesContainer = document.getElementById('servicesContainer');
     servicesContainer.innerHTML = '';
@@ -686,14 +793,19 @@ function confirmService(serviceId) {
     const service = servicesData.find(s => s.id == serviceId);
 
     if (description) {
-        // Add to confirmedServices array only
-        confirmedServices.push({
-            id: serviceId,
-            description: description,
-            name: service.name,
-            price: service.price,
-            category_id: service.service_category_id
-        });
+        if (!confirmedServices.some(s => s.id === serviceId)) {
+            confirmedServices.push({
+                id: serviceId,
+                description: description,
+                name: service.name,
+                price: service.price,
+                image_path: service.image_path,
+                service_category_id: service.service_category_id
+            });
+        }
+
+        // Mostrar el contenido de confirmedServices en la consola
+        console.log('Servicios confirmados:', confirmedServices);
 
         // Update UI
         serviceCard.classList.add('confirmed');
@@ -705,28 +817,109 @@ function confirmService(serviceId) {
         confirmationMessage.classList.add('alert', 'alert-success', 'mt-2');
         confirmationMessage.textContent = 'Servicio confirmado';
         serviceCard.querySelector('.card-body').appendChild(confirmationMessage);
+
+        // Actualizar el modal de servicios confirmados
+        updateConfirmedServicesModal();
     }
 }
 
-function validateForm() {
+function updateConfirmedServicesModal() {
+    const confirmedServicesContainer = document.getElementById('confirmedServicesContainer');
+    confirmedServicesContainer.innerHTML = '';
+
+    if (confirmedServices.length === 0) {
+        confirmedServicesContainer.innerHTML = '<div class="alert alert-info">No hay servicios confirmados.</div>';
+        return;
+    }
+
+    confirmedServices.forEach(service => {
+        const serviceCard = document.createElement('div');
+        serviceCard.classList.add('col-md-4', 'mb-3');
+        const imagePath = service.image_path ? service.image_path : '/images/imagen6.jpg';
+        serviceCard.innerHTML = `
+            <div class="card service-card" id="confirmedServiceCard${service.id}">
+                <img src="${imagePath}" class="card-img-top" alt="${service.name}">
+                <div class="card-body">
+                    <h5 class="card-title">${service.name}</h5>
+                    <p class="card-text">${service.description}</p>
+                    <p class="card-text"><strong><i class="fas fa-dollar-sign"></i> ${service.price}</strong></p>
+                    <button type="button" class="btn btn-danger mt-2" onclick="removeConfirmedService(${service.id})">Eliminar</button>
+                </div>
+            </div>
+        `;
+        confirmedServicesContainer.appendChild(serviceCard);
+    });
+}
+
+function showConfirmedServicesModal() {
+    updateConfirmedServicesModal();
+    const confirmedServicesModal = new bootstrap.Modal(document.getElementById('confirmedServicesModal'));
+    confirmedServicesModal.show();
+}
+
+document.getElementById('quoteForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    // Obtener datos del formulario
     const selectedDate = document.getElementById('selectedDate').value;
     const startTime = document.getElementById('start_time').value;
     const duration = document.getElementById('duration').value;
     const eventType = document.getElementById('eventType').value;
+    const otherEventType = document.getElementById('otherEventType').value;
     const guestCount = document.getElementById('guestCount').value;
+    const placeId = document.querySelector('.place-card.selected')?.getAttribute('onclick').match(/\d+/)[0];
 
-    if (!selectedDate || !startTime || !duration || !eventType || !guestCount) {
+    // Validaciones
+    if (!selectedDate || !startTime || !duration || !eventType || !guestCount || !placeId) {
         alert('Por favor, complete todos los campos requeridos.');
-        return false;
+        return;
     }
 
-    return true;
-}
+    // Calcular endTime
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const endHour = (startHour + parseInt(duration)) % 24;
+    const endTime = `${String(endHour).padStart(2, '0')}:${String(startMinute).padStart(2, '0')}`;
 
-document.querySelector('form').addEventListener('submit', function(event) {
-    if (!validateForm()) {
-        event.preventDefault();
-    }
+    // Añadir datos al formulario
+    const form = event.target;
+    const formData = new FormData(form);
+    formData.append('date', selectedDate);
+    formData.append('start_time', `${selectedDate} ${startTime}`);
+    formData.append('end_time', `${selectedDate} ${endTime}`);
+    formData.append('place_id', placeId);
+    formData.append('guest_count', guestCount);
+    formData.append('type_event', eventType === 'Otro' ? otherEventType : eventType);
+
+    // Añadir servicios confirmados
+    confirmedServices.forEach(service => {
+        formData.append(`services[${service.id}][confirmed]`, true);
+        formData.append(`services[${service.id}][description]`, service.description);
+    });
+
+    // Crear un formulario temporal para enviar los datos
+    const tempForm = document.createElement('form');
+    tempForm.method = 'POST';
+    tempForm.action = form.action;
+
+    // Añadir CSRF token
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = '_token';
+    csrfInput.value = csrfToken;
+    tempForm.appendChild(csrfInput);
+
+    // Añadir los datos del formulario
+    formData.forEach((value, key) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = value;
+        tempForm.appendChild(input);
+    });
+
+    document.body.appendChild(tempForm);
+    tempForm.submit();
 });
     </script>
 </body>
