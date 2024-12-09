@@ -178,7 +178,7 @@ input[type="number"] {
     </div>
 </div>
 
-<!-- Modal Agregar Inventario ----------------------------------------------------------------->
+<!-- Modal Agregar Inventario -->
 <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" style="max-width: 600px;">
         <div class="modal-content">
@@ -192,47 +192,65 @@ input[type="number"] {
                     <div class="col-md-5">
                         <div class="mb-3">
                             <label for="serialListBox" class="form-label">Serial</label>
-                            <div class="row">
-                                <div class="col-6">
-                                    <select id="serialListBox" class="form-select mb-3" style="max-height: 200px; overflow-y: auto;">
-                                        <!-- Datos a rellenar dinámicamente -->
-                                    </select>
-                                </div>
-                                <div class="col-6">
-                                    <div class="input-group">
-                                        <span class="input-group-text p-0" id="basic-addon1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-dollar" viewBox="0 0 16 16">
-                                                <path d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718zm3.391-3.836c-1.043-.263-1.6-.825-1.6-1.616 0-.944.704-1.641 1.8-1.828v3.495l-.2-.05zm1.591 1.872c1.287.323 1.852.859 1.852 1.769 0 1.097-.826 1.828-2.2 1.939V8.73z"></path>
-                                            </svg>
-                                        </span>
-                                        <input type="tel" name="price" id="price" class="form-control" placeholder="10" aria-label="Input group example" aria-describedby="basic-addon1" maxlength="4" pattern="[0-9]{1,4}" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'');" disabled>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-6 col-md-5" id="spanNumber" style="display:none;">
-                                    <div class="fs-4">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"><path fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 17V7l7 10V7m4 10h5m-5-7a2.5 3 0 1 0 5 0a2.5 3 0 1 0-5 0"/></svg>
-                                        <span id="lastNumber"></span>
-                                    </div>
-                                </div>
+                            <select id="serialListBox" class="form-select mb-3" style="max-height: 200px; overflow-y: auto;">
+                                <!-- Datos a rellenar dinámicamente -->
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Precio</label>
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-currency-dollar" viewBox="0 0 16 16">
+                                        <path d="M4 10.781c.148 1.667 1.513 2.85 3.591 3.003V15h1.043v-1.216c2.27-.179 3.678-1.438 3.678-3.3 0-1.59-.947-2.51-2.956-3.028l-.722-.187V3.467c1.122.11 1.879.714 2.07 1.616h1.47c-.166-1.6-1.54-2.748-3.54-2.875V1H7.591v1.233c-1.939.23-3.27 1.472-3.27 3.156 0 1.454.966 2.483 2.661 2.917l.61.162v4.031c-1.149-.17-1.94-.8-2.131-1.718zm3.391-3.836c-1.043-.263-1.6-.825-1.6-1.616 0-.944.704-1.641 1.8-1.828v3.495l-.2-.05zm1.591 1.872c1.287.323 1.852.859 1.852 1.769 0 1.097-.826 1.828-2.2 1.939V8.73z"/>
+                                    </svg>
+                                </span>
+                                <input type="tel" 
+                                       id="price" 
+                                       class="form-control" 
+                                       placeholder="10" 
+                                       maxlength="4" 
+                                       pattern="[0-9]{1,4}" 
+                                       inputmode="numeric"
+                                       oninput="this.value=this.value.replace(/[^0-9]/g,'');" 
+                                       disabled>
                             </div>
                         </div>
-                        <textarea id="description" class="form-control mb-3" maxlength="100" placeholder="Silla chica de color rojo" disabled></textarea>
-                            <div class="row">
-                                <div class="col-6">
-                                    <button id="addItemButton" class="btn btn-primary w-100 mb-2">Añadir</button>
-                                </div>
-                                <div class="col-6">
-                                    <button id="updateInventory" class="btn btn-warning w-100" disabled>Confirmar</button>
-                                </div>
+
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">Cantidad</label>
+                            <input type="number" 
+                                   id="quantity" 
+                                   class="form-control" 
+                                   min="1" 
+                                   max="100" 
+                                   value="1" 
+                                   disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Descripción</label>
+                            <textarea id="description" 
+                                      class="form-control" 
+                                      maxlength="100" 
+                                      placeholder="Silla chica de color rojo" 
+                                      disabled></textarea>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <button id="addItemButton" class="btn btn-primary w-100 mb-2">Añadir</button>
                             </div>
+                            <div class="col-6">
+                                <button id="updateInventory" class="btn btn-warning w-100" disabled>Confirmar</button>
+                            </div>
+                        </div>
                     </div>
+
                     <!-- Columna Derecha -->
                     <div class="col-md-7">
                         <h6>Inventario Agregado</h6>
                         <ul id="serialList" class="list-group overflow-auto" style="max-height: 250px; word-wrap: break-word;">
-
                         </ul>
                     </div>
                 </div>
@@ -611,121 +629,118 @@ input[type="number"] {
          });
      });
  
- document.getElementById('serialListBox').addEventListener('change', function () {
-     const selectedId = this.value; 
-     const numberInfo = document.getElementById('lastNumber');
-     const inventoryDescription = document.getElementById('description');
-     const priceInput = document.getElementById('price');
-     const spandiv = document.getElementById('spanNumber');
+     document.getElementById('serialListBox').addEventListener('change', function () {
+    const selectedId = this.value;
+    const quantityInput = document.getElementById('quantity');
+    const inventoryDescription = document.getElementById('description');
+    const priceInput = document.getElementById('price');
+
+    if (selectedId && serialMap[selectedId] !== undefined) {
+        inventoryDescription.disabled = false;
+        priceInput.disabled = false;
+        quantityInput.disabled = false;
+    } else {
+        inventoryDescription.disabled = true;
+        priceInput.disabled = true;
+        quantityInput.disabled = true;
+    }
+});
  
-     if (selectedId && serialMap[selectedId] !== undefined) {
-         let nextNumber = serialMap[selectedId];
-         while (usedSerialNumbers[selectedId].includes(nextNumber)) {
-             nextNumber++;
-         }
+document.getElementById('addItemButton').addEventListener('click', () => {
+    const serialListBox = document.getElementById('serialListBox');
+    const description = document.getElementById('description');
+    const quantity = parseInt(document.getElementById('quantity').value) || 1;
+    const priceInput = document.getElementById('price');
+    const serialList = document.getElementById('serialList');
+    const confirmInventoryButton = document.getElementById('updateInventory');
+
+    const serialId = serialListBox.value;
+    const descriptionText = description.value.trim();
+    const inventoryPrice = parseInt(priceInput.value);
+    const serialCode = $("option:selected", serialListBox).text().split(" ")[0];
+
+    if (serialId && descriptionText && quantity > 0) {
+        for (let i = 0; i < quantity; i++) {
+            let nextNumber = serialMap[serialId];
+            while (usedSerialNumbers[serialId].includes(nextNumber)) {
+                nextNumber++;
+            }
+
+            usedSerialNumbers[serialId].push(nextNumber);
+            serialMap[serialId] = nextNumber + 1;
+
+            const item = {
+                id: serialId,
+                number: nextNumber,
+                description: descriptionText,
+                price: inventoryPrice
+            };
+            inventoryData.push(item);
+
+            const listItem = document.createElement('li');
+            listItem.classList.add('list-group-item');
+            listItem.textContent = `${serialCode}-${nextNumber} $${inventoryPrice}: ${descriptionText}`;
+            serialList.appendChild(listItem);
+        }
+
+        confirmInventoryButton.disabled = false;
+        
+        // Reset inputs
+        serialListBox.selectedIndex = 0;
+        description.value = '';
+        description.disabled = true;
+        priceInput.value = '';
+        priceInput.disabled = true;
+        quantity.value = '1';
+        quantity.disabled = true;
+
+        toastr.success(`${quantity} ítem(s) añadido(s) al inventario.`);
+    } else {
+        toastr.error('Por favor, completa todos los campos.');
+    }
+});
  
-         spandiv.style.display = 'block';
-         numberInfo.textContent = nextNumber;
-         inventoryDescription.disabled = false;
-         priceInput.disabled = false;
-     } else {
-         numberInfo.textContent = "";
-         spandiv.style.display = 'none';
-         inventoryDescription.disabled = true;
-         priceInput.disabled = true;
-     }
- });
- 
- document.getElementById('addItemButton').addEventListener('click', () => {
-     const serialListBox = document.getElementById('serialListBox');
-     const description = document.getElementById('description');
-     const serialList = document.getElementById('serialList');
-     const confirmInventoryButton = document.getElementById('updateInventory');
-     const priceInput = document.getElementById('price');
-     const spandiv = document.getElementById('spanNumber');
- 
-     const serialId = serialListBox.value; // Ahora obtenemos el id
-     const descriptionText = description.value.trim();
-     const inventoryPrice = parseInt(priceInput.value);
- 
-     if (serialId && descriptionText) {
-         let nextNumber = serialMap[serialId];
-         while (usedSerialNumbers[serialId].includes(nextNumber)) {
-             nextNumber++;
-         }
- 
-         usedSerialNumbers[serialId].push(nextNumber); 
-         serialMap[serialId] = nextNumber + 1;
- 
-         
-         const serialCode = $("option:selected", serialListBox).text().split(" ")[0]; 
- 
-         const item = {
-             id: serialId, 
-             number: nextNumber,
-             description: descriptionText,
-             price: inventoryPrice
-         };
-         inventoryData.push(item); 
- 
-         const listItem = document.createElement('li');
-         listItem.classList.add('list-group-item');
-         listItem.textContent = `${serialCode}-${nextNumber} $${inventoryPrice}: ${descriptionText}`; // Mostrar el código
-         serialList.appendChild(listItem);
- 
-         confirmInventoryButton.disabled = false;
- 
-         serialListBox.selectedIndex = 0;
-         description.value = '';
-         spandiv.style.display = 'none';
-         description.disabled = true;
-         priceInput.disabled = true;
-         priceInput.value = '';
- 
-         console.log('Ítem añadido:', item);
-         toastr.success('Ítem añadido al inventario.');
-     } else {
-         toastr.error('Por favor, selecciona un serial y completa la descripción.');
-     }
- });
- 
- document.getElementById('updateInventory').addEventListener('click', () => {
-     if (inventoryData.length > 0) {
-         const inventoryJson = JSON.stringify({
-             items: inventoryData.map(item => ({
-                 id: item.id,  // Enviar el id en lugar del código
-                 number: item.number,
-                 description: item.description,
-                 price: item.price
-             }))
-         });
-         console.log('Inventario JSON a enviar:', inventoryJson);
-         
-         $.ajax({
-             url: '{{route('inventoryadd.store')}}',  // Reemplaza esto con la URL de tu controlador
-             type: 'POST',
-             headers: {
-                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content') // Añade el token CSRF en el encabezado
-             },
-             contentType: 'application/json',  
-             data: inventoryJson, 
-             success: function(response) {
-                 //console.log('Respuesta del servidor:', response);
- 
-                 resetModalData();
-                 bootstrap.Modal.getInstance(document.getElementById('formModal')).hide();
-                 toastr.success('Inventario confirmado correctamente.');
-             },
-             error: function(xhr, status, error) {
-                 //console.log("Response Text:", xhr.responseText);
-                 toastr.error('Hubo un problema al confirmar el inventario. Intenta nuevamente.');
-             }
-         });
-     } else {
-         toastr.error('No hay ítems en el inventario para confirmar.');
-     }
- });
- 
+document.getElementById('updateInventory').addEventListener('click', () => {
+    if (inventoryData.length > 0) {
+        const inventoryJson = JSON.stringify({
+            items: inventoryData.map(item => ({
+                id: item.id,
+                number: item.number,
+                description: item.description,
+                price: item.price
+            }))
+        });
+
+        $.ajax({
+            url: '{{route('inventoryadd.store')}}',
+            type: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            contentType: 'application/json',
+            data: inventoryJson,
+            success: function(response) {
+                // Primero mostrar el toastr
+                toastr.success('Inventario confirmado correctamente.');
+                
+                // Luego resetear y cerrar el modal
+                setTimeout(() => {
+                    resetModalData();
+                    bootstrap.Modal.getInstance(document.getElementById('formModal')).hide();
+                }, 500);
+            },
+            error: function(xhr, status, error) {
+                if (xhr.responseJSON && xhr.responseJSON.error) {
+                    toastr.error(xhr.responseJSON.error);
+                } else {
+                    toastr.error('Hubo un problema al confirmar el inventario. Intenta nuevamente.');
+                }
+            }
+        });
+    } else {
+        toastr.error('No hay ítems en el inventario para confirmar.');
+    }
+});
  
      function resetModalData() {
          const serialListBox = document.getElementById('serialListBox');
