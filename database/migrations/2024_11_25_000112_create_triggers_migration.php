@@ -222,17 +222,21 @@ return new class extends Migration
                     NOW()
                 FROM places 
                 WHERE places.id = NEW.place_id;
-
+            END
+        ');
+        DB::unprepared('
+            CREATE TRIGGER create_package_service_images
+            AFTER INSERT ON packages_services
+            FOR EACH ROW
+            BEGIN
                 INSERT INTO packages_images (package_id, image_path, created_at, updated_at)
                 SELECT 
-                    NEW.id,
+                    NEW.package_id,
                     services.image_path,
                     NOW(),
                     NOW()
-                FROM packages_services
-                JOIN services ON services.id = packages_services.service_id
-                WHERE packages_services.package_id = NEW.id
-                AND services.image_path IS NOT NULL;
+                FROM services 
+                WHERE services.id = NEW.service_id;
             END
         ');
         DB::unprepared('
@@ -270,6 +274,7 @@ return new class extends Migration
         DB::unprepared('DROP TRIGGER IF EXISTS prevent_advance_exceeding_price_insert');
         DB::unprepared('DROP TRIGGER IF EXISTS prevent_advance_exceeding_price_update');
         DB::unprepared('DROP TRIGGER IF EXISTS create_package_images');
+        DB::unprepared('DROP TRIGGER IF EXISTS create_package_service_images');
         DB::unprepared('DROP TRIGGER IF EXISTS calculate_event_duration');
     }
 };
