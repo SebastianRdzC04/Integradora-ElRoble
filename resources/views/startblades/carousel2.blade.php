@@ -103,7 +103,31 @@
         <!-- Slide-start -->
         <div class="swiper-slide packages-slide">
           <div class="packages-slide-img">
-            <img src="{{ $packages->get(0)->image_path }}" alt="{{ $packages->get(0)->name }}">
+            <img src="https://i0.wp.com/www.galvanizeaction.org/wp-content/uploads/2022/06/Wow-gif.gif?fit=450%2C250&ssl=1" alt="{{ $packages->get(0)->name }}">
+          </div>
+          <div class="packages-slide-content">
+            <h1 class="package-price">${{ $packages->get(0)->price }}</h1>
+            <div class="packages-slide-content-bottom">
+              <h2 class="package-name">{{ $packages->get(0)->name }}</h2>
+              <h3 class="package-description">{{ $packages->get(0)->description }}</h3>
+            </div>
+          </div>
+        </div>
+        <div class="swiper-slide packages-slide">
+          <div class="packages-slide-img">
+            <img src="https://i0.wp.com/www.galvanizeaction.org/wp-content/uploads/2022/06/Wow-gif.gif?fit=450%2C250&ssl=1" alt="{{ $packages->get(0)->name }}">
+          </div>
+          <div class="packages-slide-content">
+            <h1 class="package-price">${{ $packages->get(0)->price }}</h1>
+            <div class="packages-slide-content-bottom">
+              <h2 class="package-name">{{ $packages->get(0)->name }}</h2>
+              <h3 class="package-description">{{ $packages->get(0)->description }}</h3>
+            </div>
+          </div>
+        </div>
+        <div class="swiper-slide packages-slide">
+          <div class="packages-slide-img">
+            <img src="https://i0.wp.com/www.galvanizeaction.org/wp-content/uploads/2022/06/Wow-gif.gif?fit=450%2C250&ssl=1" alt="{{ $packages->get(0)->name }}">
           </div>
           <div class="packages-slide-content">
             <h1 class="package-price">${{ $packages->get(0)->price }}</h1>

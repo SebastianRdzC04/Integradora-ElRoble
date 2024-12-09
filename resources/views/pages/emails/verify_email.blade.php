@@ -42,7 +42,7 @@
                     </tr>
                     <tr>
                         <td style="padding: 20px; background-color: #5d4037; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
-                            <p style="color: #d7ccc8; font-size: 14px; text-align: center; margin: 0;">&copy; {{ date('Y') }} Tu Empresa. Todos los derechos reservados.</p>
+                            <p style="color: #d7ccc8; font-size: 14px; text-align: center; margin: 0;">&copy; {{ date('Y') }} El Roble. Todos los derechos reservados.</p>
                         </td>
                     </tr>
                 </table>

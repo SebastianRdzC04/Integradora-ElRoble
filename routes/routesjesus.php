@@ -11,6 +11,36 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\VerifyPhoneController;
 use App\Models\InventoryCategory;
 use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+
+Route::post('/create-gif', function (Request $request) {
+    // Validar que el request tenga imágenes
+    $request->validate([
+        'images' => 'required|array|min:2',
+        'images.*' => 'image|mimes:jpeg,png,jpg|max:2048', // Limita a imágenes
+    ]);
+
+    // Subir las imágenes a Cloudinary
+    $uploadedImages = [];
+    foreach ($request->file('images') as $image) {
+        // Subir cada imagen a Cloudinary
+        $uploadResult = Cloudinary::upload($image->getRealPath())->getPublicId();
+        $uploadedImages[] = $uploadResult;
+    }
+
+    // Crear el GIF con las imágenes subidas
+    // Usamos Cloudinary's URL para crear el GIF con los public_ids de las imágenes subidas
+    $gifUrl = Cloudinary::image($uploadedImages[0])
+        ->resize('300', '300') // Redimensionamos si es necesario
+        ->effect('loop') // Loops para hacer el GIF animado
+        ->format('gif')
+        ->getUrl();
+
+    // Devolver el URL del GIF creado
+    return response()->json(['gif_url' => $gifUrl]);
+});
 
 //Aqui esta el login de Facebook lo mismo que google
 
