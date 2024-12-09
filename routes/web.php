@@ -102,7 +102,8 @@ Route::middleware(['auth' ,'admin'])->group(function () {
 
     Route::get('dashboard/packages', function () {
         $packages = Package::all();
-        return view('pages.dashboard.packages', compact('packages'));
+        $places = Place::all();
+        return view('pages.dashboard.packages', compact('packages', 'places'));
     })->name('dashboard.packages');
 
     Route::get('dashboard/services', function () {
@@ -657,7 +658,9 @@ Route::get('/paquetes', [PaquetesAdminController::class, 'index'])->name('paquet
 
 
 Route::get('dashboard/crear/paquetes', function () {
-    return view('pages.dashboard.crearPaquetes');
+    $places = Place::all();
+    $services = Service::all();
+    return view('pages.dashboard.crearPaquetes', compact('services', 'places'));
 })->name('dashboard.crear.paquetes');
 
 Route::get('dashboard/crear/servicios', function () {
@@ -729,6 +732,71 @@ Route::post('dashboard/service/edit/{id}', function($id, Request $request){
     return redirect()->back()->with('success', 'El servicio ha sido actualizado correctamente');
 
 })->name('dashboard.service.edit');
+
+Route::post('dashboard/create/service', function(Request $request){
+    $request->validate([
+        'categoria' => 'required|string|exists:service_categories,name',
+        'nombre' => 'required|string',
+        'descripcion' => 'required|string',
+        'precio' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
+        'costo' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/', 
+        'afore' => 'required|integer|max:100',
+    ]);
+    $imagenCortada = $request->input('cropped_image');
+    $service = new Service();
+    $service->service_category_id = ServiceCategory::where('name', $request->categoria)->first()->id;
+    $service->name = $request->nombre;
+    $service->description = $request->descripcion;
+    $service->price = $request->precio;
+    $service->coast = $request->costo;
+    $service->people_quantity = $request->afore;
+    $service->save();
+    return redirect()->back()->with('success', 'El servicio ha sido creado correctamente');
+})->name('dashboard.create.service');
+
+Route::post('dashboard/create/package', function(Request $request){
+    $request->validate([
+        'nombre' => 'required|string',
+        'descripcion' => 'required|string',
+        'precio' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
+        'fechaInicio' => 'required|date',
+        'fechaFin' => 'required|date',
+        'lugar' => 'required|string|exists:places,id',
+        'afore' => 'required|integer|max:100',
+    ]);
+    $package = new Package();
+    $package->name = $request->nombre;
+    $package->description = $request->descripcion;
+    $package->price = $request->precio;
+    $package->start_date = $request->fechaInicio;
+    $package->end_date = $request->fechaFin;
+    $package->place_id = Place::find($request->lugar)->id;
+    $package->max_people = $request->afore;
+    $package->save();
+    return redirect()->back()->with('success', 'El paquete ha sido creado correctamente');
+})->name('dashboard.create.package');
+
+Route::post('dashboard/package/edit/{id}', function($id, Request $request) {
+    $request->validate([
+        'nombre' => 'required|string',
+        'descripcion' => 'required|string',
+        'precio' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
+        'fechaInicio' => 'required|date',
+        'fechaFin' => 'required|date',
+        'lugar' => 'required|string|exists:places,id',
+        'afore' => 'required|integer|max:100',
+    ]);
+    $package = Package::find($id);
+    $package->name = $request->nombre;
+    $package->description = $request->descripcion;
+    $package->price = $request->precio;
+    $package->start_date = $request->fechaInicio;
+    $package->end_date = $request->fechaFin;
+    $package->place_id = Place::find($request->lugar)->id;
+    $package->max_people = $request->afore;
+    $package->save();
+    return redirect()->back()->with('success', 'El paquete ha sido actualizado correctamente');
+})->name('dashboard.edit.package');
 
 
 require __DIR__.'/routesjesus.php';

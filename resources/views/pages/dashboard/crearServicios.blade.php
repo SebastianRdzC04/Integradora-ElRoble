@@ -32,7 +32,8 @@
         <div class="row justify-content-center">
             <div class="col-7">
                 <div class="form">
-                    <form action="">
+                    <form action="{{route('dashboard.create.service')}}" method="POST">
+                        @csrf
                         <div class="mb-3 d-flex">
                             <div class="col-8">
                                 <div>
@@ -54,7 +55,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="nombre" class="form-label">Nombre</label>
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" name="nombre">
                         </div>
                         <div class="mb-3 d-flex">
                             <div class="col-6 me-2">
@@ -64,15 +65,15 @@
                             <div class="col-6">
                                 <div class="">
                                     <label for="precio" class="form-label">Precio</label>
-                                    <input type="number" class="form-control">
+                                    <input type="number" class="form-control" name="precio">
                                 </div>
                                 <div>
                                     <label for="costo" class="form-label">Costo</label>
-                                    <input type="number" class="form-control">
+                                    <input type="number" class="form-control" name="costo">
                                 </div>
                                 <div>
                                     <label for="afore">Promedio de personas</label>
-                                    <input type="text" class="form-control">
+                                    <input type="text" class="form-control" name="afore">
                                 </div>
                             </div>
                         </div>

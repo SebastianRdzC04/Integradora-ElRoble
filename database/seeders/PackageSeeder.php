@@ -18,7 +18,6 @@ class PackageSeeder extends Seeder
                 'price' => 15000,
                 'start_date' => '2024-01-01',
                 'end_date' => '2024-12-31',
-                'status' => 'activo'
             ],
             [
                 'place_id' => 1,
@@ -28,7 +27,6 @@ class PackageSeeder extends Seeder
                 'price' => 25000,
                 'start_date' => '2024-01-01',
                 'end_date' => '2024-12-31',
-                'status' => 'activo'
             ],
             
             [
@@ -39,7 +37,6 @@ class PackageSeeder extends Seeder
                 'price' => 18000,
                 'start_date' => '2024-01-01',
                 'end_date' => '2024-12-31',
-                'status' => 'activo'
             ],
             [
                 'place_id' => 2,
@@ -49,7 +46,6 @@ class PackageSeeder extends Seeder
                 'price' => 30000,
                 'start_date' => '2024-01-01',
                 'end_date' => '2024-12-31',
-                'status' => 'activo'
             ],
 
             [
@@ -60,7 +56,6 @@ class PackageSeeder extends Seeder
                 'price' => 35000,
                 'start_date' => '2024-01-01',
                 'end_date' => '2024-12-31',
-                'status' => 'activo'
             ],
             [
                 'place_id' => 3,
@@ -70,7 +65,6 @@ class PackageSeeder extends Seeder
                 'price' => 50000,
                 'start_date' => '2024-01-01',
                 'end_date' => '2024-12-31',
-                'status' => 'activo'
             ]
         ];
 
