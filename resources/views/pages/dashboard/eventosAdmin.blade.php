@@ -264,19 +264,21 @@
                                                 <div class="mb-3">
                                                     <label for="cantidad" class="form-label">Cantidad</label>
                                                     <input class="form-control" type="number" name="cantidad"
-                                                        value="{{$service->pivot->quantity}}">
+                                                        value="{{ $service->pivot->quantity }}">
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label" for="precio">Cuanto Vas
                                                         a
                                                         cobrar?</label>
-                                                    <input class="form-control" type="number" name="precio" value="{{$service->pivot->price}}">
+                                                    <input class="form-control" type="number" name="precio"
+                                                        value="{{ $service->pivot->price }}">
                                                 </div>
                                                 <div class=" mb-3">
                                                     <label class="form-label" for="costo">Cuanto te
                                                         cuesta a
                                                         ti? </label>
-                                                    <input class="form-control" type="number" name="costo" value="{{$service->pivot->coast}}">
+                                                    <input class="form-control" type="number" name="costo"
+                                                        value="{{ $service->pivot->coast }}">
                                                 </div>
                                                 <div class="mb-3">
                                                     <button class="btn btn-primary">Enviar</button>
@@ -466,23 +468,15 @@
                                 </div>
                             </div>
                         </div>
-                        @if ($event->status == 'Pendiente')
-                            <p>Se espera que empiece a las
-                                {{ Carbon::parse($event->estimated_start_time)->format('h:i A') }} </p>
-                            <p>Se espera que termine a las
-                                {{ Carbon::parse($event->estimated_end_time)->format('h:i A') }}
+                        @if ($event->status == 'Pendiente' || $event->status == 'En espera')
+                            <p>Horario estimado: {{ Carbon::parse($event->estimated_start_time)->format('h:i A') }} -
+                                {{ Carbon::parse($event->estimated_end_time)->format('h:i A') }} <i data-bs-toggle="modal"
+                                    data-bs-target="#horarioModal" class="text-end bi bi-pencil"></i>
                             </p>
                         @endif
                         @if ($event->status == 'Finalizado')
                             <p>Empezo a las {{ Carbon::parse($event->start_time)->format('h:i A') }} </p>
                             <p>Termino a las {{ Carbon::parse($event->end_time)->format('h:i A') }} </p>
-                        @endif
-                        @if ($event->status == 'En espera')
-                            <p>Se espera que empiece a las
-                                {{ Carbon::parse($event->estimated_start_time)->format('h:i A') }} </p>
-                            <p>Se espera que termine a las
-                                {{ Carbon::parse($event->estimated_end_time)->format('h:i A') }}
-                            </p>
                         @endif
                         @if ($event->status == 'En proceso')
                             <p>Empezo a las {{ Carbon::parse($event->start_time)->format('h:i A') }} </p>

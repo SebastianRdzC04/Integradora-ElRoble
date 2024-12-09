@@ -657,7 +657,8 @@ Route::get('/paquetes', [PaquetesAdminController::class, 'index'])->name('paquet
 
 
 Route::get('dashboard/crear/paquetes', function () {
-    return view('pages.dashboard.crearPaquetes');
+    $services = Service::all();
+    return view('pages.dashboard.crearPaquetes', compact('services'));
 })->name('dashboard.crear.paquetes');
 
 Route::get('dashboard/crear/servicios', function () {

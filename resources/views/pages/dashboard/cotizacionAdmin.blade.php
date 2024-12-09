@@ -4,13 +4,12 @@
     use Carbon\Carbon;
     Carbon::setLocale('es');
     $horaInicial = Carbon::createFromTimeString(11, 0, 0);
-    $horaFinal = Carbon::createFromTimeString(21, 0, 0); 
+    $horaFinal = Carbon::createFromTimeString(21, 0, 0);
     $horas = [];
     for ($i = $horaInicial; $i <= $horaFinal; $i->addHour()) {
-        $horas[] = $i->format('H:i');
+        $horas[] = $i->format('h:i A');
     }
-
-
+    $start_time = $quote->start_time ? Carbon::parse($quote->start_time)->format('h:i A') : null;
 @endphp
 
 @section('title', 'Cotizacion')
@@ -185,13 +184,16 @@
                                         <label for="horaInicio" class="form-label">Hora de Inicio</label>
                                         <select name="" id="" class="form-select">
                                             @foreach ($horas as $hora)
-                                                <option value="{{ $hora }}">{{ $hora }}</option>
+                                                <option value="{{ $hora }}"
+                                                    {{ $hora == $start_time ? 'selected' : '' }}>
+                                                    {{ $hora }}
+                                                </option>
                                             @endforeach
                                         </select>
                                     </div>
                                     <div class="row mb-3">
                                         <label for="horaFin" class="form-label">Hora de Fin</label>
-                                        <input class="form-control" type="time" name="horaFin">
+                                        <input class="form-control" type="number" name="horaFin">
                                     </div>
                                     <div class="row">
                                         <button class="btn btn-primary">Enviar</button>

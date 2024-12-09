@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('people_quantity')->nullable();
             $table->decimal('coast', 10, 2)->nullable();
             $table->string('image_path')->default('https://img.freepik.com/foto-gratis/erizo-europeo-manos-habitat-natural-jardin_1150-18212.jpg?t=st=1733702858~exp=1733706458~hmac=c966c772d0abf14180c14636d9fca82cdd19eea314107a46e55512d18a64af13&w=1380')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
