@@ -40,7 +40,8 @@ class PlacesTable extends Seeder
             Place::create([
                 'name' => $place['name'],
                 'description' => $place['description'],
-                'max_guest' => $place['max_guests']
+                'max_guest' => $place['max_guests'],
+                'price' => $place['price'],
             ]);
         }
     }
