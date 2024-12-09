@@ -737,7 +737,8 @@ function showServicesModal(categoryId) {
                 <div class="card-body">
                     <h5 class="card-title">${service.name}</h5>
                     <p class="card-text">${service.description}</p>
-                    <p class="card-text"><strong><i class="fas fa-dollar-sign"></i> ${service.price}</strong></p>
+                    <p class="card-text"><strong> Precio: <i class="fas fa-dollar-sign"></i> ${service.price}</strong></p>
+                    <p class="card-text"> Costo: <i class="fas fa-dollar-sign"></i> ${service.coast}</p>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="${service.id}" 
                             id="service${service.id}" 
