@@ -677,40 +677,49 @@ function showConfirmedServicesModal() {
 }
 
 function removeConfirmedService(serviceId) {
+    // 1. Eliminar del array de servicios confirmados
     confirmedServices = confirmedServices.filter(service => service.id !== serviceId);
+    
+    // 2. Eliminar la tarjeta del servicio confirmado del modal
+    const confirmedServiceCard = document.getElementById(`confirmedServiceCard${serviceId}`);
+    if (confirmedServiceCard) {
+        confirmedServiceCard.remove();
+    }
 
+    // 3. Restablecer el estado del servicio en el modal de servicios
     const serviceCard = document.getElementById(`serviceCard${serviceId}`);
     if (serviceCard) {
+        // Quitar clase y restablecer checkbox
         serviceCard.classList.remove('confirmed');
-        serviceCard.querySelector('.form-check-input').checked = false;
-        serviceCard.querySelector('.form-check-input').disabled = false;
-        serviceCard.querySelector('.form-check-label').textContent = 'Seleccionar';
-        serviceCard.querySelector('.form-check-input').onchange = () => toggleServiceDescription(serviceId);
+        const checkbox = serviceCard.querySelector('.form-check-input');
+        if (checkbox) {
+            checkbox.checked = false;
+            checkbox.disabled = false;
+        }
+
         const descriptionContainer = serviceCard.querySelector(`#descriptionContainer${serviceId}`);
-        descriptionContainer.style.display = 'none';
-        descriptionContainer.querySelector('input').value = '';
-        descriptionContainer.querySelector('input').removeAttribute('readonly');
+        if (descriptionContainer) {
+            descriptionContainer.style.display = 'none';
+            const inputs = descriptionContainer.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.value = '';
+                input.removeAttribute('readonly');
+            });
+        }
+
         const confirmBtn = serviceCard.querySelector(`#confirmBtn${serviceId}`);
         if (confirmBtn) {
             confirmBtn.style.display = 'block';
             confirmBtn.disabled = true;
         }
+
         const confirmationMessage = serviceCard.querySelector('.alert-success');
         if (confirmationMessage) {
             confirmationMessage.remove();
         }
     }
 
-    const confirmedServiceCard = document.getElementById(`confirmedServiceCard${serviceId}`);
-    if (confirmedServiceCard) {
-        confirmedServiceCard.remove();
-    }
-
-    if (confirmedServices.length === 0) {
-        const confirmedServicesContainer = document.getElementById('confirmedServicesContainer');
-        confirmedServicesContainer.innerHTML = '<div class="alert alert-info">No hay servicios confirmados.</div>';
-    }
-
+    updateConfirmedServicesModal();
     updateCosts();
 }
 
