@@ -14,7 +14,13 @@
 
 @section('content')
 
+
     <div class="container">
+        <div class="row">
+            <div class="col-12 d-flex justify-content-end">
+                <a href="{{ route('dashboard.crear.paquetes') }}" class="text-end btn btn-primary">Crear Paquete</a>
+            </div>
+        </div>
         <div class="row justify-content-center">
             <div class="col-12">
                 <div class="table-responsive pack-table">
@@ -34,7 +40,7 @@
                             @foreach ($packages as $package)
                                 <tr class="parent-row">
                                     <td>{{ $package->name }}</td>
-                                    <td>{{ $package->status }}</td>
+                                    <td>{{ $package->is_active ? 'Activo' : 'Inactivo' }}</td>
                                     <td>{{ Carbon::parse($package->start_date)->format('d-m-Y') }} ->
                                         {{ Carbon::parse($package->end_date)->format('d-m-Y') }} </td>
                                     <td class="text-center">${{ $package->price }}</td>
@@ -44,14 +50,101 @@
                                     </td>
                                     <td>
                                         <div>
-                                            <a class="btn btn-outline-primary p-1 m-0" href=""><i
-                                                    class="bi bi-pencil-square"></i></a>
-                                            <a class="btn btn-outline-danger p-1 m-0" href=""><i
-                                                    class="bi bi-trash3"></i></a>
-                                            <button type="button" class="btn btn-outline-primary p-1 m-0"
-                                                data-bs-toggle="modal" data-bs-target="#modal{{ $package->id }}">
-                                                <i class="bi bi-three-dots"></i>
-                                            </button>
+                                            <select class="form-select" name="" id="">
+                                                <option value="">Selecciona una opcion</option>
+                                                <option data-bs-toggle="modal"
+                                                    data-bs-target="#editarPack{{ $package->id }}" value="1">Editar
+                                                </option>
+                                                <option data-bs-toggle="modal" data-bs-target="#modal{{ $package->id }}"
+                                                    value="2">Ver servicios</option>
+                                                <option value="">Cambiar estado</option>
+                                                <option data-bs-toggle="modal"
+                                                    data-bs-target="#eliminarPack{{ $package->id }}" value="">
+                                                    Eliminar</option>
+                                            </select>
+
+                                            <div class="modal fade" id="eliminarPack{{ $package->id }}">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4>Eliminar Paquete</h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <p>Seguro de eliminar el paquete?</p>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button class="btn btn-danger">Eliminar</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="modal fade" id="editarPack{{ $package->id }}">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h4>Editar Paquete</h4>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form
+                                                                action="{{ route('dashboard.edit.package', $package->id) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                <div class="mb-3">
+                                                                    <label for="lugar">Lugar</label>
+                                                                    <select name="lugar" class="form-select"
+                                                                        id="">
+                                                                        @foreach ($places as $place)
+                                                                            <option value="{{ $place->id }}"
+                                                                                {{ $place->id == $package->place_id ? 'selected' : '' }}>
+                                                                                {{ $place->name }}</option>
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="nombre" class="form-label">Nombre</label>
+                                                                    <input type="text" class="form-control"
+                                                                        name="nombre" value="{{ $package->name }}">
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="precio" class="form-label">Precio</label>
+                                                                    <input type="number" class="form-control"
+                                                                        name="precio" value="{{ $package->price }}">
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="afore">Maximo de Personas</label>
+                                                                    <input type="number" class="form-control"
+                                                                        name="afore" value="{{ $package->max_people }}">
+                                                                </div>
+                                                                <div class="mb-3 d-flex">
+                                                                    <div class="col-6">
+                                                                        <label for="fechaInicio" class="form-label">Fecha de
+                                                                            Inicio</label>
+                                                                        <input type="date" class="form-control"
+                                                                            name="fechaInicio"
+                                                                            value="{{ \Carbon\Carbon::parse($package->start_date)->format('Y-m-d') }}">
+                                                                    </div>
+                                                                    <div class="col-6">
+                                                                        <label for="fechaFin" class="form-label">Fecha de
+                                                                            Fin</label>
+                                                                        <input type="date" class="form-control"
+                                                                            name="fechaFin"
+                                                                            value="{{ \Carbon\Carbon::parse($package->end_date)->format('Y-m-d') }}">
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="descripcion"
+                                                                        class="form-label">Descripcion</label>
+                                                                    <textarea name="descripcion" id="" cols="30" rows="7" class="form-control">{{ $package->description }}</textarea>
+                                                                </div>
+                                                                <div class="mb-3 d-flex justify-content-end">
+                                                                    <button class="btn btn-primary">Enviar</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
                                             <!-- Modal Structure -->
                                             <div class="modal fade" id="modal{{ $package->id }}" tabindex="-1"
@@ -60,14 +153,11 @@
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title" id="modalLabel{{ $package->id }}">
-                                                                Detalles del {{ $package->name }}</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                                aria-label="Close"></button>
+                                                                Servicios Incluidos</h5>
+                                                            <button type="button" class="btn-close"
+                                                                data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
-                                                            <div>
-                                                                <h3>Servicios incluidos</h3>
-                                                            </div>
                                                             <table class="table">
                                                                 <thead>
                                                                     <tr>
@@ -120,6 +210,55 @@
 @endsection
 
 @section('scripts')
+
+    <script>
+        const selects = document.querySelectorAll('.form-select');
+
+        selects.forEach(select => {
+            select.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const optionValue = selectedOption.value;
+
+                if (optionValue && optionValue.includes('dashboard/event')) {
+                    window.location.href = optionValue;
+                    return;
+                }
+
+                if (selectedOption.value === 'editar') {
+
+                }
+                const modalId = selectedOption.getAttribute('data-bs-target');
+
+                if (modalId) {
+                    const modal = new bootstrap.Modal(document.querySelector(modalId));
+                    modal.show();
+                }
+
+                // Resetear el select después de abrir el modal
+                this.selectedIndex = 0;
+            });
+        });
+    </script>
+    @if ($errors->any())
+        @foreach ($errors->all() as $error)
+            <script>
+                toastr.error("{{ $error }}");
+            </script>
+        @endforeach
+    @endif
+
+    @if (session('success'))
+        <script>
+            toastr.success("{{ session('success') }}");
+        </script>
+    @endif
+
+    @if (session('error'))
+        <script>
+            toastr.error("{{ session('error') }}");
+        </script>
+    @endif
+
     <script src="{{ asset('js/dashboard/packages.js') }}"></script>
 
 @endsection

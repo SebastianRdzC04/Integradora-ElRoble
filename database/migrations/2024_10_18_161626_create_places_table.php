@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('name', 50);
             $table->string('description', 100);
             $table->integer('max_guest');
+            $table->integer('price');
+            $table->string('image_path')->default('https://img.freepik.com/fotos-premium/ardilla-sentada-rama-arbol_1048944-30371835.jpg?w=1060');
             $table->timestamps();
         });
     }

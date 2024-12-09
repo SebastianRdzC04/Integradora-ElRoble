@@ -1,9 +1,10 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddImagePathToPackagesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -12,8 +13,11 @@ class AddImagePathToPackagesTable extends Migration
      */
     public function up()
     {
-        Schema::table('packages', function (Blueprint $table) {
-            $table->string('image_path')->nullable()->after('status');
+        Schema::create('packages_images', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('package_id')->constrained()->cascadeOnDelete();
+            $table->text('image_path');
+            $table->timestamps();
         });
     }
 
@@ -24,8 +28,6 @@ class AddImagePathToPackagesTable extends Migration
      */
     public function down()
     {
-        Schema::table('packages', function (Blueprint $table) {
-            $table->dropColumn('image_path');
-        });
+        Schema::dropIfExists('packages_images');
     }
-}
+};
