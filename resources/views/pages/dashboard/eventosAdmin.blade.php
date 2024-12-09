@@ -370,7 +370,9 @@
                         @endif
                         @if ($event->status == 'Pendiente')
                             <div>
-                                <p>Fecha: {{ Carbon::parse($event->date)->format('d/m/Y') }} </p>
+                                <p><i data-bs-toggle="modal" data-bs-target="#editarFecha"
+                                        class="text-end bi bi-pencil"></i>Fecha:
+                                    {{ Carbon::parse($event->date)->format('d/m/Y') }} </p>
                             </div>
                         @endif
                     </div>
@@ -526,6 +528,25 @@
                         </div>
 
 
+                    </div>
+                    <div class="modal fade" id="editarFecha">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3>Editar Fecha</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="" method="POST">
+                                        @csrf
+                                        <div class="mb-3">
+                                            <label for="fecha" class="form-label">Fecha</label>
+                                            <input type="date" class="form-control" id="fecha" name="fecha">
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Guardar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

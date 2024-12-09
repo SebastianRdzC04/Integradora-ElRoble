@@ -37,7 +37,7 @@
             <div class="col-md-6">
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h4 class="card-title mb-4 text-center">Selecciona una Fecha</h4>
+                        <h4 id="textoFecha" class="card-title mb-4 text-center">Selecciona una Fecha</h4>
                         <div class="calendar-container" style="padding: 0;">
                             <div id="calendar-controls" class="d-flex justify-content-between mb-2">
                                 <button id="prevMonth" style="min-width: 32px; margin: 10px;" class="btn-calendar"> < Anterior</button>
@@ -48,7 +48,7 @@
                         </div>
                         <div class="mt-3">
                             <p><span class="badge bg-success">Verde</span> - Disponible</p>
-                            <p><span class="badge bg-warning">Amarillo</span> - Más personas cotizando por la misma fecha</p>
+                            <p><span style="color: black;" class="badge bg-warning">Amarillo</span> - Más personas cotizando por la misma fecha</p>
                             <p><span class="badge bg-danger">Rojo</span> - No Disponible</p>
                             <p><span class="badge bg-secondary">Gris</span> - Fecha Inaccesible</p>
                         </div>
@@ -58,13 +58,13 @@
                                 <input type="text" class="form-control" id="selectedDate" placeholder="AAAA-MM-DD" readonly>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-sm-6 col-md-6">
                                     <label for="start_time" class="form-label">
                                         <i class="fas fa-clock"></i> Hora de Inicio
                                     </label>
                                     <input type="time" id="start_time" class="form-control" required onblur="roundTime(this)" onchange="updateDurationOptions()" placeholder="XX:XX">
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-sm-6 col-md-6">
                                     <label for="duration" class="form-label">
                                         <i class="fas fa-hourglass-half"></i> Duración del Evento (horas)
                                     </label>
@@ -110,13 +110,22 @@
                                 </div>
                             @endforeach
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-body">
+                        <h4 class="card-title mb-4 text-center" style="margin-top: 20px;"><i class="fas fa-user" style="margin-right: 10px;"></i>Ingresa datos del Cliente: </h4>
+                        <div class="mt-4">
+                            <label for="owner_name" class="form-label">Nombre:</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" id="owner_name" name="owner_name" class="form-control" placeholder="Nombre del cliente">
+                            </div>
+                        </div>
+            
+                        <div class="mt-4">
+                            <label for="owner_phone" class="form-label">Teléfono:</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                                <input type="text" id="owner_phone" name="owner_phone" class="form-control" placeholder="Teléfono del cliente">
+                            </div>
+                        </div>
 
                         <div class="mt-4">
                             <label class="form-label">Tipo de Evento:</label>
@@ -143,18 +152,15 @@
                                 <input type="number" id="guestCount" name="guest_count" class="form-control" placeholder="Cantidad de invitados">
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
 
-                        <div class="mt-4" style="display: flex; justify-content: center;">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmedServicesModal" onclick="updateConfirmedServicesModal()">
-                                Ver Servicios Confirmados
-                            </button>
-                        </div>
-
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="text-center">Servicios Disponibles:</h4>
                         <div class="mt-4">
-                            <div class="alert alert-info justified" role="alert">
-                                ¡Haz de tu evento un momento aún más especial añadiendo servicios para una mejor experiencia!
-                            </div>
-                            <h4 class="text-center">Servicios Disponibles:</h4>
                             <div class="row">
                                 @foreach($categories as $category)
                                     @php
@@ -171,13 +177,57 @@
                                     </div>
                                 @endforeach
                             </div>
+                            <div class="mt-4" style="display: flex; justify-content: center;">
+                                <button type="button" style="margin-top: -25px;" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmedServicesModal" onclick="updateConfirmedServicesModal()">
+                                    Ver Servicios Confirmados
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
+            
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h4 class="text-center">Precios de Cotización:</h4>
+                        <div class="mt-4">
+                            <label for="space_cost" class="form-label">Monto de Espacio:</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                                <input type="text" id="space_cost" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label for="services_cost" class="form-label">Monto de Servicios:</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-concierge-bell"></i></span>
+                                <input type="text" id="services_cost" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <label for="total_cost" class="form-label">Monto Total:</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                <input type="text" id="total_cost" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="manual_price_checkbox">
+                                <label class="form-check-label" for="manual_price_checkbox">
+                                    ¿Desea modificar manualmente el Monto Total?
+                                </label>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
+                                <input type="text" id="manual_price" class="form-control" disabled>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <button type="button" class="btn btn-success" style="margin-bottom: 20px; margin-top: -20px;" onclick="submitQuote()">Enviar Cotización</button>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="mt-4 text-center">
-            <button type="button" class="btn btn-success" style="margin-bottom: 30px; margin-top: -15px;" onclick="submitQuote()">Enviar Cotización</button>
         </div>
     </form>
     </div>
@@ -239,14 +289,8 @@ function submitQuote() {
     const otherEventTypeElement = document.getElementById('otherEventType');
     const guestCountElement = document.getElementById('guestCount');
     const placeCard = document.querySelector('.card.place-card.mb-3.selected');
-
-    console.log('selectedDateElement:', selectedDateElement);
-    console.log('startTimeElement:', startTimeElement);
-    console.log('durationElement:', durationElement);
-    console.log('eventTypeElement:', eventTypeElement);
-    console.log('otherEventTypeElement:', otherEventTypeElement);
-    console.log('guestCountElement:', guestCountElement);
-    console.log('placeCard:', placeCard);
+    const ownerNameElement = document.getElementById('owner_name');
+    const ownerPhoneElement = document.getElementById('owner_phone');
 
     const selectedDate = selectedDateElement ? selectedDateElement.value : null;
     const startTime = startTimeElement ? startTimeElement.value : null;
@@ -254,6 +298,8 @@ function submitQuote() {
     const eventType = eventTypeElement ? eventTypeElement.value : null;
     const otherEventType = otherEventTypeElement ? otherEventTypeElement.value : null;
     const guestCount = guestCountElement ? guestCountElement.value : null;
+    const ownerName = ownerNameElement ? ownerNameElement.value : null;
+    const ownerPhone = ownerPhoneElement ? ownerPhoneElement.value : null;
     let placeId = null;
 
     if (placeCard) {
@@ -282,9 +328,21 @@ function submitQuote() {
     if (!placeId) {
         console.error('placeId is null');
     }
+    if (!ownerName) {
+        console.error('ownerName is null');
+    }
+    if (!ownerPhone) {
+        console.error('ownerPhone is null');
+    }
 
-    if (!selectedDate || !startTime || !duration || !eventType || !guestCount || !placeId) {
+    if (!selectedDate || !startTime || !duration || !eventType || !guestCount || !placeId || !ownerName || !ownerPhone) {
         alert('Por favor, complete todos los campos requeridos.');
+        return;
+    }
+
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    if (startHour < 11) {
+        alert('La hora de inicio no puede ser menor a las 11:00.');
         return;
     }
 
@@ -295,7 +353,6 @@ function submitQuote() {
         return;
     }
 
-    const [startHour, startMinute] = startTime.split(':').map(Number);
     const endHour = (startHour + parseInt(duration)) % 24;
     const endTime = `${String(endHour).padStart(2, '0')}:${String(startMinute).padStart(2, '0')}`;
 
@@ -307,10 +364,16 @@ function submitQuote() {
     form.appendChild(generarInputOculto('place_id', placeId));
     form.appendChild(generarInputOculto('guest_count', guestCount));
     form.appendChild(generarInputOculto('type_event', eventType === 'Otro' ? otherEventType : eventType));
+    form.appendChild(generarInputOculto('owner_name', ownerName));
+    form.appendChild(generarInputOculto('owner_phone', ownerPhone));
 
     confirmedServices.forEach(service => {
         form.appendChild(generarInputOculto(`services[${service.id}][confirmed]`, true));
         form.appendChild(generarInputOculto(`services[${service.id}][description]`, service.description));
+        if (service.quantity) {
+            form.appendChild(generarInputOculto(`services[${service.id}][quantity]`, service.quantity));
+        }
+        form.appendChild(generarInputOculto(`services[${service.id}][coast]`, service.cost));
     });
 
     form.submit();
@@ -333,6 +396,53 @@ function generarInputOculto(nombre, valor) {
     });
 });
 
+document.getElementById('manual_price_checkbox').addEventListener('change', function(event) {
+        const manualPriceInput = document.getElementById('manual_price');
+        manualPriceInput.disabled = !event.target.checked;
+    });
+
+    function updateCosts() {
+        const placeCard = document.querySelector('.card.place-card.mb-3.selected');
+        const durationElement = document.getElementById('duration');
+        const spaceCostInput = document.getElementById('space_cost');
+        const servicesCostInput = document.getElementById('services_cost');
+        const totalCostInput = document.getElementById('total_cost');
+
+        let placeId = null;
+        if (placeCard) {
+            const onclickAttr = placeCard.getAttribute('onclick');
+            const match = onclickAttr.match(/\d+/);
+            placeId = match ? match[0] : null;
+        }
+
+        const duration = durationElement ? durationElement.value : null;
+        const place = places.find(p => p.id == placeId);
+
+        let spaceCost = 0;
+        if (place && duration) {
+            spaceCost = (place.price / 4) * duration;
+        }
+        spaceCostInput.value = spaceCost.toFixed(2);
+
+        let servicesCost = 0;
+        confirmedServices.forEach(service => {
+            servicesCost += Number(service.price) * (service.quantity || 1);
+        });
+        servicesCostInput.value = servicesCost.toFixed(2);
+
+        const totalCost = spaceCost + servicesCost;
+        totalCostInput.value = totalCost.toFixed(2);
+    }
+
+    document.getElementById('duration').addEventListener('change', updateCosts);
+    document.querySelectorAll('.card.place-card.mb-3').forEach(card => {
+        card.addEventListener('click', updateCosts);
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        updateCosts();
+    });
+
 function roundTime(input) {
     const time = input.value;
     const [hours, minutes] = time.split(':').map(Number);
@@ -343,16 +453,18 @@ function roundTime(input) {
     }
 
     let roundedMinutes;
+    let newHours = hours;
+
     if (minutes <= 15) {
         roundedMinutes = '00';
     } else if (minutes <= 45) {
         roundedMinutes = '30';
-    } else {
+    } else if (minutes <= 59) {
         roundedMinutes = '00';
-        hours = (hours + 1) % 24;
+        newHours = (hours + 1) % 24;
     }
 
-    input.value = `${String(hours).padStart(2, '0')}:${roundedMinutes}`;
+    input.value = `${String(newHours).padStart(2, '0')}:${roundedMinutes}`;
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -397,6 +509,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         prevMonthButton.disabled = currentDate <= minDate;
         nextMonthButton.disabled = currentDate >= maxDate;
+
+        if (currentDate >= maxDate) {
+            nextMonthButton.classList.add('btn-disabled');
+        } else {
+            nextMonthButton.classList.remove('btn-disabled');
+        }
 
         const daysOfWeek = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
         const daysHeader = document.createElement('div');
@@ -559,39 +677,50 @@ function showConfirmedServicesModal() {
 }
 
 function removeConfirmedService(serviceId) {
+    // 1. Eliminar del array de servicios confirmados
     confirmedServices = confirmedServices.filter(service => service.id !== serviceId);
+    
+    // 2. Eliminar la tarjeta del servicio confirmado del modal
+    const confirmedServiceCard = document.getElementById(`confirmedServiceCard${serviceId}`);
+    if (confirmedServiceCard) {
+        confirmedServiceCard.remove();
+    }
 
+    // 3. Restablecer el estado del servicio en el modal de servicios
     const serviceCard = document.getElementById(`serviceCard${serviceId}`);
     if (serviceCard) {
+        // Quitar clase y restablecer checkbox
         serviceCard.classList.remove('confirmed');
-        serviceCard.querySelector('.form-check-input').checked = false;
-        serviceCard.querySelector('.form-check-input').disabled = false;
-        serviceCard.querySelector('.form-check-label').textContent = 'Seleccionar';
-        serviceCard.querySelector('.form-check-input').onchange = () => toggleServiceDescription(serviceId);
+        const checkbox = serviceCard.querySelector('.form-check-input');
+        if (checkbox) {
+            checkbox.checked = false;
+            checkbox.disabled = false;
+        }
+
         const descriptionContainer = serviceCard.querySelector(`#descriptionContainer${serviceId}`);
-        descriptionContainer.style.display = 'none';
-        descriptionContainer.querySelector('input').value = '';
-        descriptionContainer.querySelector('input').removeAttribute('readonly');
+        if (descriptionContainer) {
+            descriptionContainer.style.display = 'none';
+            const inputs = descriptionContainer.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.value = '';
+                input.removeAttribute('readonly');
+            });
+        }
+
         const confirmBtn = serviceCard.querySelector(`#confirmBtn${serviceId}`);
         if (confirmBtn) {
             confirmBtn.style.display = 'block';
             confirmBtn.disabled = true;
         }
+
         const confirmationMessage = serviceCard.querySelector('.alert-success');
         if (confirmationMessage) {
             confirmationMessage.remove();
         }
     }
 
-    const confirmedServiceCard = document.getElementById(`confirmedServiceCard${serviceId}`);
-    if (confirmedServiceCard) {
-        confirmedServiceCard.remove();
-    }
-
-    if (confirmedServices.length === 0) {
-        const confirmedServicesContainer = document.getElementById('confirmedServicesContainer');
-        confirmedServicesContainer.innerHTML = '<div class="alert alert-info">No hay servicios confirmados.</div>';
-    }
+    updateConfirmedServicesModal();
+    updateCosts();
 }
 
 function showServicesModal(categoryId) {
@@ -610,14 +739,15 @@ function showServicesModal(categoryId) {
     filteredServices.forEach(service => {
         const isConfirmed = confirmedServices.some(cs => cs.id === service.id);
         const serviceCard = document.createElement('div');
-        serviceCard.classList.add('col-md-4', 'mb-3');
+        serviceCard.classList.add('col-md-4', 'col-sm-6', 'col-6', 'mb-3');
         serviceCard.innerHTML = `
             <div class="card service-card ${isConfirmed ? 'confirmed' : ''}" data-category="${service.service_category_id}" id="serviceCard${service.id}">
                 <img src="${service.image_path ?? '/images/imagen6.jpg'}" class="card-img-top" alt="${service.name}">
                 <div class="card-body">
                     <h5 class="card-title">${service.name}</h5>
                     <p class="card-text">${service.description}</p>
-                    <p class="card-text"><strong><i class="fas fa-dollar-sign"></i> ${service.price}</strong></p>
+                    <p class="card-text"><strong> Precio: <i class="fas fa-dollar-sign"></i> ${service.price}</strong></p>
+                    <p class="card-text"> Costo: <i class="fas fa-dollar-sign"></i> ${service.coast}</p>
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="${service.id}" 
                             id="service${service.id}" 
@@ -625,12 +755,23 @@ function showServicesModal(categoryId) {
                             ${isConfirmed ? 'checked disabled' : ''}>
                     </div>
                     <div class="mt-3" id="descriptionContainer${service.id}" style="display: none">
-                        <label for="description${service.id}" class="form-label">Descripción:</label>
                         <input type="text" 
                             id="description${service.id}" 
                             class="form-control" 
                             placeholder="Ingrese una descripción"
                             value="${isConfirmed ? confirmedServices.find(cs => cs.id === service.id).description : ''}">
+                        ${service.quantifiable ? `
+                        <input type="number" 
+                            id="quantity${service.id}" 
+                            class="form-control mt-2" 
+                            placeholder="Ingrese la cantidad"
+                            value="${isConfirmed ? confirmedServices.find(cs => cs.id === service.id).quantity : ''}">
+                        ` : ''}
+                        <input type="number" 
+                            id="cost${service.id}" 
+                            class="form-control mt-2" 
+                            placeholder="Ingrese el costo"
+                            value="${isConfirmed ? confirmedServices.find(cs => cs.id === service.id).cost : ''}">
                         ${!isConfirmed ? `
                             <button type="button" class="btn btn-success mt-2" 
                                 onclick="confirmService(${service.id})" 
@@ -719,16 +860,22 @@ function updateDurationOptions() {
 function confirmService(serviceId) {
     const serviceCard = document.getElementById(`serviceCard${serviceId}`);
     const descriptionInput = document.getElementById(`description${serviceId}`);
+    const quantityInput = document.getElementById(`quantity${serviceId}`);
+    const costInput = document.getElementById(`cost${serviceId}`);
     const confirmBtn = document.getElementById(`confirmBtn${serviceId}`);
     const checkbox = document.getElementById(`service${serviceId}`);
     const description = descriptionInput.value.trim();
+    const quantity = quantityInput ? quantityInput.value : 1;
+    const cost = costInput ? costInput.value : 0;
     const service = servicesData.find(s => s.id == serviceId);
 
-    if (description) {
+    if (description && cost) {
         if (!confirmedServices.some(s => s.id === serviceId)) {
             confirmedServices.push({
                 id: serviceId,
                 description: description,
+                quantity: quantity,
+                cost: cost,
                 name: service.name,
                 price: service.price,
                 image_path: service.image_path,
@@ -740,6 +887,10 @@ function confirmService(serviceId) {
 
         serviceCard.classList.add('confirmed');
         descriptionInput.setAttribute('readonly', true);
+        if (quantityInput) {
+            quantityInput.setAttribute('readonly', true);
+        }
+        costInput.setAttribute('readonly', true);
         confirmBtn.style.display = 'none';
         checkbox.disabled = true;
 
@@ -749,6 +900,7 @@ function confirmService(serviceId) {
         serviceCard.querySelector('.card-body').appendChild(confirmationMessage);
 
         updateConfirmedServicesModal();
+        updateCosts();
     }
 }
 
@@ -798,6 +950,13 @@ function adjustCalendarControls() {
         nextMonthButton.textContent = 'Siguiente >';
     }
 }
+document.getElementById('owner_phone').addEventListener('input', function (event) {
+        const input = event.target;
+        input.value = input.value.replace(/\D/g, '');
+        if (input.value.length > 10) {
+            input.value = input.value.slice(0, 10);
+        }
+    });
 
     </script>
 </body>

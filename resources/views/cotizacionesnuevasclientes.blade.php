@@ -55,14 +55,33 @@
                         <div class="mt-4">
                             <div class="mb-3">
                                 <label for="selectedDate" class="form-label">Fecha Seleccionada:</label>
-                                <input type="text" class="form-control" id="selectedDate" placeholder="AAAA-MM-DD" readonly>
+                                <input type="text" 
+                                       class="form-control @error('date') is-invalid @enderror" 
+                                       id="selectedDate" 
+                                       name="date"
+                                       value="{{ old('date') }}" 
+                                       placeholder="AAAA-MM-DD" 
+                                       readonly>
+                                @error('date')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <label for="start_time" class="form-label">
                                         <i class="fas fa-clock"></i> Hora de Inicio
                                     </label>
-                                    <input type="time" id="start_time" class="form-control" required onblur="roundTime(this)" onchange="updateDurationOptions()" placeholder="XX:XX">
+                                    <input type="time" 
+                                           id="start_time" 
+                                           name="start_time"
+                                           class="form-control @error('start_time') is-invalid @enderror"
+                                           value="{{ old('start_time') ? \Carbon\Carbon::parse(old('start_time'))->format('H:i') : '' }}"
+                                           onblur="roundTime(this)" 
+                                           onchange="updateDurationOptions()"
+                                           required>
+                                    @error('start_time')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-md-6">
                                     <label for="duration" class="form-label">
@@ -78,6 +97,9 @@
                                         <option value="9">9 horas</option>
                                         <option value="10">10 horas</option>
                                     </select>
+                                    @error('end_time')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
@@ -331,6 +353,28 @@ function generarInputOculto(nombre, valor) {
             showServicesModal(categoryId);
         });
     });
+
+    const oldDate = "{{ old('date') }}";
+    if (oldDate) {
+        document.getElementById('selectedDate').value = oldDate;
+        const dayButton = document.querySelector(`button[data-date="${oldDate}"]`);
+        if (dayButton) {
+            dayButton.click();
+        }
+    }
+
+    const oldStartTime = "{{ old('start_time') }}";
+    if (oldStartTime) {
+        const time = new Date(oldStartTime);
+        document.getElementById('start_time').value = 
+            `${String(time.getHours()).padStart(2, '0')}:${String(time.getMinutes()).padStart(2, '0')}`;
+        updateDurationOptions();
+    }
+
+    const oldPlaceId = "{{ old('place_id') }}";
+    if (oldPlaceId) {
+        selectPlace(oldPlaceId);
+    }
 });
 
 function roundTime(input) {
@@ -397,6 +441,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
         prevMonthButton.disabled = currentDate <= minDate;
         nextMonthButton.disabled = currentDate >= maxDate;
+
+        if (currentDate >= maxDate) {
+            nextMonthButton.classList.add('btn-disabled');
+        } else {
+            nextMonthButton.classList.remove('btn-disabled');
+        }
 
         const daysOfWeek = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
         const daysHeader = document.createElement('div');
@@ -560,37 +610,46 @@ function showConfirmedServicesModal() {
 
 function removeConfirmedService(serviceId) {
     confirmedServices = confirmedServices.filter(service => service.id !== serviceId);
+    
+    const confirmedServicesContainer = document.getElementById('confirmedServicesContainer');
+    const serviceCardContainer = document.getElementById(`confirmedServiceCard${serviceId}`);
+    if (serviceCardContainer) {
+        serviceCardContainer.parentElement.remove();
+    }
+
+    if (confirmedServices.length === 0) {
+        confirmedServicesContainer.innerHTML = '<div class="alert alert-info">No hay servicios confirmados.</div>';
+    }
 
     const serviceCard = document.getElementById(`serviceCard${serviceId}`);
     if (serviceCard) {
         serviceCard.classList.remove('confirmed');
-        serviceCard.querySelector('.form-check-input').checked = false;
-        serviceCard.querySelector('.form-check-input').disabled = false;
-        serviceCard.querySelector('.form-check-label').textContent = 'Seleccionar';
-        serviceCard.querySelector('.form-check-input').onchange = () => toggleServiceDescription(serviceId);
+        const checkbox = serviceCard.querySelector('.form-check-input');
+        if (checkbox) {
+            checkbox.checked = false;
+            checkbox.disabled = false;
+        }
+
         const descriptionContainer = serviceCard.querySelector(`#descriptionContainer${serviceId}`);
-        descriptionContainer.style.display = 'none';
-        descriptionContainer.querySelector('input').value = '';
-        descriptionContainer.querySelector('input').removeAttribute('readonly');
+        if (descriptionContainer) {
+            descriptionContainer.style.display = 'none';
+            const descriptionInput = descriptionContainer.querySelector('input');
+            if (descriptionInput) {
+                descriptionInput.value = '';
+                descriptionInput.removeAttribute('readonly');
+            }
+        }
+
         const confirmBtn = serviceCard.querySelector(`#confirmBtn${serviceId}`);
         if (confirmBtn) {
             confirmBtn.style.display = 'block';
             confirmBtn.disabled = true;
         }
+
         const confirmationMessage = serviceCard.querySelector('.alert-success');
         if (confirmationMessage) {
             confirmationMessage.remove();
         }
-    }
-
-    const confirmedServiceCard = document.getElementById(`confirmedServiceCard${serviceId}`);
-    if (confirmedServiceCard) {
-        confirmedServiceCard.remove();
-    }
-
-    if (confirmedServices.length === 0) {
-        const confirmedServicesContainer = document.getElementById('confirmedServicesContainer');
-        confirmedServicesContainer.innerHTML = '<div class="alert alert-info">No hay servicios confirmados.</div>';
     }
 }
 

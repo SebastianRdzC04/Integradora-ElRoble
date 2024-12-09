@@ -11,7 +11,7 @@ class Package extends Model
 
     protected $table = 'packages';
     protected $fillable = [
-        'place_id', 'name', 'description', 'max_people', 'price', 'start_date', 'end_date', 'is_active','gif_path'
+        'place_id', 'name', 'description', 'max_people', 'price', 'start_date', 'end_date', 'is_active'
     ];    
 
     protected $casts = [
