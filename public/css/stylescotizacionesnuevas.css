@@ -258,3 +258,10 @@ color: white;
 .day.bg-danger {
     color: white !important;
 }
+@media (max-width: 992px) {
+    #textoFecha
+    {
+        font-size: 1.4rem !important;
+    }
+    
+}

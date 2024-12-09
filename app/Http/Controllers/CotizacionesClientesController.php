@@ -266,6 +266,9 @@ class CotizacionesClientesController extends Controller
             'guest_count' => 'required|integer|min:10|max:80',
             'owner_name' => 'required|string|max:255',
             'owner_phone' => 'required|string|max:20',
+            'services.*.description' => 'nullable|string|max:255',
+            'services.*.quantity' => 'nullable|integer|min:1',
+            'services.*.coast' => 'nullable|numeric|min:0',
         ]);
     
         DB::beginTransaction();
@@ -289,6 +292,8 @@ class CotizacionesClientesController extends Controller
                 if (isset($serviceData['confirmed']) && filter_var($serviceData['confirmed'], FILTER_VALIDATE_BOOLEAN)) {
                     $servicesData[$serviceId] = [
                         'description' => $serviceData['description'],
+                        'quantity' => $serviceData['quantity'] ?? 1,
+                        'coast' => $serviceData['coast'] ?? 0,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ];

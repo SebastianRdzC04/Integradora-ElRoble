@@ -37,7 +37,7 @@
             <div class="col-md-6">
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h4 class="card-title mb-4 text-center">Selecciona una Fecha</h4>
+                        <h4 id="textoFecha" class="card-title mb-4 text-center">Selecciona una Fecha</h4>
                         <div class="calendar-container" style="padding: 0;">
                             <div id="calendar-controls" class="d-flex justify-content-between mb-2">
                                 <button id="prevMonth" style="min-width: 32px; margin: 10px;" class="btn-calendar"> < Anterior</button>
@@ -58,13 +58,13 @@
                                 <input type="text" class="form-control" id="selectedDate" placeholder="AAAA-MM-DD" readonly>
                             </div>
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-sm-6 col-md-6">
                                     <label for="start_time" class="form-label">
                                         <i class="fas fa-clock"></i> Hora de Inicio
                                     </label>
                                     <input type="time" id="start_time" class="form-control" required onblur="roundTime(this)" onchange="updateDurationOptions()" placeholder="XX:XX">
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-sm-6 col-md-6">
                                     <label for="duration" class="form-label">
                                         <i class="fas fa-hourglass-half"></i> Duración del Evento (horas)
                                     </label>
@@ -186,26 +186,25 @@
                     </div>
                 </div>
             
-                <!-- New container for costs -->
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h4 class="text-center">Costos Asignados:</h4>
+                        <h4 class="text-center">Precios de Cotización:</h4>
                         <div class="mt-4">
-                            <label for="space_cost" class="form-label">Costo de Espacio:</label>
+                            <label for="space_cost" class="form-label">Monto de Espacio:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
                                 <input type="text" id="space_cost" class="form-control" readonly>
                             </div>
                         </div>
                         <div class="mt-4">
-                            <label for="services_cost" class="form-label">Costo de Servicios:</label>
+                            <label for="services_cost" class="form-label">Monto de Servicios:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-concierge-bell"></i></span>
                                 <input type="text" id="services_cost" class="form-control" readonly>
                             </div>
                         </div>
                         <div class="mt-4">
-                            <label for="total_cost" class="form-label">Costo Total:</label>
+                            <label for="total_cost" class="form-label">Monto Total:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                                 <input type="text" id="total_cost" class="form-control" readonly>
@@ -215,7 +214,7 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="checkbox" id="manual_price_checkbox">
                                 <label class="form-check-label" for="manual_price_checkbox">
-                                    ¿Desea modificar manualmente el costo total?
+                                    ¿Desea modificar manualmente el Monto Total?
                                 </label>
                             </div>
                             <div class="input-group">
@@ -224,11 +223,11 @@
                             </div>
                         </div>
                     </div>
+                    <div class="mt-4 text-center">
+                        <button type="button" class="btn btn-success" style="margin-bottom: 20px; margin-top: -20px;" onclick="submitQuote()">Enviar Cotización</button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="mt-4 text-center">
-            <button type="button" class="btn btn-success" style="margin-bottom: 30px; margin-top: -15px;" onclick="submitQuote()">Enviar Cotización</button>
         </div>
     </form>
     </div>
@@ -371,6 +370,10 @@ function submitQuote() {
     confirmedServices.forEach(service => {
         form.appendChild(generarInputOculto(`services[${service.id}][confirmed]`, true));
         form.appendChild(generarInputOculto(`services[${service.id}][description]`, service.description));
+        if (service.quantity) {
+            form.appendChild(generarInputOculto(`services[${service.id}][quantity]`, service.quantity));
+        }
+        form.appendChild(generarInputOculto(`services[${service.id}][coast]`, service.cost));
     });
 
     form.submit();
@@ -423,7 +426,7 @@ document.getElementById('manual_price_checkbox').addEventListener('change', func
 
         let servicesCost = 0;
         confirmedServices.forEach(service => {
-            servicesCost += Number(service.price);
+            servicesCost += Number(service.price) * (service.quantity || 1);
         });
         servicesCostInput.value = servicesCost.toFixed(2);
 
@@ -727,7 +730,7 @@ function showServicesModal(categoryId) {
     filteredServices.forEach(service => {
         const isConfirmed = confirmedServices.some(cs => cs.id === service.id);
         const serviceCard = document.createElement('div');
-        serviceCard.classList.add('col-md-4', 'mb-3');
+        serviceCard.classList.add('col-md-4', 'col-sm-6', 'col-6', 'mb-3');
         serviceCard.innerHTML = `
             <div class="card service-card ${isConfirmed ? 'confirmed' : ''}" data-category="${service.service_category_id}" id="serviceCard${service.id}">
                 <img src="${service.image_path ?? '/images/imagen6.jpg'}" class="card-img-top" alt="${service.name}">
@@ -742,12 +745,23 @@ function showServicesModal(categoryId) {
                             ${isConfirmed ? 'checked disabled' : ''}>
                     </div>
                     <div class="mt-3" id="descriptionContainer${service.id}" style="display: none">
-                        <label for="description${service.id}" class="form-label">Descripción:</label>
                         <input type="text" 
                             id="description${service.id}" 
                             class="form-control" 
                             placeholder="Ingrese una descripción"
                             value="${isConfirmed ? confirmedServices.find(cs => cs.id === service.id).description : ''}">
+                        ${service.quantifiable ? `
+                        <input type="number" 
+                            id="quantity${service.id}" 
+                            class="form-control mt-2" 
+                            placeholder="Ingrese la cantidad"
+                            value="${isConfirmed ? confirmedServices.find(cs => cs.id === service.id).quantity : ''}">
+                        ` : ''}
+                        <input type="number" 
+                            id="cost${service.id}" 
+                            class="form-control mt-2" 
+                            placeholder="Ingrese el costo"
+                            value="${isConfirmed ? confirmedServices.find(cs => cs.id === service.id).cost : ''}">
                         ${!isConfirmed ? `
                             <button type="button" class="btn btn-success mt-2" 
                                 onclick="confirmService(${service.id})" 
@@ -836,16 +850,22 @@ function updateDurationOptions() {
 function confirmService(serviceId) {
     const serviceCard = document.getElementById(`serviceCard${serviceId}`);
     const descriptionInput = document.getElementById(`description${serviceId}`);
+    const quantityInput = document.getElementById(`quantity${serviceId}`);
+    const costInput = document.getElementById(`cost${serviceId}`);
     const confirmBtn = document.getElementById(`confirmBtn${serviceId}`);
     const checkbox = document.getElementById(`service${serviceId}`);
     const description = descriptionInput.value.trim();
+    const quantity = quantityInput ? quantityInput.value : 1;
+    const cost = costInput ? costInput.value : 0;
     const service = servicesData.find(s => s.id == serviceId);
 
-    if (description) {
+    if (description && cost) {
         if (!confirmedServices.some(s => s.id === serviceId)) {
             confirmedServices.push({
                 id: serviceId,
                 description: description,
+                quantity: quantity,
+                cost: cost,
                 name: service.name,
                 price: service.price,
                 image_path: service.image_path,
@@ -857,6 +877,10 @@ function confirmService(serviceId) {
 
         serviceCard.classList.add('confirmed');
         descriptionInput.setAttribute('readonly', true);
+        if (quantityInput) {
+            quantityInput.setAttribute('readonly', true);
+        }
+        costInput.setAttribute('readonly', true);
         confirmBtn.style.display = 'none';
         checkbox.disabled = true;
 
