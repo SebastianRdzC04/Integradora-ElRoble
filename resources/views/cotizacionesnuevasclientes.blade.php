@@ -7,28 +7,11 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="{{ asset('css/stylescotizacionesnuevas.css') }}">
 </head>
 <body class="bg-light">
     <div class="container mt-4">
-        @if(session('success'))
-        <div class="alert alert-success" role="alert" style="background-color: rgb(30, 78, 21); color: white;">
-            {{ session('success') }}
-        </div>
-        @elseif ($errors->has('store_quote_error'))
-        <div class="alert alert-danger" role="alert" style="background-color: rgb(189, 18, 18); color: white;">
-            {{ $errors->first('store_quote_error') }}
-        </div>
-        @endif
-
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
         @if(session('success'))
         <div class="alert alert-success" role="alert" style="background-color: rgb(30, 78, 21); color: white;">
             {{ session('success') }}
@@ -56,11 +39,7 @@
                     <div class="card-body">
                         <h4 class="card-title mb-4 text-center">Selecciona una Fecha</h4>
                         <div class="calendar-container" style="padding: 0;">
-                        <div class="calendar-container" style="padding: 0;">
                             <div id="calendar-controls" class="d-flex justify-content-between mb-2">
-                                <button id="prevMonth" style="min-width: 32px; margin: 10px;" class="btn-calendar"> < Anterior</button>
-                                <h6 id="calendarMonthYear" style="margin: 10px;"></h6>
-                                <button id="nextMonth" style="min-width: 32px; margin: 10px;" class="btn-calendar">Siguiente ></button>
                                 <button id="prevMonth" style="min-width: 32px; margin: 10px;" class="btn-calendar"> < Anterior</button>
                                 <h6 id="calendarMonthYear" style="margin: 10px;"></h6>
                                 <button id="nextMonth" style="min-width: 32px; margin: 10px;" class="btn-calendar">Siguiente ></button>
@@ -76,14 +55,33 @@
                         <div class="mt-4">
                             <div class="mb-3">
                                 <label for="selectedDate" class="form-label">Fecha Seleccionada:</label>
-                                <input type="text" class="form-control" id="selectedDate" placeholder="AAAA-MM-DD" readonly>
+                                <input type="text" 
+                                       class="form-control @error('date') is-invalid @enderror" 
+                                       id="selectedDate" 
+                                       name="date"
+                                       value="{{ old('date') }}" 
+                                       placeholder="AAAA-MM-DD" 
+                                       readonly>
+                                @error('date')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <div class="row">
                                 <div class="col-md-6">
                                     <label for="start_time" class="form-label">
                                         <i class="fas fa-clock"></i> Hora de Inicio
                                     </label>
-                                    <input type="time" id="start_time" class="form-control" required onblur="roundTime(this)" onchange="updateDurationOptions()" placeholder="XX:XX">
+                                    <input type="time" 
+                                           id="start_time" 
+                                           name="start_time"
+                                           class="form-control @error('start_time') is-invalid @enderror"
+                                           value="{{ old('start_time') ? \Carbon\Carbon::parse(old('start_time'))->format('H:i') : '' }}"
+                                           onblur="roundTime(this)" 
+                                           onchange="updateDurationOptions()"
+                                           required>
+                                    @error('start_time')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-md-6">
                                     <label for="duration" class="form-label">
@@ -105,7 +103,6 @@
                                 </div>
                             </div>
                         </div>
-                        <h4 class="card-title mb-4 text-center" style="margin-top: 20px;">Selecciona el Lugar</h4>
                         <h4 class="card-title mb-4 text-center" style="margin-top: 20px;">Selecciona el Lugar</h4>
                         <div class="row">
                             @foreach($places as $place)
@@ -134,15 +131,6 @@
                                     </div>
                                 </div>
                             @endforeach
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="card mb-4">
-                    <div class="card-body">
-
                         </div>
                     </div>
                 </div>
@@ -195,7 +183,6 @@
                                         $imageUrl = $category->image_path ?? '/images/imagen6.jpg';
                                     @endphp
                                     <div class="col-6 col-sm-6 col-md-6 col-xl-4 mb-3">
-                                    <div class="col-6 col-sm-6 col-md-6 col-xl-4 mb-3">
                                         <div class="card category-card" data-category-id="{{ $category->id }}">
                                             <img src="{{ $imageUrl }}" class="card-img-top" alt="{{ $category->name }}" style="aspect-ratio: 4 / 3; object-fit: cover;">
                                             <div class="card-body">
@@ -212,7 +199,6 @@
             </div>
         </div>
         <div class="mt-4 text-center">
-            <button type="button" class="btn btn-success" style="margin-bottom: 30px; margin-top: -15px;" onclick="submitQuote()">Enviar Cotización</button>
             <button type="button" class="btn btn-success" style="margin-bottom: 30px; margin-top: -15px;" onclick="submitQuote()">Enviar Cotización</button>
         </div>
     </form>
@@ -360,109 +346,6 @@ function generarInputOculto(nombre, valor) {
     return input;
 }
 
-window.addEventListener('load', adjustCalendarControls);
-window.addEventListener('resize', adjustCalendarControls);
-
-let confirmedServices = [];
-const servicesData = @json($services);
-const places = @json($places);
-const quotes = @json($quotes);
-
-function submitQuote() {
-    console.log('submitQuote function called');
-
-    const selectedDateElement = document.getElementById('selectedDate');
-    const startTimeElement = document.getElementById('start_time');
-    const durationElement = document.getElementById('duration');
-    const eventTypeElement = document.getElementById('eventType');
-    const otherEventTypeElement = document.getElementById('otherEventType');
-    const guestCountElement = document.getElementById('guestCount');
-    const placeCard = document.querySelector('.card.place-card.mb-3.selected');
-
-    console.log('selectedDateElement:', selectedDateElement);
-    console.log('startTimeElement:', startTimeElement);
-    console.log('durationElement:', durationElement);
-    console.log('eventTypeElement:', eventTypeElement);
-    console.log('otherEventTypeElement:', otherEventTypeElement);
-    console.log('guestCountElement:', guestCountElement);
-    console.log('placeCard:', placeCard);
-
-    const selectedDate = selectedDateElement ? selectedDateElement.value : null;
-    const startTime = startTimeElement ? startTimeElement.value : null;
-    const duration = durationElement ? durationElement.value : null;
-    const eventType = eventTypeElement ? eventTypeElement.value : null;
-    const otherEventType = otherEventTypeElement ? otherEventTypeElement.value : null;
-    const guestCount = guestCountElement ? guestCountElement.value : null;
-    let placeId = null;
-
-    if (placeCard) {
-        const onclickAttr = placeCard.getAttribute('onclick');
-        console.log('onclickAttr:', onclickAttr);
-        const match = onclickAttr.match(/\d+/);
-        console.log('match:', match);
-        placeId = match ? match[0] : null;
-    }
-
-    if (!selectedDate) {
-        console.error('selectedDate is null');
-    }
-    if (!startTime) {
-        console.error('startTime is null');
-    }
-    if (!duration) {
-        console.error('duration is null');
-    }
-    if (!eventType) {
-        console.error('eventType is null');
-    }
-    if (!guestCount) {
-        console.error('guestCount is null');
-    }
-    if (!placeId) {
-        console.error('placeId is null');
-    }
-
-    if (!selectedDate || !startTime || !duration || !eventType || !guestCount || !placeId) {
-        alert('Por favor, complete todos los campos requeridos.');
-        return;
-    }
-
-    const place = places.find(p => p.id == placeId);
-    if (place && guestCount > place.max_guest) {
-        alert(`La cantidad máxima de invitados para este lugar es ${place.max_guest}.`);
-        guestCountElement.value = place.max_guest;
-        return;
-    }
-
-    const [startHour, startMinute] = startTime.split(':').map(Number);
-    const endHour = (startHour + parseInt(duration)) % 24;
-    const endTime = `${String(endHour).padStart(2, '0')}:${String(startMinute).padStart(2, '0')}`;
-
-    const form = document.getElementById('quoteForm');
-
-    form.appendChild(generarInputOculto('date', selectedDate));
-    form.appendChild(generarInputOculto('start_time', `${selectedDate} ${startTime}`));
-    form.appendChild(generarInputOculto('end_time', `${selectedDate} ${endTime}`));
-    form.appendChild(generarInputOculto('place_id', placeId));
-    form.appendChild(generarInputOculto('guest_count', guestCount));
-    form.appendChild(generarInputOculto('type_event', eventType === 'Otro' ? otherEventType : eventType));
-
-    confirmedServices.forEach(service => {
-        form.appendChild(generarInputOculto(`services[${service.id}][confirmed]`, true));
-        form.appendChild(generarInputOculto(`services[${service.id}][description]`, service.description));
-    });
-
-    form.submit();
-}
-
-function generarInputOculto(nombre, valor) {
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = nombre;
-    input.value = valor;
-    return input;
-}
-
         document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.category-card').forEach(card => {
         card.addEventListener('click', function() {
@@ -470,6 +353,28 @@ function generarInputOculto(nombre, valor) {
             showServicesModal(categoryId);
         });
     });
+
+    const oldDate = "{{ old('date') }}";
+    if (oldDate) {
+        document.getElementById('selectedDate').value = oldDate;
+        const dayButton = document.querySelector(`button[data-date="${oldDate}"]`);
+        if (dayButton) {
+            dayButton.click();
+        }
+    }
+
+    const oldStartTime = "{{ old('start_time') }}";
+    if (oldStartTime) {
+        const time = new Date(oldStartTime);
+        document.getElementById('start_time').value = 
+            `${String(time.getHours()).padStart(2, '0')}:${String(time.getMinutes()).padStart(2, '0')}`;
+        updateDurationOptions();
+    }
+
+    const oldPlaceId = "{{ old('place_id') }}";
+    if (oldPlaceId) {
+        selectPlace(oldPlaceId);
+    }
 });
 
 function roundTime(input) {
@@ -511,14 +416,6 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
         changeMonth(1);
     });
-    prevMonthButton.addEventListener('click', (event) => {
-        event.preventDefault();
-        changeMonth(-1);
-    });
-    nextMonthButton.addEventListener('click', (event) => {
-        event.preventDefault();
-        changeMonth(1);
-    });
 
     function changeMonth(offset) {
         currentDate.setMonth(currentDate.getMonth() + offset);
@@ -535,12 +432,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const minDate = new Date(today.getFullYear(), today.getMonth(), 1);
         const maxDate = new Date(today.getFullYear(), today.getMonth() + 2, 1);
-
-        if (currentDate <= minDate) {
-            prevMonthButton.classList.add('btn-disabled');
-        } else {
-            prevMonthButton.classList.remove('btn-disabled');
-        }
 
         if (currentDate <= minDate) {
             prevMonthButton.classList.add('btn-disabled');
@@ -594,15 +485,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
             dayButton.dataset.date = date.toISOString().split('T')[0];
             dayButton.title = date.toDateString();
-            dayButton.title = date.toDateString();
 
             if (date < today) {
                 dayButton.classList.add('bg-secondary');
                 dayButton.style.color = 'black';
             } else {
                 dayButton.classList.add('bg-success');
-                dayButton.addEventListener('click', function(event) {
-                    event.preventDefault();
                 dayButton.addEventListener('click', function(event) {
                     event.preventDefault();
                     if (!dayButton.classList.contains('bg-danger')) {
@@ -637,42 +525,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         calendar.appendChild(row);
         updateCalendarWithQuotes();
-        updateCalendarWithQuotes();
         adjustDayButtonHeight();
     }
 
-    function updateCalendarWithQuotes() {
-        const quoteCounts = {};
-
-        quotes.forEach(quote => {
-            const date = quote.date;
-            if (!quoteCounts[date]) {
-                quoteCounts[date] = { count: 0, status: [] };
-            }
-            quoteCounts[date].count++;
-            quoteCounts[date].status.push(quote.status);
-        });
-
-        Object.keys(quoteCounts).forEach(date => {
-            const dateButton = document.querySelector(`button[data-date="${date}"]`);
-            if (dateButton) {
-                const dateInfo = quoteCounts[date];
-                if (new Date(date) < today) {
-                    dateButton.classList.remove('bg-success', 'bg-warning', 'bg-danger');
-                    dateButton.classList.add('bg-secondary');
-                    dateButton.style.color = 'black';
-                    dateButton.disabled = true;
-                } else {
-                    if (dateInfo.status.includes('pagada') || dateInfo.count >= 3) {
-                        dateButton.classList.remove('bg-success', 'bg-warning');
-                        dateButton.classList.add('bg-danger');
-                        dateButton.disabled = true;
-                    } else if (dateInfo.count >= 1 && dateInfo.count < 3) {
-                        dateButton.classList.remove('bg-success');
-                        dateButton.classList.add('bg-warning');
-                    }
-                }
-            }
     function updateCalendarWithQuotes() {
         const quoteCounts = {};
 
@@ -755,6 +610,16 @@ function showConfirmedServicesModal() {
 
 function removeConfirmedService(serviceId) {
     confirmedServices = confirmedServices.filter(service => service.id !== serviceId);
+    
+    const confirmedServicesContainer = document.getElementById('confirmedServicesContainer');
+    const serviceCardContainer = document.getElementById(`confirmedServiceCard${serviceId}`);
+    if (serviceCardContainer) {
+        serviceCardContainer.parentElement.remove();
+    }
+
+    if (confirmedServices.length === 0) {
+        confirmedServicesContainer.innerHTML = '<div class="alert alert-info">No hay servicios confirmados.</div>';
+    }
 
     const serviceCard = document.getElementById(`serviceCard${serviceId}`);
     if (serviceCard) {
@@ -785,16 +650,6 @@ function removeConfirmedService(serviceId) {
         if (confirmationMessage) {
             confirmationMessage.remove();
         }
-    }
-
-    const confirmedServiceCard = document.getElementById(`confirmedServiceCard${serviceId}`);
-    if (confirmedServiceCard) {
-        confirmedServiceCard.remove();
-    }
-
-    if (confirmedServices.length === 0) {
-        const confirmedServicesContainer = document.getElementById('confirmedServicesContainer');
-        confirmedServicesContainer.innerHTML = '<div class="alert alert-info">No hay servicios confirmados.</div>';
     }
 }
 
@@ -890,33 +745,6 @@ function toggleServiceDescription(serviceId) {
     } else {
         descriptionContainer.style.display = 'none';
         confirmBtn.disabled = true;
-    }
-}
-
-function updateDurationOptions() {
-    const startTimeElement = document.getElementById('start_time');
-    const durationElement = document.getElementById('duration');
-    const startTime = startTimeElement.value;
-
-    if (!startTime) {
-        return;
-    }
-
-    const [startHour, startMinute] = startTime.split(':').map(Number);
-    const maxEndHour = 3;
-
-    while (durationElement.options.length > 1) {
-        durationElement.remove(1);
-    }
-
-    for (let i = 4; i <= 10; i++) {
-        const endHour = (startHour + i) % 24;
-        if (endHour <= maxEndHour || endHour >= startHour) {
-            const option = document.createElement('option');
-            option.value = i;
-            option.text = `${i} horas`;
-            durationElement.add(option);
-        }
     }
 }
 
