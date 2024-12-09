@@ -235,6 +235,23 @@ return new class extends Migration
                 AND services.image_path IS NOT NULL;
             END
         ');
+        DB::unprepared('
+            CREATE TRIGGER calculate_event_duration
+            BEFORE UPDATE ON events
+            FOR EACH ROW
+            BEGIN
+                IF NEW.status = "Finalizado" AND OLD.status != "Finalizado" THEN
+                    IF NEW.start_time IS NOT NULL AND NEW.end_time IS NOT NULL THEN
+                        SET NEW.duration = 
+                            TIMESTAMPDIFF(
+                                MINUTE,
+                                CONCAT(NEW.date, " ", NEW.start_time),
+                                CONCAT(NEW.date, " ", NEW.end_time)
+                            );
+                    END IF;
+                END IF;
+            END
+        ');
     }
     public function down()
     {
@@ -253,5 +270,6 @@ return new class extends Migration
         DB::unprepared('DROP TRIGGER IF EXISTS prevent_advance_exceeding_price_insert');
         DB::unprepared('DROP TRIGGER IF EXISTS prevent_advance_exceeding_price_update');
         DB::unprepared('DROP TRIGGER IF EXISTS create_package_images');
+        DB::unprepared('DROP TRIGGER IF EXISTS calculate_event_duration');
     }
 };

@@ -21,16 +21,19 @@ class PlacesTable extends Seeder
                 'name' => 'Quinta',
                 'description' => 'Quinta con alberca',
                 'max_guests' => 50,
+                'price' => 2500,
             ],
             [
                 'name' => 'Salón',
                 'description' => 'Salón elegante ',
                 'max_guests' => 60,
+                'price' => 3000,
             ],
             [
                 'name' => 'Quinta y Salón',
                 'description' => 'Conjunto de Quinta y Salón para fiestas grandes',
                 'max_guests' => 100,
+                'price' => 5000,
             ],
             ];
         foreach ($places as $place) {
