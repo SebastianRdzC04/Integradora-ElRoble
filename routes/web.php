@@ -647,8 +647,8 @@ Route::post('/confirm-payment', [PaymentController::class, 'confirmPayment'])->n
 Route::post('/api/cotizations', [CotizacionesClientesController::class, 'getCotizations']);
 Route::get('/cotizaciones/nueva', [CotizacionesClientesController::class, 'nuevaCotizacion'])->name('cotizaciones.nueva');
 Route::post('/cotizaciones/storeQuote', [CotizacionesClientesController::class, 'storeQuote'])->name('cotizaciones.storeQuote');
-Route::get('/dashboard/crear/cotizacion', [CotizacionesClientesController::class, 'nuevaCotizacionAdmin'])->name('admin.cotizaciones');
-Route::post('/dashboard/cotizando', [CotizacionesClientesController::class, 'storeQuote'])->name('cotizaciones.storeQuote');
+Route::get('/dashboard/crear/cotizacion', [CotizacionesClientesController::class, 'nuevaCotizacionAdmin'])->name('cotizaciones.nuevaAdmin');
+Route::post('/dashboard/cotizando', [CotizacionesClientesController::class, 'storeQuoteAdmin'])->name('cotizaciones.storeQuoteAdmin');
 
 // Si necesitas una vista para listar paquetes
 Route::get('/paquetes', [PaquetesAdminController::class, 'index'])->name('paquetes.index'); // O lo que desees

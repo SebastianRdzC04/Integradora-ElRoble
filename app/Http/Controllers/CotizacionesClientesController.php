@@ -264,6 +264,8 @@ class CotizacionesClientesController extends Controller
             'end_time' => 'required|date_format:Y-m-d H:i|after:start_time',
             'type_event' => 'required|string|max:50',
             'guest_count' => 'required|integer|min:10|max:80',
+            'owner_name' => 'required|string|max:255',
+            'owner_phone' => 'required|string|max:20',
         ]);
     
         DB::beginTransaction();
@@ -277,7 +279,9 @@ class CotizacionesClientesController extends Controller
                 'end_time' => $request->input('end_time'),
                 'type_event' => $request->input('type_event'),
                 'guest_count' => $request->input('guest_count'),
-                'status' => 'pendiente cotizacion',
+                'status' => 'pendiente',
+                'owner_name' => $request->input('owner_name'),
+                'owner_phone' => $request->input('owner_phone'),
             ]);
     
             $servicesData = [];
@@ -297,10 +301,10 @@ class CotizacionesClientesController extends Controller
     
             DB::commit();
     
-            return redirect()->route('cotizaciones.nueva')->with('success', 'Cotización enviada exitosamente.');
+            return redirect()->route('cotizaciones.nuevaAdmin')->with('success', 'Cotización enviada exitosamente.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('cotizaciones.nueva')->withErrors(['store_quote_error' => 'Error al crear la cotización: ' . $e->getMessage()])->withInput();
+            return redirect()->route('cotizaciones.nuevaAdmin')->withErrors(['store_quote_error' => 'Error al crear la cotización: ' . $e->getMessage()])->withInput();
         }
     }
 
