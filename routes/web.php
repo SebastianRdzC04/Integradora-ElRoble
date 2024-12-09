@@ -731,6 +731,27 @@ Route::post('dashboard/service/edit/{id}', function($id, Request $request){
 
 })->name('dashboard.service.edit');
 
+Route::post('dashboard/create/service', function(Request $request){
+    $request->validate([
+        'categoria' => 'required|string|exists:service_categories,name',
+        'nombre' => 'required|string',
+        'descripcion' => 'required|string',
+        'precio' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
+        'costo' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/', 
+        'afore' => 'required|integer|max:100',
+    ]);
+    $imagenCortada = $request->input('cropped_image');
+    $service = new Service();
+    $service->service_category_id = ServiceCategory::where('name', $request->categoria)->first()->id;
+    $service->name = $request->nombre;
+    $service->description = $request->descripcion;
+    $service->price = $request->precio;
+    $service->coast = $request->costo;
+    $service->people_quantity = $request->afore;
+    $service->save();
+    return redirect()->back()->with('success', 'El servicio ha sido creado correctamente');
+})->name('dashboard.create.service');
+
 
 require __DIR__.'/routesjesus.php';
 
