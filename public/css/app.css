@@ -216,7 +216,12 @@
 }
 
 html {
-  font-size: 62.5%;
+  transform: scale(0.9); /* Esto reduce el zoom al 80% */
+  transform-origin: 0 0; /* Asegura que el zoom se haga desde la esquina superior izquierda */
+  width: 111%; /* Ajusta el ancho para compensar la reducción */
+  height: 100%; /* Asegura que el alto también se ajuste */
+  overflow-x: hidden; /* Evita desplazamiento horizontal innecesario */
+  font-size: 55.5%;
   font-family: "Montserrat", sans-serif;
   scroll-behavior: smooth;
 }
@@ -263,7 +268,7 @@ body {
 }
 
 .container {
-  max-width: 124rem;
+  max-width: 150rem;
   padding: 0 1rem;
   margin: 0 auto;
 }

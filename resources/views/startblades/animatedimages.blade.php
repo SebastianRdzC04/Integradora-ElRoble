@@ -72,7 +72,7 @@
     }
 </style>
 
-<div class="custom-carousel">
+<div class="custom-carousel" style="mask-image: linear-gradient(to bottom, #000000 91%, #91ef0400);">
     <div class="custom-carousel__container">
         <div class="custom-carousel__item">
             <img class="custom-carousel__image" src="{{asset('images/imagen1.jpg')}}" alt="Imagen 1">

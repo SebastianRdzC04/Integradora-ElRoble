@@ -5,7 +5,7 @@
   }
 
   .video-packages-slider {
-    height: 52rem;
+    height: 60rem;
     padding: 2rem 0;
   }
 
@@ -102,7 +102,7 @@
         <!-- Video Slide 1 -->
         <div class="swiper-slide video-packages-slide">
           <div class="video-packages-slide-container">
-            <video src="https://todossomosamigos.s3.us-east-1.amazonaws.com/packages_images/VID_20241130_192922.mp4" muted loop></video>
+            <video src="https://todossomosamigos.s3.us-east-1.amazonaws.com/Videos/alberca.mp4" muted loop></video>
           </div>
           <div class="video-packages-slide-content">
             <h1 class="package-price">$99.99</h1>
@@ -115,7 +115,7 @@
         <!-- Video Slide 2 -->
         <div class="swiper-slide video-packages-slide">
           <div class="video-packages-slide-container">
-            <video src="https://todossomosamigos.s3.us-east-1.amazonaws.com/packages_images/VID_20241130_192922.mp4" muted loop></video>
+            <video src="https://todossomosamigos.s3.us-east-1.amazonaws.com/Videos/barra.mp4" muted loop></video>
           </div>
           <div class="video-packages-slide-content">
             <h1 class="package-price">$149.99</h1>
@@ -128,7 +128,72 @@
         <!-- Video Slide 3 -->
         <div class="swiper-slide video-packages-slide">
           <div class="video-packages-slide-container">
-            <video src="https://todossomosamigos.s3.us-east-1.amazonaws.com/packages_images/VID_20241130_192922.mp4" muted loop></video>
+            <video src="https://todossomosamigos.s3.us-east-1.amazonaws.com/Videos/barrayvino.mp4" muted loop></video>
+          </div>
+          <div class="video-packages-slide-content">
+            <h1 class="package-price">$199.99</h1>
+            <div class="video-packages-slide-content-bottom">
+              <h2 class="package-name">Paquete Gastronómico</h2>
+              <h3 class="package-description">Explora los mejores sabores de la ciudad</h3>
+            </div>
+          </div>
+        </div>
+        <!-- Video Slide 4 -->
+        <div class="swiper-slide video-packages-slide">
+          <div class="video-packages-slide-container">
+            <video src="https://todossomosamigos.s3.us-east-1.amazonaws.com/Videos/barrayvino.mp4" muted loop></video>
+          </div>
+          <div class="video-packages-slide-content">
+            <h1 class="package-price">$199.99</h1>
+            <div class="video-packages-slide-content-bottom">
+              <h2 class="package-name">Paquete Gastronómico</h2>
+              <h3 class="package-description">Explora los mejores sabores de la ciudad</h3>
+            </div>
+          </div>
+        </div>
+        <!-- Video Slide 5 -->
+        <div class="swiper-slide video-packages-slide">
+          <div class="video-packages-slide-container">
+            <video src="https://todossomosamigos.s3.us-east-1.amazonaws.com/Videos/cascada.mp4" muted loop></video>
+          </div>
+          <div class="video-packages-slide-content">
+            <h1 class="package-price">$199.99</h1>
+            <div class="video-packages-slide-content-bottom">
+              <h2 class="package-name">Paquete Gastronómico</h2>
+              <h3 class="package-description">Explora los mejores sabores de la ciudad</h3>
+            </div>
+          </div>
+        </div>
+        <!-- Video Slide 6 -->
+        <div class="swiper-slide video-packages-slide">
+          <div class="video-packages-slide-container">
+            <video src="https://todossomosamigos.s3.us-east-1.amazonaws.com/Videos/globosgirando.mp4" muted loop></video>
+          </div>
+          <div class="video-packages-slide-content">
+            <h1 class="package-price">$199.99</h1>
+            <div class="video-packages-slide-content-bottom">
+              <h2 class="package-name">Paquete Gastronómico</h2>
+              <h3 class="package-description">Explora los mejores sabores de la ciudad</h3>
+            </div>
+          </div>
+        </div>
+        <!-- Video Slide 7 -->
+        <div class="swiper-slide video-packages-slide">
+          <div class="video-packages-slide-container">
+            <video src="https://todossomosamigos.s3.us-east-1.amazonaws.com/Videos/salonymesas.mp4" muted loop></video>
+          </div>
+          <div class="video-packages-slide-content">
+            <h1 class="package-price">$199.99</h1>
+            <div class="video-packages-slide-content-bottom">
+              <h2 class="package-name">Paquete Gastronómico</h2>
+              <h3 class="package-description">Explora los mejores sabores de la ciudad</h3>
+            </div>
+          </div>
+        </div>
+        <!-- Video Slide 8 -->
+        <div class="swiper-slide video-packages-slide">
+          <div class="video-packages-slide-container">
+            <video src="https://todossomosamigos.s3.us-east-1.amazonaws.com/Videos/sillones.mp4" muted loop></video>
           </div>
           <div class="video-packages-slide-content">
             <h1 class="package-price">$199.99</h1>
