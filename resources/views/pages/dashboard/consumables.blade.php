@@ -21,7 +21,7 @@
                 <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4>Predeterminados por evento</h4>
+                            <h4>Predeterminados por Evento</h4>
                         </div>
                         <div class="modal-content">
                             <div class="table-responsive">
