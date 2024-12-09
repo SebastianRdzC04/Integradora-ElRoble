@@ -3,6 +3,13 @@
 @php
     use Carbon\Carbon;
     Carbon::setLocale('es');
+    $horaInicial = Carbon::createFromTimeString(11, 0, 0);
+    $horaFinal = Carbon::createFromTimeString(21, 0, 0);
+    $horas = [];
+    for ($i = $horaInicial; $i <= $horaFinal; $i->addHour()) {
+        $horas[] = $i->format('h:i A');
+    }
+    $start_time = $quote->start_time ? Carbon::parse($quote->start_time)->format('h:i A') : null;
 @endphp
 
 @section('title', 'Cotizacion')
@@ -83,7 +90,8 @@
                             </div>
                             <div class="row mb-3">
                                 <div>Hora:</div>
-                                <div> {{ $quote->start_time }} - {{ $quote->end_time }} </div>
+                                <div> {{ $quote->start_time }} - {{ $quote->end_time }} <i data-bs-toggle="modal"
+                                        data-bs-target="#horarioModal" class="text-end bi bi-pencil"></i> </div>
                             </div>
                             <div class="row mb-3">
                                 <div>Numero de invitados:</div>
@@ -156,14 +164,60 @@
                             <div class="row">
                                 <div class="text-end">
                                     @if ($quote->status == 'pendiente')
-                                        <form action="{{ route('dashboard.quote.payment', $quote->id) }}" method="POST">
-                                            @csrf
-                                            <button class="btn btn-primary">Confirmar y crear evento</button>
-                                        </form>
+                                        <button data-bs-toggle="modal" data-bs-target="#confirmarEvento"
+                                            class="btn btn-primary">Confirmar Evento</button>
                                     @endif
                                 </div>
                             </div>
-
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="horarioModal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4>Configura el Horario</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form action="">
+                                    <div class="row mb-3">
+                                        <label for="horaInicio" class="form-label">Hora de Inicio</label>
+                                        <select name="" id="" class="form-select">
+                                            @foreach ($horas as $hora)
+                                                <option value="{{ $hora }}"
+                                                    {{ $hora == $start_time ? 'selected' : '' }}>
+                                                    {{ $hora }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="horaFin" class="form-label">Hora de Fin</label>
+                                        <input class="form-control" type="number" name="horaFin">
+                                    </div>
+                                    <div class="row">
+                                        <button class="btn btn-primary">Enviar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="confirmarEvento">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3>Confirmar Evento</h3>
+                            </div>
+                            <div class="modal-body">
+                                <h4>Seguro que ya te pagaron come caca? </h4>
+                            </div>
+                            <div class="modal-footer">
+                                <form action="{{ route('dashboard.quote.payment', $quote->id) }}" method="POST">
+                                    @csrf
+                                    <button class="btn btn-primary">Confirmar</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -287,4 +341,25 @@
             </div>
         </div>
     </main>
+@endsection
+
+@section('scripts')
+
+    @if ($errors->any())
+        <script>
+            toastr.error('Ocurrio un error')
+        </script>
+    @endif
+
+    @if (session('success'))
+        <script>
+            toastr.success('Se ha actualizado la informacion correctamente')
+        </script>
+    @endif
+    @if (session('error'))
+        <script>
+            toastr.error('{{ session('error') }}')
+        </script>
+    @endif
+
 @endsection

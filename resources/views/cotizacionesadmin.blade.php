@@ -31,7 +31,7 @@
                 </ul>
             </div>
         @endif
-        <form id="quoteForm" method="POST" action="{{ route('cotizaciones.storeQuote') }}">
+        <form id="quoteForm" method="POST" action="{{ route('cotizaciones.storeQuoteAdmin') }}">
             @csrf
         <div class="row">
             <div class="col-md-6">

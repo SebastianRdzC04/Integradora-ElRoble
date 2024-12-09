@@ -65,7 +65,7 @@ class CotizacionesClientesController extends Controller
                 'end_time' => 'required|date_format:Y-m-d H:i|after:start_time',
                 'type_event' => 'required|string|max:50',
                 'otro_tipo_evento' => 'nullable|string|max:50',
-                'guest_count' => 'required|integer|min:10|max:80',
+                'guest_count' => 'required|integer|min:10|max:100',
             ],
             [
                 'user_id.exists' => 'El usuario seleccionado no existe.',
@@ -238,12 +238,71 @@ class CotizacionesClientesController extends Controller
     
             DB::commit();
     
-            return redirect()->route('cotizaciones.create')->with('success', 'Cotización enviada exitosamente.');
+            return redirect()->route('cotizaciones.nueva')->with('success', 'Cotización enviada exitosamente.');
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->route('cotizaciones.create')->with('error', 'Error al crear la cotización. Por favor, revisa los datos e inténtalo de nuevo.');
+            return redirect()->route('cotizaciones.nueva')->withErrors(['store_quote_error' => 'Error al crear la cotización: ' . $e->getMessage()])->withInput();
         }
-    }    
+    }
+
+    public function storeQuoteAdmin(Request $request)
+    {
+        $request->merge(['user_id' => auth()->id()]);
+    
+        if ($request->has('other_event_type') && !empty($request->input('other_event_type'))) {
+            $request->merge(['type_event' => (string) $request->input('other_event_type')]);
+        } else {
+            $request->merge(['type_event' => (string) $request->input('type_event')]);
+        }
+    
+        // Validar los datos
+        $validated = $request->validate([
+            'user_id' => 'nullable|exists:users,id',
+            'date' => 'required|date|after:today',
+            'place_id' => 'required|exists:places,id',
+            'start_time' => 'required|date_format:Y-m-d H:i',
+            'end_time' => 'required|date_format:Y-m-d H:i|after:start_time',
+            'type_event' => 'required|string|max:50',
+            'guest_count' => 'required|integer|min:10|max:80',
+        ]);
+    
+        DB::beginTransaction();
+    
+        try {
+            $quote = Quote::create([
+                'user_id' => $request->input('user_id'),
+                'date' => $request->input('date'),
+                'place_id' => $request->input('place_id'),
+                'start_time' => $request->input('start_time'),
+                'end_time' => $request->input('end_time'),
+                'type_event' => $request->input('type_event'),
+                'guest_count' => $request->input('guest_count'),
+                'status' => 'pendiente cotizacion',
+            ]);
+    
+            $servicesData = [];
+            foreach ($request->input('services', []) as $serviceId => $serviceData) {
+                if (isset($serviceData['confirmed']) && filter_var($serviceData['confirmed'], FILTER_VALIDATE_BOOLEAN)) {
+                    $servicesData[$serviceId] = [
+                        'description' => $serviceData['description'],
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+    
+            if (!empty($servicesData)) {
+                $quote->services()->sync($servicesData);
+            }
+    
+            DB::commit();
+    
+            return redirect()->route('cotizaciones.nueva')->with('success', 'Cotización enviada exitosamente.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('cotizaciones.nueva')->withErrors(['store_quote_error' => 'Error al crear la cotización: ' . $e->getMessage()])->withInput();
+        }
+    }
 
     public function historial()
     {
@@ -271,20 +330,47 @@ class CotizacionesClientesController extends Controller
     {
         $places = Place::all();
         $today = Carbon::today();
+        $categories = ServiceCategory::all();
+        $services = Service::all();
+        $quotes = Quote::whereIn('status', ['pendiente cotizacion', 'pendiente', 'pagada'])->get();
+        $user = auth()->user();
     
         $cotizations = Quote::select(DB::raw('date, COUNT(*) as count, MAX(status) as status'))
             ->whereBetween('date', [$today->startOfMonth(), $today->copy()->addMonths(2)->endOfMonth()])
             ->groupBy('date')
             ->get();
     
-        $categories = ServiceCategory::all();
-        $services = Service::all();
-    
         return view('cotizacionesnuevasclientes', [
             'places' => $places,
             'cotizations' => $cotizations,
             'categories' => $categories,
             'services' => $services,
+            'user' => $user,
+            'quotes' => $quotes,
+        ]);
+    }
+
+    public function nuevaCotizacionAdmin()
+    {
+        $places = Place::all();
+        $today = Carbon::today();
+        $categories = ServiceCategory::all();
+        $services = Service::all();
+        $quotes = Quote::whereIn('status', ['pendiente cotizacion', 'pendiente', 'pagada'])->get();
+        $user = auth()->user();
+    
+        $cotizations = Quote::select(DB::raw('date, COUNT(*) as count, MAX(status) as status'))
+            ->whereBetween('date', [$today->startOfMonth(), $today->copy()->addMonths(2)->endOfMonth()])
+            ->groupBy('date')
+            ->get();
+    
+        return view('cotizacionesadmin', [
+            'places' => $places,
+            'cotizations' => $cotizations,
+            'categories' => $categories,
+            'services' => $services,
+            'user' => $user,
+            'quotes' => $quotes,
         ]);
     }
 }

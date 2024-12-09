@@ -11,6 +11,12 @@ class Place extends Model
 
     protected $table = 'places';
 
+    protected $fillable = [
+        'name', 
+        'description', 
+        'max_guest' 
+    ];    
+
     public function quotes()
     {
         return $this->hasMany(Quote::class);
