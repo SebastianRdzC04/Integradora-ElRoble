@@ -51,6 +51,7 @@
                             <p><span class="badge bg-warning">Amarillo</span> - Más personas cotizando por la misma fecha</p>
                             <p><span class="badge bg-danger">Rojo</span> - No Disponible</p>
                             <p><span class="badge bg-secondary">Gris</span> - Fecha Inaccesible</p>
+                            <p><span style="background-color: #1d1d1d !important;" class="badge bg-secondary">Negro</span> - Día Anteriormente Cotizado</p>
                         </div>
                         <div class="mt-4">
                             <div class="mb-3">
@@ -415,6 +416,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const today = new Date();
     let currentDate = new Date(today.getFullYear(), today.getMonth(), 1);
 
+    const blockedDates = @json($blockedDates);
+
     prevMonthButton.addEventListener('click', (event) => {
         event.preventDefault();
         changeMonth(-1);
@@ -496,6 +499,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (date < today) {
                 dayButton.classList.add('bg-secondary');
                 dayButton.style.color = 'black';
+            } else if (blockedDates.includes(dayButton.dataset.date)) {
+                dayButton.classList.add('bg-blocked');
             } else {
                 dayButton.classList.add('bg-success');
                 dayButton.addEventListener('click', function(event) {
