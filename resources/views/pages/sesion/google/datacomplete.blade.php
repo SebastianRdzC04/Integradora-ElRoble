@@ -20,51 +20,38 @@
             <label for="phone">Ingresa tu Teléfono</label>
         </div>
     <!--fecha de cumpleaños-->
-        <div class="form-control mb-3">
-            <label>Ingresa tu Fecha de cumpleaños</label>
-            <div class="row mb-3">
-                <div class="col form-control">
-                    <div class="row-12">
-                        <label>Dia</label>
-                    </div>
-                    <div class="row-12">
-                        <select name="day" id="day" class="form-control-sm" required>
-                            @for ($i = 1; $i <= 31; $i++)
-                            <option value="{{ $i }}">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
-                            @endfor
-                        </select>
-                    </div>
-                </div>
-                
-                <!-- Mes -->
-                <div class="col form-control">
-                    <div class="row-12">
-                        <label>Mes</label>
-                    </div>
-                    <div class="row-12">
-                        <select name="month" id="month" class="form-control-sm" required>
-                            @for ($i = 1; $i <= 12; $i++)
-                            <option value="{{ $i }}">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
-                            @endfor
-                        </select>
-                    </div>
-                </div>
-                
-                <!-- Año -->
-                <div class="col form-control">
-                    <div class="row-12">
-                        <label>Año</label>
-                    </div>
-                    <div class="row-12">
-                        <select name="year" id="year" class="form-control-sm" required>
-                            @for ($i = date('Y'); $i >= 1900; $i--)
-                            <option value="{{ $i }}">{{ $i }}</option>
-                            @endfor
-                        </select>
-                    </div>
-                </div>
-            </div>
-        </div>
+    <label style="color:aliceblue;">Ingresa tu Fecha de cumpleaños</label>
+                        <div class="row">
+                            <!-- Día -->
+                            <div class="col-4 mb-3">
+                                <label style="color: white">Día</label>
+                                <select name="day" value="{{ old('day') }}" id="day" class="form-control" required>
+                                    @for ($i = 1; $i <= 31; $i++)
+                                        <option value="{{ $i }}">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+
+                            <!-- Mes -->
+                            <div class="col-4 mb-3">
+                                <label style="color: white">Mes</label>
+                                <select name="month" value="{{ old('month') }}" id="month" class="form-control" required>
+                                    @for ($i = 1; $i <= 12; $i++)
+                                        <option value="{{ $i }}">{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                    
+                            <!-- Año -->
+                            <div class="col-4 mb-3">
+                                <label style="color: white">Año</label>
+                                <select name="year" value="{{ old('year') }}" id="year" class="form-control" required>
+                                    @for ($i = date('Y'); $i >= 1900; $i--)
+                                        <option value="{{ $i }}">{{ $i }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                        </div>
     
     <div class="form-floating mb-3">
         <select name="gender" id="gender" class="form-control">
