@@ -191,9 +191,12 @@
                                                             <th>Descripcion</th>
                                                             <th>Precio</th>
                                                             <th>Costo</th>
+                                                            <!-- 
                                                             @if ($event->status == 'Pendiente' || $event->status == 'En espera')
-                                                                <th>Acciones</th>
+                                                            <th>Acciones</th>
                                                             @endif
+                                                            !-->
+                                                            
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -204,11 +207,14 @@
                                                                     <td> {{ $service->pivot->description }} </td>
                                                                     <td> {{ $service->pivot->price }} </td>
                                                                     <td> {{ $service->pivot->cost }} </td>
+                                                                    <!-- 
                                                                     @if ($event->status == 'Pendiente' || $event->status == 'En espera')
                                                                         <td>
                                                                             <p>Servicios incluidos con paquete</p>
                                                                         </td>
                                                                     @endif
+                                                                    !-->
+
                                                                 </tr>
                                                             @endforeach
                                                         @endif
@@ -219,6 +225,7 @@
                                                                     <td> {{ $service->pivot->description }} </td>
                                                                     <td> {{ $service->pivot->price }} </td>
                                                                     <td> {{ $service->pivot->coast }} </td>
+                                                                    <!-- 
                                                                     @if ($event->status == 'Pendiente' || $event->status == 'En espera')
                                                                         <td>
                                                                             <select name="" id=""
@@ -234,6 +241,8 @@
                                                                             </select>
                                                                         </td>
                                                                     @endif
+                                                                    !-->
+
 
                                                                 </tr>
                                                             @endforeach
@@ -284,13 +293,11 @@
                                                 <div class="mb-3">
                                                     <button class="btn btn-primary">Enviar</button>
                                                 </div>
-
                                             </form>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                         <div class="modal fade" id="deleteService{{ $service->pivot->id }}"
                             aria-labelledby="papa{{ $service->pivot->id }}">
@@ -304,7 +311,10 @@
                                             {{ $service->name }} del evento?</p>
                                     </div>
                                     <div class="modal-footer">
-                                        <button class="btn btn-danger">Eliminar</button>
+                                        <form action="" method="POST">
+                                            @csrf
+                                            <button class="btn btn-danger">Eliminar</button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>

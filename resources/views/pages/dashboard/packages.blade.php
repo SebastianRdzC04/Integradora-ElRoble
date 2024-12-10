@@ -128,7 +128,9 @@
                                                             <p>Seguro de eliminar el paquete?</p>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <form action="{{route('dashboard.package.delete', $package->id)}}" method="POST">
+                                                            <form
+                                                                action="{{ route('dashboard.package.delete', $package->id) }}"
+                                                                method="POST">
                                                                 @csrf
                                                                 <button class="btn btn-danger">Eliminar</button>
                                                             </form>
@@ -237,25 +239,101 @@
                                                                             <td> {{ $service->name }} </td>
                                                                             <td> {{ $service->description }} </td>
                                                                             <td> {{ $service->pivot->quantity }} </td>
-                                                                            <td>{{$service->pivot->price}}</td>
+                                                                            <td>{{ $service->pivot->price }}</td>
                                                                             <td> {{ $service->pivot->coast }} </td>
                                                                             <td> {{ $service->pivot->description }}
                                                                             </td>
                                                                             <td>
                                                                                 <div>
                                                                                     <select name="" id=""
-                                                                                        class="form-select">
+                                                                                        class="form-select alv">
                                                                                         <option value="">Selecciona
                                                                                             una
                                                                                             opcion</option>
-                                                                                        <option value="editar">Editar
+                                                                                        <option data-bs-toggle="modal"
+                                                                                            data-bs-target="#editService{{ $service->pivot->id }}"
+                                                                                            value="editar">Editar
                                                                                         </option>
-                                                                                        <option value="eliminar">Eliminar
+                                                                                        <option data-bs-toggle="modal"
+                                                                                            data-bs-target="#elimiarServicio{{ $service->pivot->id }}"
+                                                                                            value="eliminar">Eliminar
                                                                                         </option>
                                                                                     </select>
                                                                                 </div>
                                                                             </td>
                                                                         </tr>
+                                                                        <div class="modal fade"
+                                                                            id="editService{{ $service->pivot->id }}">
+                                                                            <div class="modal-dialog">
+                                                                                <div class="modal-content">
+                                                                                    <div class="modal-header">
+                                                                                        <h4>Editar Servicio</h4>
+                                                                                    </div>
+                                                                                    <div class="modal-body">
+                                                                                        <form action="{{route('dashboard.package.edit.service', $service->pivot->id)}}"
+                                                                                            method="POST">
+                                                                                            @csrf
+                                                                                            <div class="mb-3">
+                                                                                                <label
+                                                                                                    for="cantidad">Cantidad</label>
+                                                                                                <input type="number"
+                                                                                                    class="form-control"
+                                                                                                    name="cantidad"
+                                                                                                    value="{{ $service->pivot->quantity }}">
+                                                                                            </div>
+                                                                                            <div class="mb-3">
+                                                                                                <label
+                                                                                                    for="precio">Precio</label>
+                                                                                                <input type="number"
+                                                                                                    class="form-control"
+                                                                                                    name="precio"
+                                                                                                    value="{{ $service->pivot->price }}">
+                                                                                            </div>
+                                                                                            <div class="mb-3">
+                                                                                                <label
+                                                                                                    for="costo">Costo</label>
+                                                                                                <input type="number"
+                                                                                                    class="form-control"
+                                                                                                    name="costo"
+                                                                                                    value="{{ $service->pivot->coast }}">
+                                                                                            </div>
+                                                                                            <div class="mb-3">
+                                                                                                <label
+                                                                                                    for="descripcion">Descripcion</label>
+                                                                                                <textarea name="descripcion" id="" cols="30" rows="7" class="form-control">{{ $service->pivot->description }}</textarea>
+                                                                                            </div>
+                                                                                            <div
+                                                                                                class="mb-3 d-flex justify-content-end">
+                                                                                                <button
+                                                                                                    class="btn btn-primary">Enviar</button>
+                                                                                            </div>
+                                                                                        </form>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="modal fade"
+                                                                            id="elimiarServicio{{ $service->pivot->id }}">
+                                                                            <div class="modal-dialog">
+                                                                                <div class="modal-content">
+                                                                                    <div class="modal-header">
+                                                                                        <h4>Eliminar Servicio</h4>
+                                                                                    </div>
+                                                                                    <div class="modal-body">
+                                                                                        <p>Seguro que deseas eliminar el
+                                                                                            servicio del paquete?</p>
+                                                                                    </div>
+                                                                                    <div class="modal-footer">
+                                                                                        <form
+                                                                                            action="{{ route('dashboard.package.delete.service', $service->pivot->id) }}" method="POST">
+                                                                                            @csrf
+                                                                                            <button
+                                                                                                class="btn btn-primary">Confirmar</button>
+                                                                                        </form>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
                                                                     @endforeach
                                                                 </tbody>
                                                             </table>
