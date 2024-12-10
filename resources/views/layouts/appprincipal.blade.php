@@ -10,7 +10,7 @@
     <!--el app esta en el blade del navbar para optimizar espacio hay esta el script del navbar-->
 </head>
 <body style="background-color: antiquewhite; overflow-x:hidden;">
-<!--importando el blade del navbar-->
+    <!--importando el blade del navbar-->
     @include('layouts.navbar')
 
     <main style="min-height: 200vh;">
@@ -37,9 +37,42 @@
         <section id="googlemaps">
             <div class="container mb-5">
                 <h2 class="text-center">Visítanos</h2>
-                <div id="map" style="height: 400px; border: 2px solid white; border-radius: 10px;"></div>
+                <div class="row">
+                    <!-- Mapa -->
+                    <div class="col-6">
+                <div id="map" style="height: 400px; border: 2px solid white; border-radius: 10px;"></div> 
             </div>
+            
+            <!-- Información de contacto -->
+            <div class="col-6">
+                <div class="p-3">
+                    <h4 class="mb-3" style="color: #6a4d1b;">Información de Contacto</h4>
+                    <p>
+                        <strong>Dirección:</strong><br>
+                        Calle Sierra Madre Occidental #64, Colonia Maria del mercado Sanches Lopez,<br>
+                        Ciudad Torreon, CP 27277.
+                    </p>
+                    <p>
+                        <strong>Horario de Atención:</strong><br>
+                        Lunes a Viernes: 9:00 AM - 6:00 PM<br>
+                        Sábados: 10:00 AM - 2:00 PM
+                    </p>
+                    <p>
+                        <strong>Teléfono:</strong><br>
+                        +52 871 151 5134
+                    </p>
+                    <p>
+                        <strong>Email:</strong><br>
+                        <a href="mailto:sebas@gmail.com" style="text-decoration: none; color: #6a4d1b;">
+                            sebas@gmail.com
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
         </section>
+
 
         <section id="imagenes">
             @include('startblades.owlimages')
