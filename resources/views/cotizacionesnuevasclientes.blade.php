@@ -321,11 +321,18 @@ function submitQuote() {
     const endHour = (startHour + parseInt(duration)) % 24;
     const endTime = `${String(endHour).padStart(2, '0')}:${String(startMinute).padStart(2, '0')}`;
 
+    let endDate = selectedDate;
+    if (endHour < startHour) {
+        const selectedDateObj = new Date(selectedDate);
+        selectedDateObj.setDate(selectedDateObj.getDate() + 1);
+        endDate = selectedDateObj.toISOString().split('T')[0];
+    }
+
     const form = document.getElementById('quoteForm');
 
     form.appendChild(generarInputOculto('date', selectedDate));
     form.appendChild(generarInputOculto('start_time', `${selectedDate} ${startTime}`));
-    form.appendChild(generarInputOculto('end_time', `${selectedDate} ${endTime}`));
+    form.appendChild(generarInputOculto('end_time', `${endDate} ${endTime}`));
     form.appendChild(generarInputOculto('place_id', placeId));
     form.appendChild(generarInputOculto('guest_count', guestCount));
     form.appendChild(generarInputOculto('type_event', eventType === 'Otro' ? otherEventType : eventType));
