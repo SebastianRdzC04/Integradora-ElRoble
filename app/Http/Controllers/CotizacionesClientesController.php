@@ -10,6 +10,7 @@ use App\Models\ServiceCategory;
 use App\Models\Place;
 use App\Models\Package;
 use Carbon\Carbon;
+use App\Models\Event;
 
 class CotizacionesClientesController extends Controller
 {
@@ -420,11 +421,22 @@ class CotizacionesClientesController extends Controller
 
     public function historialClientes()
     {
+        $user_id = auth()->id();
+        
         $quotes = Quote::with(['place', 'services.serviceCategory'])
-                       ->where('user_id', auth()->id())
-                       ->paginate(10);
+                       ->where('user_id', $user_id)
+                       ->paginate(10, ['*'], 'quotes');
     
-        return view('historialclientes', ['quotes' => $quotes]);
+        $events = Event::whereHas('quote', function($query) use ($user_id) {
+            $query->where('user_id', $user_id);
+        })
+        ->with(['quote.services.serviceCategory', 'quote.place'])
+        ->paginate(10, ['*'], 'events');
+    
+        return view('historialclientes', [
+            'quotes' => $quotes,
+            'events' => $events
+        ]);
     }
 
     public function getCotizations(Request $request)

@@ -11,58 +11,12 @@
     <link rel="stylesheet" href="{{ asset('css/stylescotizacionesnuevas.css') }}">
     <style>
         /* Restablecer tamaños de fuente */
-.card-title {
-    font-size: var(--font-size-lg) !important;
-}
-
-.card-text {
-    font-size: var(--font-size-base) !important;
-}
-
-.day-header {
-    font-size: var(--font-size-base) !important;
-}
-
-.form-label {
-    font-size: var(--font-size-base) !important;
-}
-
-h4.card-title {
-    font-size: 1.5rem !important;
-}
-
-h5.card-title {
-    font-size: 1.25rem !important;
-}
-
-.service-card h5 {
-    font-size: 1.25rem !important;
-}
-
-.service-card p {
-    font-size: 0.9rem !important;
-}
-
-/* Mantener los media queries existentes pero con !important */
-@media (max-width: 1400px) {
-    .card-body h5 {
-        font-size: 1.5rem !important;
-    }
-    .card-body p {
-        font-size: 1.5rem !important;
-    }
-}
-
-.agrandado
-{
-    font-size: 1.5rem !important;
-}
 
     </style>
 </head>
 <body class="bg-light">
     
-    @include('layouts.navbar')
+    @include('layouts.navbar_new')
 
     <div style="margin-top: 100px !important;" class="container mt-4">
         @if(session('success'))

@@ -26,7 +26,7 @@ class PaymentController extends Controller
             $quote->status = 'pagada';
             $quote->save();
 
-            return redirect()->route('historial')->with('success', 'Pago realizado con éxito.');
+            return redirect()->route('historialclientes')->with('success', 'Pago realizado con éxito.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => $e->getMessage()]);
         }
