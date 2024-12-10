@@ -15,7 +15,7 @@ Iniciar Sesión
                     <div class="input-group">
                         <div class="form-floating mb-3" id="passwordField" style="display:true;">
                             <input type="password" name="password" id="password" class="form-control" required minlength="8" autocomplete="new-password">
-                            <label for="password">Crea una Contraseña</label>
+                            <label for="password">Escribe tu contraseña</label>
                         </div>
                         <button class="input-group-text mb-3" type="button" id="butoneye">
                             <svg id="eyeclose" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -36,7 +36,7 @@ Iniciar Sesión
                         <p for="remember">Recuerdame</p>
                     </div>
 
-                    <a href="{{route('password.request')}}">¿Olvidate la contraseña?</a>
+                    <a href="{{route('password.request')}}">¿Olvidaste la contraseña?</a>
 
                     <div class="d-grid mb-3">
                         <button type="submit" class="btn" style="background-color: #af6400b3;">Iniciar Sesion</button>

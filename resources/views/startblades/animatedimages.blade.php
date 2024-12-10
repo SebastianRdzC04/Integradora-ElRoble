@@ -75,24 +75,24 @@
 <div class="custom-carousel" style="mask-image: linear-gradient(to bottom, #000000 91%, #91ef0400);">
     <div class="custom-carousel__container">
         <div class="custom-carousel__item">
-            <img class="custom-carousel__image" src="{{asset('images/imagen1.jpg')}}" alt="Imagen 1">
-            <div class="custom-carousel__text">Texto para la imagen 1</div>
+            <img class="custom-carousel__image" src="https://res.cloudinary.com/dz54y8mub/image/upload/v1733828425/places/b1od7ybjf5temfdbhkqt.jpg" alt="Imagen 1">
+            <div class="custom-carousel__text">El lugar perfecto para tus momentos inolvidables.</div>
         </div>
         <div class="custom-carousel__item">
-            <img class="custom-carousel__image" src="{{asset('images/imagen2.jpg')}}" alt="Imagen 2">
-            <div class="custom-carousel__text">Texto para la imagen 2</div>
+            <img class="custom-carousel__image" src="https://res.cloudinary.com/dz54y8mub/image/upload/v1733828434/places/hfy9zdpnn1s0w1krimuq.jpg" alt="Imagen 2">
+            <div class="custom-carousel__text">Donde tus sueños se convierten en eventos reales.</div>
         </div>
         <div class="custom-carousel__item">
-            <img class="custom-carousel__image" src="{{asset('images/imagen3.jpg')}}" alt="Imagen 3">
-            <div class="custom-carousel__text">Texto para la imagen 3</div>
+            <img class="custom-carousel__image" src="https://res.cloudinary.com/dz54y8mub/image/upload/v1733828433/places/rdmbovg1dd0ntokqpwc7.jpg" alt="Imagen 3">
+            <div class="custom-carousel__text">Espacios únicos para celebrar grandes historias.</div>
         </div>
         <div class="custom-carousel__item">
-            <img class="custom-carousel__image" src="{{asset('images/imagen4.jpg')}}" alt="Imagen 4">
-            <div class="custom-carousel__text">Texto para la imagen 4</div>
+            <img class="custom-carousel__image" src="https://res.cloudinary.com/dz54y8mub/image/upload/v1733828433/places/hxojhq1rxocchrmnmzuz.jpg" alt="Imagen 4">
+            <div class="custom-carousel__text">Ambientes excepcionales que harán brillar tus celebraciones.</div>
         </div>
         <div class="custom-carousel__item">
-            <img class="custom-carousel__image" src="{{asset('images/imagen5.jpg')}}" alt="Imagen 5">
-            <div class="custom-carousel__text">Texto para la imagen 5</div>
+            <img class="custom-carousel__image" src="https://res.cloudinary.com/dz54y8mub/image/upload/v1733828421/places/xtzhltxnj51qciitxbnl.jpg" alt="Imagen 5">
+            <div class="custom-carousel__text">Tu evento, nuestra quinta, un recuerdo para siempre.</div>
         </div>
     </div>
     <ul class="custom-carousel__indicators">
