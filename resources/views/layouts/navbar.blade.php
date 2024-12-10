@@ -42,4 +42,3 @@
             document.getElementById('outlog').submit();
         })
     </script>
-    
