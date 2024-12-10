@@ -31,30 +31,32 @@ class LoginController extends Controller
             $isEmail = true;
         } else {
             $isEmail = false;
-        
-            $isPhone = preg_match('/^[0-9]{10}$/', $input);
-        
+
+            $isPhone = preg_match('/^[0-9]{10}$/', $input); 
+
             if (!$isPhone) {
                 return redirect()->back()->with('error', 'Por favor ingrese un correo electrónico o un número de teléfono válido.');
             }
         }
 
-        $userIsLoginWithPassword = User::where(function ($query) use ($input, $isEmail) {
-            if ($isEmail) {
-                $query->where('email', $input);
-            } else {
-                $query->where('phone', $input);
-            }
-        })->whereNull('password')->first();
+        if ($isEmail) {
+            $userIsLoginWithPassword = User::where('email', $input)
+                                           ->whereNull('password')
+                                           ->first();
+        } else {
+            $userIsLoginWithPassword = User::where('phone', $input)
+                                           ->whereNull('password')
+                                           ->first();
+        }
 
         if ($userIsLoginWithPassword) {
-            $authProvider = $userIsLoginWithPassword->external_auth ?? 'Desconocido';
-        
+            $authProvider = $userIsLoginWithPassword->external_auth ?? 'Desconocido'; 
+
             return redirect()->back()->with('error', "Este correo o teléfono solo está disponible para iniciar sesión con $authProvider.");
         }
 
+        return view('pages.sesion.passwordlogin', compact('input'));
     }
-
 
 
     public function store(LoginRequest $request): RedirectResponse
