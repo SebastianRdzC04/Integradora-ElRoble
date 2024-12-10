@@ -896,6 +896,81 @@ Route::post('dashboard/package/delete/{id}', function ($id){
     return redirect()->back()->with('error', 'No se encontro banda');
 })->name('dashboard.package.delete');
 
+Route::get('dashboard/places', function () {
+    $places = Place::all();
+    return view('pages.dashboard.places', compact('places'));
+})->name('dashboard.places');
+
+Route::post('dashboard/place/edit/{id}', function ($id, Request $request) {
+    $place = Place::find($id);
+    $request->validate([
+        'nombre' => 'required|string',
+        'descripcion' => 'required|string',
+        'afore' => 'required|integer|min:0',
+    ]);
+    $place->name = $request->nombre;
+    $place->description = $request->descripcion;
+    $place->max_guest = $request->afore;
+    $place->save();
+    return redirect()->back()->with('success', 'El lugar ha sido actualizado correctamente');
+})->name('dashboard.place.edit');
+
+Route::post('dashboard/place/edit/image/{id}', function ($id, Request $request) {
+    $place = Place::findOrFail($id);
+    
+    $request->validate([
+        'croppedImage' => [
+            'required',
+            'string',
+            function ($attribute, $value, $fail) {
+                if (!preg_match('/^data:image\/[a-zA-Z]+;base64,/', $value)) {
+                    $fail('El formato de la imagen no es válido.');
+                }
+            },
+        ]
+    ]);
+
+    try {
+        $imagenCortada = $request->input('croppedImage');
+        
+        // Decodificar y limpiar la imagen base64
+        $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $imagenCortada));
+        
+        if ($image === false) {
+            return redirect()->back()->with('error', 'Error al procesar la imagen');
+        }
+
+        // Crear archivo temporal
+        $tempFilePath = tempnam(sys_get_temp_dir(), 'upload');
+        if (file_put_contents($tempFilePath, $image) === false) {
+            return redirect()->back()->with('error', 'Error al guardar la imagen temporalmente');
+        }
+
+        // Subir a Cloudinary
+        $uploadedFile = Cloudinary::upload($tempFilePath, [
+            'folder' => 'places',
+            'quality' => 'auto',
+            'fetch_format' => 'auto',
+        ]);
+
+        // Actualizar la URL en la base de datos
+        $place->image_path = $uploadedFile->getSecurePath();
+        $place->save();
+
+        // Eliminar archivo temporal
+        unlink($tempFilePath);
+
+        return redirect()->back()->with('success', 'La imagen ha sido actualizada correctamente');
+
+    } catch (\Exception $e) {
+        // Si existe el archivo temporal, eliminarlo
+        if (isset($tempFilePath) && file_exists($tempFilePath)) {
+            unlink($tempFilePath);
+        }
+        
+        return redirect()->back()->with('error', 'Error al procesar la imagen: ' . $e->getMessage());
+    }
+})->name('dashboard.place.edit.image');
 
 require __DIR__.'/routesjesus.php';
 

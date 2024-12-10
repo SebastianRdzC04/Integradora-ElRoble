@@ -316,6 +316,9 @@
                                 <li class="sidebar-item">
                                     <a href="{{ route('dashboard.services') }}" class="sidebar-link">Servicios</a>
                                 </li>
+                                <li class="sidebar-item">
+                                    <a href="{{ route('dashboard.places') }}" class="sidebar-link">Lugares</a>
+                                </li>
 
                             </ul>
                         </li>
