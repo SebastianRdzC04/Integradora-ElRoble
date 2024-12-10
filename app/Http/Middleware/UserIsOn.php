@@ -16,7 +16,7 @@ class UserIsOn
      */
     public function handle(Request $request, Closure $next)
     {
-        if (auth()->user()->is_on == 0) {
+        if (!auth()->user()->is_on == 1) {
             return redirect()->route('bloqueado');
         }
         return $next($request);

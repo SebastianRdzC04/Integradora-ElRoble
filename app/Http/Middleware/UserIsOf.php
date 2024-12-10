@@ -16,9 +16,9 @@ class UserIsOf
      */
     public function handle(Request $request, Closure $next)
     {
-        if (auth()->user()->is_On == 1) {
-            return redirect()->route('inicio');
+        if (auth()->check() && auth()->user()->is_On == 1) {
+            return $next($request);
         }
-        return $next($request);
+        return redirect()->route('bloqueado');
     }
 }
