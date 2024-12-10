@@ -7,6 +7,9 @@
 @endsection
 
 @section('content')
+<aside>
+    <a href="{{route('dashboard.packages')}}" class="btn btn-primary">Ver Paquetes</a>
+</aside>
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-8">

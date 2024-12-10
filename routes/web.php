@@ -104,11 +104,27 @@ Route::middleware(['auth' ,'admin'])->group(function () {
     })->name('dashboard.event.now');
 
     Route::get('dashboard/packages', function () {
-        $packages = Package::all();
-        $places = Place::all();
-        $services = Service::all();
-        return view('pages.dashboard.packages', compact('packages', 'places', 'services'));
-    })->name('dashboard.packages');
+    // Obtener la fecha actual con Carbon y establecer la hora al inicio del día
+    $currentDate = Carbon::now()->startOfDay();
+
+    // Obtener todos los paquetes y actualizar su estado
+    $packages = Package::all();
+    foreach ($packages as $package) {
+        $startDate = Carbon::parse($package->start_date)->startOfDay();
+        $endDate = Carbon::parse($package->end_date)->endOfDay();
+
+        if ($currentDate->between($startDate, $endDate)) {
+            $package->is_active = true;
+        } else {
+            $package->is_active = false;
+        }
+        $package->save();
+    }
+
+    $places = Place::all();
+    $services = Service::all();
+    return view('pages.dashboard.packages', compact('packages', 'places', 'services'));
+})->name('dashboard.packages');
 
     Route::get('dashboard/services', function () {
         $services = Service::all();
@@ -870,6 +886,15 @@ Route::post('dashboard/package/{id}/add/service', function($id, Request $request
 
     return redirect()->back()->with('error', 'El paquete o servicio no se ha encontrado');
 })->name('dashboard.package.add.service');
+
+Route::post('dashboard/package/delete/{id}', function ($id){
+    $package = Package::find($id);
+    if ($package){
+        $package->delete();
+        return redirect()->back()->with('success', 'si se elimino banda');
+    }
+    return redirect()->back()->with('error', 'No se encontro banda');
+})->name('dashboard.package.delete');
 
 
 require __DIR__.'/routesjesus.php';
