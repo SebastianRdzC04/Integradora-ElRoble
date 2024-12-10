@@ -9,7 +9,13 @@
 @section('title', 'Quotes')
 
 @section('content')
-
+<div class="d-flex justify-content-end mb-3">
+    @if(auth()->user() && auth()->user()->roles->contains('id', 1))
+        <a href="{{ route('cotizaciones.nuevaAdmin') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Nueva Cotización
+        </a>
+    @endif
+</div>
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-12">
