@@ -50,18 +50,74 @@
                                     </td>
                                     <td>
                                         <div>
-                                            <select class="form-select" name="" id="">
+                                            <select class="form-select alv" name="" id="">
                                                 <option value="">Selecciona una opcion</option>
                                                 <option data-bs-toggle="modal"
                                                     data-bs-target="#editarPack{{ $package->id }}" value="1">Editar
                                                 </option>
                                                 <option data-bs-toggle="modal" data-bs-target="#modal{{ $package->id }}"
                                                     value="2">Ver servicios</option>
+                                                <option data-bs-toggle="modal"
+                                                    data-bs-target="#agregarServicio{{ $package->id }}" value="">
+                                                    Agregar Servicio</option>
                                                 <option value="">Cambiar estado</option>
                                                 <option data-bs-toggle="modal"
                                                     data-bs-target="#eliminarPack{{ $package->id }}" value="">
                                                     Eliminar</option>
                                             </select>
+
+                                            <div class="modal fade" id="agregarServicio{{ $package->id }}">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form
+                                                                action="{{ route('dashboard.package.add.service', $package->id) }}"
+                                                                method="POST">
+                                                                @csrf
+                                                                <div class="mb-3">
+                                                                    <label for="servicio">Servicio</label>
+                                                                    <select name="servicio" class="form-select"
+                                                                        id="">
+                                                                        <option value="">Selecciona un Servico
+                                                                        </option>
+                                                                        @foreach ($services as $service)
+                                                                            @if (!$package->services->contains($service->id))
+                                                                                <option value="{{ $service->id }}">
+                                                                                    {{ $service->name }}</option>
+                                                                            @endif
+                                                                        @endforeach
+                                                                    </select>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="cantidad">Cantidad</label>
+                                                                    <input type="number" class="form-control"
+                                                                        name="cantidad">
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="precio">Precio</label>
+                                                                    <input type="number" class="form-control"
+                                                                        name="precio">
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="costo">Costo</label>
+                                                                    <input type="number" class="form-control"
+                                                                        name="costo">
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label for="descripcion">Descripcion</label>
+                                                                    <textarea name="descripcion" id="" cols="30" rows="7" class="form-control"></textarea>
+                                                                </div>
+                                                                <div class="mb-3 d-flex justify-content-end">
+                                                                    <button class="btn btn-primary">Enviar</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
 
                                             <div class="modal fade" id="eliminarPack{{ $package->id }}">
                                                 <div class="modal-dialog">
@@ -107,18 +163,21 @@
                                                                         name="nombre" value="{{ $package->name }}">
                                                                 </div>
                                                                 <div class="mb-3">
-                                                                    <label for="precio" class="form-label">Precio</label>
+                                                                    <label for="precio"
+                                                                        class="form-label">Precio</label>
                                                                     <input type="number" class="form-control"
                                                                         name="precio" value="{{ $package->price }}">
                                                                 </div>
                                                                 <div class="mb-3">
                                                                     <label for="afore">Maximo de Personas</label>
                                                                     <input type="number" class="form-control"
-                                                                        name="afore" value="{{ $package->max_people }}">
+                                                                        name="afore"
+                                                                        value="{{ $package->max_people }}">
                                                                 </div>
                                                                 <div class="mb-3 d-flex">
                                                                     <div class="col-6">
-                                                                        <label for="fechaInicio" class="form-label">Fecha de
+                                                                        <label for="fechaInicio" class="form-label">Fecha
+                                                                            de
                                                                             Inicio</label>
                                                                         <input type="date" class="form-control"
                                                                             name="fechaInicio"
@@ -149,7 +208,7 @@
                                             <!-- Modal Structure -->
                                             <div class="modal fade" id="modal{{ $package->id }}" tabindex="-1"
                                                 aria-labelledby="modalLabel{{ $package->id }}" aria-hidden="true">
-                                                <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                <div class="modal-dialog modal-xl">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title" id="modalLabel{{ $package->id }}">
@@ -164,6 +223,7 @@
                                                                         <th>Nombre</th>
                                                                         <th>Descripcion</th>
                                                                         <th>Cantidad</th>
+                                                                        <th>Precio</th>
                                                                         <th>Costo</th>
                                                                         <th>Detalles</th>
                                                                         <th>Acciones</th>
@@ -175,17 +235,22 @@
                                                                             <td> {{ $service->name }} </td>
                                                                             <td> {{ $service->description }} </td>
                                                                             <td> {{ $service->pivot->quantity }} </td>
-                                                                            <td> {{ $service->pivot->price }} </td>
+                                                                            <td>{{$service->pivot->price}}</td>
+                                                                            <td> {{ $service->pivot->coast }} </td>
                                                                             <td> {{ $service->pivot->description }}
                                                                             </td>
                                                                             <td>
                                                                                 <div>
-                                                                                    <a class="btn btn-outline-primary p-1 m-0"
-                                                                                        href=""><i
-                                                                                            class="bi bi-pencil-square"></i></a>
-                                                                                    <a class="btn btn-outline-danger p-1 m-0"
-                                                                                        href=""><i
-                                                                                            class="bi bi-trash3"></i></a>
+                                                                                    <select name="" id=""
+                                                                                        class="form-select">
+                                                                                        <option value="">Selecciona
+                                                                                            una
+                                                                                            opcion</option>
+                                                                                        <option value="editar">Editar
+                                                                                        </option>
+                                                                                        <option value="eliminar">Eliminar
+                                                                                        </option>
+                                                                                    </select>
                                                                                 </div>
                                                                             </td>
                                                                         </tr>
@@ -212,7 +277,7 @@
 @section('scripts')
 
     <script>
-        const selects = document.querySelectorAll('.form-select');
+        const selects = document.querySelectorAll('.alv');
 
         selects.forEach(select => {
             select.addEventListener('change', function() {

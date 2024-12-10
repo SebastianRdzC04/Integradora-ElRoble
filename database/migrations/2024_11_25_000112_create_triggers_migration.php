@@ -229,9 +229,10 @@ return new class extends Migration
             AFTER INSERT ON packages_services
             FOR EACH ROW
             BEGIN
-                INSERT INTO packages_images (package_id, image_path, created_at, updated_at)
+                INSERT INTO packages_images (package_id, service_id, image_path, created_at, updated_at)
                 SELECT 
                     NEW.package_id,
+                    NEW.service_id,
                     services.image_path,
                     NOW(),
                     NOW()
@@ -256,6 +257,16 @@ return new class extends Migration
                 END IF;
             END
         ');
+        DB::unprepared('
+            CREATE TRIGGER delete_package_images_after_service_delete
+            AFTER DELETE ON packages_services
+            FOR EACH ROW
+            BEGIN
+                DELETE FROM packages_images
+                WHERE package_id = OLD.package_id AND service_id = OLD.service_id;
+            END
+        ');
+        
     }
     public function down()
     {
@@ -276,5 +287,7 @@ return new class extends Migration
         DB::unprepared('DROP TRIGGER IF EXISTS create_package_images');
         DB::unprepared('DROP TRIGGER IF EXISTS create_package_service_images');
         DB::unprepared('DROP TRIGGER IF EXISTS calculate_event_duration');
+        DB::unprepared('DROP TRIGGER IF EXISTS delete_package_images_after_service_delete');
+
     }
 };

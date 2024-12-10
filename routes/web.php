@@ -105,7 +105,8 @@ Route::middleware(['auth' ,'admin'])->group(function () {
     Route::get('dashboard/packages', function () {
         $packages = Package::all();
         $places = Place::all();
-        return view('pages.dashboard.packages', compact('packages', 'places'));
+        $services = Service::all();
+        return view('pages.dashboard.packages', compact('packages', 'places', 'services'));
     })->name('dashboard.packages');
 
     Route::get('dashboard/services', function () {
@@ -816,6 +817,47 @@ Route::post('dashboard/package/edit/{id}', function($id, Request $request) {
     $package->save();
     return redirect()->back()->with('success', 'El paquete ha sido actualizado correctamente');
 })->name('dashboard.edit.package');
+
+
+Route::post('dashboard/package/{id}/add/service', function($id, Request $request) {
+    $package = Package::find($id);
+    
+    $request->validate([
+        'servicio' => 'required|integer|exists:services,id',
+    ]);
+
+    $service = Service::find($request->servicio);
+
+    $request->validate([
+        'cantidad' => [
+            'required',
+            'integer',
+            'min:0',
+            'max:150', // Validar que la cantidad sea como máximo 150
+        ],
+        'precio' => [
+            'required',
+            'numeric',
+        ],
+        'costo' => [
+            'required',
+            'numeric',
+            function ($attribute, $value, $fail) use ($service) {
+                if ($value > $service->price) {
+                    $fail("El costo no puede ser mayor al precio del servicio ({$service->price})");
+                }
+            }
+        ],
+        'descripcion' => 'required|string',
+    ]);
+
+    if ($package && $service) {
+        $package->services()->attach($service->id, ['quantity' => $request->cantidad, 'coast' => $request->costo, 'description' => $request->descripcion, 'price' => $request->precio]);
+        return redirect()->back()->with('success', 'El servicio ha sido agregado al paquete');
+    }
+
+    return redirect()->back()->with('error', 'El paquete o servicio no se ha encontrado');
+})->name('dashboard.package.add.service');
 
 
 require __DIR__.'/routesjesus.php';

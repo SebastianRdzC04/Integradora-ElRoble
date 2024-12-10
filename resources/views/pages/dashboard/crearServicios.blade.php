@@ -9,6 +9,10 @@
 @endsection
 
 @section('content')
+    <aside>
+        <a class="btn btn-primary" href="{{ route('dashboard.services') }}">Ir a Servicios</a>
+
+    </aside>
     <div class="container">
         <div class="modal fade" id="agregarCategoriaModal">
             <div class="modal-dialog">
@@ -32,7 +36,7 @@
         <div class="row justify-content-center">
             <div class="col-7">
                 <div class="form">
-                    <form action="{{route('dashboard.create.service')}}" method="POST">
+                    <form action="{{ route('dashboard.create.service') }}" method="POST">
                         @csrf
                         <div class="mb-3 d-flex">
                             <div class="col-8">
@@ -83,7 +87,7 @@
                         </div>
                         <div class="mb-3 d-flex justify-content-end">
                             <button class="btn btn-primary">Enviar</button>
-                        </div> 
+                        </div>
                     </form>
                 </div>
             </div>
@@ -136,7 +140,7 @@
                     }
 
                     cropper = new Cropper(preview, {
-                        aspectRatio: 4/3, // 1:1 ratio
+                        aspectRatio: 4 / 3, // 1:1 ratio
                         viewMode: 2,
                         dragMode: 'move',
                         autoCropArea: 1,
