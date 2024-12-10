@@ -202,7 +202,7 @@ class RegisterUserController extends Controller
 
     if ($userExist) {
         Auth::login($userExist);
-        session()->forget('user');
+        session()->forget('facebook');
         return redirect()->intended(RouteServiceProvider::HOME);
     } else {
         DB::transaction(function () use ($user, $validatedData) {
@@ -229,7 +229,7 @@ class RegisterUserController extends Controller
             }
 
             Auth::login($userNew);
-            session()->forget('user');
+            session()->forget('facebook');
         });
     }
 

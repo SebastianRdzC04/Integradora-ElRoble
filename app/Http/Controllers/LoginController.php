@@ -154,7 +154,7 @@ class LoginController extends Controller
 
 public function createdatacompletefacebook()
 {
-    $user = session('user');
+    $user = session('facebook');
     return view('pages.sesion.facebook.datacomplete', compact('user'));
 }
 
