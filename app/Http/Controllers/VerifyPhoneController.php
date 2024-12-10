@@ -35,7 +35,6 @@ class VerifyPhoneController extends Controller
             $phoneWithOutPrefix = $user->person->phone;
 
             $phone = '+52' . $phoneWithOutPrefix;   
-            dd($phone);
 
         } else {
         
