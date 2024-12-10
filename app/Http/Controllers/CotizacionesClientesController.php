@@ -208,8 +208,6 @@ class CotizacionesClientesController extends Controller
                     ])
                     ->withInput();
             }
-    
-            DD($request->all());
 
             // Validaciones
             $validated = $request->validate([
@@ -320,8 +318,6 @@ class CotizacionesClientesController extends Controller
         } else {
             $request->merge(['type_event' => (string) $request->input('type_event')]);
         }
-    
-        DD($request->all());
         
         $validated = $request->validate([
             'user_id' => 'nullable|exists:users,id',

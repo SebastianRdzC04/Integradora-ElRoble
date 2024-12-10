@@ -756,7 +756,7 @@ function showServicesModal(categoryId) {
                     <p class="card-text">${service.description}</p>
                     <p class="card-text"><strong> Precio: <i class="fas fa-dollar-sign"></i> ${service.price}</strong></p>
                     <p class="card-text"> Costo: <i class="fas fa-dollar-sign"></i> ${service.coast}</p>
-                    ${service.people_count > 0 ? `<p class="card-text"><i class="fas fa-users"></i> ${service.people_count} personas</p>` : ''}
+                    ${service.people_quantity > 0 ? `<p class="card-text"><i class="fas fa-users"></i> ${service.people_quantity} personas</p>` : ''}
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="${service.id}" 
                             id="service${service.id}" 
