@@ -17,7 +17,7 @@
         <div class="row justify-content-center">
             <div class="col-12">
                 <div class="table-responsive">
-                    <table class="table mb-0 shadow" id="servicios-table">
+                    <table class="table mb-0 shadow table-striped" id="servicios-table">
                         <thead>
                             <tr>
                                 <th class="text-center">Nombre</th>

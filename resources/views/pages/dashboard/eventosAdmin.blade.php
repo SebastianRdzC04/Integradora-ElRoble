@@ -57,15 +57,16 @@
                                         <div class="modal-header">
                                             <h3>Terminar Evento</h3>
                                         </div>
-                                        <div class="modal-body">
-                                            <p>Estas seguro de terminar el evento?</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <form action="{{ route('dashboard.end.event', $event->id) }}" method="POST">
+                                        <form action="{{ route('dashboard.end.event', $event->id) }}" method="POST">
+                                            <div class="modal-body">
+                                                <p>Seguro de Terminar el evento?</p>
+
+                                            </div>
+                                            <div class="modal-footer">
                                                 @csrf
                                                 <button class="btn btn-primary">Terminar</button>
-                                            </form>
-                                        </div>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
@@ -501,7 +502,32 @@
                     </div>
                     <div>
                         <p>Precio del evento: ${{ $event->total_price }} </p>
-                        <p>Anticipo: ${{ $event->advance_payment }} </p>
+                        <p>Pagado: ${{ $event->advance_payment }}
+                            @if ($event->status == 'Pendiente' || $event->status == 'En espera' || $event->status == 'En proceso')
+                                <a data-bs-toggle="modal" data-bs-target="#pagos" class="btn btn-success btn-sm">
+                                    <i class="bi bi-pencil-fill text-white"></i>
+                                </a>
+                            @endif
+                        </p>
+                        <div class="modal fade" id="pagos">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4>Ingresar Monto</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="{{ route('dashboard.event.update.payment', $event->id) }}" method="POST">
+                                            @csrf
+                                            <div class="mb-3">
+                                                <label for="monto" class="form-label">Monto</label>
+                                                <input type="number" class="form-control" id="monto" name="monto">
+                                            </div>
+                                            <button type="submit" class="btn btn-primary">Guardar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         @if ($event->status != 'Finalizado')
                             <p>Monto Faltante: ${{ $event->remaining_payment }} </p>
                             <p>Precio por hora extra:
@@ -513,6 +539,32 @@
                                     </button>
                                 @endif
                             </p>
+                            @if ($event->status == 'En proceso')
+                                <p>Horas extras: {{ $event->extra_hours ? $event->extra_hours : '0' }}hrs <a
+                                        data-bs-toggle="modal" data-bs-target="#horasExtras"
+                                        class="btn btn-success btn-sm">
+                                        <i class="bi bi-pencil-fill text-white"></i>
+                                    </a> </p>
+                            @endif
+                            <div class="modal fade" id="horasExtras">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4>Agregar Horas extra</h4>
+                                        </div>
+                                        <form action="{{ route('dashboard.event.extra.hour', $event->id) }}"
+                                            method="POST">
+                                            @csrf
+                                            <div class="modal-body">
+                                                <p>Seguro de agregar una hora extra?</p>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-primary">Confirmar</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="modal fade" id="horarioModal">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -528,10 +580,9 @@
                                                     <select name="horaInicio" class="form-select" id="">
                                                         @for ($i = 11; $i < 21; $i++)
                                                             @php
-                                                                $time = Carbon::createFromFormat(
-                                                                    'H',
-                                                                    $i,
-                                                                )->format('h:i A');
+                                                                $time = Carbon::createFromFormat('H', $i)->format(
+                                                                    'h:i A',
+                                                                );
                                                             @endphp
                                                             <option value="{{ $time }}"
                                                                 {{ Carbon::parse($event->estimated_start_time)->format('h:i A') == $time ? 'selected' : '' }}>

@@ -23,6 +23,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
             $table->boolean('is_active')->default(true);
+            $table->string('image_path', 255)->default('https://res.cloudinary.com/ddclkt7n4/image/upload/v1733839700/avatars/ezgvd2gife0mflndf9hw.jpg');
             $table->timestamps();
         });
     }

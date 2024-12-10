@@ -266,6 +266,27 @@ return new class extends Migration
                 WHERE package_id = OLD.package_id AND service_id = OLD.service_id;
             END
         ');
+        DB::unprepared('
+            CREATE TRIGGER update_remaining_payment_after_advance_payment_update
+            BEFORE UPDATE ON events
+            FOR EACH ROW
+            BEGIN
+                IF NEW.advance_payment != OLD.advance_payment THEN
+                    SET NEW.remaining_payment = NEW.total_price - NEW.advance_payment;
+                END IF;
+            END
+        ');
+
+        DB::unprepared('
+            CREATE TRIGGER update_remaining_payment_after_total_price_update
+            BEFORE UPDATE ON events
+            FOR EACH ROW
+            BEGIN
+                IF NEW.total_price != OLD.total_price THEN
+                    SET NEW.remaining_payment = NEW.total_price - NEW.advance_payment;
+                END IF;
+            END
+        ');
         
     }
     public function down()
@@ -288,6 +309,8 @@ return new class extends Migration
         DB::unprepared('DROP TRIGGER IF EXISTS create_package_service_images');
         DB::unprepared('DROP TRIGGER IF EXISTS calculate_event_duration');
         DB::unprepared('DROP TRIGGER IF EXISTS delete_package_images_after_service_delete');
+        DB::unprepared('DROP TRIGGER IF EXISTS update_remaining_payment_after_advance_payment_update');
+        DB::unprepared('DROP TRIGGER IF EXISTS update_remaining_payment_after_total_price_update');
 
     }
 };
