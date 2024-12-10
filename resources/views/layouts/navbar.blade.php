@@ -16,11 +16,11 @@
                 </nav>
                 <div class="checando d-flex">
                     <a href="#" class="d-flex align-items-center justify-content-center p-3 link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://github.com/mdo.png" alt="mdo" width="40" height="40" class="rounded-circle">
+                        <img src="{{auth()->user()->avatar}}" alt="mdo" width="40" height="40" class="rounded-circle">
                     </a>
                     <ul class="dropdown-menu text-small shadow" style="background: rgb(0 0 0 / 60%);">
                         <li><a class="dropdown-item nav-item" href="#">Historial</a></li>
-                        @if (auth()->user()->roles->contains('id', 1))
+                        @if (auth()->user()->roles->contains('id', 2))
                         <li><a class="dropdown-item nav-item" href="{{route('dashboard')}}">Dashboard</a></li>
                         @endif
                         <li><a class="dropdown-item nav-item" href="#">Configuracion</a></li>
