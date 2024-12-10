@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('avatar')->default('https://res.cloudinary.com/ddclkt7n4/image/upload/v1733793457/unpsg410bmgyadi8edr8.jpg');
             $table->string('external_id')->nullable();
             $table->string('external_auth')->nullable();
+            $table->boolean('is_On')->default(true);
             $table->timestamps();
         });
 

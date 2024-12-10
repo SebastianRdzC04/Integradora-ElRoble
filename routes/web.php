@@ -1047,5 +1047,63 @@ Route::post('dashboard/event/{id}/edit/time', function ($id, Request $request) {
     }
 })->name('dashboard.event.edit.time');
 
+Route::get('bloqueado', function () {
+    return view('pages.dashboard.bloqueado');
+})->name('bloqueado')->middleware('isOf');
+
+Route::post('dashboard/change/status/user/{id}', function ($id) {
+    $user = User::find($id);
+
+    if ($user == auth()->user()) {
+        return redirect()->back()->with('error', 'No puedes bloquear tu propia cuenta');
+    }
+
+    if ($user->is_On) {
+        $user->is_On = false;
+        $user->save();
+        return redirect()->back()->with('success', 'El usuario ha sido bloqueado');
+    }
+    if (!$user->is_On) {
+        $user->is_On = true;
+        $user->save();
+        return redirect()->back()->with('success', 'El usuario ha sido desbloqueado');
+    }
+    return redirect()->back()->with('error', 'El usuario no se ha encontrado');
+})->name('dashboard.change.status.user');
+
+Route::post('dashboard/user/{id}/change/rol', function ($id, Request $request) {
+    $user = User::find($id);
+
+    if ($user == auth()->user()) {
+        return redirect()->back()->with('error', 'No puedes cambiar tu propio rol');
+    }
+
+    $request->validate([
+        'rol' => 'required|integer|max:3|min:1',
+    ]);
+
+    if ($request->rol == 1) {
+        $user->roles()->detach(2);
+        $user->roles()->detach(1);
+        $user->roles()->attach(1);
+        $user->roles()->attach(2);
+        return redirect()->back()->with('success', 'El rol del usuario ha sido cambiado a Super Administrador');
+    }
+    if ($request->rol == 2) {
+        $user->roles()->detach(1);
+        $user->roles()->detach(2);
+        $user->roles()->attach(2);
+        $user->roles()->detach(1);
+        return redirect()->back()->with('success', 'El rol del usuario ha sido cambiado a Administrador');
+    }
+    if ($request->rol == 3) {
+        $user->roles()->detach(1);
+        $user->roles()->detach(2);
+        return redirect()->back()->with('success', 'Se han eliminado los permisos del usuario');
+    }
+    return redirect()->back()->with('error', 'El usuario no se ha encontrado');
+
+})->name('dashboard.user.change.rol');
+
 require __DIR__.'/routesjesus.php';
 

@@ -244,6 +244,18 @@
         </script>
     @endif
 
+    @if (session('success'))
+        <script>
+            toastr.success('{{ session('success') }}');
+        </script>
+    @endif
+
+    @if ($errors->any())
+        <script>
+            toastr.error('Hay errores en el formulario');
+        </script>
+    @endif
+
     <script>
         const selects = document.querySelectorAll('.form-select');
 
