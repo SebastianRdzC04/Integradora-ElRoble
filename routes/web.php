@@ -28,6 +28,8 @@ use App\Models\ConsumableEventDefault;
 use App\Models\User;
 use App\Http\Controllers\PaymentController;
 use App\Models\ServiceCategory;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -734,6 +736,9 @@ Route::post('dashboard/service/edit/{id}', function($id, Request $request){
 })->name('dashboard.service.edit');
 
 Route::post('dashboard/create/service', function(Request $request){
+    $imagenCortada = $request->input('croppedImage');
+
+    // Validar los datos del formulario
     $request->validate([
         'categoria' => 'required|string|exists:service_categories,name',
         'nombre' => 'required|string',
@@ -741,8 +746,20 @@ Route::post('dashboard/create/service', function(Request $request){
         'precio' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
         'costo' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/', 
         'afore' => 'required|integer|max:100',
+        'croppedImage' => 'required|string', // Validar que la imagen recortada esté presente
     ]);
-    $imagenCortada = $request->input('cropped_image');
+
+    $imagePath = null;
+    if ($imagenCortada) {
+        $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $imagenCortada));
+        $tempFilePath = tempnam(sys_get_temp_dir(), 'upload');
+        file_put_contents($tempFilePath, $image);
+
+        $uploadedFileUrl = Cloudinary::upload($tempFilePath)->getSecurePath();
+        $imagePath = $uploadedFileUrl;
+    }
+
+    // Crear el nuevo servicio
     $service = new Service();
     $service->service_category_id = ServiceCategory::where('name', $request->categoria)->first()->id;
     $service->name = $request->nombre;
@@ -750,7 +767,9 @@ Route::post('dashboard/create/service', function(Request $request){
     $service->price = $request->precio;
     $service->coast = $request->costo;
     $service->people_quantity = $request->afore;
+    $service->image_path = $imagePath; // Guardar la URL de la imagen en la base de datos
     $service->save();
+
     return redirect()->back()->with('success', 'El servicio ha sido creado correctamente');
 })->name('dashboard.create.service');
 

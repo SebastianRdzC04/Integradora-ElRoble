@@ -81,6 +81,9 @@
                             <label for="imagen">Sube la Imagen del servicio aqui</label>
                             <input type="file" class="form-control" id="imageInput" name="imagen" accept="image/*">
                         </div>
+                        <div class="mb-3 d-flex justify-content-end">
+                            <button class="btn btn-primary">Enviar</button>
+                        </div> 
                     </form>
                 </div>
             </div>
