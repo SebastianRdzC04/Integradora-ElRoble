@@ -60,7 +60,6 @@
                                                 <option data-bs-toggle="modal"
                                                     data-bs-target="#agregarServicio{{ $package->id }}" value="">
                                                     Agregar Servicio</option>
-                                                <option value="">Cambiar estado</option>
                                                 <option data-bs-toggle="modal"
                                                     data-bs-target="#eliminarPack{{ $package->id }}" value="">
                                                     Eliminar</option>
@@ -129,7 +128,10 @@
                                                             <p>Seguro de eliminar el paquete?</p>
                                                         </div>
                                                         <div class="modal-footer">
-                                                            <button class="btn btn-danger">Eliminar</button>
+                                                            <form action="{{route('dashboard.package.delete', $package->id)}}" method="POST">
+                                                                @csrf
+                                                                <button class="btn btn-danger">Eliminar</button>
+                                                            </form>
                                                         </div>
                                                     </div>
                                                 </div>

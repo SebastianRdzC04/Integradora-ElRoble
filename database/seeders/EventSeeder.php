@@ -70,7 +70,8 @@ class EventSeeder extends Seeder
                 'advance_payment' => $advance,
                 'remaining_payment' => $remaining,
                 'extra_hours' => null,
-                'extra_hour_price' => $faker->randomFloat(2, 500, 1000),
+                //cambia el extra hour a numeros enteros
+                'extra_hour_price' => round($total_price * 0.10),
                 'created_at' => now(),
                 'updated_at' => now()
             ]);

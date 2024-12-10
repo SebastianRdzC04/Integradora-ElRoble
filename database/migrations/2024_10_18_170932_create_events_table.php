@@ -27,11 +27,11 @@ return new class extends Migration
             $table->integer('chair_count')->default(0);
             $table->integer('table_count')->default(0);
             $table->integer('table_cloth_count')->default(0);
-            $table->decimal('total_price', 10, 2);
-            $table->decimal('advance_payment', 10, 2);
-            $table->decimal('remaining_payment', 10, 2);
+            $table->integer('total_price');
+            $table->integer('advance_payment');
+            $table->integer('remaining_payment');
             $table->integer('extra_hours')->nullable();
-            $table->decimal('extra_hour_price', 10, 2)->nullable();
+            $table->integer('extra_hour_price')->nullable();
             $table->timestamps();
         });
     }

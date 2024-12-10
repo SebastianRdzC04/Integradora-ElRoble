@@ -104,11 +104,27 @@ Route::middleware(['auth' ,'admin'])->group(function () {
     })->name('dashboard.event.now');
 
     Route::get('dashboard/packages', function () {
-        $packages = Package::all();
-        $places = Place::all();
-        $services = Service::all();
-        return view('pages.dashboard.packages', compact('packages', 'places', 'services'));
-    })->name('dashboard.packages');
+    // Obtener la fecha actual con Carbon y establecer la hora al inicio del día
+    $currentDate = Carbon::now()->startOfDay();
+
+    // Obtener todos los paquetes y actualizar su estado
+    $packages = Package::all();
+    foreach ($packages as $package) {
+        $startDate = Carbon::parse($package->start_date)->startOfDay();
+        $endDate = Carbon::parse($package->end_date)->endOfDay();
+
+        if ($currentDate->between($startDate, $endDate)) {
+            $package->is_active = true;
+        } else {
+            $package->is_active = false;
+        }
+        $package->save();
+    }
+
+    $places = Place::all();
+    $services = Service::all();
+    return view('pages.dashboard.packages', compact('packages', 'places', 'services'));
+})->name('dashboard.packages');
 
     Route::get('dashboard/services', function () {
         $services = Service::all();
@@ -850,6 +866,7 @@ Route::post('dashboard/package/{id}/add/service', function($id, Request $request
         'precio' => [
             'required',
             'numeric',
+            'min:0',
         ],
         'costo' => [
             'required',
@@ -871,6 +888,155 @@ Route::post('dashboard/package/{id}/add/service', function($id, Request $request
     return redirect()->back()->with('error', 'El paquete o servicio no se ha encontrado');
 })->name('dashboard.package.add.service');
 
+Route::post('dashboard/package/delete/{id}', function ($id){
+    $package = Package::find($id);
+    if ($package){
+        $package->delete();
+        return redirect()->back()->with('success', 'si se elimino banda');
+    }
+    return redirect()->back()->with('error', 'No se encontro banda');
+})->name('dashboard.package.delete');
+
+Route::get('dashboard/places', function () {
+    $places = Place::all();
+    return view('pages.dashboard.places', compact('places'));
+})->name('dashboard.places');
+
+Route::post('dashboard/place/edit/{id}', function ($id, Request $request) {
+    $place = Place::find($id);
+    $request->validate([
+        'nombre' => 'required|string',
+        'descripcion' => 'required|string',
+        'afore' => 'required|integer|min:0',
+    ]);
+    $place->name = $request->nombre;
+    $place->description = $request->descripcion;
+    $place->max_guest = $request->afore;
+    $place->save();
+    return redirect()->back()->with('success', 'El lugar ha sido actualizado correctamente');
+})->name('dashboard.place.edit');
+
+Route::post('dashboard/place/edit/image/{id}', function ($id, Request $request) {
+    $place = Place::findOrFail($id);
+    
+    $request->validate([
+        'croppedImage' => [
+            'required',
+            'string',
+            function ($attribute, $value, $fail) {
+                if (!preg_match('/^data:image\/[a-zA-Z]+;base64,/', $value)) {
+                    $fail('El formato de la imagen no es válido.');
+                }
+            },
+        ]
+    ]);
+
+    try {
+        $imagenCortada = $request->input('croppedImage');
+        
+        // Decodificar y limpiar la imagen base64
+        $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $imagenCortada));
+        
+        if ($image === false) {
+            return redirect()->back()->with('error', 'Error al procesar la imagen');
+        }
+
+        // Crear archivo temporal
+        $tempFilePath = tempnam(sys_get_temp_dir(), 'upload');
+        if (file_put_contents($tempFilePath, $image) === false) {
+            return redirect()->back()->with('error', 'Error al guardar la imagen temporalmente');
+        }
+
+        // Subir a Cloudinary
+        $uploadedFile = Cloudinary::upload($tempFilePath, [
+            'folder' => 'places',
+            'quality' => 'auto',
+            'fetch_format' => 'auto',
+        ]);
+
+        // Actualizar la URL en la base de datos
+        $place->image_path = $uploadedFile->getSecurePath();
+        $place->save();
+
+        // Eliminar archivo temporal
+        unlink($tempFilePath);
+
+        return redirect()->back()->with('success', 'La imagen ha sido actualizada correctamente');
+
+    } catch (\Exception $e) {
+        // Si existe el archivo temporal, eliminarlo
+        if (isset($tempFilePath) && file_exists($tempFilePath)) {
+            unlink($tempFilePath);
+        }
+        
+        return redirect()->back()->with('error', 'Error al procesar la imagen: ' . $e->getMessage());
+    }
+})->name('dashboard.place.edit.image');
+
+Route::post('dashboard/event/edit/date/{id}', function ($id, Request $request) {
+    $event = Event::find($id);
+    
+    // Validación básica
+    $request->validate([
+        'fecha' => 'required|date',
+    ]);
+
+    try {
+        $existingEvent = Event::where('date', $request->fecha)
+            ->where('id', '!=', $id)
+            ->where('status', '!=', 'Cancelado')
+            ->first();
+
+        if ($existingEvent) {
+            return redirect()->back()->with('error', 'Ya existe un evento programado para esta fecha');
+        }
+
+        $pendingQuotes = Quote::where('date', $request->fecha)
+            ->whereIn('status', ['pendiente'])
+            ->count();
+
+        if ($pendingQuotes > 0) {
+            return redirect()->back()->with('error', 
+                'No se puede cambiar la fecha porque hay cotizaciones pendientes para ese día');
+        }
+
+        $event->date = $request->fecha;
+        $event->save();
+
+        return redirect()->back()->with('success', 
+            'La fecha del evento ha sido actualizada correctamente');
+
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 
+            'Error al actualizar la fecha del evento: ' . $e->getMessage());
+    }
+})->name('dashboard.event.edit.date');
+
+Route::post('dashboard/event/{id}/edit/time', function ($id, Request $request) {
+    $event = Event::find($id);
+    
+    // Validación básica
+    $request->validate([
+        'horaInicio' => 'required|date_format:h:i A',
+        'duracion' => 'required|integer|min:1',
+    ]);
+
+    try {
+        $startTime = Carbon::createFromFormat('h:i A', $request->horaInicio);
+        $endTime = $startTime->copy()->addHours($request->duracion);
+
+        $event->estimated_start_time = $startTime->format('H:i');
+        $event->estimated_end_time = $endTime->format('H:i');
+        $event->save();
+
+        return redirect()->back()->with('success', 
+            'El horario del evento ha sido actualizado correctamente');
+
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 
+            'Error al actualizar el horario del evento: ' . $e->getMessage());
+    }
+})->name('dashboard.event.edit.time');
 
 require __DIR__.'/routesjesus.php';
 

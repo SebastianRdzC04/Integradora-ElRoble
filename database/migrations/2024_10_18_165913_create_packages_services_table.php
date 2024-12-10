@@ -15,12 +15,12 @@ return new class extends Migration
     {
         Schema::create('packages_services', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('package_id')->constrained('packages');
-            $table->foreignId('service_id')->constrained('services');
+            $table->foreignId('package_id')->constrained('packages')->onDelete('cascade');
+            $table->foreignId('service_id')->constrained('services')->onDelete('cascade');
             $table->integer('quantity')->nullable();
-            $table->decimal('price', 10, 2)->nullable();
+            $table->integer('price')->nullable();
             $table->string('description', 255)->nullable();
-            $table->decimal('coast', 10, 2)->nullable();
+            $table->integer('coast')->nullable();
             $table->timestamps();
         });
     }
