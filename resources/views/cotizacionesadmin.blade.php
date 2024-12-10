@@ -1,16 +1,14 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nueva Cotización</title>
+@extends('layouts.dashboardAdmin')
+
+@section('styles')
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="{{ asset('css/stylescotizacionesnuevas.css') }}">
-</head>
-<body class="bg-light">
+@endsection
+
+@section('title', 'Nueva Cotización')
+
+@section('content')
     <div class="container mt-4">
         @if(session('success'))
         <div class="alert alert-success" role="alert" style="background-color: rgb(30, 78, 21); color: white;">
@@ -266,6 +264,9 @@
             </div>
         </div>
     </div>
+    @endsection
+
+    @section('scripts')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@eonasdan/tempus-dominus@6.0.0-beta1/dist/js/tempus-dominus.min.js"></script>
@@ -973,5 +974,6 @@ document.getElementById('owner_phone').addEventListener('input', function (event
     });
 
     </script>
+    @endsection
 </body>
 </html>
