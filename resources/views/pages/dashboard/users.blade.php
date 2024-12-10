@@ -10,7 +10,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="table-responsive">
-                <table class="table shadow" id="users-table">
+                <table class="table shadow table-striped" id="users-table">
                     <thead>
                         <tr>
                             <th>Nombre</th>

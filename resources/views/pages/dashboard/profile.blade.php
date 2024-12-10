@@ -11,7 +11,7 @@
 @section('content')
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-5">
+            <div class="col-4">
                 <div class="card">
                     <img src="{{ auth()->user()->avatar }}" alt="">
                     <form action="{{route('profile.update', auth()->user()->id)}}" method="POST" enctype="multipart/form-data">
@@ -39,6 +39,27 @@
                     </form>
                 </div>
             </div>
+            <div class="col-4">
+                <div class="">
+                    <h4>Cambiar Contraseña</h4>
+                    <form action="{{route('profile.update.password', auth()->user()->id)}}" method="POST">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="current_password" class="form-label">Contraseña Actual</label>
+                            <input type="password" class="form-control" id="current_password" name="current_password">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Nueva Contraseña</label>
+                            <input type="password" class="form-control" id="password" name="password">
+                        </div>
+                        <div class="mb-3">
+                            <label for="password_confirmation" class="form-label">Confirmar Contraseña</label>
+                            <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Cambiar Contraseña</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
     <div class="modal fade" id="cropImageModal" tabindex="-1" aria-labelledby="cropImageModalLabel" aria-hidden="true">
@@ -50,7 +71,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="img-container">
-                        <img id="imageToCrop" src="" alt="Imagen a recortar">
+                        <img id="imageToCrop" src="" alt="Imagen a recortar" style="max-height: 500px; width: auto;">
                     </div>
                 </div>
                 <div class="modal-footer">

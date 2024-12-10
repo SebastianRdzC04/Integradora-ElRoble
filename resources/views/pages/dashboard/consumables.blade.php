@@ -61,7 +61,7 @@
         <div class="row justify-content-center">
             <div class="col-12">
                 <div class="table-resposive">
-                    <table class="table shadow" id="consumables-table">
+                    <table class="table shadow table-striped" id="consumables-table">
                         <thead>
                             <tr>
                                 <th class="text-center">Nombre</th>

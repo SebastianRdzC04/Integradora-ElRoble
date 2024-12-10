@@ -30,6 +30,7 @@ use App\Models\User;
 use App\Http\Controllers\PaymentController;
 use App\Models\ServiceCategory;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 /*
@@ -591,6 +592,7 @@ Route::middleware(['auth' ,'superadmin'])->group(function () {
         }
         return redirect()->back()->with('error', 'No se encontro banda');
     })->name('dashboard.consumable.event.delete');
+
 });
 
 
@@ -801,18 +803,29 @@ Route::post('dashboard/create/service', function(Request $request){
 })->name('dashboard.create.service');
 
 Route::post('dashboard/create/package', function(Request $request){
+    $imagenCortada = $request->input('croppedImage');
     $validator = Validator::make($request->all(), [
         'nombre' => 'required|string',
         'descripcion' => 'required|string',
         'precio' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
         'fechaInicio' => 'required|date|after_or_equal:today',
         'fechaFin' => 'required|date|after_or_equal:fechaInicio',
-        'lugar' => 'required|string|exists:places,id',
+        'lugar' => 'required|integer|exists:places,id',
         'afore' => 'required|integer|max:100',
     ]);
 
     if ($validator->fails()) {
         return redirect()->back()->withErrors($validator)->withInput();
+    }
+
+    $imagePath = null;
+    if ($imagenCortada) {
+        $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $imagenCortada));
+        $tempFilePath = tempnam(sys_get_temp_dir(), 'upload');
+        file_put_contents($tempFilePath, $image);
+
+        $uploadedFileUrl = Cloudinary::upload($tempFilePath)->getSecurePath();
+        $imagePath = $uploadedFileUrl;
     }
 
     $package = new Package();
@@ -823,6 +836,7 @@ Route::post('dashboard/create/package', function(Request $request){
     $package->end_date = $request->fechaFin;
     $package->place_id = Place::find($request->lugar)->id;
     $package->max_people = $request->afore;
+    $package->image_path = $imagePath; // Guardar la URL de la imagen en la base de datos
 
     // Determinar si el paquete está activo
     $currentDate = now()->toDateString();
@@ -1176,6 +1190,58 @@ Route::post('profile/update/{id}', function ($id, Request $request) {
 
     return redirect()->back()->with('success', 'Perfil actualizado correctamente');
 })->name('profile.update');
+
+Route::post('dashboard/event/add/extra/hour/{id}', function ($id) {
+    $event = Event::find($id);
+    if ($event) {
+        $event->extra_hours = $event->extra_hours + 1;
+        $event->total_price = $event->total_price + $event->extra_hour_price;
+        $event->save();
+        return redirect()->back()->with('success', 'El evento ha sido actualizado');
+    }
+
+})->name('dashboard.event.extra.hour');
+
+Route::post('dashboard/event/update/payment/{id}', function ($id, Request $request) {
+    $event = Event::find($id);
+    $request->validate([
+        'monto' => [
+            'required',
+            'numeric',
+            'min:0',
+            function ($attribute, $value, $fail) use ($event) {
+                if ($value > $event->remaining_payment) {
+                    $fail('El pago no puede ser mayor al monto faltante.');
+                }
+            },
+        ],
+    ]);
+    if ($event) {
+        $event->advance_payment = $event->advance_payment + $request->monto;
+        $event->save();
+        return redirect()->back()->with('success', 'El pago ha sido actualizado');
+    }
+    return redirect()->back()->with('error', 'El evento no se ha encontrado');
+
+})->name('dashboard.event.update.payment');
+
+Route::post('dashboard/profile/update/password/{id}', function ($id, Request $request) {
+    $user = User::find($id);
+
+    $request->validate([
+        'current_password' => 'required|string',
+        'password' => 'required|string|min:8|confirmed',
+    ]);
+
+    if (!Hash::check($request->current_password, $user->password)) {
+        return redirect()->back()->with('error', 'La contraseña actual no es correcta');
+    }
+
+    $user->password = Hash::make($request->password);
+    $user->save();
+
+    return redirect()->back()->with('success', 'La contraseña ha sido actualizada correctamente');
+})->name('profile.update.password');
 
 require __DIR__.'/routesjesus.php';
 
