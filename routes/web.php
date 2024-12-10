@@ -13,6 +13,7 @@ use App\Models\Service;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 // Controladores de AxelV2.0
 use App\Http\Controllers\ServiciosAdminController;
@@ -775,15 +776,20 @@ Route::post('dashboard/create/service', function(Request $request){
 })->name('dashboard.create.service');
 
 Route::post('dashboard/create/package', function(Request $request){
-    $request->validate([
+    $validator = Validator::make($request->all(), [
         'nombre' => 'required|string',
         'descripcion' => 'required|string',
         'precio' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
-        'fechaInicio' => 'required|date',
-        'fechaFin' => 'required|date',
+        'fechaInicio' => 'required|date|after_or_equal:today',
+        'fechaFin' => 'required|date|after_or_equal:fechaInicio',
         'lugar' => 'required|string|exists:places,id',
         'afore' => 'required|integer|max:100',
     ]);
+
+    if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+    }
+
     $package = new Package();
     $package->name = $request->nombre;
     $package->description = $request->descripcion;
@@ -792,7 +798,13 @@ Route::post('dashboard/create/package', function(Request $request){
     $package->end_date = $request->fechaFin;
     $package->place_id = Place::find($request->lugar)->id;
     $package->max_people = $request->afore;
+
+    // Determinar si el paquete está activo
+    $currentDate = now()->toDateString();
+    $package->is_active = ($request->fechaInicio <= $currentDate && $request->fechaFin >= $currentDate);
+
     $package->save();
+
     return redirect()->back()->with('success', 'El paquete ha sido creado correctamente');
 })->name('dashboard.create.package');
 
