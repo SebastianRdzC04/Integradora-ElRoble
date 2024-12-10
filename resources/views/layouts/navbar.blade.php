@@ -20,6 +20,9 @@
                     </a>
                     <ul class="dropdown-menu text-small shadow" style="background: rgb(0 0 0 / 60%);">
                         <li><a class="dropdown-item nav-item" href="#">Historial</a></li>
+                        @if (auth()->user()->roles->contains('id', 1))
+                        <li><a href="{{route('dashboard')}}">Dashboard</a></li>
+                        @endif
                         <li><a class="dropdown-item nav-item" href="#">Configuracion</a></li>
                         <li><a class="dropdown-item nav-item" href="#">Perfil</a></li>
                         <li><hr class="dropdown-divider"></li>
