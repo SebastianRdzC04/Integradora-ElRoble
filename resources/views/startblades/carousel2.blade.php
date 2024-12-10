@@ -1,13 +1,11 @@
 @php
     // Estas es la consulta para obtener las imagenes del carrusel cuando se suban al S3 De amazon
-    use App\Models\Service;
+    use App\Models\Package;
     use Illuminate\Support\Facades\DB;
 
-    $serviciosMasCotizados = DB::table('quotes_services')->select('service_id', DB::raw('COUNT(*) as total_cotizaciones'))->groupBy('service_id')->orderByDesc('total_cotizaciones')->limit(7)->get();
+    $packages = Package::all();
 
-    $idsServicios = $serviciosMasCotizados->pluck('service_id');
 
-    $packages = Service::whereIn('id', $idsServicios)->get();
     
 @endphp
 
@@ -100,6 +98,62 @@
   <div class="container">
     <div class="swiper packages-slider">
       <div class="swiper-wrapper">
+        <!-- Slide-start -->
+        <div class="swiper-slide packages-slide">
+          <div class="packages-slide-img">
+            <img src="{{ $packages->get(0)->image_path }}" alt="{{ $packages->get(0)->name }}">
+          </div>
+          <div class="packages-slide-content">
+            <h1 class="package-price">${{ $packages->get(0)->price }}</h1>
+            <div class="packages-slide-content-bottom">
+              <h2 class="package-name">{{ $packages->get(0)->name }}</h2>
+              <h3 class="package-description">{{ $packages->get(0)->description }}</h3>
+            </div>
+          </div>
+        </div>
+        <!-- Slide-end -->
+        <!-- Slide-start -->
+        <div class="swiper-slide packages-slide">
+          <div class="packages-slide-img">
+            <img src="{{ $packages->get(1)->image_path }}" alt="{{ $packages->get(1)->name }}">
+          </div>
+          <div class="packages-slide-content">
+            <h1 class="package-price">${{ $packages->get(1)->price }}</h1>
+            <div class="packages-slide-content-bottom">
+              <h2 class="package-name">{{ $packages->get(1)->name }}</h2>
+              <h3 class="package-description">{{ $packages->get(1)->description }}</h3>
+            </div>
+          </div>
+        </div>
+        <!-- Slide-end -->
+        <!-- Slide-start -->
+        <div class="swiper-slide packages-slide">
+          <div class="packages-slide-img">
+            <img src="{{ $packages->get(2)->image_path }}" alt="{{ $packages->get(2)->name }}">
+          </div>
+          <div class="packages-slide-content">
+            <h1 class="package-price">${{ $packages->get(2)->price }}</h1>
+            <div class="packages-slide-content-bottom">
+              <h2 class="package-name">{{ $packages->get(2)->name }}</h2>
+              <h3 class="package-description">{{ $packages->get(2)->description }}</h3>
+            </div>
+          </div>
+        </div>
+        <!-- Slide-end -->
+        <!-- Slide-start -->
+        <div class="swiper-slide packages-slide">
+          <div class="packages-slide-img">
+            <img src="{{ $packages->get(3)->image_path }}" alt="{{ $packages->get(3)->name }}">
+          </div>
+          <div class="packages-slide-content">
+            <h1 class="package-price">${{ $packages->get(3)->price }}</h1>
+            <div class="packages-slide-content-bottom">
+              <h2 class="package-name">{{ $packages->get(3)->name }}</h2>
+              <h3 class="package-description">{{ $packages->get(3)->description }}</h3>
+            </div>
+          </div>
+        </div>
+        <!-- Slide-end -->
         <!-- Slide-start -->
         <div class="swiper-slide packages-slide">
           <div class="packages-slide-img">
