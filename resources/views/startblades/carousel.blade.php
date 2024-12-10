@@ -36,8 +36,6 @@
                 </div>
               </div>
             </div>
-            <!-- Slide-end -->
-            <!-- Slide-start -->
             <div class="swiper-slide tranding-slide">
               <div class="tranding-slide-img">
                 <img src="{{ $servicios->get(1)->image_path }}" alt="{{ $servicios->get(1)->name }}">
@@ -50,13 +48,6 @@
                   </h2>
                   <h3 class="food-rating">
                     <span>{{ $servicios->get(1)->description }}</span>
-                    <div class="rating">
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                      <ion-icon name="star"></ion-icon>
-                    </div>
                   </h3>
                 </div>
               </div>
