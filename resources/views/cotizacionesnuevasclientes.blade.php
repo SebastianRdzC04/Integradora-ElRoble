@@ -9,9 +9,62 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="{{ asset('css/stylescotizacionesnuevas.css') }}">
+    <style>
+        /* Restablecer tamaños de fuente */
+.card-title {
+    font-size: var(--font-size-lg) !important;
+}
+
+.card-text {
+    font-size: var(--font-size-base) !important;
+}
+
+.day-header {
+    font-size: var(--font-size-base) !important;
+}
+
+.form-label {
+    font-size: var(--font-size-base) !important;
+}
+
+h4.card-title {
+    font-size: 1.5rem !important;
+}
+
+h5.card-title {
+    font-size: 1.25rem !important;
+}
+
+.service-card h5 {
+    font-size: 1.25rem !important;
+}
+
+.service-card p {
+    font-size: 0.9rem !important;
+}
+
+/* Mantener los media queries existentes pero con !important */
+@media (max-width: 1400px) {
+    .card-body h5 {
+        font-size: 1.5rem !important;
+    }
+    .card-body p {
+        font-size: 1.5rem !important;
+    }
+}
+
+.agrandado
+{
+    font-size: 1.5rem !important;
+}
+
+    </style>
 </head>
 <body class="bg-light">
-    <div class="container mt-4">
+    
+    @include('layouts.navbar')
+
+    <div style="margin-top: 100px !important;" class="container mt-4">
         @if(session('success'))
         <div class="alert alert-success" role="alert" style="background-color: rgb(30, 78, 21); color: white;">
             {{ session('success') }}
@@ -37,11 +90,11 @@
             <div class="col-md-6">
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h4 class="card-title mb-4 text-center">Selecciona una Fecha</h4>
+                        <h4 class="card-title mb-4 text-center agrandado">Selecciona una Fecha</h4>
                         <div class="calendar-container" style="padding: 0;">
                             <div id="calendar-controls" class="d-flex justify-content-between mb-2">
                                 <button id="prevMonth" style="min-width: 32px; margin: 10px;" class="btn-calendar"> < Anterior</button>
-                                <h6 id="calendarMonthYear" style="margin: 10px;"></h6>
+                                <h6 class="agrandado" id="calendarMonthYear" style="margin: 10px;"></h6>
                                 <button id="nextMonth" style="min-width: 32px; margin: 10px;" class="btn-calendar">Siguiente ></button>
                             </div>
                             <div id="calendar"></div>
@@ -57,7 +110,7 @@
                             <div class="mb-3">
                                 <label for="selectedDate" class="form-label">Fecha Seleccionada:</label>
                                 <input type="text" 
-                                       class="form-control @error('date') is-invalid @enderror" 
+                                       class="form-control agrandado @error('date') is-invalid @enderror" 
                                        id="selectedDate" 
                                        name="date"
                                        value="{{ old('date') }}" 
@@ -75,7 +128,7 @@
                                     <input type="time" 
                                            id="start_time" 
                                            name="start_time"
-                                           class="form-control @error('start_time') is-invalid @enderror"
+                                           class="form-control agrandado @error('start_time') is-invalid @enderror"
                                            value="{{ old('start_time') ? \Carbon\Carbon::parse(old('start_time'))->format('H:i') : '' }}"
                                            onblur="roundTime(this)" 
                                            onchange="updateDurationOptions()"
@@ -88,7 +141,7 @@
                                     <label for="duration" class="form-label">
                                         <i class="fas fa-hourglass-half"></i> Duración del Evento (horas)
                                     </label>
-                                    <select class="form-select" id="duration">
+                                    <select class="form-select agrandado" id="duration">
                                         <option value="">Seleccione duración</option>
                                         <option value="4">4 horas</option>
                                         <option value="5">5 horas</option>
@@ -143,7 +196,7 @@
 
                         <div class="mt-4">
                             <label class="form-label">Tipo de Evento:</label>
-                            <select class="form-select" id="eventType" name="type_event" onchange="toggleOtherEventType()">
+                            <select class="form-select agrandado" id="eventType" name="type_event" onchange="toggleOtherEventType()">
                                 <option value="">Selecciona el tipo de evento</option>
                                 <option value="XV's">XV's</option>
                                 <option value="Cumpleaños">Cumpleaños</option>
@@ -163,12 +216,12 @@
                             <label class="form-label">Cantidad de Invitados:</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-users"></i></span>
-                                <input type="number" id="guestCount" name="guest_count" class="form-control" placeholder="Cantidad de invitados">
+                                <input type="number" id="guestCount" name="guest_count" class="form-control agrandado" placeholder="Cantidad de invitados">
                             </div>
                         </div>
 
                         <div class="mt-4" style="display: flex; justify-content: center;">
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmedServicesModal" onclick="updateConfirmedServicesModal()">
+                            <button type="button" class="btn btn-primary agrandado" data-bs-toggle="modal" data-bs-target="#confirmedServicesModal" onclick="updateConfirmedServicesModal()">
                                 Ver Servicios Confirmados
                             </button>
                         </div>
@@ -177,7 +230,7 @@
                             <div class="alert alert-info justified" role="alert">
                                 ¡Haz de tu evento un momento aún más especial añadiendo servicios para una mejor experiencia!
                             </div>
-                            <h4 class="text-center">Servicios Disponibles:</h4>
+                            <h4 class="text-center agrandado">Servicios Disponibles:</h4>
                             <div class="row">
                                 @foreach($categories as $category)
                                     @php
@@ -196,12 +249,13 @@
                             </div>
                         </div>
                     </div>
+                    <div class="mt-4 text-center">
+                        <button type="button" class="btn btn-success agrandado" style="margin-bottom: 30px; margin-top: -15px;" onclick="submitQuote()">Enviar Cotización</button>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="mt-4 text-center">
-            <button type="button" class="btn btn-success" style="margin-bottom: 30px; margin-top: -15px;" onclick="submitQuote()">Enviar Cotización</button>
-        </div>
+
     </form>
     </div>
     
@@ -690,7 +744,7 @@ function showServicesModal(categoryId) {
                     <p class="card-text">${service.description}</p>
                     <p class="card-text"><strong><i class="fas fa-dollar-sign"></i> ${service.price}</strong></p>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="${service.id}" 
+                        <input class="form-check-input agrandado" type="checkbox" value="${service.id}" 
                             id="service${service.id}" 
                             onchange="toggleServiceDescription(${service.id})"
                             ${isConfirmed ? 'checked disabled' : ''}>
@@ -699,11 +753,11 @@ function showServicesModal(categoryId) {
                         <label for="description${service.id}" class="form-label">Descripción:</label>
                         <input type="text" 
                             id="description${service.id}" 
-                            class="form-control" 
+                            class="form-control agrandado" 
                             placeholder="Ingrese una descripción"
                             value="${isConfirmed ? confirmedServices.find(cs => cs.id === service.id).description : ''}">
                         ${!isConfirmed ? `
-                            <button type="button" class="btn btn-success mt-2" 
+                            <button type="button" class="btn btn-success mt-2 agrandado" 
                                 onclick="confirmService(${service.id})" 
                                 id="confirmBtn${service.id}" 
                                 disabled>
