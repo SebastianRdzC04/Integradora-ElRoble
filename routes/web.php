@@ -28,6 +28,7 @@ use App\Models\ConsumableCategory;
 use App\Models\ConsumableEventDefault;
 use App\Models\User;
 use App\Http\Controllers\PaymentController;
+use App\Models\PackageService;
 use App\Models\ServiceCategory;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Support\Facades\Hash;
@@ -90,7 +91,7 @@ Route::middleware('empleado')->group(function () {
 */
 
 
-Route::middleware(['auth' ,'admin'])->group(function () {
+Route::middleware(['auth' ,'admin', 'isOn'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('dashboard/event/current', function () {
@@ -1245,6 +1246,34 @@ Route::post('dashboard/profile/update/password/{id}', function ($id, Request $re
 
     return redirect()->back()->with('success', 'La contraseña ha sido actualizada correctamente');
 })->name('profile.update.password');
+
+Route::post('dahboard/packages/{id}/delete/service', function($id){
+    $packService = PackageService::find($id);
+    if ($packService){
+        $packService->delete();
+        return redirect()->back()->with('success', 'Servicio eliminado correctamente del paquete');
+    }
+    return redirect()->back()->with('error', 'No se encontro el servicio');
+})->name('dashboard.package.delete.service');
+
+Route::post('dashboard/packages/{id}/edit/service', function($id, Request $request){
+    $packService = PackageService::find($id);
+    $request->validate([
+        'cantidad' => 'required|integer|min:0',
+        'precio' => 'required|numeric|min:0',
+        'costo' => 'required|numeric|min:0',
+        'descripcion' => 'required|string',
+    ]);
+    if ($packService){
+        $packService->quantity = $request->cantidad;
+        $packService->price = $request->precio;
+        $packService->coast = $request->costo;
+        $packService->description = $request->descripcion;
+        $packService->save();
+        return redirect()->back()->with('success', 'Servicio actualizado correctamente');
+    }
+    return redirect()->back()->with('error', 'No se encontro el servicio');
+})->name('dashboard.package.edit.service');
 
 require __DIR__.'/routesjesus.php';
 
