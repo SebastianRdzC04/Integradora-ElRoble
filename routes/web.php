@@ -91,7 +91,7 @@ Route::middleware('empleado')->group(function () {
 */
 
 
-Route::middleware(['auth' ,'admin', 'isOn'])->group(function () {
+Route::middleware(['auth' ,'admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('dashboard/event/current', function () {
