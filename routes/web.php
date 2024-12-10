@@ -286,7 +286,7 @@ Route::middleware(['auth' ,'superadmin'])->group(function () {
             return redirect()->back()->with('success', 'El anticipo ha sido registrado');
         } catch (\PDOException $e) {
             if ($e->getCode() == "45000") {
-                return redirect()->back()->with('error', 'El anticipo no puede ser mayor al precio estimado come caca');
+                return redirect()->back()->with('error', 'El anticipo no puede ser mayor al precio estimado.');
             }
             return redirect()->back()->with('error', 'Error al registrar el anticipo');
         }
@@ -476,7 +476,7 @@ Route::middleware(['auth' ,'superadmin'])->group(function () {
             ]);
             return redirect()->back()->with('success', 'El consumible ha sido agregado a los eventos por defecto');
         }
-        return redirect()->back()->with('error', 'No puedes sobrepasar el stock maximo come caca');
+        return redirect()->back()->with('error', 'No puedes sobrepasar el stock máximo.');
 
     })->name('dashboard.add.consumable.default');
 
@@ -524,9 +524,9 @@ Route::middleware(['auth' ,'superadmin'])->group(function () {
         $consumable = Consumable::find($id);
         if ($consumable){
             $consumable->delete();
-            return redirect()->back()->with('success', 'si se elimino banda');
+            return redirect()->back()->with('success', 'El consumible ha sido eliminado');
         }
-        return redirect()->back()->with('error', 'No se encontro banda');
+        return redirect()->back()->with('error', 'No sé encontró el consumible.');
     })->name('dashboard.consumable.delete');
 
     Route::post('dashboard/consumable/edit/{id}', function ($id, Request $request){

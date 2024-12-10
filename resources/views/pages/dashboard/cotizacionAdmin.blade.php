@@ -210,7 +210,7 @@
                                 <h3>Confirmar Evento</h3>
                             </div>
                             <div class="modal-body">
-                                <h4>Seguro que ya te pagaron come caca? </h4>
+                                <h4>¿Estás seguro de que el pago fue recibido? </h4>
                             </div>
                             <div class="modal-footer">
                                 <form action="{{ route('dashboard.quote.payment', $quote->id) }}" method="POST">

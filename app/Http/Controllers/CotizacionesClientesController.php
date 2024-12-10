@@ -11,6 +11,9 @@ use App\Models\Place;
 use App\Models\Package;
 use Carbon\Carbon;
 use App\Models\Event;
+use App\Mail\QuoteCreated;
+use App\Mail\QuotePaymentNotification;
+use Illuminate\Support\Facades\Mail;
 
 class CotizacionesClientesController extends Controller
 {
@@ -297,13 +300,23 @@ class CotizacionesClientesController extends Controller
                 $quote->services()->sync($servicesData);
             }
     
+            $quote->load(['place', 'services']);
+    
+            try {
+                Mail::to(auth()->user()->email)->send(new QuoteCreated($quote));
+            } catch (\Exception $e) {
+                \Log::error('Error enviando email de cotización: ' . $e->getMessage());
+                \Log::error('Stack trace: ' . $e->getTraceAsString());
+            }
+    
             DB::commit();
     
             return redirect()
                 ->route('historialclientes')
-                ->with('success', 'Cotización enviada exitosamente.');
+                ->with('success', 'Cotización enviada exitosamente. Te hemos enviado un correo con los detalles.');
     
         } catch (ValidationException $e) {
+            DB::rollBack();
             return redirect()
                 ->route('cotizaciones.nueva')
                 ->withErrors($e->validator)
