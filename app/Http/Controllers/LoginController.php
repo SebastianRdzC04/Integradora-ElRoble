@@ -39,15 +39,12 @@ class LoginController extends Controller
             }
         }
 
-        if ($isEmail) {
             $userIsLoginWithPassword = User::where('email', $input)
                                            ->whereNull('password')
                                            ->first();
-        } else {
             $userIsLoginWithPassword = User::where('phone', $input)
                                            ->whereNull('password')
                                            ->first();
-        }
 
         if ($userIsLoginWithPassword) {
             $authProvider = $userIsLoginWithPassword->external_auth ?? 'Desconocido'; 
