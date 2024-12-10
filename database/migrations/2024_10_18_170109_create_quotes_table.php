@@ -20,8 +20,8 @@ return new class extends Migration
             $table->foreignId('place_id')->nullable()->constrained('places')->onDelete('set null');
             $table->date('date');
             $table->enum('status', ['pendiente', 'pagada', 'cancelada', 'pendiente cotizacion'])->default('pendiente cotizacion');
-            $table->decimal('estimated_price',10, 2)->default(0);
-            $table->decimal('espected_advance',10,2)->default(0);
+            $table->integer('estimated_price')->default(0);
+            $table->integer('espected_advance')->default(0);
             $table->time('start_time');
             $table->time('end_time');
             $table->string('type_event', 50);

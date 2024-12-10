@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreignId('person_id')->constrained('people')->onDelete('cascade');
             $table->rememberToken();
             $table->boolean('status')->default(true);
-            $table->string('avatar')->nullable();
+            $table->string('avatar')->default('https://res.cloudinary.com/ddclkt7n4/image/upload/v1733793457/unpsg410bmgyadi8edr8.jpg');
             $table->string('external_id')->nullable();
             $table->string('external_auth')->nullable();
             $table->timestamps();

@@ -42,7 +42,7 @@ return new class extends Migration
                         NEW.end_time,
                         NEW.estimated_price,
                         NEW.espected_advance,
-                        NEW.estimated_price - NEW.espected_advance,
+                        CAST(NEW.estimated_price AS UNSIGNED) - CAST(NEW.espected_advance AS UNSIGNED),
                         NOW(),
                         NOW()
                     );

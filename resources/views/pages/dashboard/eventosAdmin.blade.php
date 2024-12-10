@@ -318,23 +318,28 @@
                                     <h3>Añadir Consumible</h3>
                                 </div>
                                 <div class="modal-body">
-                                    <form action="{{ route('dashboard.event.consumable.add', $event->id) }}" method="POST">
+                                    <form action="{{ route('dashboard.event.consumable.add', $event->id) }}"
+                                        method="POST">
                                         @csrf
                                         <div class="mb-3">
                                             <label for="consumible" class="form-label">Consumible</label>
-                                            <select name="consumible" id="consumible" class="form-select" onchange="updatePlaceholder()">
+                                            <select name="consumible" id="consumible" class="form-select"
+                                                onchange="updatePlaceholder()">
                                                 <option value="">Selecciona un consumible</option>
                                                 @foreach ($consumables as $consumable)
                                                     @if ($event->consumables->contains($consumable))
                                                         @continue
                                                     @endif
-                                                    <option value="{{ $consumable->id }}" data-unit="{{ $consumable->unit }}">{{ $consumable->name }}</option>
+                                                    <option value="{{ $consumable->id }}"
+                                                        data-unit="{{ $consumable->unit }}">{{ $consumable->name }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                         </div>
                                         <div class="mb-3">
                                             <label for="cantidad" class="form-label">Cantidad</label>
-                                            <input type="number" class="form-control" name="cantidad" id="cantidad" placeholder="Ingrese la cantidad">
+                                            <input type="number" class="form-control" name="cantidad" id="cantidad"
+                                                placeholder="Ingrese la cantidad">
                                         </div>
                                         <button type="submit" class="btn btn-primary">Agregar</button>
                                     </form>
@@ -368,8 +373,10 @@
                         @endif
                         @if ($event->status == 'Pendiente')
                             <div>
-                                <p><i data-bs-toggle="modal" data-bs-target="#editarFecha"
-                                        class="text-end bi bi-pencil"></i>Fecha:
+                                <p><a data-bs-toggle="modal" data-bs-target="#editarFecha"
+                                        class="btn btn-success btn-sm">
+                                        <i class="bi bi-pencil-fill text-white"></i>
+                                    </a>Fecha:
                                     {{ Carbon::parse($event->date)->format('d/m/Y') }} </p>
                             </div>
                         @endif
@@ -380,11 +387,10 @@
                                 <p> Sillas:</p>
                                 <p class="ms-auto"> {{ $event->chair_count }}
                                     @if ($event->status == 'Pendiente' || $event->status == 'En espera')
-                                    <a data-bs-toggle="modal" 
-                                    data-bs-target="#modalSillas" 
-                                    class="btn btn-success btn-sm">
-                                     <i class="bi bi-pencil-fill text-white"></i>
-                                 </a>
+                                        <a data-bs-toggle="modal" data-bs-target="#modalSillas"
+                                            class="btn btn-success btn-sm">
+                                            <i class="bi bi-pencil-fill text-white"></i>
+                                        </a>
                                     @endif
                                 </p>
                             </div>
@@ -413,11 +419,10 @@
                                 <p> Mesas:</p>
                                 <p class="ms-auto"> {{ $event->table_count }}
                                     @if ($event->status == 'Pendiente' || $event->status == 'En espera')
-                                    <button data-bs-toggle="modal" 
-                                    data-bs-target="#modalMesas"
-                                    class="btn btn-success btn-sm">
-                                <i class="bi bi-pencil-fill text-white"></i>
-                            </button>
+                                        <button data-bs-toggle="modal" data-bs-target="#modalMesas"
+                                            class="btn btn-success btn-sm">
+                                            <i class="bi bi-pencil-fill text-white"></i>
+                                        </button>
                                     @endif
                                 </p>
                             </div>
@@ -446,11 +451,10 @@
                                 <p> Manteles:</p>
                                 <p class="ms-auto">{{ $event->table_cloth_count }}
                                     @if ($event->status == 'Pendiente' || $event->status == 'En espera')
-                                    <button data-bs-toggle="modal" 
-                                    data-bs-target="#modalMantel"
-                                    class="btn btn-success btn-sm">
-                                <i class="bi bi-pencil-fill text-white"></i>
-                            </button>
+                                        <button data-bs-toggle="modal" data-bs-target="#modalMantel"
+                                            class="btn btn-success btn-sm">
+                                            <i class="bi bi-pencil-fill text-white"></i>
+                                        </button>
                                     @endif
                                 </p>
                             </div>
@@ -478,11 +482,10 @@
                         </div>
                         @if ($event->status == 'Pendiente' || $event->status == 'En espera')
                             <p>Horario estimado: {{ Carbon::parse($event->estimated_start_time)->format('h:i A') }} -
-                                {{ Carbon::parse($event->estimated_end_time)->format('h:i A') }} <button data-bs-toggle="modal" 
-                                data-bs-target="#horarioModal"
-                                class="btn btn-success btn-sm">
-                            <i class="bi bi-pencil-fill text-white"></i>
-                        </button>
+                                {{ Carbon::parse($event->estimated_end_time)->format('h:i A') }} <button
+                                    data-bs-toggle="modal" data-bs-target="#horarioModal" class="btn btn-success btn-sm">
+                                    <i class="bi bi-pencil-fill text-white"></i>
+                                </button>
                             </p>
                         @endif
                         @if ($event->status == 'Finalizado')
@@ -497,20 +500,56 @@
                         @endif
                     </div>
                     <div>
-                        <p>Precio del evento: {{ $event->total_price }} </p>
-                        <p>Anticipo: {{ $event->advance_payment }} </p>
+                        <p>Precio del evento: ${{ $event->total_price }} </p>
+                        <p>Anticipo: ${{ $event->advance_payment }} </p>
                         @if ($event->status != 'Finalizado')
-                            <p>Monto Faltante: {{ $event->remaining_payment }} </p>
+                            <p>Monto Faltante: ${{ $event->remaining_payment }} </p>
                             <p>Precio por hora extra:
                                 {{ $event->extra_hour_price == 0 ? 'Sin definir' : '$' . $event->extra_hour_price }}
                                 @if ($event->status == 'Pendiente' || $event->status == 'En espera' || $event->status == 'En proceso')
-                                <button data-bs-toggle="modal" 
-                                data-bs-target="#modalHx"
-                                class="btn btn-success btn-sm">
-                            <i class="bi bi-pencil-fill text-white"></i>
-                        </button>
+                                    <button data-bs-toggle="modal" data-bs-target="#modalHx"
+                                        class="btn btn-success btn-sm">
+                                        <i class="bi bi-pencil-fill text-white"></i>
+                                    </button>
                                 @endif
                             </p>
+                            <div class="modal fade" id="horarioModal">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{{ route('dashboard.event.edit.time', $event->id) }}"
+                                                method="POST">
+                                                @csrf
+                                                <div class="mb-3">
+                                                    <label for="horaInicio" class="form-label">Hora de inicio</label>
+                                                    <select name="horaInicio" class="form-select" id="">
+                                                        @for ($i = 11; $i < 21; $i++)
+                                                            @php
+                                                                $time = Carbon::createFromFormat(
+                                                                    'H',
+                                                                    $i,
+                                                                )->format('h:i A');
+                                                            @endphp
+                                                            <option value="{{ $time }}"
+                                                                {{ Carbon::parse($event->estimated_start_time)->format('h:i A') == $time ? 'selected' : '' }}>
+                                                                {{ $time }}
+                                                            </option>
+                                                        @endfor
+                                                    </select>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="duracion" class="form-label">Hora de fin</label>
+                                                    <input type="number" class="form-control" name="duracion">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="modal fade" id="modalHx">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -549,7 +588,7 @@
                                     <h3>Editar Fecha</h3>
                                 </div>
                                 <div class="modal-body">
-                                    <form action="" method="POST">
+                                    <form action="{{ route('dashboard.event.edit.date', $event->id) }}" method="POST">
                                         @csrf
                                         <div class="mb-3">
                                             <label for="fecha" class="form-label">Fecha</label>
@@ -577,12 +616,12 @@
             });
 
             function updatePlaceholder() {
-        const consumableSelect = document.getElementById('consumible');
-        const selectedOption = consumableSelect.options[consumableSelect.selectedIndex];
-        const unit = selectedOption.getAttribute('data-unit');
-        const cantidadInput = document.getElementById('cantidad');
-        cantidadInput.placeholder = unit ? `Ingrese la cantidad en ${unit}` : 'Ingrese la cantidad';
-    }
+                const consumableSelect = document.getElementById('consumible');
+                const selectedOption = consumableSelect.options[consumableSelect.selectedIndex];
+                const unit = selectedOption.getAttribute('data-unit');
+                const cantidadInput = document.getElementById('cantidad');
+                cantidadInput.placeholder = unit ? `Ingrese la cantidad en ${unit}` : 'Ingrese la cantidad';
+            }
         </script>
     @endif
 

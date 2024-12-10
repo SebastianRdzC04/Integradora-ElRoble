@@ -973,5 +973,70 @@ Route::post('dashboard/place/edit/image/{id}', function ($id, Request $request) 
     }
 })->name('dashboard.place.edit.image');
 
+Route::post('dashboard/event/edit/date/{id}', function ($id, Request $request) {
+    $event = Event::find($id);
+    
+    // Validación básica
+    $request->validate([
+        'fecha' => 'required|date',
+    ]);
+
+    try {
+        $existingEvent = Event::where('date', $request->fecha)
+            ->where('id', '!=', $id)
+            ->where('status', '!=', 'Cancelado')
+            ->first();
+
+        if ($existingEvent) {
+            return redirect()->back()->with('error', 'Ya existe un evento programado para esta fecha');
+        }
+
+        $pendingQuotes = Quote::where('date', $request->fecha)
+            ->whereIn('status', ['pendiente'])
+            ->count();
+
+        if ($pendingQuotes > 0) {
+            return redirect()->back()->with('error', 
+                'No se puede cambiar la fecha porque hay cotizaciones pendientes para ese día');
+        }
+
+        $event->date = $request->fecha;
+        $event->save();
+
+        return redirect()->back()->with('success', 
+            'La fecha del evento ha sido actualizada correctamente');
+
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 
+            'Error al actualizar la fecha del evento: ' . $e->getMessage());
+    }
+})->name('dashboard.event.edit.date');
+
+Route::post('dashboard/event/{id}/edit/time', function ($id, Request $request) {
+    $event = Event::find($id);
+    
+    // Validación básica
+    $request->validate([
+        'horaInicio' => 'required|date_format:h:i A',
+        'duracion' => 'required|integer|min:1',
+    ]);
+
+    try {
+        $startTime = Carbon::createFromFormat('h:i A', $request->horaInicio);
+        $endTime = $startTime->copy()->addHours($request->duracion);
+
+        $event->estimated_start_time = $startTime->format('H:i');
+        $event->estimated_end_time = $endTime->format('H:i');
+        $event->save();
+
+        return redirect()->back()->with('success', 
+            'El horario del evento ha sido actualizado correctamente');
+
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 
+            'Error al actualizar el horario del evento: ' . $e->getMessage());
+    }
+})->name('dashboard.event.edit.time');
+
 require __DIR__.'/routesjesus.php';
 

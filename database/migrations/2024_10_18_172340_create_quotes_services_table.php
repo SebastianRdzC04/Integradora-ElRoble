@@ -18,9 +18,9 @@ return new class extends Migration
             $table->foreignId('quote_id')->constrained('quotes')->onDelete('cascade');
             $table->foreignId('service_id')->constrained('services')->onDelete('cascade');
             $table->integer('quantity')->nullable();
-            $table->decimal('price', 10, 2)->nullable();
+            $table->integer('price')->nullable();
             $table->string('description', 255)->nullable();
-            $table->decimal('coast', 10, 2)->nullable();
+            $table->integer('coast')->nullable();
             $table->timestamps();
         });
     }

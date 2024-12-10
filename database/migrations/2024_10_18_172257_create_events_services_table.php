@@ -18,9 +18,9 @@ return new class extends Migration
             $table->foreignId('event_id')->constrained('events');
             $table->foreignId('service_id')->constrained('services');
             $table->integer('quantity')->nullable();
-            $table->decimal('price', 10, 2)->nullable();
+            $table->integer('price')->nullable();
             $table->string('description', 255)->nullable();
-            $table->decimal('coast', 10, 2)->nullable();
+            $table->integer('coast')->nullable();
             $table->timestamps();
         });
     }
