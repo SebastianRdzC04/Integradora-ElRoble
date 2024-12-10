@@ -199,7 +199,6 @@ class CotizacionesClientesController extends Controller
         }
     
         try {
-
             $place = Place::findOrFail($request->input('place_id'));
             if ($request->input('guest_count') > $place->max_guest) {
                 return redirect()
@@ -208,7 +207,10 @@ class CotizacionesClientesController extends Controller
                         'guest_count' => "El número de invitados excede la capacidad máxima del lugar seleccionado ({$place->max_guest} personas)."
                     ])
                     ->withInput();
-            }    
+            }
+    
+            DD($request->all());
+
             // Validaciones
             $validated = $request->validate([
                 'date' => 'required|date|after:today',
@@ -246,6 +248,16 @@ class CotizacionesClientesController extends Controller
                 return redirect()
                     ->route('cotizaciones.nueva')
                     ->withErrors(['date' => 'Por el momento, no se puede cotizar para esta fecha.'])
+                    ->withInput();
+            }
+    
+            // Validar que la fecha esté dentro del rango permitido
+            $currentDate = Carbon::now();
+            $maxDate = $currentDate->copy()->addMonths(2)->endOfMonth();
+            if (Carbon::parse($date)->gt($maxDate)) {
+                return redirect()
+                    ->route('cotizaciones.nueva')
+                    ->withErrors(['date' => 'Las cotizaciones solo se pueden hacer para el mes actual y los dos meses siguientes.'])
                     ->withInput();
             }
     
@@ -309,13 +321,14 @@ class CotizacionesClientesController extends Controller
             $request->merge(['type_event' => (string) $request->input('type_event')]);
         }
     
-        // Validar los datos
+        DD($request->all());
+        
         $validated = $request->validate([
             'user_id' => 'nullable|exists:users,id',
             'date' => 'required|date|after:today',
             'place_id' => 'required|exists:places,id',
             'start_time' => 'required|date_format:Y-m-d H:i',
-            'end_time' => 'required|date_format:Y-m-d H:i|after:start_time',
+            'end_time' => 'required|date_format:Y-m-d H:i',
             'type_event' => 'required|string|max:50',
             'guest_count' => 'required|integer|min:10|max:80',
             'owner_name' => 'required|string|max:255',
@@ -323,20 +336,30 @@ class CotizacionesClientesController extends Controller
             'services.*.description' => 'nullable|string|max:255',
             'services.*.quantity' => 'nullable|integer|min:1',
             'services.*.coast' => 'nullable|numeric|min:0',
+            'services.*.price' => 'nullable|numeric|min:0',
         ]);
-
+    
         $date = $request->input('date');
         $existingQuotes = Quote::where('date', $date)
             ->whereIn('status', ['pendiente cotizacion', 'pendiente', 'pagada'])
             ->get();
-
+    
         $hasPaidQuote = $existingQuotes->contains('status', 'pagada');
-        
         $pendingCount = $existingQuotes->whereIn('status', ['pendiente cotizacion', 'pendiente'])->count();
-
+    
         if ($hasPaidQuote || $pendingCount >= 3) {
             return redirect()->route('cotizaciones.nuevaAdmin')
                 ->withErrors(['date' => 'Por el momento, no se puede cotizar por esta fecha.'])
+                ->withInput();
+        }
+    
+        // Validar que la fecha esté dentro del rango permitido
+        $currentDate = Carbon::now();
+        $maxDate = $currentDate->copy()->addMonths(2)->endOfMonth();
+        if (Carbon::parse($date)->gt($maxDate)) {
+            return redirect()
+                ->route('cotizaciones.nuevaAdmin')
+                ->withErrors(['date' => 'Las cotizaciones solo se pueden hacer para el mes actual y los dos meses siguientes.'])
                 ->withInput();
         }
     
@@ -363,6 +386,7 @@ class CotizacionesClientesController extends Controller
                         'description' => $serviceData['description'],
                         'quantity' => $serviceData['quantity'] ?? 1,
                         'coast' => $serviceData['coast'] ?? 0,
+                        'price' => $serviceData['price'] ?? 0,
                         'created_at' => now(),
                         'updated_at' => now(),
                     ];

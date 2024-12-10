@@ -356,11 +356,18 @@ function submitQuote() {
     const endHour = (startHour + parseInt(duration)) % 24;
     const endTime = `${String(endHour).padStart(2, '0')}:${String(startMinute).padStart(2, '0')}`;
 
+    let endDate = selectedDate;
+    if (endHour < startHour) {
+        const selectedDateObj = new Date(selectedDate);
+        selectedDateObj.setDate(selectedDateObj.getDate() + 1);
+        endDate = selectedDateObj.toISOString().split('T')[0];
+    }
+
     const form = document.getElementById('quoteForm');
 
     form.appendChild(generarInputOculto('date', selectedDate));
     form.appendChild(generarInputOculto('start_time', `${selectedDate} ${startTime}`));
-    form.appendChild(generarInputOculto('end_time', `${selectedDate} ${endTime}`));
+    form.appendChild(generarInputOculto('end_time', `${endDate} ${endTime}`));
     form.appendChild(generarInputOculto('place_id', placeId));
     form.appendChild(generarInputOculto('guest_count', guestCount));
     form.appendChild(generarInputOculto('type_event', eventType === 'Otro' ? otherEventType : eventType));
@@ -373,6 +380,7 @@ function submitQuote() {
         if (service.quantity) {
             form.appendChild(generarInputOculto(`services[${service.id}][quantity]`, service.quantity));
         }
+        form.appendChild(generarInputOculto(`services[${service.id}][price]`, service.price));
         form.appendChild(generarInputOculto(`services[${service.id}][coast]`, service.cost));
     });
 
@@ -656,7 +664,7 @@ function showConfirmedServicesModal() {
 
     confirmedServices.forEach(service => {
         const serviceCard = document.createElement('div');
-        serviceCard.classList.add('col-md-4', 'mb-3');
+        serviceCard.classList.add('col-6', 'col-sm-6', 'col-md-4', 'mb-3');
         const imagePath = service.image_path ? service.image_path : '/images/imagen6.jpg';
         serviceCard.innerHTML = `
             <div class="card service-card confirmed" id="confirmedServiceCard${service.id}">
@@ -748,6 +756,7 @@ function showServicesModal(categoryId) {
                     <p class="card-text">${service.description}</p>
                     <p class="card-text"><strong> Precio: <i class="fas fa-dollar-sign"></i> ${service.price}</strong></p>
                     <p class="card-text"> Costo: <i class="fas fa-dollar-sign"></i> ${service.coast}</p>
+                    ${service.people_count > 0 ? `<p class="card-text"><i class="fas fa-users"></i> ${service.people_count} personas</p>` : ''}
                     <div class="form-check">
                         <input class="form-check-input" type="checkbox" value="${service.id}" 
                             id="service${service.id}" 
@@ -767,6 +776,11 @@ function showServicesModal(categoryId) {
                             placeholder="Ingrese la cantidad"
                             value="${isConfirmed ? confirmedServices.find(cs => cs.id === service.id).quantity : ''}">
                         ` : ''}
+                        <input type="number" 
+                            id="price${service.id}" 
+                            class="form-control mt-2" 
+                            placeholder="Ingrese el precio"
+                            value="${isConfirmed ? confirmedServices.find(cs => cs.id === service.id).price : ''}">
                         <input type="number" 
                             id="cost${service.id}" 
                             class="form-control mt-2" 

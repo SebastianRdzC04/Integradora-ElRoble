@@ -12,6 +12,7 @@ use App\Http\Controllers\VerifyPhoneController;
 use App\Models\InventoryCategory;
 use Laravel\Socialite\Facades\Socialite;
 
+
 //Aqui esta el login de Facebook lo mismo que google
 
 Route::middleware('guest')->group(function()
