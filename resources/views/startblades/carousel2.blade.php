@@ -12,8 +12,7 @@
 @endphp
 
 <style>
-
-  
+  /* Estilos específicos para Packages */
 #packages-carousel {
   padding: 4rem 0;
 }
@@ -101,46 +100,24 @@
   <div class="container">
     <div class="swiper packages-slider">
       <div class="swiper-wrapper">
-        <div class="swiper-slide packages-slide" id="package1">
+        <!-- Slide-start -->
+        <div class="swiper-slide packages-slide">
           <div class="packages-slide-img">
-            <img src="" alt="Package 1">
+            <img src="{{ $packages->get(0)->image_path }}" alt="{{ $packages->get(0)->name }}">
           </div>
           <div class="packages-slide-content">
-            <h1 class="package-price">$500</h1>
+            <h1 class="package-price">${{ $packages->get(0)->price }}</h1>
             <div class="packages-slide-content-bottom">
-              <h2 class="package-name">Paquete A</h2>
-              <h3 class="package-description">Descripción del paquete A</h3>
+              <h2 class="package-name">{{ $packages->get(0)->name }}</h2>
+              <h3 class="package-description">{{ $packages->get(0)->description }}</h3>
             </div>
           </div>
         </div>
-
-        <div class="swiper-slide packages-slide" id="package2">
-          <div class="packages-slide-img">
-            <img src="" alt="Package 2">
-          </div>
-          <div class="packages-slide-content">
-            <h1 class="package-price">$800</h1>
-            <div class="packages-slide-content-bottom">
-              <h2 class="package-name">Paquete B</h2>
-              <h3 class="package-description">Descripción del paquete B</h3>
-            </div>
-          </div>
-        </div>
-
-        <div class="swiper-slide packages-slide" id="package3">
-          <div class="packages-slide-img">
-            <img src="" alt="Package 3">
-          </div>
-          <div class="packages-slide-content">
-            <h1 class="package-price">$1,200</h1>
-            <div class="packages-slide-content-bottom">
-              <h2 class="package-name">Paquete C</h2>
-              <h3 class="package-description">Descripción del paquete C</h3>
-            </div>
-          </div>
-        </div>
+        <!-- Slide-end -->
+        <!-- Repite más slides como el anterior -->
       </div>
 
+      <!-- Controls -->
       <div class="packages-slider-control">
         <div class="swiper-button-prev packages-slider-arrow">
           <ion-icon name="arrow-back-outline"></ion-icon>
@@ -154,12 +131,11 @@
   </div>
 </section>
 
-<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
-
 <script>
-  // Iniciar Swiper
   var packagesSlider = new Swiper('.packages-slider', {
     effect: 'coverflow',
     grabCursor: true,
@@ -180,48 +156,5 @@
       nextEl: '.packages-slider-control .swiper-button-next',
       prevEl: '.packages-slider-control .swiper-button-prev',
     }
-  });
-
-  // Objeto con los diferentes GIFs para cada imagen
-  const gifs = {
-    package1: [
-      "https://res.cloudinary.com/ddclkt7n4/image/upload/v1733793829/ddtabcbiewgkxoxz772o.jpg",
-      "https://s3.amazonaws.com/todossomosamigos/services_images/sillasymesas.jpeg",
-      "https://s3.amazonaws.com/todossomosamigos/services_images/menupara100personas.jpeg",
-      "https://s3.amazonaws.com/todossomosamigos/services_images/menupremium.jpg"
-    ],
-    package2: [
-      "https://res.cloudinary.com/ddclkt7n4/image/upload/v1733793829/ddtabcbiewgkxoxz772o.jpg",
-      "https://s3.amazonaws.com/todossomosamigos/services_images/5meseros.jpeg",
-      "https://s3.amazonaws.com/todossomosamigos/services_images/djprofesional.jpg",
-      "https://s3.amazonaws.com/todossomosamigos/services_images/grupomusical.jpeg"
-    ],
-    package3: [
-      "https://res.cloudinary.com/ddclkt7n4/image/upload/v1733793829/ddtabcbiewgkxoxz772o.jpg",
-      "https://s3.amazonaws.com/todossomosamigos/services_images/decoracionglobosytelas.jpg",
-      "https://s3.amazonaws.com/todossomosamigos/services_images/grupomusical.jpeg",
-      "https://s3.amazonaws.com/todossomosamigos/services_images/djprofesional.jpg",
-      "https://s3.amazonaws.com/todossomosamigos/services_images/audioprofesional.jpg",
-      "https://s3.amazonaws.com/todossomosamigos/services_images/menupara100personas.jpeg"
-    ],
-  };
-
-  // Función para simular un GIF
-  function simulateGIF(images, interval = 1000, idcontainerimage) {
-    const element = document.getElementById(idcontainerimage);
-    const imgElement = element.querySelector('img');
-    let currentImageIndex = 0;
-
-    setInterval(() => {
-      imgElement.src = images[currentImageIndex];
-      currentImageIndex = (currentImageIndex + 1) % images.length;
-    }, interval); // Cambia la imagen cada 1000 ms
-  }
-
-  // Llamar a la función para simular el GIF para cada imagen
-  document.addEventListener('DOMContentLoaded', () => {
-    simulateGIF(gifs.package1, 1000, 'package1');
-    simulateGIF(gifs.package2, 1000, 'package2');
-    simulateGIF(gifs.package3, 1000, 'package3');
   });
 </script>
