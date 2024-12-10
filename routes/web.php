@@ -866,6 +866,7 @@ Route::post('dashboard/package/{id}/add/service', function($id, Request $request
         'precio' => [
             'required',
             'numeric',
+            'min:0',
         ],
         'costo' => [
             'required',
