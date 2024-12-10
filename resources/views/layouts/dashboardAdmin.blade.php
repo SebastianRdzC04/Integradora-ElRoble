@@ -257,7 +257,7 @@
                 <ul class="sidebar-nav">
                     @if (auth()->user()->roles->contains('id', 2))
                         <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">
+                            <a href="{{route('profile')}}" class="sidebar-link">
                                 <img src="{{ auth()->user()->avatar }}" alt="Avatar" alt="Avatar"
                                     class="avatar-icon">
                                 <span>Perfil</span>
