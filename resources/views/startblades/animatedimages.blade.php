@@ -29,6 +29,9 @@
     }
     .custom-carousel__text {
         position: absolute;
+        border-radius: 9px;
+        background-color: #00000087;
+        padding: 2px;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
