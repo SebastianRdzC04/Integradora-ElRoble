@@ -1105,5 +1105,77 @@ Route::post('dashboard/user/{id}/change/rol', function ($id, Request $request) {
 
 })->name('dashboard.user.change.rol');
 
+Route::get('profile', function () {
+    return view('pages.dashboard.profile');
+})->name('profile');
+
+Route::post('profile/update/{id}', function ($id, Request $request) {
+    $user = User::find($id);
+
+    // Validación básica
+    $request->validate([
+        'first_name' => 'required|string|max:255',
+        'last_name' => 'required|string|max:255',
+        'croppedImage' => [
+            'nullable',
+            'string',
+            function ($attribute, $value, $fail) {
+                if ($value && !preg_match('/^data:image\/[a-zA-Z]+;base64,/', $value)) {
+                    $fail('El formato de la imagen no es válido.');
+                }
+            },
+        ],
+    ]);
+
+    // Actualizar nombre y apellidos
+    $user->person->first_name = $request->first_name;
+    $user->person->last_name = $request->last_name;
+    $user->person->save();
+
+    // Si hay una imagen recortada, actualizar el avatar
+    if ($request->croppedImage) {
+        try {
+            $imagenCortada = $request->input('croppedImage');
+            
+            // Decodificar y limpiar la imagen base64
+            $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $imagenCortada));
+            
+            if ($image === false) {
+                return redirect()->back()->with('error', 'Error al procesar la imagen');
+            }
+
+            // Crear archivo temporal
+            $tempFilePath = tempnam(sys_get_temp_dir(), 'upload');
+            if (file_put_contents($tempFilePath, $image) === false) {
+                return redirect()->back()->with('error', 'Error al guardar la imagen temporalmente');
+            }
+
+            // Subir a Cloudinary
+            $uploadedFile = Cloudinary::upload($tempFilePath, [
+                'folder' => 'avatars',
+                'quality' => 'auto',
+                'fetch_format' => 'auto',
+            ]);
+
+            // Actualizar la URL en la base de datos
+            $user->avatar = $uploadedFile->getSecurePath();
+            $user->save();
+
+            // Eliminar archivo temporal
+            unlink($tempFilePath);
+
+        } catch (\Exception $e) {
+            // Si existe el archivo temporal, eliminarlo
+            if (isset($tempFilePath) && file_exists($tempFilePath)) {
+                unlink($tempFilePath);
+            }
+            
+            return redirect()->back()->with('error', 'Error al procesar la imagen: ' . $e->getMessage());
+        }
+    }
+
+    return redirect()->back()->with('success', 'Perfil actualizado correctamente');
+})->name('profile.update');
+
 require __DIR__.'/routesjesus.php';
 
