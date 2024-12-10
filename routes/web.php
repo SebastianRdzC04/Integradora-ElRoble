@@ -30,6 +30,7 @@ use App\Models\User;
 use App\Http\Controllers\PaymentController;
 use App\Models\ServiceCategory;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 
 /*
@@ -793,18 +794,29 @@ Route::post('dashboard/create/service', function(Request $request){
 })->name('dashboard.create.service');
 
 Route::post('dashboard/create/package', function(Request $request){
+    $imagenCortada = $request->input('croppedImage');
     $validator = Validator::make($request->all(), [
         'nombre' => 'required|string',
         'descripcion' => 'required|string',
         'precio' => 'required|numeric|regex:/^\d+(\.\d{1,2})?$/',
         'fechaInicio' => 'required|date|after_or_equal:today',
         'fechaFin' => 'required|date|after_or_equal:fechaInicio',
-        'lugar' => 'required|string|exists:places,id',
+        'lugar' => 'required|integer|exists:places,id',
         'afore' => 'required|integer|max:100',
     ]);
 
     if ($validator->fails()) {
         return redirect()->back()->withErrors($validator)->withInput();
+    }
+
+    $imagePath = null;
+    if ($imagenCortada) {
+        $image = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $imagenCortada));
+        $tempFilePath = tempnam(sys_get_temp_dir(), 'upload');
+        file_put_contents($tempFilePath, $image);
+
+        $uploadedFileUrl = Cloudinary::upload($tempFilePath)->getSecurePath();
+        $imagePath = $uploadedFileUrl;
     }
 
     $package = new Package();
@@ -815,6 +827,7 @@ Route::post('dashboard/create/package', function(Request $request){
     $package->end_date = $request->fechaFin;
     $package->place_id = Place::find($request->lugar)->id;
     $package->max_people = $request->afore;
+    $package->image_path = $imagePath; // Guardar la URL de la imagen en la base de datos
 
     // Determinar si el paquete está activo
     $currentDate = now()->toDateString();
@@ -1202,6 +1215,24 @@ Route::post('dashboard/event/update/payment/{id}', function ($id, Request $reque
     return redirect()->back()->with('error', 'El evento no se ha encontrado');
 
 })->name('dashboard.event.update.payment');
+
+Route::post('dashboard/profile/update/password/{id}', function ($id, Request $request) {
+    $user = User::find($id);
+
+    $request->validate([
+        'current_password' => 'required|string',
+        'password' => 'required|string|min:8|confirmed',
+    ]);
+
+    if (!Hash::check($request->current_password, $user->password)) {
+        return redirect()->back()->with('error', 'La contraseña actual no es correcta');
+    }
+
+    $user->password = Hash::make($request->password);
+    $user->save();
+
+    return redirect()->back()->with('success', 'La contraseña ha sido actualizada correctamente');
+})->name('profile.update.password');
 
 require __DIR__.'/routesjesus.php';
 
