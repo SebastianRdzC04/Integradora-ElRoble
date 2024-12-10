@@ -1,4 +1,4 @@
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+<link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <header class="custom-header">
         <a href="{{ url('/') }}" class="custom-logo" style="background-image: url('{{ asset('images/logo.png') }}');"></a>
         <nav class="custom-navbar">
@@ -42,4 +42,3 @@
             document.getElementById('outlog').submit();
         })
     </script>
-    
