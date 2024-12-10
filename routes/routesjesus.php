@@ -77,11 +77,16 @@ Route::middleware('guest')->group(function()
     //este guarda el login y lo autentifica
     Route::post('/login', [LoginController::class, 'store'])->name('login.store');
 });
-Route::get('/email/verify', [VerifyEmailController::class, 'showVerificationEmailView'])
-->name('verification.notice');
 
 //las verificaciones de correo y el logout
 Route::middleware('auth')->group(function(){
+
+    //estos son los mensajes con twilio para el OTP de verificacion
+    Route::get('/phone/verify',[VerifyPhoneController::class, 'create'])->name('verifyphone.get');
+    Route::post('/send-otp', [VerifyPhoneController::class, 'sendOtp'])->name('send.otp');
+    Route::post('/verify-otp', [VerifyPhoneController::class, 'verifyOtp'])->name('verify.otp'); 
+
+
     // Ruta para el enlace de verificación del email
     Route::get('/email/verify/{id}/{hash}', [VerifyEmailController::class,'verifyEmail'])
         ->middleware(['signed', 'throttle:6,1'])
@@ -92,7 +97,9 @@ Route::middleware('auth')->group(function(){
     ->middleware('custom.throttle:1,2,verification.notice')->name('verification.send');    
 
     // Ruta para mostrar la vista de verificación de correo
-
+    Route::get('/email/verify', [VerifyEmailController::class, 'showVerificationEmailView'])
+    ->name('verification.notice');
+    
 
     // Ruta para salir de la sesion
     Route::post('logout', [LoginController::class, 'destroy'])->name('logout');
@@ -146,7 +153,3 @@ Route::middleware(['auth' ,'superadmin'])->group(function () {
     Route::post('/add/code',[InventoryController::class,'addNewCodeOrUpdate'])->name('codeadd.store');
 });
 
-//estos son los mensajes con twilio para el OTP de verificacion
-Route::get('/phone/verify',[VerifyPhoneController::class, 'create'])->name('verifyphone.get');
-Route::post('/send-otp', [VerifyPhoneController::class, 'sendOtp'])->name('send.otp');
-Route::post('/verify-otp', [VerifyPhoneController::class, 'verifyOtp'])->name('verify.otp'); 

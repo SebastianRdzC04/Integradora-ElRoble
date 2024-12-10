@@ -48,6 +48,11 @@
 
     let savedEndTime = localStorage.getItem('emailTimerEndTime');
 
+    document.getElementById('btnVerifyPhone').addEventListener('click', function(event) {
+        event.preventDefault('submit');
+        window.location.href = '/phone/verify'; // Redirige a la URL 'phone/verify'
+    });
+
     function startTimer() {
         const endTime = Date.now() + waitTime * 1000;
         localStorage.setItem('emailTimerEndTime', endTime);
