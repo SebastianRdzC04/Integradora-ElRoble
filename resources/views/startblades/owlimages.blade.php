@@ -1,3 +1,6 @@
+<style>
+        
+    </style>
 
 <div class="carousel slide" 
 id="carouselDemo"
