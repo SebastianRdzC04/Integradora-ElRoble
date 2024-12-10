@@ -82,11 +82,16 @@
 
     <form method="POST" id="verificarotp" action="{{ route('verify.otp') }}">
         @csrf
-        <div class="d-flex justify-content-center mb-3">
-            @for ($i = 1; $i <= 6; $i++)
-                <input type="number" name="code{{ $i }}" id="code{{ $i }}" 
-                       class="code-input" maxlength="1" required autocomplete="off" inputmode="numeric">
-            @endfor
+        <div class="form-floating mb-3">
+            <div class="row d-flex pe-3 justify-content-center">
+                @for ($i = 1; $i <= 6; $i++)
+                    <div class="col-2">
+                        <input type="text" name="code{{ $i }}" id="code{{ $i }}" 
+                               class="form-control code-input" maxlength="1" required 
+                               autocomplete="off" inputmode="numeric">
+                    </div>
+                @endfor
+            </div>
         </div>
 
         <div class="d-flex justify-content-center mb-3">
@@ -113,53 +118,81 @@
 @section('script')
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    const waitTime = 60; // Segundos de espera
+    const inputs = document.querySelectorAll('.code-input');
+    const waitTime = 60; // Tiempo de espera en segundos
     const resendButton = document.getElementById('resendButton');
     const countdownText = document.getElementById('countdownText');
     const resendForm = document.getElementById('resendForm');
     let countdownInterval;
     let savedEndTime = localStorage.getItem('phoneTimerEndTime');
 
-    // Iniciar temporizador
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', (e) => {
+            const value = e.target.value.replace(/[^0-9]/g, ''); 
+            e.target.value = value.slice(0, 1);
+
+            if (value && index < inputs.length - 1) {
+                inputs[index + 1].focus(); 
+            }
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && input.value === '' && index > 0) {
+                inputs[index - 1].focus(); 
+            }
+        });
+
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pasteData = e.clipboardData.getData('text').replace(/[^0-9]/g, '').slice(0, inputs.length);
+            for (let i = 0; i < pasteData.length; i++) {
+                if (inputs[index + i]) {
+                    inputs[index + i].value = pasteData[i];
+                }
+            }
+
+            const nextInput = inputs[index + pasteData.length];
+            if (nextInput) {
+                nextInput.focus();
+            }
+        });
+    });
+
     function startTimer() {
-        const endTime = Date.now() + waitTime * 1000; // Tiempo final en milisegundos
-        localStorage.setItem('phoneTimerEndTime', endTime); // Guardar el tiempo final en localStorage
+        const endTime = Date.now() + waitTime * 1000;
+        localStorage.setItem('phoneTimerEndTime', endTime);
         savedEndTime = endTime;
-        updateCountdown(); // Actualizar contador inmediatamente
+        updateCountdown();
     }
 
-    // Actualizar la cuenta regresiva
     function updateCountdown() {
         const now = Date.now();
-        const timeLeft = Math.max(0, Math.floor((savedEndTime - now) / 1000)); // Calcular segundos restantes
+        const timeLeft = Math.max(0, Math.floor((savedEndTime - now) / 1000));
 
         if (timeLeft > 0) {
-            resendButton.disabled = true; // Desactivar botón de reenviar
-            countdownText.textContent = `Siguiente reenvío en (${Math.floor(timeLeft / 60)}:${String(timeLeft % 60).padStart(2, '0')})`; // Mostrar tiempo restante
+            resendButton.disabled = true;
+            countdownText.textContent = `Siguiente reenvío en (${Math.floor(timeLeft / 60)}:${String(timeLeft % 60).padStart(2, '0')})`;
         } else {
-            clearInterval(countdownInterval); // Detener el intervalo del temporizador
-            resendButton.disabled = false; // Habilitar botón de reenviar
-            countdownText.textContent = 'Reenviar código de verificación'; // Restablecer el texto
-            localStorage.removeItem('phoneTimerEndTime'); // Limpiar el tiempo guardado
+            clearInterval(countdownInterval);
+            resendButton.disabled = false;
+            countdownText.textContent = 'Reenviar código de verificación';
+            localStorage.removeItem('phoneTimerEndTime');
         }
     }
 
-    // Evento para reenviar el código
     resendButton.addEventListener('click', (event) => {
-        if (!resendButton.disabled) { // Solo enviar si el botón no está deshabilitado
-            startTimer(); // Iniciar el temporizador
-            resendForm.submit(); // Enviar el formulario para reenviar el código
+        if (!resendButton.disabled) {
+            startTimer();
+            resendForm.submit();
         }
     });
 
-    // Si hay un temporizador activo (tiempo guardado en localStorage), se inicia automáticamente
     if (savedEndTime) {
-        updateCountdown(); // Iniciar la cuenta regresiva inmediatamente al cargar la página
-        countdownInterval = setInterval(updateCountdown, 1000); // Actualizar cada segundo
+        updateCountdown();
+        countdownInterval = setInterval(updateCountdown, 1000);
     } else {
-        countdownText.textContent = 'Reenviar código de verificación'; // Texto por defecto cuando no hay temporizador activo
+        countdownText.textContent = 'Reenviar código de verificación';
     }
 });
-
 </script>
 @endsection
