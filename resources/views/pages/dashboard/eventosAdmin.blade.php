@@ -315,28 +315,26 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h3>Hola que rollo</h3>
+                                    <h3>Añadir Consumible</h3>
                                 </div>
                                 <div class="modal-body">
-                                    <form action="{{ route('dashboard.event.consumable.add', $event->id) }}"
-                                        method="POST">
+                                    <form action="{{ route('dashboard.event.consumable.add', $event->id) }}" method="POST">
                                         @csrf
                                         <div class="mb-3">
                                             <label for="consumible" class="form-label">Consumible</label>
-                                            <select name="consumible" id="consumible" class="form-select">
+                                            <select name="consumible" id="consumible" class="form-select" onchange="updatePlaceholder()">
                                                 <option value="">Selecciona un consumible</option>
                                                 @foreach ($consumables as $consumable)
                                                     @if ($event->consumables->contains($consumable))
                                                         @continue
                                                     @endif
-                                                    <option value="{{ $consumable->id }}">{{ $consumable->name }}
-                                                    </option>
+                                                    <option value="{{ $consumable->id }}" data-unit="{{ $consumable->unit }}">{{ $consumable->name }}</option>
                                                 @endforeach
                                             </select>
                                         </div>
                                         <div class="mb-3">
                                             <label for="cantidad" class="form-label">Cantidad</label>
-                                            <input type="number" class="form-control" name="cantidad">
+                                            <input type="number" class="form-control" name="cantidad" id="cantidad" placeholder="Ingrese la cantidad">
                                         </div>
                                         <button type="submit" class="btn btn-primary">Agregar</button>
                                     </form>
@@ -364,7 +362,7 @@
                                         <p class="text-end"> Faltan {{ $timeToStart->i }} minutos </p>
                                     @endif
                                 @else
-                                    <p class="text-end"> ya paso la hora carnal</p>
+                                    <p class="text-end">El Evento se encuentra demorado.</p>
                                 @endif
                             </div>
                         @endif
@@ -577,6 +575,14 @@
                 var modal = new bootstrap.Modal(document.getElementById('modal2'));
                 modal.show();
             });
+
+            function updatePlaceholder() {
+        const consumableSelect = document.getElementById('consumible');
+        const selectedOption = consumableSelect.options[consumableSelect.selectedIndex];
+        const unit = selectedOption.getAttribute('data-unit');
+        const cantidadInput = document.getElementById('cantidad');
+        cantidadInput.placeholder = unit ? `Ingrese la cantidad en ${unit}` : 'Ingrese la cantidad';
+    }
         </script>
     @endif
 

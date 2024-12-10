@@ -17,7 +17,7 @@
                             <th>Apellido</th>
                             <th>Email</th>
                             <th>Telefono</th>
-                            <th>Genero</th>
+                            <th>Género</th>
                         </tr>
                     </thead>
                     <tbody>
