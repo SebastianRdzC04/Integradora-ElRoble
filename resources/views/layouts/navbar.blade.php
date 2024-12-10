@@ -29,8 +29,6 @@
                         @if (auth()->user()->roles->contains('id', 2))
                         <li><a class="dropdown-item nav-item" href="{{route('dashboard')}}">Dashboard</a></li>
                         @endif
-                        <li><a class="dropdown-item nav-item" href="#">Configuracion</a></li>
-                        <li><a class="dropdown-item nav-item" href="#">Perfil</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a id="logout" class="dropdown-item nav-item" href="#">Cerrar Sesion</a></li>
                     </ul>
