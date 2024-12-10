@@ -77,6 +77,8 @@ Route::middleware('guest')->group(function()
     //este guarda el login y lo autentifica
     Route::post('/login', [LoginController::class, 'store'])->name('login.store');
 });
+Route::get('/email/verify', [VerifyEmailController::class, 'showVerificationEmailView'])
+->name('verification.notice');
 
 //las verificaciones de correo y el logout
 Route::middleware('auth')->group(function(){
@@ -90,8 +92,7 @@ Route::middleware('auth')->group(function(){
     ->middleware('custom.throttle:1,2,verification.notice')->name('verification.send');    
 
     // Ruta para mostrar la vista de verificación de correo
-    Route::get('/email/verify', [VerifyEmailController::class, 'showVerificationEmailView'])
-        ->name('verification.notice');
+
 
     // Ruta para salir de la sesion
     Route::post('logout', [LoginController::class, 'destroy'])->name('logout');

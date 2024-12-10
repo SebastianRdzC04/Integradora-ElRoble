@@ -29,13 +29,17 @@ class VerifyPhoneController extends Controller
      */
     public function sendOtp()
     {
+        
         $user = Auth::user();
         if ($user->person) {
             $phoneWithOutPrefix = $user->person->phone;
 
             $phone = '+52' . $phoneWithOutPrefix;   
+            dd($phone);
+
         } else {
-    return response()->json(['error' => 'Teléfono no encontrado.'], 400);
+        
+            return response()->json(['error' => 'Teléfono no encontrado.'], 400);
         }
         $result = $this->twilio->sendOtp($phone);
 
@@ -43,7 +47,7 @@ class VerifyPhoneController extends Controller
             return response()->json(['error' => $result['error']], 500);
         }
 
-        return redirect()->back()->whit('success', 'OTP enviado correctamente');
+        return redirect()->back()->with('success', 'OTP enviado correctamente');
     }
 
     /**
@@ -80,7 +84,7 @@ class VerifyPhoneController extends Controller
         if ($user->person) {
             $phoneWithOutPrefix = $user->person->phone;
 
-            $phone = '+52' . $phoneWithOutPrefix;         
+            $phone = '+52' . $phoneWithOutPrefix;   
         }
         else {
             return response()->json(['error' => 'Teléfono no encontrado.'], 400);

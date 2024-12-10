@@ -25,11 +25,11 @@
     <form id="resendForm" action="{{ route('verification.send') }}" method="POST">
         @csrf
 
-        <div class="d-flex col mb-3">
-            <div class="col-6">
-                <button id="btnVerifyPhone" class="btn">Verificar con teléfono</button>
+        <div class="d-flex col justify-content-between mb-3">
+            <div class="col-5">
+                <button id="btnVerifyPhone" style="background-color: #6a4d1b;" class="btn">Verificar con teléfono</button>
             </div>
-            <div class="col-6">
+            <div class="col-5">
                 <button type="submit" class="btn" id="resendButton" style="background-color: #af6400b3;">
                     <span id="countdownText">Reenviar código de verificación</span>
                 </button>

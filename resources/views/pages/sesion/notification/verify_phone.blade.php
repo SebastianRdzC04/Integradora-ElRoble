@@ -1,11 +1,12 @@
 @extends('layouts.formslogin')
 
 @section('title')
-    Verificación de telefono
+    Verificación de teléfono
 @endsection
 
 @section('link')
     <style>
+        /* Estilos personalizados */
         .code-input {
             width: 50px;
             height: 50px;
@@ -13,10 +14,53 @@
             font-size: 1.5rem;
             margin-right: 5px;
             border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        input[type="number"] {
+            -moz-appearance: textfield;
+            appearance: textfield;
         }
 
         .d-flex {
             display: flex;
+        }
+
+        .btn-custom {
+            padding: 12px 20px;
+            border: none;
+            color: #fff;
+            font-weight: bold;
+            border-radius: 5px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+
+        .btn-primary-custom {
+            background-color: #6a4d1b;
+        }
+
+        .btn-primary-custom:hover {
+            background-color: #5c4116;
+        }
+
+        .btn-secondary-custom {
+            background-color: #af6400b3;
+        }
+
+        .btn-secondary-custom:hover {
+            background-color: #9a5800;
+        }
+
+        .resend-section {
+            margin-top: 10px;
+            text-align: center;
         }
     </style>
 @endsection
@@ -30,153 +74,92 @@
 @endsection
 
 @section('form')
-<a href="/">Verificar más tarde</a>
-
-<form id="resendForm" action="{{ route('verify.otp') }}" method="POST">
-    @csrf
-    <label for="code">Código de verificación:</label>
-
-    <div class="form-floating mb-3">
-        <div class="row d-flex">
-            <div class="col-2">
-                <input type="number" name="code1" id="code1" placeholder="#" class="form-control code-input" maxlength="1" required autocomplete="off" inputmode="numeric" oninput="moveFocus(1)">
-            </div>
-            <div class="col-2">
-                <input type="number" name="code2" id="code2" placeholder="#" class="form-control code-input" maxlength="1" required autocomplete="off" inputmode="numeric" oninput="moveFocus(2)">
-            </div>
-            <div class="col-2">
-                <input type="number" name="code3" id="code3" placeholder="#" class="form-control code-input" maxlength="1" required autocomplete="off" inputmode="numeric" oninput="moveFocus(3)">
-            </div>
-            <div class="col-2">
-                <input type="number" name="code4" id="code4" placeholder="#" class="form-control code-input" maxlength="1" required autocomplete="off" inputmode="numeric" oninput="moveFocus(4)">
-            </div>
-            <div class="col-2">
-                <input type="number" name="code5" id="code5" placeholder="#" class="form-control code-input" maxlength="1" required autocomplete="off" inputmode="numeric" oninput="moveFocus(5)">
-            </div>
-            <div class="col-2">
-                <input type="number" name="code6" id="code6" placeholder="#" class="form-control code-input" maxlength="1" required autocomplete="off" inputmode="numeric" oninput="moveFocus(6)">
-            </div>
-        </div>
+    <div class="text-center mb-3">
+        <a href="/" class="text-decoration-none">Verificar más tarde</a>
     </div>
 
-    <div class="d-flex col mb-3">
-        <div class="col-6">
-            <button id="btnVerifyEmail" class="btn"></a> Verificar con email</button>
+    <label for="code" class="form-label">Código de verificación:</label>
+
+    <form method="POST" id="verificarotp" action="{{ route('verify.otp') }}">
+        @csrf
+        <div class="d-flex justify-content-center mb-3">
+            @for ($i = 1; $i <= 6; $i++)
+                <input type="number" name="code{{ $i }}" id="code{{ $i }}" 
+                       class="code-input" maxlength="1" required autocomplete="off" inputmode="numeric">
+            @endfor
         </div>
-        <div class="col-6">
-            <button type="button" class="btn" id="resendButton" style="background-color: #af6400b3;">
+
+        <div class="d-flex justify-content-center mb-3">
+            <button id="btnverifyotp" class="btn-custom btn-primary-custom">
+                Verificar Código
+            </button>
+        </div>
+    </form>
+
+    <div class="resend-section">
+        <form id="resendForm" action="{{ route('send.otp') }}" method="POST">
+            @csrf
+            <button type="button" id="resendButton" class="btn-custom btn-secondary-custom">
                 <span id="countdownText">Reenviar código de verificación</span>
             </button>
         </form>
-            <form method="POST" action="{{route('send.otp')}}">
-            @csrf
-            <button type="submit" class="btn">enviar mensaje</button>
-            </form>
-        </div>
+    </div>
+
+    <div class="text-center mt-3">
+        <a href="javascript:window.history.back();" class="text-decoration-none">Verificar con email</a>
     </div>
 @endsection
+
 @section('script')
 <script>
-
-    verifyEmailButton.addEventListener('click', function (event) {
-        event.preventDefault();
-
-    const waitTime = 60;
-
+document.addEventListener('DOMContentLoaded', () => {
+    const waitTime = 60; // Segundos de espera
     const resendButton = document.getElementById('resendButton');
     const countdownText = document.getElementById('countdownText');
-
+    const resendForm = document.getElementById('resendForm');
+    let countdownInterval;
     let savedEndTime = localStorage.getItem('phoneTimerEndTime');
 
+    // Iniciar temporizador
     function startTimer() {
-        const endTime = Date.now() + waitTime * 1000;
-        localStorage.setItem('phoneTimerEndTime', endTime);
+        const endTime = Date.now() + waitTime * 1000; // Tiempo final en milisegundos
+        localStorage.setItem('phoneTimerEndTime', endTime); // Guardar el tiempo final en localStorage
         savedEndTime = endTime;
-        updateCountdown();
+        updateCountdown(); // Actualizar contador inmediatamente
     }
 
+    // Actualizar la cuenta regresiva
     function updateCountdown() {
         const now = Date.now();
-        const timeLeft = Math.max(0, Math.floor((savedEndTime - now) / 1000));
+        const timeLeft = Math.max(0, Math.floor((savedEndTime - now) / 1000)); // Calcular segundos restantes
 
         if (timeLeft > 0) {
-            resendButton.disabled = true;
-            countdownText.textContent = `Siguiente reenvío... (${Math.floor(timeLeft / 60)}:${String(timeLeft % 60).padStart(2, '0')})`;
+            resendButton.disabled = true; // Desactivar botón de reenviar
+            countdownText.textContent = `Siguiente reenvío en (${Math.floor(timeLeft / 60)}:${String(timeLeft % 60).padStart(2, '0')})`; // Mostrar tiempo restante
         } else {
-            clearInterval(countdownInterval);
-            resendButton.disabled = false;
-            countdownText.textContent = 'Reenviar código de verificación';
-            localStorage.removeItem('phoneTimerEndTime');
+            clearInterval(countdownInterval); // Detener el intervalo del temporizador
+            resendButton.disabled = false; // Habilitar botón de reenviar
+            countdownText.textContent = 'Reenviar código de verificación'; // Restablecer el texto
+            localStorage.removeItem('phoneTimerEndTime'); // Limpiar el tiempo guardado
         }
     }
 
+    // Evento para reenviar el código
     resendButton.addEventListener('click', (event) => {
-        event.preventDefault();
-        if (!localStorage.getItem('phoneTimerEndTime')) {
-            startTimer();
-        } else {
-            console.log("Temporizador ya activo, espera a que termine.");
+        if (!resendButton.disabled) { // Solo enviar si el botón no está deshabilitado
+            startTimer(); // Iniciar el temporizador
+            resendForm.submit(); // Enviar el formulario para reenviar el código
         }
-        document.getElementById('resendForm').submit();
     });
 
+    // Si hay un temporizador activo (tiempo guardado en localStorage), se inicia automáticamente
     if (savedEndTime) {
-        updateCountdown();
+        updateCountdown(); // Iniciar la cuenta regresiva inmediatamente al cargar la página
+        countdownInterval = setInterval(updateCountdown, 1000); // Actualizar cada segundo
     } else {
-        countdownText.textContent = 'Reenviar código de verificación';
+        countdownText.textContent = 'Reenviar código de verificación'; // Texto por defecto cuando no hay temporizador activo
     }
-
-    const countdownInterval = setInterval(updateCountdown, 1000);
-</script>
-
-        <!--para pegar en los input el codigo-->
-<script>
-            document.addEventListener('DOMContentLoaded', () => {
-            const inputs = document.querySelectorAll('.code-input');
-                
-            inputs.forEach((input, index) => {
-                input.addEventListener('input', (event) => {
-                    const value = event.target.value;
-                
-                    if (value.length > 1) {
-                        distributeValue(value, index, inputs);
-                        return;
-                    }
-                
-                    if (value !== '' && index < inputs.length - 1) {
-                        inputs[index + 1].focus();
-                    }
-                });
-            
-                input.addEventListener('keydown', (event) => {
-                    if (event.key === 'Backspace' && input.value === '' && index > 0) {
-                        inputs[index - 1].focus();
-                    }
-                });
-            });
-        
-            inputs.forEach((input) => {
-                input.addEventListener('paste', (event) => {
-                    const pasteData = event.clipboardData.getData('text');
-                    distributeValue(pasteData, 0, inputs);
-                    event.preventDefault(); 
-                });
-            });
-        
-            function distributeValue(value, startIndex, inputs) {
-                for (let i = 0; i < value.length; i++) {
-                    const currentInput = inputs[startIndex + i];
-                    if (currentInput) {
-                        currentInput.value = value[i];
-                    }
-                }
-            
-                const nextInput = inputs[startIndex + value.length];
-                if (nextInput) {
-                    nextInput.focus();
-                }
-            }
-        });
+});
 
 </script>
 @endsection
