@@ -9,7 +9,12 @@
     
     <!-- Styles -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"/>
+    <script>
+        // Set your publishable key
+        Stripe.setPublishableKey('{{ config('services.stripe.key') }}');
+    </script>
 </head>
 <body>
     @include('layouts.navbar_new')
@@ -47,7 +52,13 @@
                         <p><strong>Estado:</strong> {{ $quote->status }}</p>
                         @if(in_array($quote->status, ['pendiente', 'cancelada', 'pagada']))
                             <p><strong>Precio Total:</strong> ${{ number_format($quote->estimated_price, 2) }}</p>
-                            <p><strong>Anticipo Requerido:</strong> ${{ number_format($quote->espected_advance, 2) }}</p>
+                            <p><strong>
+                                @if($quote->status == 'pagada')
+                                    Anticipo Brindado:
+                                @else
+                                    Anticipo Requerido:
+                                @endif
+                            </strong> ${{ number_format($quote->espected_advance, 2) }}</p>
                         @endif
                         <p><strong>Tipo de Evento:</strong> {{ $quote->type_event }}</p>
                         <p><strong>Invitados:</strong> {{ $quote->guest_count }}</p>
@@ -55,37 +66,42 @@
                             Ver Servicios
                         </button>
                         @if($quote->status == 'pendiente')
-                            <form action="{{ route('pagar') }}" method="POST" class="mb-2">
-                                @csrf
-                                <input type="hidden" name="quote_id" value="{{ $quote->id }}">
-                                <input type="hidden" name="amount" value="{{ $quote->estimated_price }}">
-                                <script
-                                    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                                    data-key="{{ env('STRIPE_KEY') }}"
-                                    data-amount="{{ $quote->estimated_price * 100 }}"
-                                    data-name="Pago Total"
-                                    data-description="Cotización #{{ $quote->id }}"
-                                    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-                                    data-locale="auto"
-                                    data-currency="mxn">
-                                </script>
-                            </form>
-                            <form action="{{ route('pagar') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="quote_id" value="{{ $quote->id }}">
-                                <input type="hidden" name="amount" value="{{ $quote->espected_advance }}">
-                                <script
-                                    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                                    data-key="{{ env('STRIPE_KEY') }}"
-                                    data-amount="{{ $quote->espected_advance * 100 }}"
-                                    data-name="Pago de Anticipo"
-                                    data-description="Anticipo Cotización #{{ $quote->id }}"
-                                    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-                                    data-locale="auto"
-                                    data-currency="mxn">
-                                </script>
-                            </form>
-                        @endif
+                        <form action="{{ route('pagar') }}" method="POST" class="mb-2">
+                            @csrf
+                            <input type="hidden" name="quote_id" value="{{ $quote->id }}">
+                            <input type="hidden" name="amount" value="{{ $quote->estimated_price }}">
+                            <script
+                                src="https://checkout.stripe.com/checkout.js" 
+                                class="stripe-button"
+                                data-key="{{ config('services.stripe.key') }}"
+                                data-amount="{{ $quote->estimated_price * 100 }}"
+                                data-name="Pago Total"
+                                data-description="Cotización #{{ $quote->id }}"
+                                data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+                                data-locale="es"
+                                data-label="Pagar Total"
+                                data-currency="mxn">
+                            </script>
+                        </form>
+                    
+                        <form action="{{ route('pagar') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="quote_id" value="{{ $quote->id }}">
+                            <input type="hidden" name="amount" value="{{ $quote->espected_advance }}">
+                            <script
+                                src="https://checkout.stripe.com/checkout.js" 
+                                class="stripe-button"
+                                data-key="{{ config('services.stripe.key') }}"
+                                data-amount="{{ $quote->espected_advance * 100 }}"
+                                data-name="Pago de Anticipo"
+                                data-description="Anticipo Cotización #{{ $quote->id }}"
+                                data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+                                data-locale="es"
+                                data-label="Pagar Anticipo"
+                                data-currency="mxn">
+                            </script>
+                        </form>
+                    @endif
                     </div>
                 </div>
             </div>
