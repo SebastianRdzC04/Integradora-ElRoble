@@ -382,9 +382,11 @@
                                 <p> Sillas:</p>
                                 <p class="ms-auto"> {{ $event->chair_count }}
                                     @if ($event->status == 'Pendiente' || $event->status == 'En espera')
-                                        <a data-bs-toggle="modal" data-bs-target="#modalSillas" href=""><i
-                                                class="bi bi-pencil-fill"></i>
-                                        </a>
+                                    <a data-bs-toggle="modal" 
+                                    data-bs-target="#modalSillas" 
+                                    class="btn btn-success btn-sm">
+                                     <i class="bi bi-pencil-fill text-white"></i>
+                                 </a>
                                     @endif
                                 </p>
                             </div>
@@ -413,8 +415,11 @@
                                 <p> Mesas:</p>
                                 <p class="ms-auto"> {{ $event->table_count }}
                                     @if ($event->status == 'Pendiente' || $event->status == 'En espera')
-                                        <i data-bs-toggle="modal" data-bs-target="#modalMesas"
-                                            class="bi bi-pencil-fill"></i>
+                                    <button data-bs-toggle="modal" 
+                                    data-bs-target="#modalMesas"
+                                    class="btn btn-success btn-sm">
+                                <i class="bi bi-pencil-fill text-white"></i>
+                            </button>
                                     @endif
                                 </p>
                             </div>
@@ -443,8 +448,11 @@
                                 <p> Manteles:</p>
                                 <p class="ms-auto">{{ $event->table_cloth_count }}
                                     @if ($event->status == 'Pendiente' || $event->status == 'En espera')
-                                        <i data-bs-toggle="modal" data-bs-target="#modalMantel"
-                                            class="bi bi-pencil-fill"></i>
+                                    <button data-bs-toggle="modal" 
+                                    data-bs-target="#modalMantel"
+                                    class="btn btn-success btn-sm">
+                                <i class="bi bi-pencil-fill text-white"></i>
+                            </button>
                                     @endif
                                 </p>
                             </div>
@@ -472,8 +480,11 @@
                         </div>
                         @if ($event->status == 'Pendiente' || $event->status == 'En espera')
                             <p>Horario estimado: {{ Carbon::parse($event->estimated_start_time)->format('h:i A') }} -
-                                {{ Carbon::parse($event->estimated_end_time)->format('h:i A') }} <i data-bs-toggle="modal"
-                                    data-bs-target="#horarioModal" class="text-end bi bi-pencil"></i>
+                                {{ Carbon::parse($event->estimated_end_time)->format('h:i A') }} <button data-bs-toggle="modal" 
+                                data-bs-target="#horarioModal"
+                                class="btn btn-success btn-sm">
+                            <i class="bi bi-pencil-fill text-white"></i>
+                        </button>
                             </p>
                         @endif
                         @if ($event->status == 'Finalizado')
@@ -495,7 +506,11 @@
                             <p>Precio por hora extra:
                                 {{ $event->extra_hour_price == 0 ? 'Sin definir' : '$' . $event->extra_hour_price }}
                                 @if ($event->status == 'Pendiente' || $event->status == 'En espera' || $event->status == 'En proceso')
-                                    <i data-bs-toggle="modal" data-bs-target="#modalHx" class="bi bi-pencil-fill"></i>
+                                <button data-bs-toggle="modal" 
+                                data-bs-target="#modalHx"
+                                class="btn btn-success btn-sm">
+                            <i class="bi bi-pencil-fill text-white"></i>
+                        </button>
                                 @endif
                             </p>
                             <div class="modal fade" id="modalHx">
