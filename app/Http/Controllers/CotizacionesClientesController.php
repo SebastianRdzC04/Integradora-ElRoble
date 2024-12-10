@@ -188,10 +188,8 @@ class CotizacionesClientesController extends Controller
 
     public function storeQuote(Request $request)
     {
-        // Asignar usuario autenticado
         $request->merge(['user_id' => auth()->id()]);
     
-        // Manejar tipo de evento
         if ($request->has('other_event_type') && !empty($request->input('other_event_type'))) {
             $request->merge(['type_event' => (string) $request->input('other_event_type')]);
         } else {
@@ -209,8 +207,6 @@ class CotizacionesClientesController extends Controller
                     ->withInput();
             }
     
-            DD($request->all());
-
             // Validaciones
             $validated = $request->validate([
                 'date' => 'required|date|after:today',
@@ -235,7 +231,6 @@ class CotizacionesClientesController extends Controller
                 'guest_count.max' => 'Máximo 80 invitados'
             ]);
     
-            // Verificar cotizaciones existentes
             $date = $request->input('date');
             $existingQuotes = Quote::where('date', $date)
                 ->whereIn('status', ['pendiente cotizacion', 'pendiente', 'pagada'])
@@ -251,7 +246,6 @@ class CotizacionesClientesController extends Controller
                     ->withInput();
             }
     
-            // Validar que la fecha esté dentro del rango permitido
             $currentDate = Carbon::now();
             $maxDate = $currentDate->copy()->addMonths(2)->endOfMonth();
             if (Carbon::parse($date)->gt($maxDate)) {
@@ -261,9 +255,21 @@ class CotizacionesClientesController extends Controller
                     ->withInput();
             }
     
+            $user = auth()->user();
+            $blockedDates = Quote::where('user_id', $user->id)
+                ->whereIn('status', ['pendiente cotizacion', 'pendiente'])
+                ->pluck('date')
+                ->toArray();
+    
+            if (in_array($date, $blockedDates)) {
+                return redirect()
+                    ->route('cotizaciones.nueva')
+                    ->withErrors(['date' => 'Ya tienes una cotización pendiente para esta fecha.'])
+                    ->withInput();
+            }
+    
             DB::beginTransaction();
     
-            // Crear cotización
             $quote = Quote::create([
                 'user_id' => auth()->id(),
                 'date' => $validated['date'],
@@ -275,7 +281,6 @@ class CotizacionesClientesController extends Controller
                 'status' => 'pendiente cotizacion',
             ]);
     
-            // Procesar servicios
             $servicesData = [];
             foreach ($request->input('services', []) as $serviceId => $serviceData) {
                 if (isset($serviceData['confirmed']) && filter_var($serviceData['confirmed'], FILTER_VALIDATE_BOOLEAN)) {
@@ -294,7 +299,7 @@ class CotizacionesClientesController extends Controller
             DB::commit();
     
             return redirect()
-                ->route('cotizaciones.nueva')
+                ->route('historialclientes')
                 ->with('success', 'Cotización enviada exitosamente.');
     
         } catch (ValidationException $e) {
@@ -320,8 +325,6 @@ class CotizacionesClientesController extends Controller
         } else {
             $request->merge(['type_event' => (string) $request->input('type_event')]);
         }
-    
-        DD($request->all());
         
         $validated = $request->validate([
             'user_id' => 'nullable|exists:users,id',
@@ -415,6 +418,15 @@ class CotizacionesClientesController extends Controller
         return view('historial', ['quotes' => $quotes]);
     }
 
+    public function historialClientes()
+    {
+        $quotes = Quote::with(['place', 'services.serviceCategory'])
+                       ->where('user_id', auth()->id())
+                       ->paginate(10);
+    
+        return view('historialclientes', ['quotes' => $quotes]);
+    }
+
     public function getCotizations(Request $request)
     {
         $startDate = $request->input('start_date');
@@ -442,6 +454,11 @@ class CotizacionesClientesController extends Controller
             ->groupBy('date')
             ->get();
     
+        $blockedDates = Quote::where('user_id', $user->id)
+            ->whereIn('status', ['pendiente cotizacion', 'pendiente'])
+            ->pluck('date')
+            ->toArray();
+    
         return view('cotizacionesnuevasclientes', [
             'places' => $places,
             'cotizations' => $cotizations,
@@ -449,6 +466,7 @@ class CotizacionesClientesController extends Controller
             'services' => $services,
             'user' => $user,
             'quotes' => $quotes,
+            'blockedDates' => $blockedDates,
         ]);
     }
 

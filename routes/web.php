@@ -666,10 +666,19 @@ Route::post('/pagar', [PaymentController::class, 'pay'])->name('pagar');
 Route::post('/create-payment-intent', [PaymentController::class, 'createPaymentIntent'])->name('create-payment-intent');
 Route::post('/confirm-payment', [PaymentController::class, 'confirmPayment'])->name('confirm-payment');
 Route::post('/api/cotizations', [CotizacionesClientesController::class, 'getCotizations']);
-Route::get('/cotizaciones/nueva', [CotizacionesClientesController::class, 'nuevaCotizacion'])->name('cotizaciones.nueva');
-Route::post('/cotizaciones/storeQuote', [CotizacionesClientesController::class, 'storeQuote'])->name('cotizaciones.storeQuote');
 Route::get('/dashboard/crear/cotizacion', [CotizacionesClientesController::class, 'nuevaCotizacionAdmin'])->name('cotizaciones.nuevaAdmin');
 Route::post('/dashboard/cotizando', [CotizacionesClientesController::class, 'storeQuoteAdmin'])->name('cotizaciones.storeQuoteAdmin');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/cotizaciones/nueva', [CotizacionesClientesController::class, 'nuevaCotizacion'])
+        ->name('cotizaciones.nueva')
+        ->middleware('check.pending.quotes');
+    Route::post('/cotizaciones/storeQuote', [CotizacionesClientesController::class, 'storeQuote'])
+        ->name('cotizaciones.storeQuote')
+        ->middleware('check.pending.quotes');
+    Route::get('/historialclientes', [CotizacionesClientesController::class, 'historialClientes'])
+        ->name('historialclientes');
+});
 
 // Si necesitas una vista para listar paquetes
 Route::get('/paquetes', [PaquetesAdminController::class, 'index'])->name('paquetes.index'); // O lo que desees
