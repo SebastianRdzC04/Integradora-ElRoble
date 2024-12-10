@@ -36,7 +36,7 @@ class DatabaseSeeder extends Seeder
         $this->call(PackageSeeder::class);
         $this->call(ConsumableSeeder::class);
         $this->call(ConsumableDefaultSeeder::class);
-
+        $this->call(ServicesPackages::class);
         $usuario = new User();
         $usuario->nickname = 'SebasRdz';
         $usuario->email = 'sebas@superadmin.com';
