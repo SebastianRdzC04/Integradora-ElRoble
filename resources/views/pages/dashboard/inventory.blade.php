@@ -18,7 +18,7 @@
             </div>
             <div class="col-12">
                 <div class="table-resposive">
-                    <table class="table shadow" id="inventory-table">
+                    <table class="table shadow table-striped" id="inventory-table">
                         <thead>
                             <tr>
                                 <th class="text-center">No.Serie</th>

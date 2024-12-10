@@ -23,8 +23,8 @@
         </div>
         <div class="row justify-content-center">
             <div class="col-12">
-                <div class="table-responsive pack-table">
-                    <table class="table shadow" id="tabla-paquetes">
+                <div class="table-responsive pack-table ">
+                    <table class="table shadow table-striped" id="tabla-paquetes">
                         <thead>
                             <tr>
                                 <th>Nombre</th>

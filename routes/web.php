@@ -591,6 +591,7 @@ Route::middleware(['auth' ,'superadmin'])->group(function () {
         }
         return redirect()->back()->with('error', 'No se encontro banda');
     })->name('dashboard.consumable.event.delete');
+
 });
 
 
@@ -1167,6 +1168,40 @@ Route::post('profile/update/{id}', function ($id, Request $request) {
 
     return redirect()->back()->with('success', 'Perfil actualizado correctamente');
 })->name('profile.update');
+
+Route::post('dashboard/event/add/extra/hour/{id}', function ($id) {
+    $event = Event::find($id);
+    if ($event) {
+        $event->extra_hours = $event->extra_hours + 1;
+        $event->total_price = $event->total_price + $event->extra_hour_price;
+        $event->save();
+        return redirect()->back()->with('success', 'El evento ha sido actualizado');
+    }
+
+})->name('dashboard.event.extra.hour');
+
+Route::post('dashboard/event/update/payment/{id}', function ($id, Request $request) {
+    $event = Event::find($id);
+    $request->validate([
+        'monto' => [
+            'required',
+            'numeric',
+            'min:0',
+            function ($attribute, $value, $fail) use ($event) {
+                if ($value > $event->remaining_payment) {
+                    $fail('El pago no puede ser mayor al monto faltante.');
+                }
+            },
+        ],
+    ]);
+    if ($event) {
+        $event->advance_payment = $event->advance_payment + $request->monto;
+        $event->save();
+        return redirect()->back()->with('success', 'El pago ha sido actualizado');
+    }
+    return redirect()->back()->with('error', 'El evento no se ha encontrado');
+
+})->name('dashboard.event.update.payment');
 
 require __DIR__.'/routesjesus.php';
 

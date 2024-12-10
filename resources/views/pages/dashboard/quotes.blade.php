@@ -14,7 +14,7 @@
         <div class="row justify-content-center">
             <div class="col-12">
                 <div class="table-responsive">
-                    <table class="table shadow" id="quote-table">
+                    <table class="table shadow table-striped" id="quote-table">
                         <thead>
                             <tr>
                                 <th></th>

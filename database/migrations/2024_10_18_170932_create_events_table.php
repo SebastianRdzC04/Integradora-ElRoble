@@ -32,6 +32,7 @@ return new class extends Migration
             $table->integer('remaining_payment');
             $table->integer('extra_hours')->nullable();
             $table->integer('extra_hour_price')->nullable();
+            $table->integer('extra_price')->nullable();
             $table->timestamps();
         });
     }
