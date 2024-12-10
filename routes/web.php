@@ -143,6 +143,9 @@ Route::middleware(['auth' ,'admin'])->group(function () {
 
 Route::middleware(['auth' ,'superadmin'])->group(function () {
 
+    Route::get('/dashboard/crear/cotizacion', [CotizacionesClientesController::class, 'nuevaCotizacionAdmin'])->name('cotizaciones.nuevaAdmin');
+    Route::post('/dashboard/cotizando', [CotizacionesClientesController::class, 'storeQuoteAdmin'])->name('cotizaciones.storeQuoteAdmin');
+
     Route::get('dashboard/graphics/profits', function(Request $request){
         $request->validate([
             'year' => 'required|integer|min:2000',

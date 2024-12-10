@@ -3,7 +3,13 @@
         <a href="{{ url('/') }}" class="custom-logo" style="background-image: url('{{ asset('images/logo.png') }}');"></a>
         <nav class="custom-navbar">
             <a href="#imagenes" class="nav-item">Fotos</a>
-            <a href="{{ route('cotizaciones.nueva') }}" class="nav-item">Haz tu cotización</a>
+            
+            @if(auth()->user() && auth()->user()->roles->contains('id', 1))
+                <a href="{{ route('cotizaciones.nuevaAdmin') }}" class="nav-item">Haz tu cotización</a>
+            @else
+                <a href="{{ route('cotizaciones.nueva') }}" class="nav-item">Haz tu cotización</a>
+            @endif
+
             <a href="#googlemaps" class="nav-item">¿Cómo Llegar?</a>
             <a href="#servicios" class="nav-item">Paquetes y servicios</a>
 
